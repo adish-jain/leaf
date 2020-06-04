@@ -1,0 +1,47 @@
+.steps {
+    min-width: 480px;
+    .header {
+      display: flex;
+      font-size: 20px;
+      border-bottom-width: 1px;
+      padding-top: 100px;
+      padding-left: 100px;
+      width: 100%;
+      position: sticky;
+      position: absolute;
+
+      h1 {
+        margin-top: 5px;
+        margin-bottom: 0px;
+        font-size: 20px;
+        width: 100%;
+      }
+
+      .titleName {
+        color: #27a4eb;
+      }
+
+      .stepButtons {
+        display: flex;
+
+        button {
+          margin-top: 40px;
+          margin-right: 1000px;
+          padding: 4px;
+          font-size: 16px;
+          font-weight: bold;
+          border-radius: 9px;
+          color: white;
+          border-style: none;
+        }
+
+        .step {
+          background-color: #000;
+        }
+
+        .desc {
+          background-color: #000;
+        }
+      }
+    }
+  }
