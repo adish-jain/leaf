@@ -1,13 +1,19 @@
 import Head from "next/head";
-import CodePreview from "../components/CodePreview";
-import Publishing from "../components/Publishing";
 import fetch from "isomorphic-unfetch";
-
 import InferGetStaticPropsType from "next";
+
+import { useRouter } from "next/router";
 
 const appStyles = require("../styles/App.module.scss");
 
 export default function Pages() {
+  const router = useRouter();
+
+  const handleClick = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    router.push("/article");
+  };
+
   return (
     <div className="container">
       <Head>
@@ -15,9 +21,14 @@ export default function Pages() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <div className={appStyles.App}>
-          <Publishing />
-          <CodePreview />
+        <div className={appStyles.Landing}>
+          <h1>
+            This is a platform to view coding tutorials in a better format.
+          </h1>
+          <h3>Check out an example tutorial</h3>
+          <div onClick={handleClick} className={appStyles.Preview}>
+            <h2>Example Tutorial</h2>
+          </div>
         </div>
       </main>
     </div>
