@@ -10,8 +10,7 @@ export const typeDefs = gql`
   }
   type User {
     id: Int!
-    firstName: String!
-    lastName: String!
-    age: Int!
+    username: String!
+    email: String!
   }
 `;
