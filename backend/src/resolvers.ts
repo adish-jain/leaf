@@ -11,12 +11,12 @@ export const resolvers = {
   },
   Mutation: {
     addUser: async (_: any, args: any) => {
-      const { firstName, lastName, age } = args;
+      const { username, email, password } = args;
       try {
-        const user = User.create({
-          firstName,
-          lastName,
-          age
+        const user: User = User.create({
+          username,
+          email,
+          password
         });
 
         await user.save();

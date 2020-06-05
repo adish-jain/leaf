@@ -1,5 +1,5 @@
 {
-   "name": "apollo",
+   "name": "backend",
    "version": "0.0.1",
    "description": "Express server with GraphQL endpoint via Apollo, Postgres datastore, and TypeORM ORM.",
    "devDependencies": {
