@@ -1,0 +1,52 @@
+.stepForm {
+    min-width: 480px;
+    .header {
+      display: flex;
+      font-size: 20px;
+      border-bottom-width: 1px;
+      padding-top: 100px;
+      padding-left: 0px;
+      width: 100%;
+      position: sticky;
+      //position: absolute;
+
+      h1 {
+        margin-top: 5px;
+        margin-bottom: 0px;
+        font-size: 20px;
+        width: 100%;
+      }
+
+      .titleName {
+        color: #000;
+        margin-right: 100px;
+      }
+
+      .textarea {
+      	width: 600px;
+      	height: 120px;
+      	border: 3px solid #cccccc;
+      	padding: 5px;
+      	font-family: Tahoma, sans-serif;
+      }
+    }
+    .stepButtons {
+      display: flex;
+
+      button {
+        margin-top: 40px;
+        margin-left: 0px;
+        padding: 4px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 9px;
+        color: black;
+        border-style: none;
+      }
+
+      .done {
+        background-color: #27a4eb;
+        margin-right: 200px;
+      }
+    }
+  }

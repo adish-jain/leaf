@@ -1,25 +1,12 @@
 import React, { useState } from "react";
-const descriptionStyles = require("../styles/Publishing.module.scss");
+const descriptionStyles = require("../styles/AddStep.module.scss");
+import Step from "./Step.tsx"
 
-type AddStepProps = {};
+export default function AddStep() {
 
-type AddStepState = {
-  steps: PublishingComponent[];
-};
-
-type PublishingComponent = {
-  publishingComponentType: PublishingComponentType;
-};
-
-enum PublishingComponentType {
-  description = "description",
-  step = "step",
-}
-
-export default function AddStep(props: PublishingProps) {
-
-  const handleClick = (e: React.MouseEvent<HTMLElement>) => {
-    const [count, setCount] = useState(0);
+  const [clicked, onceClicked] = useState(false);
+  const handleClick = () => {
+    onceClicked(!clicked);
   };
 
   return (
@@ -30,8 +17,11 @@ export default function AddStep(props: PublishingProps) {
         </h1>
         <div className={descriptionStyles.stepButtons}>
           <div onClick={handleClick}>
-            <button className={descriptionStyles.step}>New Step</button>
-            <button className={descriptionStyles.desc}>New Description</button>
+            {!clicked && <button className={descriptionStyles.step}>New Step</button>}
+            {!clicked && <button className={descriptionStyles.desc}>New Description</button>}
+          </div>
+          <div>
+            {clicked && <Step />}
           </div>
         </div>
       </div>
