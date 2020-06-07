@@ -8,8 +8,6 @@ const appStyles = require("../styles/App.module.scss");
 
 export default function ArticleView() {
 
-  const { data, error } = useSWR('/api/user', fetcher)
-
     return (
       <div className="container">
         <Head>
