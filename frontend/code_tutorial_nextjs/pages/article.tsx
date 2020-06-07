@@ -2,10 +2,14 @@
 import CodePreview from "../components/CodePreview";
 import Publishing from "../components/Publishing";
 import Head from "next/head";
+import useSWR from 'swr'
 
 const appStyles = require("../styles/App.module.scss");
 
 export default function ArticleView() {
+
+  const { data, error } = useSWR('/api/user', fetcher)
+
     return (
       <div className="container">
         <Head>
