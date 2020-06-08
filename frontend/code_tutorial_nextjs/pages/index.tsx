@@ -1,6 +1,7 @@
 import Head from "next/head";
 import fetch from "isomorphic-unfetch";
 import InferGetStaticPropsType from "next";
+import Link from "next/link";
 
 import { useRouter } from "next/router";
 
@@ -21,6 +22,7 @@ export default function Pages() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
+        <Header />
         <div className={appStyles.Landing}>
           <h1>
             This is a platform to view coding tutorials in a better format.
@@ -31,6 +33,19 @@ export default function Pages() {
           </div>
         </div>
       </main>
+    </div>
+  );
+}
+
+function Header() {
+  return (
+    <div className={appStyles.Header}>
+      <Link href="/login">
+        <a>Login</a>
+      </Link>
+      <Link href="/signup">
+        <a>Signup</a>
+      </Link>
     </div>
   );
 }
