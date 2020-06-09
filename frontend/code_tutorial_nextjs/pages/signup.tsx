@@ -1,17 +1,23 @@
 import Head from "next/head";
 import fetch from "isomorphic-unfetch";
-import InferGetStaticPropsType from "next";
-import Link from "next/link";
 import React, { useState } from "react";
-import useSWR from "swr";
+import { useLoggedIn } from "../lib/checkAuth";
+
+import { useRouter } from "next/router";
 
 const loginStyles = require("../styles/Login.module.scss");
-const axios = require("axios").default;
-
-const fetcher = (...args: any) => fetch(args).then((res: any) => res.json());
 
 export default function SignUp() {
-  const { data, error } = useSWR("/api/token", fetcher);
+  const router = useRouter();
+  const { authenticated, error } = useLoggedIn();
+  // console.log(error);
+  // console.log(!data);
+  if (!authenticated) {
+    console.log("not signed in");
+  } else {
+    console.log("signed in");
+    router.push("/");
+  }
 
   const [email, changeEmail] = useState("");
   const [password, changePassword] = useState("");

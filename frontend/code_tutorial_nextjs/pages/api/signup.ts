@@ -19,21 +19,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     .auth()
     .createUserWithEmailAndPassword(email, password)
     .then(function (UserCredential: any) {
-      console.log("inside then response");
-      // console.log(UserCredential.additionalUserInfo);
-      // console.log(UserCredential.credential.to_json());
       let signedin_user = UserCredential.user;
       let refreshToken = signedin_user.refreshToken;
       signedin_user.getIdToken().then(function (idToken: string) {
         userToken = idToken;
 
-        console.log("usertoken is " + userToken);
-        console.log("refreshtoken is " + refreshToken);
-
-        // res.setHeader(
-        //   "Set-Cookie",
-        //   `userToken=${userToken}; HttpOnly; SameSite=Strict; refreshToken=${refreshToken}; SameSite=Strict; HttpOnly;`
-        // );
         let tokens = [
           {
             tokenName: "userToken",
@@ -55,6 +45,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       var errorCode = error.code;
       var errorMessage = error.message;
       console.log(errorMessage);
-      // ...
+      res.status(403).end();
     });
 };

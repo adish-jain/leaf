@@ -26,14 +26,22 @@ export function setTokenCookies(res: NextApiResponse, tokens: tokenType[]) {
   res.setHeader("Set-Cookie", cookies);
 }
 
-export function removeTokenCookie(res: NextApiResponse) {
-  const cookie = serialize(TOKEN_NAME, "", {
-    maxAge: -1,
-    path: "/",
-  });
+export function removeTokenCookies(res: NextApiResponse, tokens: string[]) {
+  let cookies = [];
+  for (let i = 0; i < tokens.length; i++) {
+    const cookie = serialize(tokens[i], "", {
+      maxAge: -1,
+      path: "/",
+    });
+    cookies.push(cookie);
+  }
 
-  res.setHeader("Set-Cookie", cookie);
+  res.setHeader("Set-Cookie", cookies);
 }
+
+// export function removeTokenCookie(res: NextApiResponse, token: string) {
+
+// }
 
 export function parseCookies(req: NextApiRequest) {
   // For API Routes we don't need to parse the cookies.
