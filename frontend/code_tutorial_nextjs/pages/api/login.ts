@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import useSWR from "swr";
-import initFirebase from "../../lib/initFirebase";
+import {initFirebase} from "../../lib/initFirebase";
 
 initFirebase();
 

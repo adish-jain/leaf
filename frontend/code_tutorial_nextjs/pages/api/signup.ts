@@ -1,25 +1,53 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import useSWR from "swr";
-import initFirebase from "../../lib/initFirebase";
+import { initFirebase } from "../../lib/initFirebase";
+import { setTokenCookies } from "../../lib/cookieUtils";
+
+import { serialize, parse } from "cookie";
+
 const firebase = require("firebase/app");
 initFirebase();
 
-export default (req: NextApiRequest, res: NextApiResponse) => {
-  console.log("hit api route");
+export default async (req: NextApiRequest, res: NextApiResponse) => {
   let data = req.body.data;
-  console.log(req.body);
   let email = data.email;
-  console.log(email);
   let password = data.password;
 
-  firebase
+  let userToken: string;
+
+  await firebase
     .auth()
     .createUserWithEmailAndPassword(email, password)
     .then(function (UserCredential: any) {
-      console.log("inside then");
-      console.log(UserCredential.additionalUserInfo);
-      console.log(UserCredential.credential.to_json());
-      console.log(UserCredential.user);
+      console.log("inside then response");
+      // console.log(UserCredential.additionalUserInfo);
+      // console.log(UserCredential.credential.to_json());
+      let signedin_user = UserCredential.user;
+      let refreshToken = signedin_user.refreshToken;
+      signedin_user.getIdToken().then(function (idToken: string) {
+        userToken = idToken;
+
+        console.log("usertoken is " + userToken);
+        console.log("refreshtoken is " + refreshToken);
+
+        // res.setHeader(
+        //   "Set-Cookie",
+        //   `userToken=${userToken}; HttpOnly; SameSite=Strict; refreshToken=${refreshToken}; SameSite=Strict; HttpOnly;`
+        // );
+        let tokens = [
+          {
+            tokenName: "userToken",
+            token: userToken,
+          },
+          {
+            tokenName: "refreshToken",
+            token: refreshToken,
+          },
+        ];
+        setTokenCookies(res, tokens);
+
+        res.status(200).end();
+      });
     })
     .catch(function (error: any) {
       console.log(error);
