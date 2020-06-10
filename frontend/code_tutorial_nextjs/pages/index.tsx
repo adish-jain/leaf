@@ -48,8 +48,9 @@ function SignedIn() {
       credentials: "same-origin",
     }).then((res) => {
       console.log(res);
-      console.log("pushing router");
-      router.push("/login");
+
+      // reload the page to reset useSWR cache
+      location.reload();
     });
   }
 
