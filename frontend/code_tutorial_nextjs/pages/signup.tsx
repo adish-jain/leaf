@@ -10,8 +10,6 @@ const loginStyles = require("../styles/Login.module.scss");
 export default function SignUp() {
   const router = useRouter();
   const { authenticated, error } = useLoggedIn();
-  // console.log(error);
-  // console.log(!data);
   if (!authenticated) {
     console.log("not signed in");
   } else {
@@ -42,9 +40,7 @@ export default function SignUp() {
       credentials: "same-origin",
       body: JSON.stringify({ data }),
     }).then((res) => {
-      console.log(res);
-      // console.log(res.headers.keys());
-      console.log(res.headers.get("Set-Cookie"));
+      router.push("/");
     });
   };
 

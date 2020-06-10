@@ -4,27 +4,49 @@ import InferGetStaticPropsType from "next";
 import Link from "next/link";
 import React, { useState } from "react";
 
+import { useLoggedIn } from "../lib/checkAuth";
+
+import { useRouter } from "next/router";
+
 const loginStyles = require("../styles/Login.module.scss");
-const axios = require("axios").default;
 
 export default function Login() {
+  const router = useRouter();
+  const { authenticated, error } = useLoggedIn();
+
+  if (!authenticated) {
+    console.log("not signed in");
+  } else {
+    console.log("signed in");
+    router.push("/");
+  }
+
   const [email, changeEmail] = useState("");
   const [password, changePassword] = useState("");
 
+  const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
+    changeEmail(e.target.value);
+  };
+
+  const handleChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+    changePassword(e.target.value);
+  };
+
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
-    axios
-      .post("/api/login", { email: email, password: password })
-      .then(function (response: any) {
-        // handle success
-        console.log(response);
-      })
-      .catch(function (error: any) {
-        // handle error
-        console.log(error);
-      })
-      .finally(function () {
-        // always executed
-      });
+    let data = {
+      email: email,
+      password: password,
+    };
+
+    fetch("/api/login", {
+      method: "POST",
+      // eslint-disable-next-line no-undef
+      headers: new Headers({ "Content-Type": "application/json" }),
+      credentials: "same-origin",
+      body: JSON.stringify({ data }),
+    }).then((res) => {
+      router.push("/");
+    });
   };
 
   return (
@@ -36,13 +58,14 @@ export default function Login() {
       <main>
         <div className={loginStyles.Login}>
           <div className={loginStyles.LoginBox}>
+            <h1>Login</h1>
             <div className={loginStyles.InputBox}>
               <label>Username</label>
-              <input></input>
+              <input onChange={handleChangeEmail}></input>
             </div>
             <div className={loginStyles.InputBox}>
               <label>Password</label>
-              <input></input>
+              <input onChange={handleChangePassword}></input>
             </div>
             <button onClick={handleClick}>Login</button>
           </div>

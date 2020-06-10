@@ -18,8 +18,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   await firebase
     .auth()
     .createUserWithEmailAndPassword(email, password)
-    .then(function (UserCredential: any) {
-      let signedin_user = UserCredential.user;
+    .then(function (userCredential: any) {
+      let signedin_user = userCredential.user;
       let refreshToken = signedin_user.refreshToken;
       signedin_user.getIdToken().then(function (idToken: string) {
         userToken = idToken;

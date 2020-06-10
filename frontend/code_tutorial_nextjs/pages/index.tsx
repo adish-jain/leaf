@@ -48,7 +48,8 @@ function SignedIn() {
       credentials: "same-origin",
     }).then((res) => {
       console.log(res);
-      router.push("/");
+      console.log("pushing router");
+      router.push("/login");
     });
   }
 
@@ -90,9 +91,6 @@ function Header() {
       </Link>
       <Link href="/signup">
         <a>Signup</a>
-      </Link>
-      <Link href="/logout">
-        <a>Logout</a>
       </Link>
     </div>
   );
