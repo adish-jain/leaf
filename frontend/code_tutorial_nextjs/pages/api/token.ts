@@ -18,9 +18,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   let userToken = cookies.userToken;
   let refreshToken = cookies.refreshToken;
 
+  // If user is logged out
   if (userToken === undefined) {
-    res.statusCode = 403;
-    res.end();
+    res.statusCode = 200;
+    res.send({ authenticated: false });
     return;
   }
   // veryifyIdToken
@@ -29,56 +30,52 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     .verifyIdToken(userToken)
     .then(function (decodedToken: any) {
       res.statusCode = 200;
-      res.send({ token: "success" });
+      res.send({ authenticated: true });
       return;
     })
     .catch(function (error: any) {
       switch (error.code) {
+        // invalid token
         case "auth/argument-error":
-          console.log("auth arg");
-          res.statusCode = 403;
-          res.end();
+          res.statusCode = 200;
+          res.send({ authenticated: false });
           return;
+        // token is expired, fetch new one via refreshToken
         case "auth/id-token-expired":
-          if (error.code === "auth/id-token-expired") {
-            // token is expired, fetch new one via refreshToken
-            fetch(refreshTokenURL, {
-              method: "POST",
-              headers: new Headers({
-                "Content-Type": "application/x-www-form-urlencoded",
-              }),
-              body: "grant_type=refresh_token&refresh_token=" + refreshToken,
-            })
-              .then((refreshRes) => {
-                // retrieved new idtoken
-                refreshRes.json().then(function (resJSON) {
-                  console.log("received new json");
-                  let new_token = resJSON.id_token;
-                  let tokens = [
-                    {
-                      tokenName: "userToken",
-                      token: new_token,
-                    },
-                  ];
-                  setTokenCookies(res, tokens);
-                  res.statusCode = 200;
-                  console.log("updated token");
-                  res.end("updated token");
-                  return;
-                });
-              })
-              .catch(function (error: any) {
-                console.log(error);
-                res.statusCode = 403;
-                res.end();
-                return;
+          fetch(refreshTokenURL, {
+            method: "POST",
+            headers: new Headers({
+              "Content-Type": "application/x-www-form-urlencoded",
+            }),
+            body: "grant_type=refresh_token&refresh_token=" + refreshToken,
+          })
+            .then((refreshRes) => {
+              // retrieved new idtoken
+              refreshRes.json().then(function (resJSON) {
+                let new_token = resJSON.id_token;
+                let tokens = [
+                  {
+                    tokenName: "userToken",
+                    token: new_token,
+                  },
+                ];
+                setTokenCookies(res, tokens);
+                res.statusCode = 200;
+                res.send({ authenticated: true });
               });
-          }
+            })
+            .catch(function (error: any) {
+              console.log(error);
+              res.statusCode = 200;
+              res.send({ authenticated: false });
+            });
+          break;
+        // unhandled firebase error code
         default:
           console.log(error);
           console.log(error.code);
-          res.statusCode = 403;
-          res.end();
+          res.statusCode = 200;
+          res.send({ authenticated: false });
           return;
       }
     });

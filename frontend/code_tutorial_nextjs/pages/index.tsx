@@ -3,7 +3,7 @@ import fetch from "isomorphic-unfetch";
 import InferGetStaticPropsType from "next";
 import Link from "next/link";
 
-import { useLoggedIn } from "../lib/checkAuth";
+import { useLoggedIn, logOut } from "../lib/checkAuth";
 
 import { useRouter } from "next/router";
 
@@ -12,18 +12,16 @@ const appStyles = require("../styles/App.module.scss");
 export default function Pages() {
   const router = useRouter();
 
-  const { authenticated, error } = useLoggedIn();
-
-  if (!authenticated) {
-    console.log("not signed in");
-  } else {
-    console.log("signed in");
-  }
+  const { authenticated, error, loading } = useLoggedIn();
 
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     router.push("/article");
   };
+
+  if (loading) {
+    return <div>Loading</div>;
+  }
 
   return (
     <div className="container">
@@ -39,21 +37,6 @@ export default function Pages() {
 }
 
 function SignedIn() {
-  const router = useRouter();
-
-  function logOut() {
-    fetch("/api/logout", {
-      method: "POST",
-      // eslint-disable-next-line no-undef
-      credentials: "same-origin",
-    }).then((res) => {
-      console.log(res);
-
-      // reload the page to reset useSWR cache
-      location.reload();
-    });
-  }
-
   return (
     <div>
       <h1>You are signed in</h1>

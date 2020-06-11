@@ -12,17 +12,16 @@ const loginStyles = require("../styles/Login.module.scss");
 
 export default function Login() {
   const router = useRouter();
-  const { authenticated, error } = useLoggedIn();
+  const { authenticated, error, loading } = useLoggedIn();
 
-  if (!authenticated) {
-    console.log("not signed in");
-  } else {
-    console.log("signed in");
+  if (authenticated) {
     router.push("/");
   }
 
   const [email, changeEmail] = useState("");
   const [password, changePassword] = useState("");
+  const [loggingIn, changeLoggingIn] = useState(false);
+  const [errorMessage, updateErrorMessage] = useState("");
 
   const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     changeEmail(e.target.value);
@@ -38,15 +37,37 @@ export default function Login() {
       password: password,
     };
 
+    if (email === "") {
+      updateErrorMessage("Invalid Email");
+      return;
+    }
+    if (password === "") {
+      updateErrorMessage("No Password Set");
+      return;
+    }
+
+    changeLoggingIn(true);
     fetch("/api/login", {
       method: "POST",
       // eslint-disable-next-line no-undef
       headers: new Headers({ "Content-Type": "application/json" }),
       credentials: "same-origin",
       body: JSON.stringify({ data }),
-    }).then((res) => {
-      router.push("/");
-    });
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          router.push("/");
+        }
+        if (res.status === 403) {
+          res.json().then((resJson) => {
+            updateErrorMessage(resJson.error);
+            changeLoggingIn(false);
+          });
+        }
+      })
+      .catch(function (error: any) {
+        console.log(error);
+      });
   };
 
   return (
@@ -55,19 +76,34 @@ export default function Login() {
         <title>Login</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
+      <main className={loginStyles.LoginMain}>
+        <div className={loginStyles.Logo}></div>
+        <style jsx global>{`
+          html {
+            height: 100%;
+          }
+        `}</style>
         <div className={loginStyles.Login}>
           <div className={loginStyles.LoginBox}>
             <h1>Login</h1>
-            <div className={loginStyles.InputBox}>
-              <label>Username</label>
-              <input onChange={handleChangeEmail}></input>
+            <div className={loginStyles.FormWrapper}>
+              <div className={loginStyles.InputBox}>
+                <label>Email</label>
+                <input onChange={handleChangeEmail}></input>
+              </div>
+              <div className={loginStyles.InputBox}>
+                <label>Password</label>
+                <input type="password" onChange={handleChangePassword}></input>
+              </div>
+              {errorMessage === "" ? (
+                <div></div>
+              ) : (
+                <p className={loginStyles.ErrorMessage}>{errorMessage}</p>
+              )}
+              <button className={loginStyles.LoginButton} onClick={handleClick}>
+                {loggingIn ? "Logging In..." : "Login"}
+              </button>
             </div>
-            <div className={loginStyles.InputBox}>
-              <label>Password</label>
-              <input onChange={handleChangePassword}></input>
-            </div>
-            <button onClick={handleClick}>Login</button>
           </div>
         </div>
       </main>

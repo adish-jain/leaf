@@ -19,6 +19,7 @@ export default function SignUp() {
 
   const [email, changeEmail] = useState("");
   const [password, changePassword] = useState("");
+  const [verifyPassword, changeVerifyPassword] = useState("");
 
   const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     changeEmail(e.target.value);
@@ -26,6 +27,12 @@ export default function SignUp() {
 
   const handleChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     changePassword(e.target.value);
+  };
+
+  const handleChangeVerifyPassword = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    changeVerifyPassword(e.target.value);
   };
 
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
@@ -50,19 +57,41 @@ export default function SignUp() {
         <title>Sign Up</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
+      <main className={loginStyles.LoginMain}>
+        <div className={loginStyles.Logo}></div>
+        <style jsx global>{`
+          html {
+            height: 100%;
+          }
+        `}</style>
         <div className={loginStyles.Login}>
           <div className={loginStyles.LoginBox}>
             <h1>Sign Up</h1>
-            <div className={loginStyles.InputBox}>
-              <label>Username</label>
-              <input id="email" value={email} onChange={handleChangeEmail} />
+            <div className={loginStyles.FormWrapper}>
+              <div className={loginStyles.InputBox}>
+                <label>Username</label>
+                <input id="email" value={email} onChange={handleChangeEmail} />
+              </div>
+              <div className={loginStyles.InputBox}>
+                <label>Password</label>
+                <input
+                  onChange={handleChangePassword}
+                  type="password"
+                  id="password"
+                ></input>
+              </div>
+              <div className={loginStyles.InputBox}>
+                <label>Confirm Password</label>
+                <input
+                  onChange={handleChangeVerifyPassword}
+                  type="password"
+                  id="verify-password"
+                ></input>
+              </div>
+              <button className={loginStyles.LoginButton} onClick={handleClick}>
+                Sign Up
+              </button>
             </div>
-            <div className={loginStyles.InputBox}>
-              <label>Password</label>
-              <input onChange={handleChangePassword} id="password"></input>
-            </div>
-            <button onClick={handleClick}>Sign Up</button>
           </div>
         </div>
       </main>
