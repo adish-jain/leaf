@@ -30,3 +30,8 @@ yarn-error.log*
 .env.production.local
 
 .vercel
+
+firebase_credentials.json
+firebase-debug.log
+firestore-debug.log
+ui-debug.log

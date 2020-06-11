@@ -1,0 +1,114 @@
+.LoginMain {
+  height: 100%;
+}
+
+.Logo {
+  position: fixed;
+  top: 40px;
+  left: 80px;
+  background: #ffffff;
+  box-shadow: 0px 4px 8px rgba(122, 122, 122, 0.25);
+  width: 40px;
+  height: 40px;
+}
+
+.ErrorMessage {
+  margin-top: 0px;
+  margin-bottom: 16px;
+  color: #f71600;
+  width: 320px;
+}
+
+.Login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: inherit;
+}
+
+.LoginBox {
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+  border-radius: 8px;
+
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+
+  h1 {
+    font-family: SF Pro Display;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 56px;
+    line-height: 67px;
+    padding: 0px;
+    margin-bottom: 16px;
+    margin-top: 0px;
+    margin-left: 0px;
+  }
+
+  .FormWrapper {
+    display: flex;
+    flex-direction: column;
+
+    .InputBox {
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+
+      label {
+        text-transform: uppercase;
+        font-family: SF Pro Display;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 12px;
+        line-height: 14px;
+        color: #898984;
+      }
+
+      input {
+        background: #f7f7f4;
+        border: 1px solid #dfdfdc;
+        border-radius: 4px;
+        height: 28px;
+        width: 320px;
+        line-height: 28px;
+        box-sizing:border-box;
+      }
+
+      input:focus {
+        // outline-color: red;
+        // outline-style: solid;
+        // outline-width: 1px;
+        // border-radius: 4px;
+
+        outline: none;
+        box-shadow: 0px 0px 2px #4db6f1;
+      }
+    }
+  }
+}
+
+.LoginButton {
+  background: #4db6f1;
+  box-shadow: 0px 4px 8px rgba(159, 159, 159, 0.25);
+  border-radius: 4px;
+  width: 320px;
+  height: 32px;
+  border-style: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+
+  transition: all 0.2s ease-in-out;
+}
+
+.LoginButton:hover {
+  box-shadow: 0px 4px 16px rgba(159, 159, 159, 0.6);
+  transition: all 0.2s ease-in-out;
+}
+
+.LoginButton:focus {
+  outline: none;
+}
