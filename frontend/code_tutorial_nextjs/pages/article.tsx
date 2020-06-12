@@ -1,5 +1,6 @@
 import CodePreview from "../components/CodePreview";
 import Publishing from "../components/Publishing";
+import CodeEditor from '../components/CodeEditor'
 import Head from "next/head";
 import useSWR from "swr";
 
@@ -14,8 +15,7 @@ export default function ArticleView() {
       </Head>
       <main>
         <div className={appStyles.App}>
-          <Publishing />
-          <CodePreview />
+          <CodeEditor />
         </div>
       </main>
     </div>
@@ -29,8 +29,7 @@ function Skeleton() {
 function useLoggedInUser() {
   const { data, error } = useSWR("/api/token", fetcher);
 
-  return {data, error}
-
+  return { data, error };
 }
 
 const fetcher = (url: RequestInfo) => {
