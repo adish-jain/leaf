@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import dynamic from "next/dynamic";
 
+// import CodeMirror from './DynamicComponent';
+// const {CodeMirror} = require('./DynamicComponent');
+
 const DynamicComponent = dynamic((() => import("./DynamicComponent")) as any, {
   ssr: false,
 });
