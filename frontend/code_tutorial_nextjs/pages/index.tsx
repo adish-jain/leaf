@@ -26,7 +26,7 @@ export default function Pages() {
   return (
     <div className="container">
       <Head>
-        <title>Code Tutorials</title>
+        <title>Leaf</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>

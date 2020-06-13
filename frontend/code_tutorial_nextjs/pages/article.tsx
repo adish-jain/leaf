@@ -15,6 +15,7 @@ export default function ArticleView() {
       </Head>
       <main>
         <div className={appStyles.App}>
+          <Publishing />
           <CodeEditor />
         </div>
       </main>
