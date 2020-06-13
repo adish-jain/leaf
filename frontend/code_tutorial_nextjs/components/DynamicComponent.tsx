@@ -43,44 +43,31 @@ export default class CodeMirror extends Component<
           value={this.state.value}
           options={{
             lineNumbers: true,
-  
             configureMouse: (editor: any, e: any) => {
-              editor.setSelections(ranges);
+              editor.setSelections(ranges, 0, {
+                scroll: false,
+              });
               return {
                 addNew: true,
               };
             },
           }}
+          selection={{
+            ranges: ranges,
+            focus: false, // defaults false if not specified
+          }}
+          onSelection={(editor, data) => {
+            console.log(data);
+          }}
+          onScroll={(editor, data) => {
+            console.log("onscroll fired");
+            console.log(data);
+          }}
           editorDidMount={(editor) => {
             this.instance = editor;
-            console.log(editor);
-            editor.setSelections(ranges);
             editor.setSize(608, 531);
           }}
-          onBeforeChange={(editor: any, data: any, value: string) => {
-            // console.log("onbeforechange");
-            // editor.doc.setSelection({ line: 0, ch: 0 }, { line: 0, ch: 10 });
-            this.setState({ value });
-          }}
-          onCursor={(editor, data) => {
-            //   console.log("oncursor");
-            //   editor.setSelections(ranges);
-
-          }}
-          onChange={(editor: any, data: any, value: string) => {
-            // console.log("onchange");
-          }}
-          onUpdate={(editor: any) => {
-            //   console.log("onupdate");
-            //   console.log(editor);
-          }}
-          //   selection={{
-          //     ranges: ranges,
-          //     focus: true, // defaults false if not specified
-          //   }}
-          onSelection={(editor, data) => {
-            // console.log(data);
-          }}
+          onBeforeChange={(editor, data) => {}}
         />
       </div>
     );
