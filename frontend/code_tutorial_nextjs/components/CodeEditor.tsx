@@ -1,5 +1,8 @@
 import React, { Component } from "react";
 import dynamic from "next/dynamic";
+import LanguageBar from "./LanguageBar";
+import FileBar from "./FileBar";
+import PreviewSection from "./PreviewSection";
 
 // import CodeMirror from './DynamicComponent';
 // const {CodeMirror} = require('./DynamicComponent');
@@ -11,7 +14,7 @@ const DynamicComponent = dynamic((() => import("./DynamicComponent")) as any, {
 type CodeEditorProps = {};
 
 type CodeEditorState = {
-  code: string;
+  language: string;
 };
 
 export default class CodeEditor extends Component<
@@ -22,16 +25,21 @@ export default class CodeEditor extends Component<
     super(props);
 
     this.state = {
-      code: "",
+      language: "jsx",
     };
   }
 
   render() {
-    const code = this.state.code;
-
     return (
       <div>
+        <style jsx>{`
+          box-shadow: 0px 4px 16px #edece9;
+          border-radius: 8px;
+        `}</style>
+        <PreviewSection />
+        <FileBar />
         <DynamicComponent />
+        <LanguageBar language={this.state.language} />
       </div>
     );
   }

@@ -1,6 +1,13 @@
 import React, { Component } from "react";
 import { Controlled as CodeMirror2 } from "react-codemirror2";
-import { filenames, Language, reactString } from "./code_string";
+import { filenames, Language, reactString, jsxString } from "./code_string";
+
+
+
+// require('codemirror/mode/xml/xml');
+// require('codemirror/mode/javascript/javascript');
+require('codemirror/mode/jsx/jsx');
+
 // const codeEditorStyles = require("../styles/CodeEditor.module.scss");
 // import "../styles/CodeEditor.module.scss";
 
@@ -35,7 +42,7 @@ export default class CodeMirror extends Component<
     this.instance = null;
 
     this.state = {
-      value: reactString,
+      value: jsxString,
     };
   }
   render() {
@@ -46,6 +53,9 @@ export default class CodeMirror extends Component<
           value={this.state.value}
           options={{
             lineNumbers: true,
+            mode: 'jsx',
+            theme: 'vscode-dark',
+            lineWrapping: true
             // configureMouse: (editor: any, e: any) => {
             //   editor.setSelections(ranges, 0, {
             //     scroll: false,
@@ -55,17 +65,10 @@ export default class CodeMirror extends Component<
             //   };
             // },
           }}
-          // selection={{
-          //   ranges: ranges,
-          //   focus: true, // defaults false if not specified
-          // }}
           onSelection={(editor, data) => {
             console.log(editor);
           }}
-          // onScroll={(editor, data) => {
-          //   console.log("onscroll fired");
-          //   console.log(data);
-          // }}
+
           editorDidMount={(editor) => {
             this.instance = editor;
             editor.markText(
