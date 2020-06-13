@@ -1,4 +1,4 @@
-const reactString5: string = `class Square extends React.Component {
+const reactString: string = `class Square extends React.Component {
     render() {
       return (
         <button className="square" onClick={function() { alert('click'); }}>
@@ -128,7 +128,7 @@ const reactString5: string = `class Square extends React.Component {
   
   `;
 
-const reactString: string = `line1
+const reactString5: string = `line1
 line2wrarddddddddline2wrarddddddddline2wrarddddddddline2wrarddddddddline2wrarddddddffggg
 line3
 line4
