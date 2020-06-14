@@ -1,0 +1,36 @@
+.NewStep {
+  margin-top: 24px;
+  p {
+    text-transform: uppercase;
+    color: #898984;
+    font-size: 16px;
+    line-height: 19px;
+    margin-top: 0px;
+    padding: 0;
+  }
+
+  .Line {
+    height: 1px;
+    // border: 1px solid #edece9;
+    width: 160px;
+    background: #edece9;
+  }
+
+  .Buttons {
+    display: flex;
+    margin-top: 16px;
+
+    button {
+      margin-right: 20px;
+
+      background: #ffffff;
+      border: 1px solid #edece9;
+      box-sizing: border-box;
+      border-radius: 4px;
+      padding: 8px;
+
+      font-size: 16px;
+      line-height: 19px;
+    }
+  }
+}
