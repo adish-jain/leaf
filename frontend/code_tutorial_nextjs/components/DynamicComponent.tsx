@@ -55,6 +55,7 @@ export default class CodeMirror extends Component<
             lineNumbers: true,
             mode: 'jsx',
             theme: 'vscode-dark',
+            // theme: 'oceanic-next',
             lineWrapping: true
             // configureMouse: (editor: any, e: any) => {
             //   editor.setSelections(ranges, 0, {
