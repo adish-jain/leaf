@@ -9,9 +9,12 @@
     "start": "next start"
   },
   "dependencies": {
+    "@types/draft-js": "^0.10.41",
     "axios": "^0.19.2",
     "classnames": "^2.2.6",
+    "codemirror": "^5.54.0",
     "cookie": "^0.4.1",
+    "draft-js": "^0.11.6",
     "firebase": "^7.15.0",
     "firebase-admin": "^8.12.1",
     "isomorphic-fetch": "^2.2.1",
@@ -19,6 +22,7 @@
     "lodash": "^4.17.15",
     "next": "9.3.5",
     "react": "16.13.1",
+    "react-codemirror2": "^7.2.1",
     "react-dom": "16.13.1",
     "react-loading-skeleton": "^2.1.1",
     "react-placeholder": "^4.0.2",

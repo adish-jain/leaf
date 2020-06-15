@@ -1,0 +1,35 @@
+.LanguageBar {
+  background-color: #3f4447;
+  border: 1px solid #4c5153;
+  height: 25px;
+  border-radius: 0px 0px 8px 8px;
+  display: flex;
+  align-items: center;
+  flex-direction: row-reverse;
+  //   justify-content: right;
+
+  label {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 17px;
+
+    margin: 0;
+    padding: 0;
+    color: #ebebeb;
+  }
+
+  select {
+      margin-left: 4px;
+    background: none;
+    border-style: none;
+    color: #37abda;
+
+    /* for Firefox */
+    -moz-appearance: none;
+    /* for Chrome */
+    -webkit-appearance: none;
+    // margin-right: 4px;
+  }
+}
