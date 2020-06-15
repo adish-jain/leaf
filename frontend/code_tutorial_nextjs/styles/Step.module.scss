@@ -1,9 +1,16 @@
 .Step {
+  margin-top: 24px;
   background: #ffffff;
   border: 1px solid #edece9;
   box-sizing: border-box;
   box-shadow: 0px 4px 16px #edece9;
   border-radius: 8px;
+
+  padding: 24px;
+}
+
+.Draft {
+  // padding: 24px;
 }
 
 .Buttons {
@@ -22,6 +29,7 @@
     height: 24px;
 
     text-align: center;
+    margin-right: 16px;
   }
 
   .Save {

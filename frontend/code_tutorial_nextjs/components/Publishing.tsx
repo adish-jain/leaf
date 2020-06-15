@@ -52,10 +52,10 @@ export default class Publishing extends Component<
         <div className={descriptionStyles.header}>
           <h1>Title</h1>
         </div>
-        <NewStep addStep={this.addStep} />
         {this.state.steps.map((step) => {
-          return <Step />;
+          return <Step key={1} />;
         })}
+        <NewStep addStep={this.addStep} />
       </div>
     );
   }
