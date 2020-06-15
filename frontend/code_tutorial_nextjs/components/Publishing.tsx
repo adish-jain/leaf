@@ -32,6 +32,8 @@ export default class Publishing extends Component<
     };
   }
 
+  closeStep(e: React.MouseEvent<HTMLDivElement>, stepIndex: number) {}
+
   addStep(e: React.MouseEvent<HTMLButtonElement>) {
     let steps = this.state.steps;
     let new_step = {};
@@ -52,8 +54,8 @@ export default class Publishing extends Component<
         <div className={descriptionStyles.header}>
           <h1>Title</h1>
         </div>
-        {this.state.steps.map((step) => {
-          return <Step key={1} />;
+        {this.state.steps.map((step, index) => {
+          return <Step closeStep={this.closeStep} key={index} />;
         })}
         <NewStep addStep={this.addStep} />
       </div>

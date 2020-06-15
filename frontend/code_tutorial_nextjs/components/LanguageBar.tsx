@@ -16,19 +16,24 @@ export default class CodeMirror extends Component<
 
     this.state = {};
   }
+
+  handleChange(e: React.FormEvent<HTMLSelectElement>) {
+    this.setState({
+      // value: e.target.value
+    });
+  }
+
   render() {
     return (
       <div className={languageBarStyles.LanguageBar}>
         <label>
-        Language:
-        <select>
-          <option value="jsx">JSX</option>
-          <option value="javascript">Javascript</option>
-          <option selected value="html">
-            HTML
-          </option>
-          <option value="python">Python</option>
-        </select>
+          Language:
+          <select onChange={this.handleChange} value="jsx">
+            <option value="jsx">JSX</option>
+            <option value="javascript">Javascript</option>
+            <option value="html">HTML</option>
+            <option value="python">Python</option>
+          </select>
         </label>
       </div>
     );

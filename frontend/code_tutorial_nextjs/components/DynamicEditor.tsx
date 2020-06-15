@@ -12,7 +12,7 @@ export default class DynamicEditor extends Component<
   DynamicEditorProps,
   DynamicEditorState
 > {
-  onChange: any;
+onChange: any;
 
   constructor(props: DynamicEditorProps) {
     super(props);
