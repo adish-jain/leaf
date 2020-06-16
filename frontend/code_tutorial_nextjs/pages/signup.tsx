@@ -1,7 +1,7 @@
 import Head from "next/head";
 import fetch from "isomorphic-unfetch";
 import React, { useState } from "react";
-import { useLoggedIn } from "../lib/checkAuth";
+import { useLoggedIn } from "../lib/UseLoggedIn";
 
 import { useRouter } from "next/router";
 
@@ -9,7 +9,7 @@ const loginStyles = require("../styles/Login.module.scss");
 
 export default function SignUp() {
   const router = useRouter();
-  const { authenticated, error } = useLoggedIn();
+  const { authenticated, error } = useLoggedIn('/landing', false);
   if (!authenticated) {
     console.log("not signed in");
   } else {

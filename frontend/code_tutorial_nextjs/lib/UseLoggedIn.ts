@@ -4,17 +4,37 @@ import { useEffect } from "react";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-export function useLoggedIn() {
+/* redirectURL: the URL to redirect to depending on if the user is 
+authenticated or unauthenticated
+
+ redirectToAuthenticate: if true, redirects when user is unauthenticated, if 
+ false redirects when authenticated */
+export function useLoggedIn(
+  redirectURL: string,
+  redirectToAuthenticate: boolean
+) {
   const { data, error } = useSWR("/api/token", fetcher);
   let loading: boolean;
 
   useEffect(() => {
-    if (data === undefined || !data.authenticated) {
-      // redirect to login
+    if (data === undefined) {
       loading = true;
-    //   Router.replace(`/`);
+      return;
+    }
+
+    Router.prefetch(redirectURL);
+    let loggedIn = data.authenticated;
+    // Go to redirect URL if user is unauthenticated
+    if (loggedIn && !redirectToAuthenticate) {
+      Router.push(redirectURL);
+    }
+
+    // Go to redirect URL if user is authenticated
+    if (!loggedIn && redirectToAuthenticate) {
+      Router.push(redirectURL);
     }
   }, [data]);
+
   if (data === undefined) {
     loading = true;
     return { false: Boolean, error, loading };

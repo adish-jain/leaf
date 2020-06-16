@@ -4,7 +4,7 @@ import InferGetStaticPropsType from "next";
 import Link from "next/link";
 import React, { useState } from "react";
 
-import { useLoggedIn } from "../lib/checkAuth";
+import { useLoggedIn } from "../lib/UseLoggedIn";
 
 import { useRouter } from "next/router";
 
@@ -12,11 +12,7 @@ const loginStyles = require("../styles/Login.module.scss");
 
 export default function Login() {
   const router = useRouter();
-  const { authenticated, error, loading } = useLoggedIn();
-
-  if (authenticated) {
-    router.push("/");
-  }
+  const { authenticated, error, loading } = useLoggedIn("/landing", false);
 
   const [email, changeEmail] = useState("");
   const [password, changePassword] = useState("");
