@@ -7,7 +7,7 @@ import PreviewSection from "./PreviewSection";
 // import CodeMirror from './DynamicComponent';
 // const {CodeMirror} = require('./DynamicComponent');
 
-const DynamicComponent = dynamic((() => import("./DynamicComponent")) as any, {
+const DynamicCodeEditor = dynamic((() => import("./DynamicCodeEditor")) as any, {
   ssr: false,
 });
 
@@ -38,7 +38,7 @@ export default class CodeEditor extends Component<
         `}</style>
         <PreviewSection />
         <FileBar />
-        <DynamicComponent />
+        <DynamicCodeEditor />
         <LanguageBar language={this.state.language} />
       </div>
     );

@@ -18,7 +18,7 @@ const adminConfig = {
 
 export function initFirebaseAdmin() {
   if (!admin.apps.length) {
-    admin.initializeApp(config);
+    admin.initializeApp(adminConfig);
   }
 }
 
