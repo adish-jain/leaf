@@ -3,6 +3,8 @@ import NewStep from "./NewStep";
 import Step from "./Step";
 const descriptionStyles = require("../styles/Description.module.scss");
 
+var shortid = require('shortid');
+
 type PublishingProps = {};
 
 type PublishingState = {
@@ -26,17 +28,24 @@ export default class Publishing extends Component<
     super(props);
 
     this.addStep = this.addStep.bind(this);
+    this.closeStep = this.closeStep.bind(this);
 
     this.state = {
-      steps: [{}],
+      steps: [],
     };
   }
 
-  closeStep(e: React.MouseEvent<HTMLDivElement>, stepIndex: number) {}
+  closeStep(e: React.MouseEvent<HTMLDivElement>, id: string) {
+    let steps = this.state.steps;
+    let idx = steps.indexOf(id, 0);
+    steps.splice(idx, 1);
+    console.log("closestep");
+    this.setState({ steps: steps});
+  }
 
   addStep(e: React.MouseEvent<HTMLButtonElement>) {
     let steps = this.state.steps;
-    let new_step = {};
+    let new_step = shortid.generate();
     steps.push(new_step);
     console.log("addstep");
     this.setState({ steps });
@@ -54,8 +63,8 @@ export default class Publishing extends Component<
         <div className={descriptionStyles.header}>
           <h1>Title</h1>
         </div>
-        {this.state.steps.map((step, index) => {
-          return <Step closeStep={this.closeStep} key={index} />;
+        {this.state.steps.map(step => {
+          return <Step closeStep={this.closeStep} id={step} key={step} />;
         })}
         <NewStep addStep={this.addStep} />
       </div>

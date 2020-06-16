@@ -28,6 +28,7 @@
     "react-placeholder": "^4.0.2",
     "react-syntax-highlighter": "^12.2.1",
     "sass": "^1.26.7",
+    "shortid": "^2.2.15",
     "swr": "^0.2.2"
   },
   "devDependencies": {

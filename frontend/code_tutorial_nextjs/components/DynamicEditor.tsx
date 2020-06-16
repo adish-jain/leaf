@@ -27,7 +27,7 @@ onChange: any;
     return (
       <div>
         <Editor
-          placeholder="Write here"
+          placeholder="Press '/' for formatting options"
           onChange={this.onChange}
           editorState={this.state.editorState}
         />

@@ -10,7 +10,7 @@ import { EditorState, RichUtils, convertToRaw, convertFromRaw } from "draft-js";
 type StepProps = {
   closeStep: (
     e: React.MouseEvent<HTMLDivElement>,
-    stepIndex: number
+    id: string
   ) => void;
 };
 
@@ -37,7 +37,7 @@ export default class Step extends Component<StepProps, StepState> {
         </div>
         <div className={StepStyles.Buttons}>
           <button className={StepStyles.Save}>Save</button>
-          <div onClick={(e) => {this.props.closeStep(e, 1)}} className={StepStyles.Close}>X</div>
+          <div onClick={(e) => {this.props.closeStep(e, this.props.id)}} className={StepStyles.Close}>X</div>
         </div>
         <div></div>
       </div>
