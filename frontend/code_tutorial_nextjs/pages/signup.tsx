@@ -37,10 +37,11 @@ export default function SignUp() {
 
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     let data = {
+      requestedAPI: 'signup',
       email: email,
       password: password,
     };
-    fetch("/api/signup", {
+    fetch("/api/endpoint", {
       method: "POST",
       // eslint-disable-next-line no-undef
       headers: new Headers({ "Content-Type": "application/json" }),

@@ -28,11 +28,6 @@ export default function Login() {
   };
 
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
-    let data = {
-      email: email,
-      password: password,
-    };
-
     if (email === "") {
       updateErrorMessage("Invalid Email");
       return;
@@ -43,7 +38,13 @@ export default function Login() {
     }
 
     changeLoggingIn(true);
-    fetch("/api/login", {
+
+    let data = {
+      email: email,
+      password: password,
+      requestedAPI: "login",
+    };
+    fetch("/api/endpoint", {
       method: "POST",
       // eslint-disable-next-line no-undef
       headers: new Headers({ "Content-Type": "application/json" }),

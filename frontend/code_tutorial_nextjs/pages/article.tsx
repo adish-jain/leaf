@@ -1,4 +1,3 @@
-import CodePreview from "../components/CodePreview";
 import Publishing from "../components/Publishing";
 import CodeEditor from '../components/CodeEditor'
 import Head from "next/head";
@@ -22,17 +21,3 @@ export default function ArticleView() {
     </div>
   );
 }
-
-function Skeleton() {
-  return <div>SkeletonTemplate</div>;
-}
-
-function useLoggedInUser() {
-  const { data, error } = useSWR("/api/token", fetcher);
-
-  return { data, error };
-}
-
-const fetcher = (url: RequestInfo) => {
-  return fetch(url).then((r) => r.json());
-};

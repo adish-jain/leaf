@@ -2,7 +2,14 @@ import useSWR from "swr";
 import Router from "next/router";
 import { useEffect } from "react";
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const data = {
+  requestedAPI: "token",
+};
+const fetcher = (url: string) =>
+  fetch(url, {
+    body: JSON.stringify(data),
+    method: "POST",
+  }).then((res) => res.json());
 
 /* redirectURL: the URL to redirect to depending on if the user is 
 authenticated or unauthenticated
@@ -13,7 +20,7 @@ export function useLoggedIn(
   redirectURL: string,
   redirectToAuthenticate: boolean
 ) {
-  const { data, error } = useSWR("/api/token", fetcher);
+  const { data, error } = useSWR("/api/endpoint", fetcher);
   let loading: boolean;
 
   useEffect(() => {
@@ -45,10 +52,14 @@ export function useLoggedIn(
 }
 
 export function logOut() {
-  fetch("/api/logout", {
+  let data = {
+    requestedAPI: "logout",
+  };
+  fetch("/api/endpoint", {
     method: "POST",
     // eslint-disable-next-line no-undef
     credentials: "same-origin",
+    body: JSON.stringify(data),
   }).then((res) => {
     console.log(res);
     // reload the page to reset useSWR

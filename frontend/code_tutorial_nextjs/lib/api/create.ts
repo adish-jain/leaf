@@ -5,6 +5,8 @@ const admin = require("firebase-admin");
 const firebase = require("firebase/app");
 import fetch from "isomorphic-fetch";
 
+let db = admin.firestore();
+
 import { setTokenCookies } from "../../lib/cookieUtils";
 
 initFirebaseAdmin();

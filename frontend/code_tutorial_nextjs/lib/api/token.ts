@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import useSWR from "swr";
-import { initFirebaseAdmin, initFirebase } from "../../lib/initFirebase";
+import { initFirebaseAdmin, initFirebase } from "../initFirebase";
 const admin = require("firebase-admin");
 const firebase = require("firebase/app");
 import fetch from "isomorphic-fetch";
@@ -62,6 +62,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
                 setTokenCookies(res, tokens);
                 res.statusCode = 200;
                 res.send({ authenticated: true });
+                return;
               });
             })
             .catch(function (error: any) {

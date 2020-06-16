@@ -12,8 +12,11 @@ export default function Landing() {
   const { authenticated, error, loading } = useLoggedIn("/", true);
 
   function createNewPost() {
-    fetch("/api/create", {
+    fetch("/api/endpoint", {
       method: "POST",
+      body: JSON.stringify({
+        requestedAPI: "create",
+      }),
     }).then((res) => {
       console.log(res);
     });
