@@ -12,6 +12,8 @@ type StepProps = {
     e: React.MouseEvent<HTMLDivElement>,
     id: string
   ) => void;
+  id: string;
+  key: string;
 };
 
 type StepState = {};
