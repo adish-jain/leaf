@@ -9,13 +9,7 @@ const loginStyles = require("../styles/Login.module.scss");
 
 export default function SignUp() {
   const router = useRouter();
-  const { authenticated, error } = useLoggedIn('/landing', false);
-  if (!authenticated) {
-    console.log("not signed in");
-  } else {
-    console.log("signed in");
-    router.push("/");
-  }
+  const { authenticated, error } = useLoggedIn("/landing", false);
 
   const [email, changeEmail] = useState("");
   const [password, changePassword] = useState("");
@@ -37,7 +31,7 @@ export default function SignUp() {
 
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     let data = {
-      requestedAPI: 'signup',
+      requestedAPI: "signup",
       email: email,
       password: password,
     };
@@ -46,9 +40,11 @@ export default function SignUp() {
       // eslint-disable-next-line no-undef
       headers: new Headers({ "Content-Type": "application/json" }),
       credentials: "same-origin",
-      body: JSON.stringify({ data }),
+      body: JSON.stringify(data),
     }).then((res) => {
-      router.push("/");
+      // router.push("/");
+    }).catch((error) => {
+      console.log(error);
     });
   };
 

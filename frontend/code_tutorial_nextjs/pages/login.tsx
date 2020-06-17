@@ -49,11 +49,11 @@ export default function Login() {
       // eslint-disable-next-line no-undef
       headers: new Headers({ "Content-Type": "application/json" }),
       credentials: "same-origin",
-      body: JSON.stringify({ data }),
+      body: JSON.stringify(data),
     })
       .then((res) => {
         if (res.status === 200) {
-          router.push("/");
+          router.push("/landing");
         }
         if (res.status === 403) {
           res.json().then((resJson) => {
@@ -75,11 +75,6 @@ export default function Login() {
       </Head>
       <main className={loginStyles.LoginMain}>
         <div className={loginStyles.Logo}></div>
-        <style jsx global>{`
-          html {
-            height: 100%;
-          }
-        `}</style>
         <div className={loginStyles.Login}>
           <div className={loginStyles.LoginBox}>
             <h1>Login</h1>

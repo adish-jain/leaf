@@ -20,9 +20,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   admin
     .auth()
     .verifyIdToken(userToken)
+    // Get User UID
     .then(function (decodedToken: any) {
       let uid = decodedToken.uid;
 
+      // Get User JSON
       admin
         .auth()
         .getUser(uid)

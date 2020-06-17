@@ -20,9 +20,8 @@ export const config = {
 };
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  let requestBody = JSON.parse(req.body);
+  let requestBody = req.body;
   let requestedAPI = requestBody.requestedAPI;
-
   switch (requestedAPI) {
     // authentication
 
@@ -46,7 +45,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       return handleLogOut(req, res);
     }
 
-    // publishing
+    // Publishing
+
+    // POST
     case "create": {
       return handleCreate(req, res);
     }

@@ -52,7 +52,9 @@ function Header() {
   return (
     <div className={landingStyles.Header}>
       <div className={landingStyles.Settings}></div>
-      <div className={landingStyles.Settings}></div>
+      <div className={landingStyles.Settings}>
+        <button onClick={logOut}></button>
+      </div>
     </div>
   );
 }

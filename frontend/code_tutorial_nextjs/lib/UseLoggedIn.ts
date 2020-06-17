@@ -9,6 +9,7 @@ const fetcher = (url: string) =>
   fetch(url, {
     body: JSON.stringify(data),
     method: "POST",
+    headers: new Headers({ "Content-Type": "application/json" })
   }).then((res) => res.json());
 
 /* redirectURL: the URL to redirect to depending on if the user is 
@@ -60,6 +61,7 @@ export function logOut() {
     // eslint-disable-next-line no-undef
     credentials: "same-origin",
     body: JSON.stringify(data),
+    headers: new Headers({ "Content-Type": "application/json" }),
   }).then((res) => {
     console.log(res);
     // reload the page to reset useSWR

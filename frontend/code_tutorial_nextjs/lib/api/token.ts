@@ -24,7 +24,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     res.send({ authenticated: false });
     return;
   }
-  // veryifyIdToken
+
   await admin
     .auth()
     .verifyIdToken(userToken)
@@ -33,7 +33,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       res.send({ authenticated: true });
       return;
     })
-    .catch(function (error: any) {
+    .catch(async function (error: any) {
       switch (error.code) {
         // invalid token
         case "auth/argument-error":
@@ -42,35 +42,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           return;
         // token is expired, fetch new one via refreshToken
         case "auth/id-token-expired":
-          fetch(refreshTokenURL, {
-            method: "POST",
-            headers: new Headers({
-              "Content-Type": "application/x-www-form-urlencoded",
-            }),
-            body: "grant_type=refresh_token&refresh_token=" + refreshToken,
-          })
-            .then((refreshRes) => {
-              // retrieved new idtoken
-              refreshRes.json().then(function (resJSON) {
-                let new_token = resJSON.id_token;
-                let tokens = [
-                  {
-                    tokenName: "userToken",
-                    token: new_token,
-                  },
-                ];
-                setTokenCookies(res, tokens);
-                res.statusCode = 200;
-                res.send({ authenticated: true });
-                return;
-              });
-            })
-            .catch(function (error: any) {
-              console.log(error);
-              res.statusCode = 200;
-              res.send({ authenticated: false });
-            });
-          break;
+          return await refreshJWT(res, refreshToken);
         // unhandled firebase error code
         default:
           console.log(error);
@@ -80,4 +52,35 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           return;
       }
     });
+
+  //   let decodedToken = await admin.auth().verifyIdToken(userToken);
 };
+
+async function refreshJWT(res: NextApiResponse, refreshToken: string) {
+  try {
+    let response = await fetch(refreshTokenURL, {
+      method: "POST",
+      headers: new Headers({
+        "Content-Type": "application/x-www-form-urlencoded",
+      }),
+      body: "grant_type=refresh_token&refresh_token=" + refreshToken,
+    });
+    let resJSON = await response.json();
+    let new_token = resJSON.id_token;
+    let tokens = [
+      {
+        tokenName: "userToken",
+        token: new_token,
+      },
+    ];
+    setTokenCookies(res, tokens);
+    res.statusCode = 200;
+    res.send({ authenticated: true });
+    return;
+  } catch (error) {
+    console.log(error);
+    res.statusCode = 200;
+    res.send({ authenticated: false });
+    return;
+  }
+}
