@@ -25,19 +25,10 @@ export default class Step extends Component<StepProps, StepState> {
 
   constructor(props: StepProps) {
     super(props);
-
     this.state = {};
-
-
-    //this.onClick = this.onClick.bind(this);
-
     this.focus = () => this.editor.focus();
     this.onChange = (editorState: any) => this.setState({ editorState });
   }
-
-  /*onClick(props: StepProps) {
-    console.log(this.props.id);
-  }*/
 
   render() {
     return (

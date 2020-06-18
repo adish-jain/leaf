@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-
 import Editor, { createEditorStateWithText } from 'draft-js-plugins-editor';
-
 import createToolbarPlugin, { Separator } from 'draft-js-static-toolbar-plugin';
 import {
   ItalicButton,
@@ -16,11 +14,11 @@ import {
   BlockquoteButton,
   CodeBlockButton,
 } from 'draft-js-buttons';
-import editorStyles from '../styles/editorStyles.module.scss';
+import editorStyles from '../styles/EditorStyles.module.scss';
 import '!style-loader!css-loader!draft-js-static-toolbar-plugin/lib/plugin.css';
 
-
 class HeadlinesPicker extends Component {
+
   componentDidMount() {
     setTimeout(() => { window.addEventListener('click', this.onWindowClick); });
   }
