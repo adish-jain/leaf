@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import useSWR from "swr";
-import { initFirebaseAdmin, initFirebase } from "../initFirebase";
+import { initFirebaseAdmin, initFirebase } from "../../lib/initFirebase";
 const admin = require("firebase-admin");
 const firebase = require("firebase/app");
 import fetch from "isomorphic-fetch";
@@ -25,7 +25,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  await admin
+  return await admin
     .auth()
     .verifyIdToken(userToken)
     .then(function (decodedToken: any) {
@@ -52,8 +52,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           return;
       }
     });
-
-  //   let decodedToken = await admin.auth().verifyIdToken(userToken);
 };
 
 async function refreshJWT(res: NextApiResponse, refreshToken: string) {

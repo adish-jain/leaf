@@ -1,19 +1,31 @@
 import Head from "next/head";
 import Router from "next/router";
 import { useEffect } from "react";
+import useSWR, { SWRConfig } from "swr";
 
 const landingStyles = require("../styles/Landing.module.scss");
 
 import { useLoggedIn, logOut } from "../lib/UseLoggedIn";
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const rawData = {
+  requestedAPI: "get_drafts",
+};
+const fetcher = (url: string) =>
+  fetch(url, {
+    body: JSON.stringify(rawData),
+    method: "POST",
+    headers: new Headers({ "Content-Type": "application/json" }),
+  }).then((res) => res.json());
 
 export default function Landing() {
   const { authenticated, error, loading } = useLoggedIn("/", true);
+  const { data } = useSWR(authenticated ? "/api/endpoint" : null, fetcher);
+  console.log("drafts is " + JSON.stringify(data));
 
   function createNewPost() {
     fetch("/api/endpoint", {
       method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify({
         requestedAPI: "create",
       }),
@@ -23,6 +35,19 @@ export default function Landing() {
   }
 
   return (
+    // <SWRConfig
+    //   value={{
+    //     refreshInterval: 3000,
+    //     fetcher: (url: string) => {
+    //       console.log("fetcher");
+    //       fetch(url, {
+    //         body: JSON.stringify(rawData),
+    //         method: "POST",
+    //         headers: new Headers({ "Content-Type": "application/json" }),
+    //       }).then((res) => res.json());
+    //     },
+    //   }}
+    // >
     <div className="container">
       <Head>
         <title>Leaf</title>
@@ -30,6 +55,7 @@ export default function Landing() {
       </Head>
       <main>
         <Header />
+
         <div className={landingStyles.Landing}>
           <div className={landingStyles.Left}>
             <h1>Your Drafts</h1>
@@ -45,6 +71,7 @@ export default function Landing() {
         </div>
       </main>
     </div>
+    // </SWRConfig>
   );
 }
 

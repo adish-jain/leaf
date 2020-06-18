@@ -4,11 +4,11 @@ import { initFirebase } from "../../lib/initFirebase";
 import { setTokenCookies } from "../../lib/cookieUtils";
 import { serialize, parse } from "cookie";
 
-import handleToken from "../../lib/api/token";
 import handleLogin from "../../lib/api/login";
 import handleSignUp from "../../lib/api/signup";
 import handleLogOut from "../../lib/api/logout";
 import handleCreate from "../../lib/api/create";
+import handleGetDrafts from "../../lib/api/get_drafts";
 
 const firebase = require("firebase/app");
 initFirebase();
@@ -36,19 +36,21 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     //POST
-    case "token": {
-      return handleToken(req, res);
-    }
-
-    //POST
     case "logout": {
       return handleLogOut(req, res);
     }
 
-    // Publishing
+    /* 
+    ------ Publishing ------
+    */
 
-    // POST
+    case "get_drafts": {
+      //GET
+      return handleGetDrafts(req, res);
+    }
+
     case "create": {
+      // POST
       return handleCreate(req, res);
     }
 

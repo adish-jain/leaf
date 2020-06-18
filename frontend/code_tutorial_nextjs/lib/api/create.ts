@@ -8,6 +8,7 @@ import fetch from "isomorphic-fetch";
 let db = admin.firestore();
 
 import { setTokenCookies } from "../../lib/cookieUtils";
+import { getCurrentTimeWithTZ } from "../../lib/dateUtils";
 
 initFirebaseAdmin();
 initFirebase();
@@ -15,26 +16,21 @@ initFirebase();
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   let cookies = req.cookies;
   let userToken = cookies.userToken;
-  let refreshToken = cookies.refreshToken;
 
   admin
     .auth()
     .verifyIdToken(userToken)
     // Get User UID
-    .then(function (decodedToken: any) {
+    .then(async function (decodedToken: any) {
       let uid = decodedToken.uid;
+      let userRecord = await admin.auth().getUser(uid);
 
-      // Get User JSON
-      admin
-        .auth()
-        .getUser(uid)
-        .then(function (userRecord: any) {
-          // See the UserRecord reference doc for the contents of userRecord.
-          console.log("Successfully fetched user data:", userRecord.toJSON());
-        })
-        .catch(function (error: any) {
-          console.log("Error fetching user data:", error);
-        });
+      let newDraft = {
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        title: "Untitled",
+      };
+
+      db.collection("users").doc(uid).collection("drafts").add(newDraft);
     })
     .catch(function (error: any) {
       console.log(error);

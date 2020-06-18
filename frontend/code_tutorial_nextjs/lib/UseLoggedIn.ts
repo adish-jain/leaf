@@ -2,14 +2,14 @@ import useSWR from "swr";
 import Router from "next/router";
 import { useEffect } from "react";
 
-const data = {
+const rawData = {
   requestedAPI: "token",
 };
 const fetcher = (url: string) =>
   fetch(url, {
-    body: JSON.stringify(data),
+    body: JSON.stringify(rawData),
     method: "POST",
-    headers: new Headers({ "Content-Type": "application/json" })
+    headers: new Headers({ "Content-Type": "application/json" }),
   }).then((res) => res.json());
 
 /* redirectURL: the URL to redirect to depending on if the user is 
@@ -21,7 +21,7 @@ export function useLoggedIn(
   redirectURL: string,
   redirectToAuthenticate: boolean
 ) {
-  const { data, error } = useSWR("/api/endpoint", fetcher);
+  const { data, error } = useSWR("/api/auth", fetcher);
   let loading: boolean;
 
   useEffect(() => {
@@ -34,11 +34,13 @@ export function useLoggedIn(
     let loggedIn = data.authenticated;
     // Go to redirect URL if user is unauthenticated
     if (loggedIn && !redirectToAuthenticate) {
+      console.log("redirecting to " + redirectURL + " because unauthenticated");
       Router.push(redirectURL);
     }
 
     // Go to redirect URL if user is authenticated
     if (!loggedIn && redirectToAuthenticate) {
+      console.log("redirecting to " + redirectURL + " because authenticated");
       Router.push(redirectURL);
     }
   }, [data]);
