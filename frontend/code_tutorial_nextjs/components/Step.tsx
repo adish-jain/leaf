@@ -25,12 +25,11 @@ export default class Step extends Component<StepProps, StepState> {
 
   constructor(props: StepProps) {
     super(props);
-
     this.state = {};
-
     this.focus = () => this.editor.focus();
     this.onChange = (editorState: any) => this.setState({ editorState });
   }
+
   render() {
     return (
       <div className={StepStyles.Step}>
