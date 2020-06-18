@@ -16,16 +16,13 @@
     "cookie": "^0.4.1",
     "draft-js": "^0.11.6",
     "draft-js-buttons": "^2.0.2",
-    "draft-js-inline-toolbar-plugin": "^3.0.1",
     "draft-js-plugins-editor": "^3.0.0",
-    "draft-js-side-toolbar-plugin": "^3.0.2",
     "draft-js-static-toolbar-plugin": "^3.0.1",
     "firebase": "^7.15.0",
     "firebase-admin": "^8.12.1",
     "isomorphic-fetch": "^2.2.1",
     "isomorphic-unfetch": "^3.0.0",
     "lodash": "^4.17.15",
-    "medium-draft": "^0.5.18",
     "next": "9.3.5",
     "react": "^16.13.1",
     "react-codemirror2": "^7.2.1",
@@ -45,8 +42,6 @@
     "@types/node": "^14.0.6",
     "@types/react": "^16.9.35",
     "@types/react-syntax-highlighter": "^11.0.4",
-    "css-loader": "^3.6.0",
-    "style-loader": "^1.2.1",
     "typescript": "^3.9.3"
   }
 }

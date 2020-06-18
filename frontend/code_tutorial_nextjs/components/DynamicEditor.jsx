@@ -17,6 +17,11 @@ import {
 import EditorStyles from '../styles/EditorStyles.module.scss';
 import '!style-loader!css-loader!draft-js-static-toolbar-plugin/lib/plugin.css';
 
+var shortid = require('shortid');
+
+/* 
+Component rendered when Headlines Button is clicked to present option of H1, H2, or H3. 
+*/
 class HeadlinesPicker extends Component {
 
   componentDidMount() {
@@ -34,22 +39,26 @@ class HeadlinesPicker extends Component {
     const buttons = [HeadlineOneButton, HeadlineTwoButton, HeadlineThreeButton];
     return (
       <div>
-        {buttons.map((Button, i) =>
-          <Button key={i} {...this.props} />
+        {buttons.map(Button =>
+          <Button key={shortid.generate()} {...this.props} />
         )}
       </div>
     );
   }
 }
 
+/* 
+The Header button option in the toolbar, 'H'. Once clicked, the HeadlinesPicker 
+component will be rendered to allow selection of H1, H2, or H3. 
+*/
 class HeadlinesButton extends Component {
   onClick = () =>
     this.props.onOverrideContent(HeadlinesPicker);
 
   render() {
     return (
-      <div className={EditorStyles.headlineButtonWrapper}>
-        <button onClick={this.onClick} className={EditorStyles.headlineButton}>
+      <div className={EditorStyles['headline-button-wrapper']}>
+        <button onClick={this.onClick} className={EditorStyles['headline-button']}>
           H
         </button>
       </div>
@@ -57,7 +66,11 @@ class HeadlinesButton extends Component {
   }
 }
 
-export default class CustomToolbarEditor extends Component {
+/* 
+The static toolbar component plugin. Contains all buttons in it. 
+Creates a static toolbar for each editor, for in-sync editing.
+*/
+export default class StaticToolbarEditor extends Component {
 
   constructor(props) {
     super(props);
