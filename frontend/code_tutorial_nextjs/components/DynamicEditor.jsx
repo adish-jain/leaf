@@ -14,7 +14,7 @@ import {
   BlockquoteButton,
   CodeBlockButton,
 } from 'draft-js-buttons';
-import editorStyles from '../styles/EditorStyles.module.scss';
+import EditorStyles from '../styles/EditorStyles.module.scss';
 import '!style-loader!css-loader!draft-js-static-toolbar-plugin/lib/plugin.css';
 
 class HeadlinesPicker extends Component {
