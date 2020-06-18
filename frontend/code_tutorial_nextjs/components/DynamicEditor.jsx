@@ -48,8 +48,8 @@ class HeadlinesButton extends Component {
 
   render() {
     return (
-      <div className={editorStyles.headlineButtonWrapper}>
-        <button onClick={this.onClick} className={editorStyles.headlineButton}>
+      <div className={EditorStyles.headlineButtonWrapper}>
+        <button onClick={this.onClick} className={EditorStyles.headlineButton}>
           H
         </button>
       </div>
