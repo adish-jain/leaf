@@ -23,7 +23,6 @@ export function useLoggedIn(
 ) {
   const { data, error } = useSWR("/api/auth", fetcher);
   let loading: boolean;
-
   useEffect(() => {
     if (data === undefined) {
       loading = true;

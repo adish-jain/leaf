@@ -2,7 +2,7 @@ import Head from "next/head";
 import Router from "next/router";
 import { useEffect } from "react";
 import useSWR, { SWRConfig } from "swr";
-
+import fetch from "isomorphic-fetch";
 const landingStyles = require("../styles/Landing.module.scss");
 
 import { useLoggedIn, logOut } from "../lib/UseLoggedIn";
@@ -10,17 +10,23 @@ import { useLoggedIn, logOut } from "../lib/UseLoggedIn";
 const rawData = {
   requestedAPI: "get_drafts",
 };
+
+const myRequest = {
+  method: "POST",
+  headers: new Headers({ "Content-Type": "application/json" }),
+  body: JSON.stringify(rawData),
+};
 const fetcher = (url: string) =>
-  fetch(url, {
-    body: JSON.stringify(rawData),
-    method: "POST",
-    headers: new Headers({ "Content-Type": "application/json" }),
-  }).then((res) => res.json());
+  fetch(url, myRequest).then((res) => res.json());
 
 export default function Landing() {
+  const initialData: any = [];
   const { authenticated, error, loading } = useLoggedIn("/", true);
-  const { data } = useSWR(authenticated ? "/api/endpoint" : null, fetcher);
-  console.log("drafts is " + JSON.stringify(data));
+  const { data: drafts } = useSWR(
+    authenticated ? "/api/endpoint" : null,
+    fetcher,
+    { initialData, revalidateOnMount: true }
+  );
 
   function createNewPost() {
     fetch("/api/endpoint", {
@@ -62,6 +68,11 @@ export default function Landing() {
             <hr />
             <p>You have no drafts.</p>
             <button onClick={createNewPost}>Create New Draft</button>
+            {drafts ? (
+              drafts.map((draft: any) => <div>{draft.title}</div>)
+            ) : (
+              <div></div>
+            )}
           </div>
           <div className={landingStyles.Right}>
             <h1>Your Published Posts</h1>

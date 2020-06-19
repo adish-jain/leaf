@@ -41,7 +41,7 @@ export default function Pages() {
               <h2>Example Tutorial</h2>
             </div>
           </div>
-        </div>{" "}
+        </div>
       </main>
     </div>
   );

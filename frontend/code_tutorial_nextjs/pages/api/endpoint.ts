@@ -8,18 +8,18 @@ import handleLogin from "../../lib/api/login";
 import handleSignUp from "../../lib/api/signup";
 import handleLogOut from "../../lib/api/logout";
 import handleCreate from "../../lib/api/create";
-import handleGetDrafts from "../../lib/api/get_drafts";
+import handleGetDrafts from "../../lib/api/getDrafts";
 
 const firebase = require("firebase/app");
 initFirebase();
 
-export const config = {
-  api: {
-    bodyParser: true,
-  },
-};
+// export const config = {
+//   api: {
+//     bodyParser: true,
+//   },
+// };
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+export default (req: NextApiRequest, res: NextApiResponse) => {
   let requestBody = req.body;
   let requestedAPI = requestBody.requestedAPI;
   switch (requestedAPI) {
@@ -45,16 +45,16 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     */
 
     case "get_drafts": {
-      //GET
+
+      /* ----- POST -----
+      Get all drafts
+      */
       return handleGetDrafts(req, res);
     }
 
-    case "create": {
-      // POST
-      return handleCreate(req, res);
-    }
-
     default: {
+      res.statusCode = 403;
+      res.end();
     }
   }
 };
