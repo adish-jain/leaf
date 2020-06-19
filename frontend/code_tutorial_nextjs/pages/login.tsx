@@ -4,7 +4,7 @@ import InferGetStaticPropsType from "next";
 import Link from "next/link";
 import React, { useState } from "react";
 
-import { useLoggedIn } from "../lib/checkAuth";
+import { useLoggedIn } from "../lib/UseLoggedIn";
 
 import { useRouter } from "next/router";
 
@@ -12,11 +12,7 @@ const loginStyles = require("../styles/Login.module.scss");
 
 export default function Login() {
   const router = useRouter();
-  const { authenticated, error, loading } = useLoggedIn();
-
-  if (authenticated) {
-    router.push("/");
-  }
+  const { authenticated, error, loading } = useLoggedIn("/landing", false);
 
   const [email, changeEmail] = useState("");
   const [password, changePassword] = useState("");
@@ -32,11 +28,6 @@ export default function Login() {
   };
 
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
-    let data = {
-      email: email,
-      password: password,
-    };
-
     if (email === "") {
       updateErrorMessage("Invalid Email");
       return;
@@ -47,16 +38,22 @@ export default function Login() {
     }
 
     changeLoggingIn(true);
-    fetch("/api/login", {
+
+    let data = {
+      email: email,
+      password: password,
+      requestedAPI: "login",
+    };
+    fetch("/api/endpoint", {
       method: "POST",
       // eslint-disable-next-line no-undef
       headers: new Headers({ "Content-Type": "application/json" }),
       credentials: "same-origin",
-      body: JSON.stringify({ data }),
+      body: JSON.stringify(data),
     })
       .then((res) => {
         if (res.status === 200) {
-          router.push("/");
+          router.push("/landing");
         }
         if (res.status === 403) {
           res.json().then((resJson) => {
@@ -78,11 +75,6 @@ export default function Login() {
       </Head>
       <main className={loginStyles.LoginMain}>
         <div className={loginStyles.Logo}></div>
-        <style jsx global>{`
-          html {
-            height: 100%;
-          }
-        `}</style>
         <div className={loginStyles.Login}>
           <div className={loginStyles.LoginBox}>
             <h1>Login</h1>

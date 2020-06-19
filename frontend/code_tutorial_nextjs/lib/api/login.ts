@@ -6,9 +6,9 @@ const firebase = require("firebase/app");
 initFirebase();
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  let data = req.body.data;
-  let email = data.email;
-  let password = data.password;
+  let body = req.body;
+  let email = body.email;
+  let password = body.password;
   let userToken: string;
 
   await firebase

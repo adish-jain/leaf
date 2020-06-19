@@ -1,7 +1,7 @@
 import Head from "next/head";
 import fetch from "isomorphic-unfetch";
 import React, { useState } from "react";
-import { useLoggedIn } from "../lib/checkAuth";
+import { useLoggedIn } from "../lib/UseLoggedIn";
 
 import { useRouter } from "next/router";
 
@@ -9,13 +9,7 @@ const loginStyles = require("../styles/Login.module.scss");
 
 export default function SignUp() {
   const router = useRouter();
-  const { authenticated, error } = useLoggedIn();
-  if (!authenticated) {
-    console.log("not signed in");
-  } else {
-    console.log("signed in");
-    router.push("/");
-  }
+  const { authenticated, error } = useLoggedIn("/landing", false);
 
   const [email, changeEmail] = useState("");
   const [password, changePassword] = useState("");
@@ -37,17 +31,20 @@ export default function SignUp() {
 
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     let data = {
+      requestedAPI: "signup",
       email: email,
       password: password,
     };
-    fetch("/api/signup", {
+    fetch("/api/endpoint", {
       method: "POST",
       // eslint-disable-next-line no-undef
       headers: new Headers({ "Content-Type": "application/json" }),
       credentials: "same-origin",
-      body: JSON.stringify({ data }),
+      body: JSON.stringify(data),
     }).then((res) => {
-      router.push("/");
+      // router.push("/");
+    }).catch((error) => {
+      console.log(error);
     });
   };
 
