@@ -1,7 +1,7 @@
-.Settings {
-//   position: fixed;
-//   right: 40px;
-//   top: 40px;
+.settings {
+  //   position: fixed;
+  //   right: 40px;
+  //   top: 40px;
   width: 40px;
   height: 40px;
 
@@ -11,16 +11,16 @@
   cursor: pointer;
 }
 
-.Header {
-    display: flex;
-    justify-content: space-between;
-    margin-left: 40px;
-    margin-right: 40px;
-    margin-top: 40px;
-    margin-bottom: 0px;
+.header {
+  display: flex;
+  justify-content: space-between;
+  margin-left: 40px;
+  margin-right: 40px;
+  margin-top: 40px;
+  margin-bottom: 0px;
 }
 
-.Landing {
+.landing {
   display: flex;
   flex-direction: row;
   margin-left: 80px;
@@ -62,10 +62,10 @@
   }
 }
 
-.Left {
+.left {
   margin-right: 32px;
 }
 
-.Right {
+.right {
   margin-left: 32px;
 }

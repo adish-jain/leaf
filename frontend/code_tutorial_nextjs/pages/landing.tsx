@@ -62,8 +62,8 @@ export default function Landing() {
       <main>
         <Header />
 
-        <div className={landingStyles.Landing}>
-          <div className={landingStyles.Left}>
+        <div className={landingStyles.landing}>
+          <div className={landingStyles.left}>
             <h1>Your Drafts</h1>
             <hr />
             <p>You have no drafts.</p>
@@ -74,7 +74,7 @@ export default function Landing() {
               <div></div>
             )}
           </div>
-          <div className={landingStyles.Right}>
+          <div className={landingStyles.right}>
             <h1>Your Published Posts</h1>
             <hr />
             <p>You have no published posts. Create a draft to get started.</p>
@@ -88,9 +88,9 @@ export default function Landing() {
 
 function Header() {
   return (
-    <div className={landingStyles.Header}>
-      <div className={landingStyles.Settings}></div>
-      <div className={landingStyles.Settings}>
+    <div className={landingStyles.header}>
+      <div className={landingStyles.settings}></div>
+      <div className={landingStyles.settings}>
         <button onClick={logOut}></button>
       </div>
     </div>
