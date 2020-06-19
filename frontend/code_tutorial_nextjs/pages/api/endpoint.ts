@@ -7,7 +7,7 @@ import { serialize, parse } from "cookie";
 import handleLogin from "../../lib/api/login";
 import handleSignUp from "../../lib/api/signup";
 import handleLogOut from "../../lib/api/logout";
-import handleCreate from "../../lib/api/create";
+import createDraftHandler from "../../lib/api/createDraft";
 import handleGetDrafts from "../../lib/api/getDrafts";
 
 const firebase = require("firebase/app");

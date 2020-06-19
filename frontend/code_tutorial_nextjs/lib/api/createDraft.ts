@@ -6,7 +6,7 @@ initFirebaseAdmin();
 
 let db = admin.firestore();
 
-async function createDraftHandler(req: NextApiRequest, res: NextApiResponse) {
+export default async function createDraftHandler(req: NextApiRequest, res: NextApiResponse) {
   let cookies = req.cookies;
   let userToken = cookies.userToken;
   let refreshToken = cookies.refreshToken;
