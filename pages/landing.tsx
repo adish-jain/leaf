@@ -40,8 +40,12 @@ export default function Landing() {
       let updatedDrafts = await res.json();
       mutate("/api/endpoint", updatedDrafts);
       let new_draft_id = updatedDrafts[0].id;
-      Router.push("/drafts/" + new_draft_id);
+      openDraft(new_draft_id);
     });
+  }
+
+  function openDraft(draft_id: string) {
+    Router.push("/drafts/" + draft_id);
   }
 
   async function deleteDraft(
@@ -67,19 +71,6 @@ export default function Landing() {
   }
 
   return (
-    // <SWRConfig
-    //   value={{
-    //     refreshInterval: 3000,
-    //     fetcher: (url: string) => {
-    //       console.log("fetcher");
-    //       fetch(url, {
-    //         body: JSON.stringify(rawData),
-    //         method: "POST",
-    //         headers: new Headers({ "Content-Type": "application/json" }),
-    //       }).then((res) => res.json());
-    //     },
-    //   }}
-    // >
     <div className="container">
       <Head>
         <title>Leaf</title>
@@ -109,6 +100,7 @@ export default function Landing() {
                   key={draft.id}
                   title={draft.title}
                   id={draft.id}
+                  openDraft={openDraft}
                 />
               ))
             ) : (
@@ -123,15 +115,10 @@ export default function Landing() {
               </div>
             )}
           </div>
-          <div className={landingStyles.right}>
-            <h1>Your Published Posts</h1>
-            <hr />
-            <p>You have no published posts. Create a draft to get started.</p>
-          </div>
+          <NonePublished />
         </div>
       </main>
     </div>
-    // </SWRConfig>
   );
 }
 
@@ -143,6 +130,7 @@ type DraftProps = {
     e: React.MouseEvent<HTMLButtonElement>,
     draft_id: string
   ) => any;
+  openDraft: (id: string) => void;
 };
 
 function Draft(props: DraftProps) {
@@ -153,6 +141,7 @@ function Draft(props: DraftProps) {
       <button onClick={(e) => props.deleteDraft(e, props.id)}>
         Delete Draft
       </button>
+      <button onClick={(e) => props.openDraft(props.id)}>Open Draft</button>
     </div>
   );
 }
@@ -164,6 +153,16 @@ function Header() {
       <div className={landingStyles.settings}>
         <button onClick={logOut}></button>
       </div>
+    </div>
+  );
+}
+
+function NonePublished() {
+  return (
+    <div className={landingStyles.right}>
+      <h1>Your Published Posts</h1>
+      <hr />
+      <p>You have no published posts. Create a draft to get started.</p>
     </div>
   );
 }
