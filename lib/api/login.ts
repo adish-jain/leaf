@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebase } from "../../lib/initFirebase";
 import { setTokenCookies } from "../../lib/cookieUtils";
+import { updateResponseTokens } from "../../lib/userUtils";
 
 const firebase = require("firebase/app");
 initFirebase();
@@ -20,17 +21,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       signedin_user.getIdToken().then(function (idToken: string) {
         userToken = idToken;
 
-        let tokens = [
-          {
-            tokenName: "userToken",
-            token: userToken,
-          },
-          {
-            tokenName: "refreshToken",
-            token: refreshToken,
-          },
-        ];
-        setTokenCookies(res, tokens);
+        updateResponseTokens(res, userToken, refreshToken);
         res.status(200).end();
         return;
       });
@@ -51,7 +42,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         default:
           console.log(error);
           res.status(403).send({
-            error: "Login failed"
+            error: "Login failed",
           });
       }
     });

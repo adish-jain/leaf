@@ -22,7 +22,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  let { uid, userRecord } = await getUser(userToken, refreshToken);
+  let { uid, userRecord } = await getUser(req, res);
 
   if (userRecord === undefined) {
     res.statusCode = 200;

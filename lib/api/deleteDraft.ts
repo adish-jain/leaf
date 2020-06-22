@@ -14,31 +14,25 @@ initFirebaseAdmin();
 initFirebase();
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  return getDraftsHandler(req, res);
-};
-
-function handleError(res: NextApiResponse, error: any) {
-  console.log(error);
-  res.statusCode = 403;
-  res.end();
-  return;
-}
-
-async function getDraftsHandler(req: NextApiRequest, res: NextApiResponse) {
-  let cookies = req.cookies;
-  let userToken = cookies.userToken;
-  let refreshToken = cookies.refreshToken;
-
+  let draft_id = req.body.draft_id;
+  let userToken = req.cookies.userToken;
+  let refreshToken = req.cookies.refreshToken;
   let { uid } = await getUser(req, res);
 
-  if (uid === "") {
-    res.statusCode = 403;
-    res.end();
-    return;
+  try {
+    await db
+      .collection("users")
+      .doc(uid)
+      .collection("drafts")
+      .doc(draft_id)
+      .delete();
+  } catch (error) {
+    console.log(error);
   }
 
-  let results = await getUserDrafts(uid);
+  let drafts = await getUserDrafts(uid);
+
   res.statusCode = 200;
-  res.send(results);
+  res.send(drafts);
   return;
-}
+};

@@ -11,6 +11,10 @@
   cursor: pointer;
 }
 
+.left-header {
+  display: flex;
+}
+
 .header {
   display: flex;
   justify-content: space-between;
@@ -29,12 +33,13 @@
   div {
     width: 608px;
     h1 {
-      font-family: SF Pro Display;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
       font-style: normal;
       font-weight: bold;
       font-size: 60px;
       line-height: 72px;
 
+      margin-top: 0px;
       margin-bottom: 0px;
     }
 
@@ -47,7 +52,7 @@
       line-height: 43px;
     }
 
-    button {
+    .create-button {
       padding: 20px;
       font-size: 36px;
       line-height: 43px;
@@ -59,6 +64,22 @@
       border-radius: 8px;
       cursor: pointer;
     }
+
+    .create-button-plus {
+      background: #37abda;
+      box-shadow: 0px 7.87218px 31.4887px #edece9;
+      border-radius: 7.87218px;
+      width: 55px;
+      height: 55px;
+      text-align: center;
+
+      margin-left: 16px;
+
+      color: white;
+      font-size: 62.9774px;
+      line-height: 44px;
+      cursor: pointer;
+    }
   }
 }
 
@@ -68,4 +89,23 @@
 
 .right {
   margin-left: 32px;
+}
+
+.draft {
+  width: 100%;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #37abda;
+  border-radius: 4px;
+  padding: 16px;
+  margin-bottom: 12px;
+  background: white;
+  box-shadow: 0px 4px 16px #edece9;
+
+  p {
+    font-weight: bold;
+    font-size: 40px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+  }
 }
