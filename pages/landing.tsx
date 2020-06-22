@@ -36,11 +36,11 @@ export default function Landing() {
         requestedAPI: "add_draft",
       }),
     }).then(async (res) => {
-      console.log(res);
       let updatedDrafts = await res.json();
       mutate("/api/endpoint", updatedDrafts);
+      let new_draft_id = updatedDrafts[0].id;
+      Router.push("/drafts/" + new_draft_id);
     });
-    console.log(drafts);
   }
 
   async function deleteDraft(
@@ -148,6 +148,7 @@ function Draft(props: DraftProps) {
   return (
     <div className={landingStyles["draft"]}>
       <p>{props.title}</p>
+      {props.id}
       <button onClick={(e) => props.deleteDraft(e, props.id)}>
         Delete Draft
       </button>

@@ -97,7 +97,11 @@ export function updateResponseTokens(
 }
 
 export async function getUserDrafts(uid: string) {
-  let draftsRef = db.collection("users").doc(uid).collection("drafts");
+  let draftsRef = db
+    .collection("users")
+    .doc(uid)
+    .collection("drafts")
+    .orderBy("createdAt");
 
   return await draftsRef
     .get()
@@ -108,6 +112,7 @@ export async function getUserDrafts(uid: string) {
         resultsJSON.id = result.id;
         results.push(resultsJSON);
       });
+      results.reverse();
       return results;
     })
     .catch(function (error: any) {
