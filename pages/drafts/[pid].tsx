@@ -1,8 +1,9 @@
 import { useRouter } from "next/router";
-import { useLoggedIn, logOut } from "../lib/UseLoggedIn";
+import { useLoggedIn, logOut } from "../..//lib/UseLoggedIn";
 import useSWR, { mutate } from "swr";
 
 const Draft = () => {
+  const { authenticated, error, loading } = useLoggedIn("/", true);
   const router = useRouter();
 
   // Draft ID
