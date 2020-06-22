@@ -12,8 +12,6 @@ export default async function createDraftHandler(
   res: NextApiResponse
 ) {
   let cookies = req.cookies;
-  let userToken = cookies.userToken;
-  let refreshToken = cookies.refreshToken;
 
   let { uid } = await getUser(req, res);
 

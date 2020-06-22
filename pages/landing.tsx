@@ -37,11 +37,10 @@ export default function Landing() {
       }),
     }).then(async (res) => {
       console.log(res);
-      let resJSON = await res.json();
-      console.log(resJSON);
-      drafts = resJSON;
+      let updatedDrafts = await res.json();
+      mutate("/api/endpoint", updatedDrafts);
     });
-    mutate("/api/user", { data: drafts });
+    console.log(drafts);
   }
 
   async function deleteDraft(
@@ -61,8 +60,8 @@ export default function Landing() {
 
     fetch("api/endpoint", myRequest).then(async (res) => {
       let resJSON = await res.json();
-      console.log(resJSON);
-      drafts = resJSON;
+      let updatedDrafts = resJSON;
+      mutate("/api/endpoint", updatedDrafts);
     });
   }
 

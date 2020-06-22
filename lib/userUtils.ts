@@ -39,7 +39,6 @@ export async function getUser(
           userRecord: undefined,
         };
       case "auth/id-token-expired":
-        console.log(error);
         let updatedUserToken = await refreshJWT(refreshToken);
         req.cookies.userToken = updatedUserToken;
         updateResponseTokens(res, updatedUserToken, refreshToken);
