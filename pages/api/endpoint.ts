@@ -9,6 +9,7 @@ import handleSignUp from "../../lib/api/signup";
 import handleLogOut from "../../lib/api/logout";
 import createDraftHandler from "../../lib/api/createDraft";
 import handleGetDrafts from "../../lib/api/getDrafts";
+import handleSaveStep from "../../lib/api/saveStep";
 
 const firebase = require("firebase/app");
 initFirebase();
@@ -50,6 +51,12 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
       Get all drafts
       */
       return handleGetDrafts(req, res);
+    }
+
+    // POST
+    case "save_step": {
+      console.log("in endpoint");
+      return handleSaveStep(req, res, requestBody.text);
     }
 
     default: {
