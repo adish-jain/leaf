@@ -42,7 +42,7 @@ export default function SignUp() {
       credentials: "same-origin",
       body: JSON.stringify(data),
     }).then((res) => {
-      // router.push("/");
+      router.push("/landing");
     }).catch((error) => {
       console.log(error);
     });
@@ -66,7 +66,7 @@ export default function SignUp() {
             <h1>Sign Up</h1>
             <div className={loginStyles.FormWrapper}>
               <div className={loginStyles.InputBox}>
-                <label>Username</label>
+                <label>Email</label>
                 <input id="email" value={email} onChange={handleChangeEmail} />
               </div>
               <div className={loginStyles.InputBox}>
