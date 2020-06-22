@@ -2,7 +2,8 @@ import Head from "next/head";
 import Router from "next/router";
 import { useEffect } from "react";
 import useSWR, { SWRConfig, mutate } from "swr";
-import fetch from "isomorphic-fetch";
+const fetch = require("node-fetch");
+global.Headers = fetch.Headers;
 const landingStyles = require("../styles/Landing.module.scss");
 
 import { useLoggedIn, logOut } from "../lib/UseLoggedIn";
@@ -17,7 +18,7 @@ const myRequest = {
   body: JSON.stringify(rawData),
 };
 const fetcher = (url: string) =>
-  fetch(url, myRequest).then((res) => res.json());
+  fetch(url, myRequest).then((res: any) => res.json());
 
 export default function Landing() {
   const initialData: any = [];
@@ -35,7 +36,7 @@ export default function Landing() {
       body: JSON.stringify({
         requestedAPI: "add_draft",
       }),
-    }).then(async (res) => {
+    }).then(async (res: any) => {
       let updatedDrafts = await res.json();
       mutate("/api/endpoint", updatedDrafts);
       let new_draft_id = updatedDrafts[0].id;
@@ -58,7 +59,7 @@ export default function Landing() {
       body: JSON.stringify(requestBody),
     };
 
-    fetch("api/endpoint", myRequest).then(async (res) => {
+    fetch("api/endpoint", myRequest).then(async (res: any) => {
       let resJSON = await res.json();
       let updatedDrafts = resJSON;
       mutate("/api/endpoint", updatedDrafts);
