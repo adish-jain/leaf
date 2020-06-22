@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Router from "next/router";
 import { useEffect } from "react";
-import useSWR, { SWRConfig } from "swr";
+import useSWR, { SWRConfig, mutate } from "swr";
 import fetch from "isomorphic-fetch";
 const landingStyles = require("../styles/Landing.module.scss");
 
@@ -22,21 +22,47 @@ const fetcher = (url: string) =>
 export default function Landing() {
   const initialData: any = [];
   const { authenticated, error, loading } = useLoggedIn("/", true);
-  const { data: drafts } = useSWR(
+  let { data: drafts } = useSWR(
     authenticated ? "/api/endpoint" : null,
     fetcher,
     { initialData, revalidateOnMount: true }
   );
 
-  function createNewPost() {
-    fetch("/api/endpoint", {
+  async function createNewPost() {
+    await fetch("/api/endpoint", {
       method: "POST",
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify({
-        requestedAPI: "create",
+        requestedAPI: "add_draft",
       }),
-    }).then((res) => {
+    }).then(async (res) => {
       console.log(res);
+      let resJSON = await res.json();
+      console.log(resJSON);
+      drafts = resJSON;
+    });
+    mutate("/api/user", { data: drafts });
+  }
+
+  async function deleteDraft(
+    event: React.MouseEvent<HTMLButtonElement>,
+    draft_id: string
+  ) {
+    const requestBody = {
+      requestedAPI: "delete_draft",
+      draft_id: draft_id,
+    };
+
+    const myRequest = {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify(requestBody),
+    };
+
+    fetch("api/endpoint", myRequest).then(async (res) => {
+      let resJSON = await res.json();
+      console.log(resJSON);
+      drafts = resJSON;
     });
   }
 
@@ -64,14 +90,37 @@ export default function Landing() {
 
         <div className={landingStyles.landing}>
           <div className={landingStyles.left}>
-            <h1>Your Drafts</h1>
+            <div className={landingStyles["left-header"]}>
+              <h1>Your Drafts</h1>
+              <div
+                onClick={createNewPost}
+                className={landingStyles["create-button-plus"]}
+              >
+                +
+              </div>
+            </div>
+            {drafts ? <div></div> : <div></div>}
             <hr />
-            <p>You have no drafts.</p>
-            <button onClick={createNewPost}>Create New Draft</button>
+
             {drafts ? (
-              drafts.map((draft: any) => <div>{draft.title}</div>)
+              drafts.map((draft: any) => (
+                <Draft
+                  deleteDraft={deleteDraft}
+                  key={draft.id}
+                  title={draft.title}
+                  id={draft.id}
+                />
+              ))
             ) : (
-              <div></div>
+              <div>
+                <p>You have no drafts.</p>
+                <button
+                  className={landingStyles["create-button"]}
+                  onClick={createNewPost}
+                >
+                  Create New Draft
+                </button>
+              </div>
             )}
           </div>
           <div className={landingStyles.right}>
@@ -83,6 +132,27 @@ export default function Landing() {
       </main>
     </div>
     // </SWRConfig>
+  );
+}
+
+type DraftProps = {
+  title: string;
+  id: string;
+  key: string;
+  deleteDraft: (
+    e: React.MouseEvent<HTMLButtonElement>,
+    draft_id: string
+  ) => any;
+};
+
+function Draft(props: DraftProps) {
+  return (
+    <div className={landingStyles["draft"]}>
+      <p>{props.title}</p>
+      <button onClick={(e) => props.deleteDraft(e, props.id)}>
+        Delete Draft
+      </button>
+    </div>
   );
 }
 

@@ -2,22 +2,31 @@ import { initFirebaseAdmin, initFirebase } from "./initFirebase";
 import { uniqueId } from "lodash";
 const admin = require("firebase-admin");
 initFirebaseAdmin();
+import fetch from "isomorphic-fetch";
+import { NextApiRequest, NextApiResponse } from "next";
 let db = admin.firestore();
+import { setTokenCookies } from "./cookieUtils";
 
 type GetUserType = {
   uid: string;
   userRecord: any;
 };
 
+// Returns the userRecord based on session cookie
+// updates the response cookies if expired token
 export async function getUser(
-  userToken: string,
-  refreshToken: string
+  req: NextApiRequest,
+  res: NextApiResponse
 ): Promise<GetUserType> {
+  let cookies = req.cookies;
+  let userToken = cookies.userToken;
+  let refreshToken = cookies.refreshToken;
   try {
     let decodedToken = await admin.auth().verifyIdToken(userToken);
     let uid = decodedToken.uid;
 
     let userRecord = await admin.auth().getUser(uid);
+    updateResponseTokens(res, userToken, refreshToken);
     return {
       uid,
       userRecord,
@@ -30,9 +39,12 @@ export async function getUser(
           userRecord: undefined,
         };
       case "auth/id-token-expired":
-        let new_token = await refreshJWT(refreshToken);
+        console.log(error);
+        let updatedUserToken = await refreshJWT(refreshToken);
+        req.cookies.userToken = updatedUserToken;
+        updateResponseTokens(res, updatedUserToken, refreshToken);
         // try again with refreshed token
-        return getUser(new_token, refreshToken);
+        return getUser(req, res);
       default:
         console.log(error);
         return {
@@ -66,20 +78,41 @@ export async function refreshJWT(refreshToken: string) {
   }
 }
 
+export function updateResponseTokens(
+  res: NextApiResponse,
+  userToken: string,
+  refreshToken: string
+) {
+  let tokens = [
+    {
+      tokenName: "userToken",
+      token: userToken,
+    },
+    {
+      tokenName: "refreshToken",
+      token: refreshToken,
+    },
+  ];
+  setTokenCookies(res, tokens);
+  return res;
+}
+
 export async function getUserDrafts(uid: string) {
-    let draftsRef = db.collection("users").doc(uid).collection("drafts");
-  
-    return await draftsRef
-      .get()
-      .then(function (draftsCollection: any) {
-        let results: any[] = [];
-        draftsCollection.forEach(function (result: any) {
-          results.push(result.data());
-        });
-        return results;
-      })
-      .catch(function (error: any) {
-        console.log(error);
-        return [];
+  let draftsRef = db.collection("users").doc(uid).collection("drafts");
+
+  return await draftsRef
+    .get()
+    .then(function (draftsCollection: any) {
+      let results: any[] = [];
+      draftsCollection.forEach(function (result: any) {
+        let resultsJSON = result.data();
+        resultsJSON.id = result.id;
+        results.push(resultsJSON);
       });
-  }
+      return results;
+    })
+    .catch(function (error: any) {
+      console.log(error);
+      return [];
+    });
+}
