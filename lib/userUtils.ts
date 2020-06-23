@@ -120,3 +120,30 @@ export async function getUserDrafts(uid: string) {
       return [];
     });
 }
+
+export async function getUserStepsForDraft(uid: string, draftid: string) {
+  let stepsRef = db
+    .collection("users")
+    .doc(uid)
+    .collection("drafts")
+    .doc(draftid)
+    .collection("steps")
+    .orderBy("createdAt")
+
+  return await stepsRef
+    .get()
+    .then(function (stepsCollection: any) {
+      let results: any[] = [];
+      stepsCollection.forEach(function (result: any) {
+        let resultsJSON = result.data();
+        resultsJSON.id = result.id;
+        results.push(resultsJSON);
+      });
+      results.reverse();
+      return results;
+    })
+    .catch(function (error: any) {
+      console.log(error);
+      return [];
+    });
+}

@@ -7,6 +7,7 @@ var shortid = require('shortid');
 
 type PublishingProps = {
   draftid: any;
+  // storedSteps: any[];
 };
 
 type PublishingState = {
@@ -65,6 +66,9 @@ export default class Publishing extends Component<
         <div className={descriptionStyles.header}>
           <h1>Title</h1>
         </div>
+        {/* {this.props.storedSteps.map(storedStep => {
+          return 
+        })} */}
         {this.state.steps.map(step => {
           return <Step closeStep={this.closeStep} id={step} draftid={this.props.draftid} key={step} />;
         })}

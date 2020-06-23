@@ -76,7 +76,7 @@ export default class DynamicEditor extends Component {
   constructor(props) {
     super(props);
     const toolbarPlugin = createToolbarPlugin();
-    const text = 'Begin Writing...\n\n\n\n';
+    const text = 'Begin Writing...';
     this.PluginComponents = {
       Toolbar: toolbarPlugin.Toolbar
     };
