@@ -14,8 +14,8 @@ initFirebaseAdmin();
 initFirebase();
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  console.log("in saveStep");
-  return saveStepHandler(req, res);
+  console.log("in deleteStep");
+  return deleteStepHandler(req, res);
 };
 
 function handleError(res: NextApiResponse, error: any) {
@@ -25,11 +25,10 @@ function handleError(res: NextApiResponse, error: any) {
   return;
 }
 
-async function saveStepHandler(req: NextApiRequest, res: NextApiResponse) {
+async function deleteStepHandler(req: NextApiRequest, res: NextApiResponse) {
   let cookies = req.cookies;
   let userToken = cookies.userToken;
   let refreshToken = cookies.refreshToken;
-  let text = req.body.text;
   let stepid = req.body.stepid;
   let draftid = req.body.draftid;
   let { uid } = await getUser(req, res);
@@ -43,15 +42,8 @@ async function saveStepHandler(req: NextApiRequest, res: NextApiResponse) {
   console.log("user is logged in");
   // console.log(text);
 
-  // store text in firebase
-  let stepText = {
-    createdAt: admin.firestore.FieldValue.serverTimestamp(),
-    text: text,
-  };
-
-  // console.log(db.collection("users").doc(uid));
-  // update to store in specific draft-id 
-  db.collection("users").doc(uid).collection("drafts").doc(draftid).collection("steps").doc(stepid).set(stepText); 
+  //delete step from firebase 
+  db.collection("users").doc(uid).collection("drafts").doc(draftid).collection("steps").doc(stepid).delete(); 
 
 
   res.statusCode = 200;

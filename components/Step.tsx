@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import fetch from "isomorphic-fetch";
 import Router from "next/router";
-const StepStyles = require("../styles/Step.module.scss");
 import dynamic from "next/dynamic";
+const StepStyles = require("../styles/Step.module.scss");
+const fetch = require("node-fetch");
+
 
 const DynamicEditor = dynamic((() => import("./DynamicEditor")) as any, {
   ssr: false,
@@ -15,6 +16,7 @@ type StepProps = {
     id: string
   ) => void;
   id: string;
+  draftid: any;
   key: string;
 };
 
@@ -45,20 +47,49 @@ export default class Step extends Component<StepProps, StepState> {
     let data = {
       requestedAPI: "save_step",
       text: this.state.steptext,
+      draftid: this.props.draftid,
+      stepid: this.props.id,
     };
-    fetch("api/endpoint", {
+
+    fetch("/api/endpoint", {
       method: "POST",
-      // eslint-disable-next-line no-undef
-      credentials: "same-origin",
-      body: JSON.stringify(data),
       headers: new Headers({ "Content-Type": "application/json" }),
-    }).then((res) => {
+      body: JSON.stringify(data),
+    }).then(async (res: any) => {
       console.log(res);
-      // reload the page to reset useSWR
-      // location.reload();
-      // Router.replace(`/signup`); // does this need to be changed ?
     });
   }
+    // fetch("api/endpoint", {
+    //   method: "POST",
+    //   // eslint-disable-next-line no-undef
+    //   credentials: "same-origin",
+    //   body: JSON.stringify(data),
+    //   headers: new Headers({ "Content-Type": "application/json" }),
+    // }).then((res) => {
+    //   console.log(res);
+    //   // reload the page to reset useSWR
+    //   // location.reload();
+    //   // Router.replace(`/signup`); // does this need to be changed ?
+    // });
+
+  deleteStep(e: React.MouseEvent<HTMLDivElement>) {
+    this.props.closeStep(e, this.props.id);
+    let data = {
+      requestedAPI: "delete_step",
+      draftid: this.props.draftid,
+      stepid: this.props.id,
+    };
+
+    fetch("/api/endpoint", {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify(data),
+    }).then(async (res: any) => {
+      console.log(res);
+    });
+
+  }
+  
 
   render() {
     return (
@@ -70,7 +101,7 @@ export default class Step extends Component<StepProps, StepState> {
         </div>
         <div className={StepStyles.Buttons}>
           <button onClick={(e) => {this.saveStep(e)}} className={StepStyles.Save}>Save</button>
-          <div onClick={(e) => {this.props.closeStep(e, this.props.id)}} className={StepStyles.Close}>X</div>
+          <div onClick={(e) => {this.deleteStep(e)}} className={StepStyles.Close}>X</div>
         </div>
         <div></div>
       </div>

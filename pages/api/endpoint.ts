@@ -11,6 +11,7 @@ import addDraftHandler from "../../lib/api/createDraft";
 import getDraftsHandler from "../../lib/api/getDrafts";
 import handleDeleteDraft from "../../lib/api/deleteDraft";
 import handleSaveStep from "../../lib/api/saveStep";
+import handleDeleteStep from "../../lib/api/deleteStep";
 
 const firebase = require("firebase/app");
 initFirebase();
@@ -69,7 +70,11 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
     // POST
     case "save_step": {
       console.log("in endpoint");
-      return handleSaveStep(req, res, requestBody.text);
+      return handleSaveStep(req, res);
+    }
+
+    case "delete_step": {
+      return handleDeleteStep(req, res);
     }
 
     default: {
