@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { convertToRaw, convertFromRaw } from 'draft-js';
 import Editor, { createEditorStateWithText } from 'draft-js-plugins-editor';
 import createToolbarPlugin, { Separator } from 'draft-js-static-toolbar-plugin';
 import {
@@ -70,7 +71,7 @@ class HeadlinesButton extends Component {
 The static toolbar component plugin. Contains all buttons in it. 
 Creates a static toolbar for each editor, for in-sync editing.
 */
-export default class StaticToolbarEditor extends Component {
+export default class DynamicEditor extends Component {
 
   constructor(props) {
     super(props);
@@ -80,6 +81,7 @@ export default class StaticToolbarEditor extends Component {
       Toolbar: toolbarPlugin.Toolbar
     };
     this.plugins = [toolbarPlugin];
+    
     this.state = {
       editorState: createEditorStateWithText(text),
     }
@@ -89,6 +91,10 @@ export default class StaticToolbarEditor extends Component {
     this.setState({
       editorState,
     });
+    const value = convertToRaw(editorState.getCurrentContent());
+    // const blocks = convertToRaw(editorState.getCurrentContent()).blocks;
+    // const value = blocks.map(block => (!block.text.trim() && '\n') || block.text).join('\n');
+    this.props.onChange(value); //added
   };
 
   focus = () => {
