@@ -69,10 +69,11 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
 
     // POST
     case "save_step": {
-      console.log("in endpoint");
+      // console.log("in endpoint");
       return handleSaveStep(req, res);
     }
 
+    // POST
     case "delete_step": {
       return handleDeleteStep(req, res);
     }

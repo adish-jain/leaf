@@ -59,18 +59,6 @@ export default class Step extends Component<StepProps, StepState> {
       console.log(res);
     });
   }
-    // fetch("api/endpoint", {
-    //   method: "POST",
-    //   // eslint-disable-next-line no-undef
-    //   credentials: "same-origin",
-    //   body: JSON.stringify(data),
-    //   headers: new Headers({ "Content-Type": "application/json" }),
-    // }).then((res) => {
-    //   console.log(res);
-    //   // reload the page to reset useSWR
-    //   // location.reload();
-    //   // Router.replace(`/signup`); // does this need to be changed ?
-    // });
 
   deleteStep(e: React.MouseEvent<HTMLDivElement>) {
     this.props.closeStep(e, this.props.id);
@@ -90,7 +78,6 @@ export default class Step extends Component<StepProps, StepState> {
 
   }
   
-
   render() {
     return (
       <div className={StepStyles.Step}>
