@@ -139,7 +139,6 @@ export async function getUserStepsForDraft(uid: string, draftid: string) {
         resultsJSON.id = result.id;
         results.push(resultsJSON);
       });
-      results.reverse();
       return results;
     })
     .catch(function (error: any) {

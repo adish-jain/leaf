@@ -12,9 +12,11 @@ const DynamicEditor = dynamic((() => import("./DynamicEditor")) as any, {
 import { EditorState, RichUtils, convertToRaw, convertFromRaw } from "draft-js";
 type StepProps = {
   closeStep: (
-    e: React.MouseEvent<HTMLDivElement>,
     id: string
   ) => void;
+  // saveStep: (
+  //   id: string
+  // ) => void;
   id: string;
   draftid: any;
   key: string;
@@ -58,10 +60,13 @@ export default class Step extends Component<StepProps, StepState> {
     }).then(async (res: any) => {
       console.log(res);
     });
+
+    this.props.closeStep(this.props.id);
+    // this.props.saveStep(this.props.id);
   }
 
   deleteStep(e: React.MouseEvent<HTMLDivElement>) {
-    this.props.closeStep(e, this.props.id);
+    this.props.closeStep(this.props.id);
     let data = {
       requestedAPI: "delete_step",
       draftid: this.props.draftid,

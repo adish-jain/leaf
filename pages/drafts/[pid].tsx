@@ -1,13 +1,18 @@
 import { useRouter } from "next/router";
+import { useState, useCallback } from "react";
 import { useLoggedIn, logOut } from "../..//lib/UseLoggedIn";
 import useSWR, { mutate } from "swr";
 import Publishing from "../../components/Publishing";
 import CodeEditor from '../../components/CodeEditor'
 import Head from "next/head";
+// import useForceUpdate from 'use-force-update';
 
 const appStyles = require("../../styles/App.module.scss");
 
 const DraftView = () => {
+  // const [, updateState] = useState();
+  // const forceUpdate = useCallback(() => updateState({}), []);
+  // const forceUpdate = useForceUpdate();
   const { authenticated, error, loading } = useLoggedIn("/", true);
   const router = useRouter();
 
@@ -30,17 +35,19 @@ const DraftView = () => {
     fetch(url, myRequest).then((res: any) => res.json());
   
   const initialData: any = [];
+
+
   let { data: steps } = useSWR(
     authenticated ? "/api/endpoint" : null,
     fetcher,
     { initialData, revalidateOnMount: true }
   );
-
+  
   console.log(steps);
 
 
   // this page should look similar to how pages/article looks right now
-  /* storedSteps={steps} */
+  /* storedSteps={steps}  rerender={retrieveSteps}*/
   return (
     <div className="container">
       <Head>
@@ -49,7 +56,7 @@ const DraftView = () => {
       </Head>
       <main>
         <div className={appStyles.App}>
-          <Publishing draftid={pid} /> 
+          <Publishing draftid={pid} storedSteps={steps} /> 
           <CodeEditor />
         </div>
       </main>

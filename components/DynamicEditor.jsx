@@ -91,7 +91,7 @@ export default class DynamicEditor extends Component {
     this.setState({
       editorState,
     });
-    const value = convertToRaw(editorState.getCurrentContent());
+    const value = JSON.stringify(convertToRaw(editorState.getCurrentContent()));
     // const blocks = convertToRaw(editorState.getCurrentContent()).blocks;
     // const value = blocks.map(block => (!block.text.trim() && '\n') || block.text).join('\n');
     this.props.onChange(value); //added
