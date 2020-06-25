@@ -4,12 +4,13 @@ import { initFirebase } from "../../lib/initFirebase";
 import { setTokenCookies } from "../../lib/cookieUtils";
 import { serialize, parse } from "cookie";
 
-import loginHandler from "../../lib/api/login";
-import signUpHandler from "../../lib/api/signup";
-import logOutHandler from "../../lib/api/logout";
-import addDraftHandler from "../../lib/api/createDraft";
-import getDraftsHandler from "../../lib/api/getDrafts";
+import handleLogin from "../../lib/api/login";
+import handleSignup from "../../lib/api/signup";
+import handleLogout from "../../lib/api/logout";
+import handleAddDraft from "../../lib/api/createDraft";
+import handleGetDrafts from "../../lib/api/getDrafts";
 import handleDeleteDraft from "../../lib/api/deleteDraft";
+import handleGetSteps from "../../lib/api/getSteps"
 import handleSaveStep from "../../lib/api/saveStep";
 import handleDeleteStep from "../../lib/api/deleteStep";
 
@@ -32,17 +33,17 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
 
     //POST
     case "login": {
-      return loginHandler(req, res);
+      return handleLogin(req, res);
     }
 
     //POST
     case "signup": {
-      return signUpHandler(req, res);
+      return handleSignup(req, res);
     }
 
     //POST
     case "logout": {
-      return logOutHandler(req, res);
+      return handleLogout(req, res);
     }
 
     /* 
@@ -53,11 +54,11 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
       /* ----- POST -----
       Get all drafts
       */
-      return getDraftsHandler(req, res);
+      return handleGetDrafts(req, res);
     }
 
     case "add_draft": {
-      return addDraftHandler(req, res);
+      return handleAddDraft(req, res);
     }
 
     case "delete_draft": {
@@ -68,8 +69,12 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     // POST
+    case "get_steps": {
+      return handleGetSteps(req, res);
+    }
+
+    // POST
     case "save_step": {
-      // console.log("in endpoint");
       return handleSaveStep(req, res);
     }
 

@@ -1,9 +1,12 @@
 import { useRouter } from "next/router";
+import { useState, useCallback } from "react";
 import { useLoggedIn, logOut } from "../..//lib/UseLoggedIn";
 import useSWR, { mutate } from "swr";
 import Publishing from "../../components/Publishing";
 import CodeEditor from '../../components/CodeEditor'
 import Head from "next/head";
+const fetch = require("node-fetch");
+global.Headers = fetch.Headers;
 
 const appStyles = require("../../styles/App.module.scss");
 
@@ -14,10 +17,34 @@ const DraftView = () => {
   // Draft ID
   const { pid } = router.query;
 
-  // TODO: fetch draftData using SWR here
+  // if there are any steps in this draft, they will be fetched & repopulated
+  const rawData = {
+    requestedAPI: "get_steps",
+    draftid: pid,
+  };
+  
+  const myRequest = {
+    method: "POST",
+    headers: new Headers({ "Content-Type": "application/json" }),
+    body: JSON.stringify(rawData),
+  };
+
+  const fetcher = (url: string) =>
+    fetch(url, myRequest).then((res: any) => res.json());
+  
+  const initialData: any = [];
+
+  
+  let { data: steps } = useSWR(
+    authenticated ? "/api/endpoint" : null,
+    fetcher,
+    { initialData, revalidateOnMount: true }
+  );
+  
+  // console.log(steps);
+
 
   // this page should look similar to how pages/article looks right now
-
   return (
     <div className="container">
       <Head>
@@ -26,7 +53,7 @@ const DraftView = () => {
       </Head>
       <main>
         <div className={appStyles.App}>
-          <Publishing draftid={pid}/>
+          <Publishing draftid={pid} storedSteps={steps} /> 
           <CodeEditor />
         </div>
       </main>

@@ -1,12 +1,15 @@
 import React, { Component } from "react";
 import NewStep from "./NewStep";
 import Step from "./Step";
+import StoredStep from "./StoredStep"
+import { convertToRaw, convertFromRaw } from 'draft-js';
 const descriptionStyles = require("../styles/Description.module.scss");
 
 var shortid = require('shortid');
 
 type PublishingProps = {
   draftid: any;
+  storedSteps: any[];
 };
 
 type PublishingState = {
@@ -37,7 +40,7 @@ export default class Publishing extends Component<
     };
   }
 
-  closeStep(e: React.MouseEvent<HTMLDivElement>, id: string) {
+  closeStep(id: string) {
     let steps = this.state.steps;
     let idx = steps.indexOf(id, 0);
     steps.splice(idx, 1);
@@ -65,6 +68,9 @@ export default class Publishing extends Component<
         <div className={descriptionStyles.header}>
           <h1>Title</h1>
         </div>
+        {this.props.storedSteps.map(storedStep => {
+          return <StoredStep id={storedStep.id} text={JSON.parse(storedStep.text)} />
+        })}
         {this.state.steps.map(step => {
           return <Step closeStep={this.closeStep} id={step} draftid={this.props.draftid} key={step} />;
         })}
