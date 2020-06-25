@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import NewStep from "./NewStep";
 import Step from "./Step";
-import OldStep from "./OldStep"
+import StoredStep from "./StoredStep"
 import { convertToRaw, convertFromRaw } from 'draft-js';
 const descriptionStyles = require("../styles/Description.module.scss");
 
@@ -69,7 +69,7 @@ export default class Publishing extends Component<
           <h1>Title</h1>
         </div>
         {this.props.storedSteps.map(storedStep => {
-          return <OldStep id={storedStep.id} text={JSON.parse(storedStep.text)} />
+          return <StoredStep id={storedStep.id} text={JSON.parse(storedStep.text)} />
         })}
         {this.state.steps.map(step => {
           return <Step closeStep={this.closeStep} id={step} draftid={this.props.draftid} key={step} />;

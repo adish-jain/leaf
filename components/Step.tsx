@@ -10,7 +10,6 @@ const DynamicEditor = dynamic((() => import("./DynamicEditor")) as any, {
   ssr: false,
 });
 
-import { EditorState, RichUtils, convertToRaw, convertFromRaw } from "draft-js";
 type StepProps = {
   closeStep: (
     id: string

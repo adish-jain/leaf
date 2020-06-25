@@ -34,7 +34,7 @@ const DraftView = () => {
   
   const initialData: any = [];
 
-
+  
   let { data: steps } = useSWR(
     authenticated ? "/api/endpoint" : null,
     fetcher,
