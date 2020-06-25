@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 const TOKEN_NAME = "token";
 const USER_TOKEN_AGE = 60 * 60; // 1 hour
-const REFRESH_TOKEN_AGE = 10 * 365 * 24 * 60 * 60; // 10 years
+const REFRESH_TOKEN_AGE = 5 * 365 * 24 * 60 * 60; // 5 years
 
 type tokenType = {
   tokenName: string;
@@ -14,8 +14,8 @@ export function setTokenCookies(res: NextApiResponse, tokens: tokenType[]) {
   let cookies = [];
   for (let i = 0; i < tokens.length; i++) {
     const cookie = serialize(tokens[i].tokenName, tokens[i].token, {
-      maxAge: REFRESH_TOKEN_AGE,
-      expires: new Date(Date.now() + REFRESH_TOKEN_AGE * 1000),
+      maxAge: REFRESH_TOKEN_AGE, // 5 years
+      expires: new Date(Date.now() + REFRESH_TOKEN_AGE),
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       path: "/",
