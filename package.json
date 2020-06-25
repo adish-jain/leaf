@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@types/cookie": "^0.4.0",
     "@types/draft-js": "^0.10.41",
     "classnames": "^2.2.6",
     "codemirror": "^5.54.0",
@@ -18,13 +19,13 @@
     "draft-js-static-toolbar-plugin": "^3.0.1",
     "firebase": "^7.15.0",
     "firebase-admin": "^8.12.1",
-    "intersection-observer": "^0.11.0",
     "isomorphic-fetch": "^2.2.1",
     "isomorphic-unfetch": "^3.0.0",
     "next": "9.3.5",
     "react": "^16.13.1",
     "react-codemirror2": "^7.2.1",
     "react-dom": "^16.13.1",
+    "react-intersection-observer": "^8.26.2",
     "react-syntax-highlighter": "^12.2.1",
     "sass": "^1.26.7",
     "shortid": "^2.2.15",

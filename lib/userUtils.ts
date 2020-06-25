@@ -1,5 +1,4 @@
 import { initFirebaseAdmin, initFirebase } from "./initFirebase";
-import { uniqueId } from "lodash";
 const admin = require("firebase-admin");
 initFirebaseAdmin();
 import fetch from "isomorphic-fetch";

@@ -1,4 +1,4 @@
-import CodeEditor from "../components/CodeEditor";
+import PublishedCodeEditor from "../components/PublishedCodeEditor";
 import Scrolling from "../components/Scrolling";
 import Head from "next/head";
 import useSWR from "swr";
@@ -22,7 +22,7 @@ export default function Published() {
       <main>
         <div className={appStyles.App}>
           <Scrolling changeStep={changeStep} />
-          <CodeEditor currentStep={currentStep}/>
+          <PublishedCodeEditor currentStep={currentStep}/>
         </div>
       </main>
     </div>
