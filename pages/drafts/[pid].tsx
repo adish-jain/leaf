@@ -5,14 +5,12 @@ import useSWR, { mutate } from "swr";
 import Publishing from "../../components/Publishing";
 import CodeEditor from '../../components/CodeEditor'
 import Head from "next/head";
-// import useForceUpdate from 'use-force-update';
+const fetch = require("node-fetch");
+global.Headers = fetch.Headers;
 
 const appStyles = require("../../styles/App.module.scss");
 
 const DraftView = () => {
-  // const [, updateState] = useState();
-  // const forceUpdate = useCallback(() => updateState({}), []);
-  // const forceUpdate = useForceUpdate();
   const { authenticated, error, loading } = useLoggedIn("/", true);
   const router = useRouter();
 
@@ -43,11 +41,10 @@ const DraftView = () => {
     { initialData, revalidateOnMount: true }
   );
   
-  console.log(steps);
+  // console.log(steps);
 
 
   // this page should look similar to how pages/article looks right now
-  /* storedSteps={steps}  rerender={retrieveSteps}*/
   return (
     <div className="container">
       <Head>

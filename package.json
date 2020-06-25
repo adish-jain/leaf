@@ -32,8 +32,7 @@
     "react-syntax-highlighter": "^12.2.1",
     "sass": "^1.26.7",
     "shortid": "^2.2.15",
-    "swr": "^0.2.2",
-    "use-force-update": "^1.0.7"
+    "swr": "^0.2.2"
   },
   "devDependencies": {
     "@types/cookie": "^0.4.0",

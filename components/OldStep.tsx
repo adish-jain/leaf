@@ -16,7 +16,6 @@ type OldStepState = {
 export default class Step extends Component<OldStepProps, OldStepState> {
 constructor(props: OldStepProps) {
     super(props);
-    //console.log(this.props.id);
 }
 
 // TODO: add in button to be able to re-modify OldSteps and mutate their values in Firestore

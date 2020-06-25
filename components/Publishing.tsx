@@ -10,7 +10,6 @@ var shortid = require('shortid');
 type PublishingProps = {
   draftid: any;
   storedSteps: any[];
-  // rerender: any;
 };
 
 type PublishingState = {
@@ -35,22 +34,11 @@ export default class Publishing extends Component<
 
     this.addStep = this.addStep.bind(this);
     this.closeStep = this.closeStep.bind(this);
-    // this.saveStep = this.saveStep.bind(this);
 
     this.state = {
       steps: [],
     };
   }
-
-  // gets called from both saveStep & deleteStep in Step.tsx
-  // saveStep(id: string) {
-  //   let steps = this.state.steps;
-  //   let idx = steps.indexOf(id, 0);
-  //   steps.splice(idx, 1);
-  //   console.log("savestep");
-  //   this.setState({ steps: steps});
-  //   this.props.rerender();
-  // }
 
   closeStep(id: string) {
     let steps = this.state.steps;
@@ -68,7 +56,6 @@ export default class Publishing extends Component<
     this.setState({ steps });
   }
 
-  // saveStep={this.saveStep}
   render() {
     return (
       <div className={descriptionStyles.publishing}>
@@ -84,9 +71,6 @@ export default class Publishing extends Component<
         {this.props.storedSteps.map(storedStep => {
           return <OldStep id={storedStep.id} text={JSON.parse(storedStep.text)} />
         })}
-        {/* {this.props.storedSteps.map(storedStep => {
-          return <p key={shortid.generate()}> { convertFromRaw(JSON.parse(storedStep.text)) } </p>
-        })} */}
         {this.state.steps.map(step => {
           return <Step closeStep={this.closeStep} id={step} draftid={this.props.draftid} key={step} />;
         })}
