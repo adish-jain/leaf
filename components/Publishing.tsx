@@ -5,7 +5,9 @@ const descriptionStyles = require("../styles/Description.module.scss");
 
 var shortid = require('shortid');
 
-type PublishingProps = {};
+type PublishingProps = {
+  draftid: any;
+};
 
 type PublishingState = {
   steps: any[];
@@ -64,7 +66,7 @@ export default class Publishing extends Component<
           <h1>Title</h1>
         </div>
         {this.state.steps.map(step => {
-          return <Step closeStep={this.closeStep} id={step} key={step} />;
+          return <Step closeStep={this.closeStep} id={step} draftid={this.props.draftid} key={step} />;
         })}
         <NewStep addStep={this.addStep} />
       </div>
