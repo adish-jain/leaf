@@ -10,7 +10,9 @@ require("codemirror/mode/jsx/jsx");
 // const codeEditorStyles = require("../styles/CodeEditor.module.scss");
 // import "../styles/CodeEditor.module.scss";
 
-type CodeMirrorProps = {};
+type CodeMirrorProps = {
+  currentStep: number;
+};
 
 type CodeMirrorState = {
   value: string;
@@ -44,6 +46,21 @@ export default class CodeMirror extends Component<
       value: jsxString,
     };
   }
+
+  componentDidUpdate(prevProps: CodeMirrorProps) {
+    let { currentStep } = this.props;
+
+    console.log("step was", prevProps.currentStep, "step now is", currentStep);
+
+    this.instance.markText(
+      { line: currentStep, ch: 0 },
+      { line: currentStep, ch: 5 },
+      {
+        className: "MarkText",
+      }
+    );
+  }
+
   render() {
     return (
       <div>
@@ -78,13 +95,20 @@ export default class CodeMirror extends Component<
               }
             );
             // editor.setSize(608, 531);
-            editor.setSize('48vw', '90vh');
+            editor.setSize("48vw", "90vh");
             // editor.setSize(608, "96%");
           }}
           scroll={{
-            y: 0
+            y: 0,
           }}
           onBeforeChange={(editor, data, value) => {
+            editor.markText(
+              { line: 0, ch: 0 },
+              { line: this.props.currentStep, ch: 0 },
+              {
+                className: "MarkText",
+              }
+            );
             this.setState({
               value,
             });

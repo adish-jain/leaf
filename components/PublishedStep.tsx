@@ -153,16 +153,9 @@ function PublishedStep(props: any) {
     threshold: 1,
     rootMargin: "10% 0% -50% 0%",
   });
-  //   if (inView) {
-  //     console.log("inview for", props.index, "is", inView);
-  //     console.log(entry.target);
-  //     // entry.target.style.tranform = "rotate(10deg)";
-  //   }
 
   useEffect(() => {
     if (inView) {
-      console.log("inview for", props.index, "is", inView);
-      //   console.log(entry!.target);
       props.changeStep(props.index);
     }
   }, [inView]);

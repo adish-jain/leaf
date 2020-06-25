@@ -48,7 +48,10 @@ export default class CodeEditor extends Component<
           margin-bottom: 2vh;
         `}</style>
         <FileBar />
-        <DynamicCodeEditor />
+        {
+          //@ts-ignore
+          <DynamicCodeEditor currentStep={this.props.currentStep} />
+        }
         <LanguageBar language={this.state.language} />
       </div>
     );
