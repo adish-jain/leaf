@@ -1,12 +1,11 @@
 import React, { Component } from "react";
 import { Controlled as CodeMirror2 } from "react-codemirror2";
 import { filenames, Language, reactString, jsxString } from "./code_string";
-
-
+import { dark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 // require('codemirror/mode/xml/xml');
 // require('codemirror/mode/javascript/javascript');
-require('codemirror/mode/jsx/jsx');
+require("codemirror/mode/jsx/jsx");
 
 // const codeEditorStyles = require("../styles/CodeEditor.module.scss");
 // import "../styles/CodeEditor.module.scss";
@@ -53,10 +52,10 @@ export default class CodeMirror extends Component<
           value={this.state.value}
           options={{
             lineNumbers: true,
-            mode: 'jsx',
-            theme: 'vscode-dark',
+            mode: "jsx",
+            theme: "vscode-dark",
             // theme: 'oceanic-next',
-            lineWrapping: true
+            lineWrapping: true,
             // configureMouse: (editor: any, e: any) => {
             //   editor.setSelections(ranges, 0, {
             //     scroll: false,
@@ -69,7 +68,6 @@ export default class CodeMirror extends Component<
           onSelection={(editor, data) => {
             console.log(editor);
           }}
-
           editorDidMount={(editor) => {
             this.instance = editor;
             editor.markText(
@@ -79,7 +77,12 @@ export default class CodeMirror extends Component<
                 className: "MarkText",
               }
             );
-            editor.setSize(608, 531);
+            // editor.setSize(608, 531);
+            editor.setSize('48vw', '90vh');
+            // editor.setSize(608, "96%");
+          }}
+          scroll={{
+            y: 0
           }}
           onBeforeChange={(editor, data, value) => {
             this.setState({

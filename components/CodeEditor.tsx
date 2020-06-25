@@ -7,11 +7,17 @@ import PreviewSection from "./PreviewSection";
 // import CodeMirror from './DynamicComponent';
 // const {CodeMirror} = require('./DynamicComponent');
 
-const DynamicCodeEditor = dynamic((() => import("./DynamicCodeEditor")) as any, {
-  ssr: false,
-});
+const DynamicCodeEditor = dynamic(
+  (() => import("./DynamicCodeEditor")) as any,
+  {
+    ssr: false,
+  }
+);
 
-type CodeEditorProps = {};
+type CodeEditorProps = {
+  // changeStep: (newStep: number) => void;
+  currentStep: number;
+};
 
 type CodeEditorState = {
   language: string;
@@ -35,8 +41,12 @@ export default class CodeEditor extends Component<
         <style jsx>{`
           box-shadow: 0px 4px 16px #edece9;
           border-radius: 8px;
+          position: sticky;
+          top: 2vh;
+          height: 96vh;
+          margin-top: 2vhpx;
+          margin-bottom: 2vh;
         `}</style>
-        <PreviewSection />
         <FileBar />
         <DynamicCodeEditor />
         <LanguageBar language={this.state.language} />

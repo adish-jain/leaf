@@ -32,6 +32,8 @@ export async function getUser(
       userRecord,
     };
   } catch (error) {
+    console.log("errored on userToken " + userToken);
+    console.log(error);
     switch (error.code) {
       case "auth/argument-error":
         return {
@@ -45,7 +47,6 @@ export async function getUser(
         // try again with refreshed token
         return getUser(req, res);
       default:
-        console.log(error);
         return {
           uid: "",
           userRecord: undefined,
