@@ -76,7 +76,7 @@ export default class DynamicEditor extends Component {
   constructor(props) {
     super(props);
     const toolbarPlugin = createToolbarPlugin();
-    const text = 'Begin Writing...\n\n\n\n';
+    const text = 'Begin Writing...';
     this.PluginComponents = {
       Toolbar: toolbarPlugin.Toolbar
     };
@@ -91,7 +91,7 @@ export default class DynamicEditor extends Component {
     this.setState({
       editorState,
     });
-    const value = convertToRaw(editorState.getCurrentContent());
+    const value = JSON.stringify(convertToRaw(editorState.getCurrentContent()));
     // const blocks = convertToRaw(editorState.getCurrentContent()).blocks;
     // const value = blocks.map(block => (!block.text.trim() && '\n') || block.text).join('\n');
     this.props.onChange(value); //added

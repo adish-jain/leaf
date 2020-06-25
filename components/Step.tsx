@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import useSWR, { SWRConfig, mutate } from "swr";
 import Router from "next/router";
 import dynamic from "next/dynamic";
 const StepStyles = require("../styles/Step.module.scss");
@@ -9,10 +10,8 @@ const DynamicEditor = dynamic((() => import("./DynamicEditor")) as any, {
   ssr: false,
 });
 
-import { EditorState, RichUtils, convertToRaw, convertFromRaw } from "draft-js";
 type StepProps = {
   closeStep: (
-    e: React.MouseEvent<HTMLDivElement>,
     id: string
   ) => void;
   id: string;
@@ -25,7 +24,6 @@ type StepState = {
 };
 
 export default class Step extends Component<StepProps, StepState> {
-  // onChange: any;
   focus: any;
   editor: any;
 
@@ -33,14 +31,12 @@ export default class Step extends Component<StepProps, StepState> {
     super(props);
     this.state = { steptext: "" };
     this.focus = () => this.editor.focus();
-    //this.onChange = (editorState: any) => this.setState({ editorState });
   }
 
   onChange = (steptext: any) => {
     this.setState({
       steptext,
     });
-    // console.log(this.state.steptext);
   };
 
   saveStep(e: React.MouseEvent<HTMLButtonElement>) {
@@ -56,12 +52,16 @@ export default class Step extends Component<StepProps, StepState> {
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify(data),
     }).then(async (res: any) => {
+      let updatedSteps = res.json();
+      mutate("/api/endpoint", updatedSteps);
       console.log(res);
     });
+
+    this.props.closeStep(this.props.id);
   }
 
   deleteStep(e: React.MouseEvent<HTMLDivElement>) {
-    this.props.closeStep(e, this.props.id);
+    this.props.closeStep(this.props.id);
     let data = {
       requestedAPI: "delete_step",
       draftid: this.props.draftid,
@@ -75,7 +75,6 @@ export default class Step extends Component<StepProps, StepState> {
     }).then(async (res: any) => {
       console.log(res);
     });
-
   }
   
   render() {
