@@ -20,7 +20,7 @@ const DraftView = () => {
   // if there are any steps in this draft, they will be fetched & repopulated
   const rawData = {
     requestedAPI: "get_steps",
-    draftid: pid,
+    draftId: pid,
   };
   
   const myRequest = {
@@ -34,7 +34,7 @@ const DraftView = () => {
   
   const initialData: any = [];
 
-  
+
   let { data: steps } = useSWR(
     authenticated ? "/api/endpoint" : null,
     fetcher,
@@ -53,7 +53,7 @@ const DraftView = () => {
       </Head>
       <main>
         <div className={appStyles.App}>
-          <Publishing draftid={pid} storedSteps={steps} /> 
+          <Publishing draftId={pid} storedSteps={steps} /> 
           <CodeEditor />
         </div>
       </main>

@@ -18,7 +18,7 @@ import {
 import EditorStyles from '../styles/EditorStyles.module.scss';
 import '!style-loader!css-loader!draft-js-static-toolbar-plugin/lib/plugin.css';
 
-var shortid = require('shortid');
+var shortId = require('shortid');
 
 /* 
 Component rendered when Headlines Button is clicked to present option of H1, H2, or H3. 
@@ -41,7 +41,7 @@ class HeadlinesPicker extends Component {
     return (
       <div>
         {buttons.map(Button =>
-          <Button key={shortid.generate()} {...this.props} />
+          <Button key={shortId.generate()} {...this.props} />
         )}
       </div>
     );
@@ -83,7 +83,7 @@ export default class DynamicEditor extends Component {
     this.plugins = [toolbarPlugin];
     
     this.state = {
-      editorState: createEditorStateWithText(text),
+      editorState: this.props.editorState ? this.props.editorState : createEditorStateWithText(text),
     }
   }
 

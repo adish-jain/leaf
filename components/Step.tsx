@@ -15,12 +15,11 @@ type StepProps = {
     id: string
   ) => void;
   id: string;
-  draftid: any;
-  key: string;
+  draftId: any;
 };
 
 type StepState = {
-  steptext: any;
+  stepText: any;
 };
 
 export default class Step extends Component<StepProps, StepState> {
@@ -29,22 +28,22 @@ export default class Step extends Component<StepProps, StepState> {
 
   constructor(props: StepProps) {
     super(props);
-    this.state = { steptext: "" };
+    this.state = { stepText: "" };
     this.focus = () => this.editor.focus();
   }
 
-  onChange = (steptext: any) => {
+  onChange = (stepText: any) => {
     this.setState({
-      steptext,
+      stepText,
     });
   };
 
   saveStep(e: React.MouseEvent<HTMLButtonElement>) {
     let data = {
       requestedAPI: "save_step",
-      text: this.state.steptext,
-      draftid: this.props.draftid,
-      stepid: this.props.id,
+      text: this.state.stepText,
+      draftId: this.props.draftId,
+      stepId: this.props.id,
     };
 
     fetch("/api/endpoint", {
@@ -59,35 +58,18 @@ export default class Step extends Component<StepProps, StepState> {
 
     this.props.closeStep(this.props.id);
   }
-
-  deleteStep(e: React.MouseEvent<HTMLDivElement>) {
-    this.props.closeStep(this.props.id);
-    let data = {
-      requestedAPI: "delete_step",
-      draftid: this.props.draftid,
-      stepid: this.props.id,
-    };
-
-    fetch("/api/endpoint", {
-      method: "POST",
-      headers: new Headers({ "Content-Type": "application/json" }),
-      body: JSON.stringify(data),
-    }).then(async (res: any) => {
-      console.log(res);
-    });
-  }
   
   render() {
     return (
       <div className={StepStyles.Step}>
         <div className={StepStyles.Draft}>
           {// @ts-ignore 
-            <DynamicEditor onChange={this.onChange}/>
+            <DynamicEditor onChange={this.onChange} />
           }
         </div>
         <div className={StepStyles.Buttons}>
           <button onClick={(e) => {this.saveStep(e)}} className={StepStyles.Save}>Save</button>
-          <div onClick={(e) => {this.deleteStep(e)}} className={StepStyles.Close}>X</div>
+          <div onClick={(e) => {this.props.closeStep(this.props.id)}} className={StepStyles.Close}>X</div>
         </div>
         <div></div>
       </div>
