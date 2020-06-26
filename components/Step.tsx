@@ -16,7 +16,6 @@ type StepProps = {
   ) => void;
   id: string;
   draftid: any;
-  key: string;
 };
 
 type StepState = {
