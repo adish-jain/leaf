@@ -1,6 +1,6 @@
 import { useRouter, Router } from "next/router";
 import { useState, useCallback } from "react";
-import { useLoggedIn, logOut } from "../..//lib/UseLoggedIn";
+import { useLoggedIn, logOut } from "../../lib/UseLoggedIn";
 import useSWR, { mutate } from "swr";
 import Publishing from "../../components/Publishing";
 import CodeEditor from "../../components/CodeEditor";
@@ -17,12 +17,12 @@ const DraftView = () => {
   const router = useRouter();
 
   // Draft ID
-  const { pid } = router.query;
+  const { draftId } = router.query;
 
   // if there are any steps in this draft, they will be fetched & repopulated
   const rawData = {
     requestedAPI: "get_steps",
-    draftid: pid,
+    draftId: draftId,
   };
 
   const myRequest = {
@@ -53,7 +53,7 @@ const DraftView = () => {
       </Head>
       <main>
         <div className={appStyles.App}>
-          <Publishing draftid={pid} storedSteps={steps} />
+          <Publishing draftId={draftId} storedSteps={steps} />
           <CodeEditor />
         </div>
       </main>

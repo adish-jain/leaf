@@ -21,7 +21,7 @@ function handleError(res: NextApiResponse, error: any) {
 
 async function getStepsHandler(req: NextApiRequest, res: NextApiResponse) {
   let { uid } = await getUser(req, res);
-  let draftid = req.body.draftid;
+  let draftId = req.body.draftId;
 
   if (uid === "") {
     res.statusCode = 403;
@@ -29,7 +29,7 @@ async function getStepsHandler(req: NextApiRequest, res: NextApiResponse) {
     return;
   }
 
-  let results = await getUserStepsForDraft(uid, draftid);
+  let results = await getUserStepsForDraft(uid, draftId);
   res.statusCode = 200;
   res.send(results);
   return;

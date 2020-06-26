@@ -10,7 +10,7 @@ const descriptionStyles = require("../styles/Description.module.scss");
 var shortid = require("shortid");
 
 type PublishingProps = {
-  draftid: any;
+  draftId: any;
   storedSteps: any[];
 };
 
@@ -60,10 +60,15 @@ export default class Publishing extends Component<
   }
 
   previewDraft(e: React.MouseEvent<HTMLButtonElement>) {
-    let { draftid } = this.props;
-    let url = `/api/preview?draftid=${draftid}`;
+    let { draftId } = this.props;
+    let url = `/api/preview?draftId=${draftId}`;
+    // window.location.href = url;
 
-    fetch(url, { method: "GET", redirect: "follow" })
+    fetch(url, {
+      method: "POST",
+      // redirect: "follow",
+      headers: new Headers({ "Content-Type": "application/json" }),
+    })
       .then((res: any) => {
         console.log(res);
         if (res.redirected) {

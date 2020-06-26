@@ -3,19 +3,22 @@ import { getUser } from "../../lib/userUtils";
 var crypto = require("crypto");
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  let userToken = req.cookies.usertoken;
+  let cookies = req.cookies;
+  //   console.log(cookies);
+  let userToken = cookies.userToken;
+  console.log("usertoken is", userToken);
   // get draft ID
   // get User email
-  let { userRecord } = await getUser(req, res);
-  let { draft_id } = req.query;
-  res.setPreviewData({
-    userToken,
-    draft_id: draft_id,
-  });
-  // create random string
+  let { userRecord, uid } = await getUser(req, res);
+  let { draftId } = req.query;
+  console.log(req.query);
+  console.log("draftId is", draftId);
+
   let token = createToken();
-  // redirect to /preview/randomstring
-  console.log("token is", token);
+  res.setPreviewData({
+    uid,
+    draftId: draftId,
+  });
   res.writeHead(307, { Location: "/preview/" + token });
   res.end("Preview mode enabled");
 };

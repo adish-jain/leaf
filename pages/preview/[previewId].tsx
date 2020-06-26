@@ -4,53 +4,42 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import Publishing from "../../components/Publishing";
 import CodeEditor from "../../components/CodeEditor";
-import { getUserFromToken } from "../../lib/userUtils";
+import { getUserFromToken, getUserStepsForDraft } from "../../lib/userUtils";
 const appStyles = require("../../styles/App.module.scss");
 
 export async function getStaticPaths() {
   return {
     paths: [
-      { params: { preview_id: "testing" } },
-      { params: { preview_id: "testing124" } },
+      // { params: { previewId: "testing" } },
+      // { params: { previewId: "testing124" } },
     ],
     fallback: true,
   };
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  let draft_id = context.previewData.draft_id;
+  console.log(context);
+  let draftId = context.previewData.draftId;
+  let uid = context.previewData.uid;
 
-  const rawData = {
-    requestedAPI: "get_steps",
-    draftid: draft_id,
-  };
+  console.log("usertoken is", uid);
+  console.log("draft id is", draftId);
 
-  const myRequest = {
-    method: "POST",
-    headers: new Headers({ "Content-Type": "application/json" }),
-    body: JSON.stringify(rawData),
-  };
-
-  let url = "";
-
-  let uid = fetch(url, myRequest).then((res: any) => res.json());
-
-  //   // get user token
-
-  //   // using draft_id and email, get draft data
+  let steps = await getUserStepsForDraft(uid, draftId);
+  console.log(steps);
 
   return {
-    props: {}, // will be passed to the page component as props
+    props: {
+      steps,
+    },
   };
 };
 
-const DraftView = () => {
+const DraftView = (props: any) => {
   const router = useRouter();
 
   // Draft ID
   const { preview_id } = router.query;
-
-  const steps: any[] = [];
 
   return (
     <div className="container">
@@ -60,7 +49,7 @@ const DraftView = () => {
       </Head>
       <main>
         <div className={appStyles.App}>
-          <Publishing draftid={preview_id} storedSteps={steps} />
+          <Publishing draftId={preview_id} storedSteps={props.steps} />
           <CodeEditor />
         </div>
       </main>

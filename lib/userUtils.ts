@@ -137,12 +137,12 @@ export async function getUserDrafts(uid: string) {
     });
 }
 
-export async function getUserStepsForDraft(uid: string, draftid: string) {
+export async function getUserStepsForDraft(uid: string, draftId: string) {
   let stepsRef = db
     .collection("users")
     .doc(uid)
     .collection("drafts")
-    .doc(draftid)
+    .doc(draftId)
     .collection("steps")
     .orderBy("createdAt");
 
@@ -153,7 +153,10 @@ export async function getUserStepsForDraft(uid: string, draftid: string) {
       stepsCollection.forEach(function (result: any) {
         let resultsJSON = result.data();
         resultsJSON.id = result.id;
-        results.push(resultsJSON);
+        results.push({
+          text: resultsJSON.text,
+          id: resultsJSON.id
+        })
       });
       return results;
     })
