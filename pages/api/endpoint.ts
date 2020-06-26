@@ -13,6 +13,7 @@ import handleDeleteDraft from "../../lib/api/deleteDraft";
 import handleGetSteps from "../../lib/api/getSteps"
 import handleSaveStep from "../../lib/api/saveStep";
 import handleDeleteStep from "../../lib/api/deleteStep";
+import handleUpdateStep from "../../lib/api/updateStep";
 
 const firebase = require("firebase/app");
 initFirebase();
@@ -81,6 +82,11 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
     // POST
     case "delete_step": {
       return handleDeleteStep(req, res);
+    }
+
+    // POST
+    case "update_step": {
+      return handleUpdateStep(req, res);
     }
 
     default: {

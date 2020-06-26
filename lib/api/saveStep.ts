@@ -24,7 +24,7 @@ async function saveStepHandler(req: NextApiRequest, res: NextApiResponse) {
   let userToken = cookies.userToken;
   let refreshToken = cookies.refreshToken;
   let text = req.body.text;
-  let stepid = req.body.stepid;
+  let stepId = req.body.stepId;
   let draftId = req.body.draftId;
   let { uid } = await getUser(req, res);
 
@@ -42,7 +42,7 @@ async function saveStepHandler(req: NextApiRequest, res: NextApiResponse) {
     text: text,
   };
 
-  db.collection("users").doc(uid).collection("drafts").doc(draftId).collection("steps").doc(stepid).set(stepText); 
+  db.collection("users").doc(uid).collection("drafts").doc(draftId).collection("steps").doc(stepId).set(stepText); 
   
   res.statusCode = 200;
   let results = "";

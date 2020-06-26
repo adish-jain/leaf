@@ -14,10 +14,12 @@ import {
   OrderedListButton,
   BlockquoteButton,
   CodeBlockButton,
-} from "draft-js-buttons";
-import EditorStyles from "../styles/EditorStyles.module.scss";
-import "!style-loader!css-loader!draft-js-static-toolbar-plugin/lib/plugin.css";
-var shortid = require("shortid");
+} from 'draft-js-buttons';
+import EditorStyles from '../styles/EditorStyles.module.scss';
+import '!style-loader!css-loader!draft-js-static-toolbar-plugin/lib/plugin.css';
+
+var shortId = require('shortid');
+
 /* 
 Component rendered when Headlines Button is clicked to present option of H1, H2, or H3. 
 */
@@ -38,9 +40,9 @@ class HeadlinesPicker extends Component {
     const buttons = [HeadlineOneButton, HeadlineTwoButton, HeadlineThreeButton];
     return (
       <div>
-        {buttons.map((Button) => (
-          <Button key={shortid.generate()} {...this.props} />
-        ))}
+        {buttons.map(Button =>
+          <Button key={shortId.generate()} {...this.props} />
+        )}
       </div>
     );
   }
@@ -82,8 +84,8 @@ export default class DynamicEditor extends Component {
     this.plugins = [toolbarPlugin];
 
     this.state = {
-      editorState: createEditorStateWithText(text),
-    };
+      editorState: this.props.editorState ? this.props.editorState : createEditorStateWithText(text),
+    }
   }
 
   onChange = (editorState) => {
