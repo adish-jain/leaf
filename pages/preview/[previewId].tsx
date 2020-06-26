@@ -22,12 +22,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   console.log(context);
   let draftId = context.previewData.draftId;
   let uid = context.previewData.uid;
-
-  console.log("usertoken is", uid);
-  console.log("draft id is", draftId);
-
   let steps = await getUserStepsForDraft(uid, draftId);
-  console.log(steps);
 
   return {
     props: {
@@ -48,8 +43,6 @@ type DraftPreviewProps = {
 const DraftPreview = (props: DraftPreviewProps) => {
   const router = useRouter();
   const [currentStep, updateStep] = useState(0);
-
-  console.log(props);
 
   // Draft ID
   const { preview_id } = router.query;
