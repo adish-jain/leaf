@@ -11,6 +11,21 @@ type GetUserType = {
   userRecord: any;
 };
 
+export async function getUserFromToken(userToken: string) {
+  try {
+    let decodedToken = await admin.auth().verifyIdToken(userToken);
+    let uid = decodedToken.uid;
+    return {
+      uid,
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      uid: ''
+    };
+  }
+}
+
 // Returns the userRecord based on session cookie
 // updates the response cookies if expired token
 export async function getUser(
@@ -129,7 +144,7 @@ export async function getUserStepsForDraft(uid: string, draftid: string) {
     .collection("drafts")
     .doc(draftid)
     .collection("steps")
-    .orderBy("createdAt")
+    .orderBy("createdAt");
 
   return await stepsRef
     .get()

@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import NewStep from "./NewStep";
 import Step from "./Step";
-import StoredStep from "./StoredStep"
-import { convertToRaw, convertFromRaw } from 'draft-js';
+import StoredStep from "./StoredStep";
+const fetch = require("node-fetch");
+global.Headers = fetch.Headers;
+import { convertToRaw, convertFromRaw } from "draft-js";
 const descriptionStyles = require("../styles/Description.module.scss");
 
-var shortid = require('shortid');
+var shortid = require("shortid");
 
 type PublishingProps = {
   draftid: any;
@@ -34,6 +36,7 @@ export default class Publishing extends Component<
 
     this.addStep = this.addStep.bind(this);
     this.closeStep = this.closeStep.bind(this);
+    this.previewDraft = this.previewDraft.bind(this);
 
     this.state = {
       steps: [],
@@ -45,7 +48,7 @@ export default class Publishing extends Component<
     let idx = steps.indexOf(id, 0);
     steps.splice(idx, 1);
     console.log("closestep");
-    this.setState({ steps: steps});
+    this.setState({ steps: steps });
   }
 
   addStep(e: React.MouseEvent<HTMLButtonElement>) {
@@ -56,23 +59,54 @@ export default class Publishing extends Component<
     this.setState({ steps });
   }
 
+  previewDraft(e: React.MouseEvent<HTMLButtonElement>) {
+    let { draftid } = this.props;
+    let url = `/api/preview?draftid=${draftid}`;
+
+    fetch(url, { method: "GET", redirect: "follow" })
+      .then((res: any) => {
+        console.log(res);
+        if (res.redirected) {
+          window.location.href = res.url;
+        }
+        // HTTP 301 response
+      })
+      .catch(function (err: any) {
+        console.info(err + " url: " + url);
+      });
+  }
+
   render() {
     return (
       <div className={descriptionStyles.publishing}>
         <div className={descriptionStyles.PublishingButtonsWrapper}>
           <div className={descriptionStyles.publishingButtons}>
-            <button className={descriptionStyles.preview}>Preview</button>
+            <button
+              onClick={this.previewDraft}
+              className={descriptionStyles.preview}
+            >
+              Preview
+            </button>
             <button className={descriptionStyles.publish}>Publish</button>
           </div>
         </div>
         <div className={descriptionStyles.header}>
           <h1>Title</h1>
         </div>
-        {this.props.storedSteps.map(storedStep => {
-          return <StoredStep id={storedStep.id} text={JSON.parse(storedStep.text)} />
+        {this.props.storedSteps.map((storedStep) => {
+          return (
+            <StoredStep id={storedStep.id} text={JSON.parse(storedStep.text)} />
+          );
         })}
-        {this.state.steps.map(step => {
-          return <Step closeStep={this.closeStep} id={step} draftid={this.props.draftid} key={step} />;
+        {this.state.steps.map((step) => {
+          return (
+            <Step
+              closeStep={this.closeStep}
+              id={step}
+              draftid={this.props.draftid}
+              key={step}
+            />
+          );
         })}
         <NewStep addStep={this.addStep} />
       </div>
