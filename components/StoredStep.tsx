@@ -1,24 +1,18 @@
 import React, { Component } from "react";
-import useSWR, { SWRConfig, mutate } from "swr";
-
-import Router from "next/router";
-import dynamic from "next/dynamic";
-import { Editor, EditorState, convertToRaw, convertFromRaw } from 'draft-js';
-const StepStyles = require("../styles/Step.module.scss");
+import { mutate } from "swr";
+import { EditorState, convertFromRaw } from 'draft-js';
+import EditingStoredStep from "./EditingStoredStep";
+import RenderedStoredStep from "./RenderedStoredStep";
 const fetch = require("node-fetch");
-
-const DynamicEditor = dynamic((() => import("./DynamicEditor")) as any, {
-    ssr: false,
-  });
 
 type StoredStepProps = {
     id: string;
-    draftid: any;
+    draftId: any;
     text: any;
 };
   
 type StoredStepState = {
-    steptext: any;
+    stepText: any;
     editing: boolean;
 };
   
@@ -26,26 +20,28 @@ export default class StoredStep extends Component<StoredStepProps, StoredStepSta
 
     constructor(props: StoredStepProps) {
         super(props);
+        this.deleteStoredStep = this.deleteStoredStep.bind(this);
+        this.editStoredStep = this.editStoredStep.bind(this);
+        this.updateStoredStep = this.updateStoredStep.bind(this);
         this.state = {
-            steptext: this.props.text,
+            stepText: this.props.text,
             editing: false,
         };
     }
 
     // TODO: add in button to be able to re-modify OldSteps and mutate their values in Firestore
 
-    onChange = (steptext: any) => {
+    onChange = (stepText: any) => {
         this.setState({
-          steptext,
+            stepText,
         });
       };
 
     deleteStoredStep(e: React.MouseEvent<any>) {
-        console.log("deleteStoredStep")
         let data = {
             requestedAPI: "delete_step",
-            draftid: this.props.draftid,
-            stepid: this.props.id,
+            draftId: this.props.draftId,
+            stepId: this.props.id,
         };
 
         fetch("/api/endpoint", {
@@ -60,19 +56,17 @@ export default class StoredStep extends Component<StoredStepProps, StoredStepSta
     }
 
     editStoredStep(e: React.MouseEvent<HTMLButtonElement>) {
-        console.log("editStoredStep");
         this.setState({
             editing: true,
         });
     }
 
     updateStoredStep(e: React.MouseEvent<HTMLButtonElement>) {
-        console.log("updateStoredStep");
         let data = {
             requestedAPI: "update_step",
-            text: this.state.steptext,
-            draftid: this.props.draftid,
-            stepid: this.props.id,
+            text: this.state.stepText,
+            draftId: this.props.draftId,
+            stepId: this.props.id,
         };
         
         fetch("/api/endpoint", {
@@ -96,28 +90,9 @@ export default class StoredStep extends Component<StoredStepProps, StoredStepSta
         const editing = this.state.editing;
         return (
             editing ?
-                (<div className={StepStyles.Step}>
-                    <div className={StepStyles.Draft}>
-                      {// @ts-ignore 
-                        <DynamicEditor onChange={this.onChange} editorState={editorState}/>
-                      }
-                    </div>
-                    <div className={StepStyles.Buttons}>
-                      <button onClick={(e) => {this.updateStoredStep(e)}} className={StepStyles.Save}>Save</button>
-                    </div>
-                    <div></div>
-                </div>) : 
-                (<div className={StepStyles.Step}>
-                    <div className={StepStyles.Draft}>
-                    {// @ts-ignore 
-                    <Editor editorState={editorState} readOnly={true}/>
-                    }
-                    </div>
-                    <div className={StepStyles.Buttons}>
-                        <button onClick={(e) => {this.editStoredStep(e)}} className={StepStyles.Save}>Edit</button>
-                        <div onClick={(e) => {this.deleteStoredStep(e)}} className={StepStyles.Close}>X</div>
-                    </div>
-                </div>)
+                (<EditingStoredStep updateStoredStep={this.updateStoredStep} onChange={this.onChange} editorState={editorState} />) 
+                : 
+                (<RenderedStoredStep editStoredStep={this.editStoredStep} deleteStoredStep={this.deleteStoredStep} editorState={editorState} />)
         );
     }
 }

@@ -23,8 +23,8 @@ async function deleteStepHandler(req: NextApiRequest, res: NextApiResponse) {
   let cookies = req.cookies;
   let userToken = cookies.userToken;
   let refreshToken = cookies.refreshToken;
-  let stepid = req.body.stepid;
-  let draftid = req.body.draftid;
+  let stepId = req.body.stepId;
+  let draftId = req.body.draftId;
   let { uid } = await getUser(req, res);
 
   if (uid === "") {
@@ -36,7 +36,7 @@ async function deleteStepHandler(req: NextApiRequest, res: NextApiResponse) {
   // console.log("user is logged in");
 
   // delete step from firebase 
-  db.collection("users").doc(uid).collection("drafts").doc(draftid).collection("steps").doc(stepid).delete(); 
+  db.collection("users").doc(uid).collection("drafts").doc(draftId).collection("steps").doc(stepId).delete(); 
 
   res.statusCode = 200;
   let results = "";

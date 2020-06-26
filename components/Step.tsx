@@ -15,11 +15,11 @@ type StepProps = {
     id: string
   ) => void;
   id: string;
-  draftid: any;
+  draftId: any;
 };
 
 type StepState = {
-  steptext: any;
+  stepText: any;
 };
 
 export default class Step extends Component<StepProps, StepState> {
@@ -28,23 +28,22 @@ export default class Step extends Component<StepProps, StepState> {
 
   constructor(props: StepProps) {
     super(props);
-    this.state = { steptext: ""};
+    this.state = { stepText: "" };
     this.focus = () => this.editor.focus();
   }
 
-  onChange = (steptext: any) => {
+  onChange = (stepText: any) => {
     this.setState({
-      steptext,
+      stepText,
     });
   };
 
   saveStep(e: React.MouseEvent<HTMLButtonElement>) {
-    console.log("savestep");
     let data = {
       requestedAPI: "save_step",
-      text: this.state.steptext,
-      draftid: this.props.draftid,
-      stepid: this.props.id,
+      text: this.state.stepText,
+      draftId: this.props.draftId,
+      stepId: this.props.id,
     };
 
     fetch("/api/endpoint", {

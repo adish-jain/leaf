@@ -21,8 +21,8 @@ function handleError(res: NextApiResponse, error: any) {
 
 async function updateStepHandler(req: NextApiRequest, res: NextApiResponse) {
   let text = req.body.text;
-  let stepid = req.body.stepid;
-  let draftid = req.body.draftid;
+  let stepId = req.body.stepId;
+  let draftId = req.body.draftId;
   let { uid } = await getUser(req, res);
 
   if (uid === "") {
@@ -34,7 +34,7 @@ async function updateStepHandler(req: NextApiRequest, res: NextApiResponse) {
   // console.log("user is logged in");
 
   // update text in firebase
-  db.collection("users").doc(uid).collection("drafts").doc(draftid).collection("steps").doc(stepid).update({"text": text}); 
+  db.collection("users").doc(uid).collection("drafts").doc(draftId).collection("steps").doc(stepId).update({"text": text}); 
   
   res.statusCode = 200;
   let results = "";
