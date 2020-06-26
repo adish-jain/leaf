@@ -2,8 +2,9 @@ import React, { useState, Component } from "react";
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import Publishing from "../../components/Publishing";
-import CodeEditor from "../../components/CodeEditor";
+import Scrolling from "../../components/Scrolling";
+import PublishedCodeEditor from "../../components/PublishedCodeEditor";
+
 import { getUserFromToken, getUserStepsForDraft } from "../../lib/userUtils";
 const appStyles = require("../../styles/App.module.scss");
 
@@ -35,11 +36,27 @@ export const getStaticProps: GetStaticProps = async (context) => {
   };
 };
 
-const DraftView = (props: any) => {
+type StepType = {
+  text: String;
+  id: String;
+};
+
+type DraftPreviewProps = {
+  steps: StepType[];
+};
+
+const DraftPreview = (props: DraftPreviewProps) => {
   const router = useRouter();
+  const [currentStep, updateStep] = useState(0);
+
+  console.log(props);
 
   // Draft ID
   const { preview_id } = router.query;
+
+  function changeStep(newStep: number) {
+    updateStep(newStep);
+  }
 
   return (
     <div className="container">
@@ -49,12 +66,12 @@ const DraftView = (props: any) => {
       </Head>
       <main>
         <div className={appStyles.App}>
-          <Publishing draftId={preview_id} storedSteps={props.steps} />
-          <CodeEditor />
+          <Scrolling changeStep={changeStep} steps={props.steps} />
+          <PublishedCodeEditor currentStep={currentStep} />
         </div>
       </main>
     </div>
   );
 };
 
-export default DraftView;
+export default DraftPreview;
