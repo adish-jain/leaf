@@ -108,7 +108,7 @@ export default class Publishing extends Component<
             <Step
               closeStep={this.closeStep}
               id={step}
-              draftid={this.props.draftid}
+              draftId={this.props.draftId}
               key={step}
             />
           );

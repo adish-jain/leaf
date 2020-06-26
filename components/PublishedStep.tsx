@@ -33,7 +33,7 @@ function PublishedStep(props: PublishedStepProps) {
 
   return (
     <div ref={ref} className={StepStyles.Step}>
-      <h1>{props.index}</h1>
+      {/* <h1>{props.index}</h1> */}
       <div dangerouslySetInnerHTML={renderDraftJS()} />
     </div>
   );

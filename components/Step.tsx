@@ -15,7 +15,7 @@ type StepProps = {
     id: string
   ) => void;
   id: string;
-  draftid: any;
+  draftId: any;
   key: string;
 };
 
@@ -43,7 +43,7 @@ export default class Step extends Component<StepProps, StepState> {
     let data = {
       requestedAPI: "save_step",
       text: this.state.steptext,
-      draftid: this.props.draftid,
+      draftId: this.props.draftId,
       stepid: this.props.id,
     };
 
@@ -64,7 +64,7 @@ export default class Step extends Component<StepProps, StepState> {
     this.props.closeStep(this.props.id);
     let data = {
       requestedAPI: "delete_step",
-      draftid: this.props.draftid,
+      draftid: this.props.draftId,
       stepid: this.props.id,
     };
 
