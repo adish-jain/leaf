@@ -83,7 +83,7 @@ export default class DynamicEditor extends Component {
     this.plugins = [toolbarPlugin];
     
     this.state = {
-      editorState: createEditorStateWithText(text),
+      editorState: this.props.editorState ? this.props.editorState : createEditorStateWithText(text),
     }
   }
 
