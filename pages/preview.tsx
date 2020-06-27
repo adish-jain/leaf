@@ -43,7 +43,11 @@ const DraftPreview = (props: DraftPreviewProps) => {
   const [currentStep, updateStep] = useState(0);
 
   function changeStep(newStep: number, yPos: number, entered: boolean) {
+    // stepsInView keeps track of what steps are inside the viewport
     stepsInView[newStep] = entered;
+
+    /* whichever step is the closest to the top of the viewport 
+    AND is inside the viewport becomes the selected step */
     for (let step in stepsInView) {
       if (stepsInView[step]) {
         updateStep(Number(step));

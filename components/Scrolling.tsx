@@ -64,12 +64,18 @@ export default class Scrolling extends Component<
         ) : (
           <div></div>
         )}
-        <div
-          style={{
-            height: height - 300,
-          }}
-        ></div>
+        <BufferDiv height={height} />
       </div>
     );
   }
+}
+
+function BufferDiv(props: { height: number }) {
+  return (
+    <div
+      style={{
+        height: props.height - 300,
+      }}
+    ></div>
+  );
 }
