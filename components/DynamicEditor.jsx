@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { convertToRaw, convertFromRaw } from 'draft-js';
-import Editor, { createEditorStateWithText } from 'draft-js-plugins-editor';
-import createToolbarPlugin, { Separator } from 'draft-js-static-toolbar-plugin';
+import React, { Component } from "react";
+import { convertToRaw, convertFromRaw } from "draft-js";
+import Editor, { createEditorStateWithText } from "draft-js-plugins-editor";
+import createToolbarPlugin, { Separator } from "draft-js-static-toolbar-plugin";
 import {
   ItalicButton,
   BoldButton,
@@ -24,17 +24,17 @@ var shortId = require('shortid');
 Component rendered when Headlines Button is clicked to present option of H1, H2, or H3. 
 */
 class HeadlinesPicker extends Component {
-
   componentDidMount() {
-    setTimeout(() => { window.addEventListener('click', this.onWindowClick); });
+    setTimeout(() => {
+      window.addEventListener("click", this.onWindowClick);
+    });
   }
 
   componentWillUnmount() {
-    window.removeEventListener('click', this.onWindowClick);
+    window.removeEventListener("click", this.onWindowClick);
   }
 
-  onWindowClick = () =>
-    this.props.onOverrideContent(undefined);
+  onWindowClick = () => this.props.onOverrideContent(undefined);
 
   render() {
     const buttons = [HeadlineOneButton, HeadlineTwoButton, HeadlineThreeButton];
@@ -53,13 +53,15 @@ The Header button option in the toolbar, 'H'. Once clicked, the HeadlinesPicker
 component will be rendered to allow selection of H1, H2, or H3. 
 */
 class HeadlinesButton extends Component {
-  onClick = () =>
-    this.props.onOverrideContent(HeadlinesPicker);
+  onClick = () => this.props.onOverrideContent(HeadlinesPicker);
 
   render() {
     return (
-      <div className={EditorStyles['headline-button-wrapper']}>
-        <button onClick={this.onClick} className={EditorStyles['headline-button']}>
+      <div className={EditorStyles["headline-button-wrapper"]}>
+        <button
+          onClick={this.onClick}
+          className={EditorStyles["headline-button"]}
+        >
           H
         </button>
       </div>
@@ -72,16 +74,15 @@ The static toolbar component plugin. Contains all buttons in it.
 Creates a static toolbar for each editor, for in-sync editing.
 */
 export default class DynamicEditor extends Component {
-
   constructor(props) {
     super(props);
     const toolbarPlugin = createToolbarPlugin();
-    const text = 'Begin Writing...';
+    const text = "Begin Writing...";
     this.PluginComponents = {
-      Toolbar: toolbarPlugin.Toolbar
+      Toolbar: toolbarPlugin.Toolbar,
     };
     this.plugins = [toolbarPlugin];
-    
+
     this.state = {
       editorState: this.props.editorState ? this.props.editorState : createEditorStateWithText(text),
     }
@@ -110,25 +111,25 @@ export default class DynamicEditor extends Component {
             editorState={this.state.editorState}
             onChange={this.onChange}
             plugins={this.plugins}
-            ref={(element) => { this.editor = element; }}
+            ref={(element) => {
+              this.editor = element;
+            }}
           />
           <Toolbar>
-            {
-              (externalProps) => (
-                <div>
-                  <BoldButton {...externalProps} />
-                  <ItalicButton {...externalProps} />
-                  <UnderlineButton {...externalProps} />
-                  <CodeButton {...externalProps} />
-                  <Separator {...externalProps} />
-                  <HeadlinesButton {...externalProps} />
-                  <UnorderedListButton {...externalProps} />
-                  <OrderedListButton {...externalProps} />
-                  <BlockquoteButton {...externalProps} />
-                  <CodeBlockButton {...externalProps} />
-                </div>
-              )
-            }
+            {(externalProps) => (
+              <div>
+                <BoldButton {...externalProps} />
+                <ItalicButton {...externalProps} />
+                <UnderlineButton {...externalProps} />
+                <CodeButton {...externalProps} />
+                <Separator {...externalProps} />
+                <HeadlinesButton {...externalProps} />
+                <UnorderedListButton {...externalProps} />
+                <OrderedListButton {...externalProps} />
+                <BlockquoteButton {...externalProps} />
+                <CodeBlockButton {...externalProps} />
+              </div>
+            )}
           </Toolbar>
         </div>
       </div>

@@ -1,11 +1,13 @@
-import { useRouter } from "next/router";
+import { useRouter, Router } from "next/router";
 import { useState, useCallback } from "react";
-import { useLoggedIn, logOut } from "../..//lib/UseLoggedIn";
+import { useLoggedIn, logOut } from "../../lib/UseLoggedIn";
 import useSWR, { mutate } from "swr";
 import Publishing from "../../components/Publishing";
-import CodeEditor from '../../components/CodeEditor'
+import CodeEditor from "../../components/CodeEditor";
 import Head from "next/head";
 const fetch = require("node-fetch");
+import { GetStaticProps, GetStaticPaths } from "next";
+
 global.Headers = fetch.Headers;
 
 const appStyles = require("../../styles/App.module.scss");
@@ -15,14 +17,14 @@ const DraftView = () => {
   const router = useRouter();
 
   // Draft ID
-  const { pid } = router.query;
+  const { draftId } = router.query;
 
   // if there are any steps in this draft, they will be fetched & repopulated
   const rawData = {
     requestedAPI: "get_steps",
-    draftId: pid,
+    draftId: draftId,
   };
-  
+
   const myRequest = {
     method: "POST",
     headers: new Headers({ "Content-Type": "application/json" }),
@@ -31,18 +33,16 @@ const DraftView = () => {
 
   const fetcher = (url: string) =>
     fetch(url, myRequest).then((res: any) => res.json());
-  
-  const initialData: any = [];
 
+  const initialData: any = [];
 
   let { data: steps } = useSWR(
     authenticated ? "/api/endpoint" : null,
     fetcher,
     { initialData, revalidateOnMount: true }
   );
-  
-  // console.log(steps);
 
+  // console.log(steps);
 
   // this page should look similar to how pages/article looks right now
   return (
@@ -53,7 +53,7 @@ const DraftView = () => {
       </Head>
       <main>
         <div className={appStyles.App}>
-          <Publishing draftId={pid} storedSteps={steps} /> 
+          <Publishing draftId={draftId} storedSteps={steps} />
           <CodeEditor />
         </div>
       </main>
@@ -62,6 +62,3 @@ const DraftView = () => {
 };
 
 export default DraftView;
-
-
-

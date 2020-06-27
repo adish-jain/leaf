@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import NewStep from "./NewStep";
 import Step from "./Step";
-import StoredStep from "./StoredStep"
-import { convertToRaw, convertFromRaw } from 'draft-js';
+import StoredStep from "./StoredStep";
+const fetch = require("node-fetch");
+global.Headers = fetch.Headers;
+import { convertToRaw, convertFromRaw } from "draft-js";
 const descriptionStyles = require("../styles/Description.module.scss");
 
 var shortId = require('shortid');
@@ -31,6 +33,7 @@ export default class Publishing extends Component<PublishingProps, PublishingSta
 
     this.addStep = this.addStep.bind(this);
     this.closeStep = this.closeStep.bind(this);
+    this.previewDraft = this.previewDraft.bind(this);
 
     this.state = {
       steps: [],
@@ -51,12 +54,39 @@ export default class Publishing extends Component<PublishingProps, PublishingSta
     this.setState({ steps });
   }
 
+  previewDraft(e: React.MouseEvent<HTMLButtonElement>) {
+    let { draftId } = this.props;
+    let url = `/api/preview?draftId=${draftId}`;
+    // window.location.href = url;
+
+    fetch(url, {
+      method: "POST",
+      // redirect: "follow",
+      headers: new Headers({ "Content-Type": "application/json" }),
+    })
+      .then((res: any) => {
+        console.log(res);
+        if (res.redirected) {
+          window.location.href = res.url;
+        }
+        // HTTP 301 response
+      })
+      .catch(function (err: any) {
+        console.info(err + " url: " + url);
+      });
+  }
+
   render() {
     return (
       <div className={descriptionStyles.publishing}>
         <div className={descriptionStyles.PublishingButtonsWrapper}>
           <div className={descriptionStyles.publishingButtons}>
-            <button className={descriptionStyles.preview}>Preview</button>
+            <button
+              onClick={this.previewDraft}
+              className={descriptionStyles.preview}
+            >
+              Preview
+            </button>
             <button className={descriptionStyles.publish}>Publish</button>
           </div>
         </div>

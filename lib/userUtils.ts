@@ -1,5 +1,4 @@
 import { initFirebaseAdmin, initFirebase } from "./initFirebase";
-import { uniqueId } from "lodash";
 const admin = require("firebase-admin");
 initFirebaseAdmin();
 import fetch from "isomorphic-fetch";
@@ -32,6 +31,8 @@ export async function getUser(
       userRecord,
     };
   } catch (error) {
+    console.log("errored on userToken " + userToken);
+    console.log(error);
     switch (error.code) {
       case "auth/argument-error":
         return {
@@ -39,13 +40,13 @@ export async function getUser(
           userRecord: undefined,
         };
       case "auth/id-token-expired":
+        console.log("refreshing token");
         let updatedUserToken = await refreshJWT(refreshToken);
         req.cookies.userToken = updatedUserToken;
         updateResponseTokens(res, updatedUserToken, refreshToken);
         // try again with refreshed token
         return getUser(req, res);
       default:
-        console.log(error);
         return {
           uid: "",
           userRecord: undefined,
@@ -128,7 +129,7 @@ export async function getUserStepsForDraft(uid: string, draftId: string) {
     .collection("drafts")
     .doc(draftId)
     .collection("steps")
-    .orderBy("createdAt")
+    .orderBy("createdAt");
 
   return await stepsRef
     .get()
@@ -137,7 +138,10 @@ export async function getUserStepsForDraft(uid: string, draftId: string) {
       stepsCollection.forEach(function (result: any) {
         let resultsJSON = result.data();
         resultsJSON.id = result.id;
-        results.push(resultsJSON);
+        results.push({
+          text: resultsJSON.text,
+          id: resultsJSON.id
+        })
       });
       return results;
     })
