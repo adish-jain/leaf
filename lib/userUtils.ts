@@ -11,21 +11,6 @@ type GetUserType = {
   userRecord: any;
 };
 
-export async function getUserFromToken(userToken: string) {
-  try {
-    let decodedToken = await admin.auth().verifyIdToken(userToken);
-    let uid = decodedToken.uid;
-    return {
-      uid,
-    };
-  } catch (error) {
-    console.log(error);
-    return {
-      uid: ''
-    };
-  }
-}
-
 // Returns the userRecord based on session cookie
 // updates the response cookies if expired token
 export async function getUser(

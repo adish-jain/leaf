@@ -8,7 +8,6 @@ initFirebaseAdmin();
 initFirebase();
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  console.log("in saveStep");
   return saveStepHandler(req, res);
 };
 
