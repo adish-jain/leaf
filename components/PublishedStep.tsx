@@ -11,23 +11,45 @@ type PublishedStepProps = {
   currentStep: number;
 };
 
-class PublishedStep extends Component<PublishedStepProps> {
-  //   private myRef = React.useRef() as React.MutableRefObject<HTMLDivElement>;
+type PublishedStepState = {
+  width: number;
+  height: number;
+  stepHeight: number;
+};
+
+class PublishedStep extends Component<PublishedStepProps, PublishedStepState> {
   private myRef = React.createRef<HTMLDivElement>();
 
   constructor(props: PublishedStepProps) {
     super(props);
-    ``;
     this.handleChange = this.handleChange.bind(this);
     this.scrollIntoView = this.scrollIntoView.bind(this);
+    this.calculateThreshold = this.calculateThreshold.bind(this);
     this.myRef = React.createRef();
 
-    this.state = {};
+    this.state = {
+      width: 0,
+      height: 0,
+      stepHeight: 0,
+    };
   }
 
-  //   setRefs(node: HTMLDivElement) {
-  //     this.myRef.current = node;
-  //   }
+  componentDidMount() {
+    this.updateWindowDimensions();
+    window.addEventListener("resize", this.updateWindowDimensions);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.updateWindowDimensions);
+  }
+
+  updateWindowDimensions() {
+    this.setState({
+      width: window.innerWidth,
+      height: window.innerHeight,
+      stepHeight: this.myRef.current!.clientHeight,
+    });
+  }
 
   renderDraftJS() {
     let rawContentState = JSON.parse(this.props.text);
@@ -48,6 +70,16 @@ class PublishedStep extends Component<PublishedStepProps> {
     });
   }
 
+  calculateThreshold() {
+    let { stepHeight, height } = this.state;
+
+    // handle case where a step is larger than viewport
+    if (stepHeight / height >= 1) {
+      return height / stepHeight;
+    }
+    return 1;
+  }
+
   render() {
     let { selected, index } = this.props;
 
@@ -56,7 +88,7 @@ class PublishedStep extends Component<PublishedStepProps> {
     return (
       <div ref={this.myRef} onClick={this.scrollIntoView}>
         <InView
-          threshold={1}
+          threshold={this.calculateThreshold()}
           rootMargin={"0% 0% 0% 0%"}
           onChange={this.handleChange}
         >
@@ -71,34 +103,5 @@ class PublishedStep extends Component<PublishedStepProps> {
     );
   }
 }
-
-// function PublishedStep1(props: PublishedStepProps) {
-//   const [ref, inView, entry] = useInView({
-//     /* Optional options */
-//     // root: props.root,
-//     threshold: 1,
-//     rootMargin: "0% 0% 0% 0%",
-//   });
-
-//   useEffect(() => {
-//     //   console.log("showing observer for", props.index);
-//     //   console.log(entry)
-//     props.changeStep(props.index, 0, inView);
-//   }, [inView]);
-
-//   function renderDraftJS() {
-//     let rawContentState = JSON.parse(props.text);
-//     let markup = draftToHtml(rawContentState);
-//     return { __html: markup };
-//   }
-
-//   let stepStyle = props.selected ? "Step--Selected" : "Step";
-//   return (
-//     <div ref={ref} className={StepStyles[stepStyle]}>
-//       <h1>{props.index}</h1>
-//       <div dangerouslySetInnerHTML={renderDraftJS()} />
-//     </div>
-//   );
-// }
 
 export default PublishedStep;

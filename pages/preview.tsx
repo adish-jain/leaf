@@ -44,12 +44,9 @@ const DraftPreview = (props: DraftPreviewProps) => {
 
   function changeStep(newStep: number, yPos: number, entered: boolean) {
     stepsInView[newStep] = entered;
-    console.log(stepsInView);
     for (let step in stepsInView) {
-      console.log("checking", step, "is", stepsInView[step]);
       if (stepsInView[step]) {
         updateStep(Number(step));
-        console.log("updating at step", step);
         break;
       }
     }
