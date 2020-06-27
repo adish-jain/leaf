@@ -20,9 +20,7 @@ export default class Scrolling extends Component<
   ScrollingProps,
   ScrollingState
 > {
-  // myRef: React.CreateRef;
-  private myRef = React.createRef<HTMLDivElement>();
-
+  
   constructor(props: any) {
     super(props);
 

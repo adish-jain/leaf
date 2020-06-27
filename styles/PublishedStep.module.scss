@@ -9,6 +9,7 @@
   border: 1px solid #edece9;
   border-radius: 8px;
   box-sizing: border-box;
+  color: #A1A19C;
 
   cursor: pointer;
 
@@ -16,5 +17,6 @@
     @extend .Step;
     box-shadow: 0px 4px 16px #edece9;
     background: #ffffff;
+    color: #000000;
   }
 }
