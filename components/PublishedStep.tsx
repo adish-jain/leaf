@@ -5,7 +5,7 @@ const draftToHtml = require("draftjs-to-html");
 
 type PublishedStepProps = {
   index: number;
-  changeStep: (newStep: number) => void;
+  changeStep: (newStep: number, yPos: number, entered: boolean) => void;
   text: string;
   selected: boolean;
   currentStep: number;
@@ -16,14 +16,13 @@ function PublishedStep(props: PublishedStepProps) {
     /* Optional options */
     // root: props.root,
     threshold: 1,
-    rootMargin: "10% 0% -50% 0%",
+    rootMargin: "0% 0% 0% 0%",
   });
 
   useEffect(() => {
-    if (inView) {
-      props.changeStep(props.index);
-      //   console.log(entry);
-    }
+    //   console.log("showing observer for", props.index);
+    //   console.log(entry)
+    props.changeStep(props.index, 0, inView);
   }, [inView]);
 
   function renderDraftJS() {
@@ -35,7 +34,7 @@ function PublishedStep(props: PublishedStepProps) {
   let stepStyle = props.selected ? "Step--Selected" : "Step";
   return (
     <div ref={ref} className={StepStyles[stepStyle]}>
-      {/* <h1>{props.index}</h1> */}
+      <h1>{props.index}</h1>
       <div dangerouslySetInnerHTML={renderDraftJS()} />
     </div>
   );

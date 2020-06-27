@@ -37,11 +37,22 @@ type DraftPreviewProps = {
   steps: StepType[];
 };
 
+const stepsInView: { [stepIndex: number]: boolean } = {};
+
 const DraftPreview = (props: DraftPreviewProps) => {
   const [currentStep, updateStep] = useState(0);
 
-  function changeStep(newStep: number) {
-    updateStep(newStep);
+  function changeStep(newStep: number, yPos: number, entered: boolean) {
+    stepsInView[newStep] = entered;
+    console.log(stepsInView);
+    for (let step in stepsInView) {
+      console.log("checking", step, "is", stepsInView[step]);
+      if (stepsInView[step]) {
+        updateStep(Number(step));
+        console.log("updating at step", step);
+        break;
+      }
+    }
   }
 
   return (
@@ -52,7 +63,11 @@ const DraftPreview = (props: DraftPreviewProps) => {
       </Head>
       <main>
         <div className={appStyles.App}>
-          <Scrolling currentStep={currentStep} changeStep={changeStep} steps={props.steps} />
+          <Scrolling
+            currentStep={currentStep}
+            changeStep={changeStep}
+            steps={props.steps}
+          />
           <PublishedCodeEditor currentStep={currentStep} />
         </div>
       </main>

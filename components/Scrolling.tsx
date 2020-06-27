@@ -9,7 +9,7 @@ type StepType = {
 };
 
 type ScrollingProps = {
-  changeStep: (newStep: number) => void;
+  changeStep: (newStep: number, yPos: number, entered: boolean) => void;
   steps: StepType[];
   currentStep: number;
 };
@@ -29,18 +29,10 @@ export default class Scrolling extends Component<
     this.state = {};
   }
 
-  handleChange(inView: boolean, entry: IntersectionObserverEntry) {
-    console.log(entry);
-  }
-
   render() {
     let { steps, currentStep } = this.props;
     return (
-      <InView
-        as="div"
-        className={scrollingStyles["scrolling"]}
-        onChange={this.handleChange}
-      >
+      <div className={scrollingStyles["scrolling"]}>
         {steps ? (
           steps.map((step, index) => (
             <PublishedStep
@@ -55,7 +47,7 @@ export default class Scrolling extends Component<
         ) : (
           <div></div>
         )}
-      </InView>
+      </div>
     );
   }
 }
