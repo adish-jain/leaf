@@ -19,21 +19,28 @@ export async function getStaticPaths() {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  console.log(context);
-  let draftId = context.previewData.draftId;
-  let uid = context.previewData.uid;
-  let steps = await getUserStepsForDraft(uid, draftId);
+  if (context.preview) {
+    let draftId = context.previewData.draftId;
+    let uid = context.previewData.uid;
+    let steps = await getUserStepsForDraft(uid, draftId);
 
-  return {
-    props: {
-      steps,
-    },
-  };
+    return {
+      props: {
+        steps,
+      },
+    };
+  } else {
+    return {
+      props: {
+        steps: [],
+      },
+    };
+  }
 };
 
 type StepType = {
-  text: String;
-  id: String;
+  text: string;
+  id: string;
 };
 
 type DraftPreviewProps = {
