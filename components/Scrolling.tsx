@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import PublishedStep from "./PublishedStep";
 const scrollingStyles = require("../styles/Scrolling.module.scss");
 
-var shortid = require("shortid");
-
 type StepType = {
   text: string;
   id: string;
