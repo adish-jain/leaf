@@ -2,21 +2,11 @@ import React, { useState, Component } from "react";
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import Scrolling from "../../components/Scrolling";
-import PublishedCodeEditor from "../../components/PublishedCodeEditor";
+import Scrolling from "../components/Scrolling";
+import PublishedCodeEditor from "../components/PublishedCodeEditor";
 
-import { getUserFromToken, getUserStepsForDraft } from "../../lib/userUtils";
-const appStyles = require("../../styles/App.module.scss");
-
-export async function getStaticPaths() {
-  return {
-    paths: [
-      // { params: { previewId: "testing" } },
-      // { params: { previewId: "testing124" } },
-    ],
-    fallback: true,
-  };
-}
+import { getUserStepsForDraft } from "../lib/userUtils";
+const appStyles = require("../styles/App.module.scss");
 
 export const getStaticProps: GetStaticProps = async (context) => {
   if (context.preview) {
@@ -48,11 +38,7 @@ type DraftPreviewProps = {
 };
 
 const DraftPreview = (props: DraftPreviewProps) => {
-  const router = useRouter();
   const [currentStep, updateStep] = useState(0);
-
-  // Draft ID
-  const { preview_id } = router.query;
 
   function changeStep(newStep: number) {
     updateStep(newStep);

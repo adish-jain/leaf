@@ -14,12 +14,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   console.log(req.query);
   console.log("draftId is", draftId);
 
-  let token = createToken();
+  //   let token = createToken();
   res.setPreviewData({
     uid,
     draftId: draftId,
   });
-  res.writeHead(307, { Location: "/preview/" + token });
+  res.writeHead(307, { Location: "/preview" });
   res.end("Preview mode enabled");
 };
 
