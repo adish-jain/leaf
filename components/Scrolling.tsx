@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PublishedStep from "./PublishedStep";
 const scrollingStyles = require("../styles/Scrolling.module.scss");
+import { InView } from "react-intersection-observer";
 
 type StepType = {
   text: string;
@@ -8,24 +9,45 @@ type StepType = {
 };
 
 type ScrollingProps = {
-  changeStep: (newStep: number) => void;
+  changeStep: (newStep: number, yPos: number, entered: boolean) => void;
   steps: StepType[];
+  currentStep: number;
 };
 
-export default class Scrolling extends Component<ScrollingProps> {
-  // myRef: React.CreateRef;
-  private myRef = React.createRef<HTMLDivElement>();
+type ScrollingState = {
+  height: number;
+};
 
+export default class Scrolling extends Component<
+  ScrollingProps,
+  ScrollingState
+> {
   constructor(props: any) {
     super(props);
 
     this.state = {
-      inView: 0,
+      height: 0,
     };
   }
 
+  componentDidMount() {
+    this.updateWindowDimensions();
+    window.addEventListener("resize", this.updateWindowDimensions);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.updateWindowDimensions);
+  }
+
+  updateWindowDimensions() {
+    this.setState({
+      height: window.innerHeight,
+    });
+  }
+
   render() {
-    let { steps } = this.props;
+    let { steps, currentStep } = this.props;
+    let { height } = this.state;
     return (
       <div className={scrollingStyles["scrolling"]}>
         {steps ? (
@@ -35,12 +57,25 @@ export default class Scrolling extends Component<ScrollingProps> {
               key={step.id}
               changeStep={this.props.changeStep}
               text={step.text}
+              selected={index === currentStep}
+              height={height}
             />
           ))
         ) : (
           <div></div>
         )}
+        <BufferDiv height={height} />
       </div>
     );
   }
+}
+
+function BufferDiv(props: { height: number }) {
+  return (
+    <div
+      style={{
+        height: props.height - 300,
+      }}
+    ></div>
+  );
 }

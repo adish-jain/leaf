@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Controlled as CodeMirror2 } from "react-codemirror2";
 import { filenames, Language, reactString, jsxString } from "./code_string";
-import { dark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 // require('codemirror/mode/xml/xml');
 // require('codemirror/mode/javascript/javascript');
@@ -50,7 +49,7 @@ export default class PublishedCodeMirror extends Component<
   componentDidUpdate(prevProps: CodeMirrorProps) {
     let { currentStep } = this.props;
 
-    console.log("step was", prevProps.currentStep, "step now is", currentStep);
+    // console.log("step was", prevProps.currentStep, "step now is", currentStep);
 
     this.instance.markText(
       { line: currentStep, ch: 0 },

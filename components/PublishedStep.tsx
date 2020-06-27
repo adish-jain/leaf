@@ -1,42 +1,92 @@
 import React, { Component, useEffect } from "react";
-const StepStyles = require("../styles/Step.module.scss");
-import { InView } from "react-intersection-observer";
-import { useInView } from "react-intersection-observer";
-import next from "next";
+const StepStyles = require("../styles/PublishedStep.module.scss");
+import { useInView, InView } from "react-intersection-observer";
 const draftToHtml = require("draftjs-to-html");
 
 type PublishedStepProps = {
   index: number;
-  changeStep: (newStep: number) => void;
+  changeStep: (newStep: number, yPos: number, entered: boolean) => void;
   text: string;
+  selected: boolean;
+  height: number;
 };
 
-function PublishedStep(props: PublishedStepProps) {
-  const [ref, inView, entry] = useInView({
-    /* Optional options */
-    // root: props.root,
-    threshold: 1,
-    rootMargin: "10% 0% -50% 0%",
-  });
+type PublishedStepState = {
+  stepHeight: number;
+};
 
-  useEffect(() => {
-    if (inView) {
-      props.changeStep(props.index);
-    }
-  }, [inView]);
+class PublishedStep extends Component<PublishedStepProps, PublishedStepState> {
+  private myRef = React.createRef<HTMLDivElement>();
 
-  function renderDraftJS() {
-    let rawContentState = JSON.parse(props.text);
+  constructor(props: PublishedStepProps) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+    this.scrollIntoView = this.scrollIntoView.bind(this);
+    this.calculateThreshold = this.calculateThreshold.bind(this);
+    this.myRef = React.createRef();
+
+    this.state = {
+      stepHeight: 0,
+    };
+  }
+
+  componentDidMount() {
+    this.setState({
+      stepHeight: this.myRef.current!.clientHeight,
+    });
+  }
+
+  renderDraftJS() {
+    let rawContentState = JSON.parse(this.props.text);
     let markup = draftToHtml(rawContentState);
     return { __html: markup };
   }
 
-  return (
-    <div ref={ref} className={StepStyles.Step}>
-      {/* <h1>{props.index}</h1> */}
-      <div dangerouslySetInnerHTML={renderDraftJS()} />
-    </div>
-  );
+  handleChange(inView: boolean, entry: IntersectionObserverEntry) {
+    this.props.changeStep(this.props.index, 0, inView);
+  }
+
+  scrollIntoView() {
+    this.myRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+      inline: "start",
+    });
+  }
+
+  calculateThreshold() {
+    let { stepHeight } = this.state;
+    let { height } = this.props;
+
+    // handle case where a step is larger than viewport
+    if (stepHeight / height >= 1) {
+      return height / stepHeight;
+    }
+    return 1;
+  }
+
+  render() {
+    let { selected, index } = this.props;
+
+    let stepStyle = selected ? "Step--Selected" : "Step";
+
+    return (
+      <div ref={this.myRef} onClick={this.scrollIntoView}>
+        <InView
+          threshold={this.calculateThreshold()}
+          rootMargin={"0% 0% 0% 0%"}
+          onChange={this.handleChange}
+        >
+          {({ inView, ref, entry }) => (
+            <div ref={ref} className={StepStyles[stepStyle]}>
+              <h1>{index}</h1>
+              <div dangerouslySetInnerHTML={this.renderDraftJS()} />
+            </div>
+          )}
+        </InView>
+      </div>
+    );
+  }
 }
 
 export default PublishedStep;
