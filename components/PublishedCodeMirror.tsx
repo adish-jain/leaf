@@ -50,7 +50,7 @@ export default class PublishedCodeMirror extends Component<
   componentDidUpdate(prevProps: CodeMirrorProps) {
     let { currentStep } = this.props;
 
-    console.log("step was", prevProps.currentStep, "step now is", currentStep);
+    // console.log("step was", prevProps.currentStep, "step now is", currentStep);
 
     this.instance.markText(
       { line: currentStep, ch: 0 },

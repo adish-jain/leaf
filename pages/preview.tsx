@@ -52,7 +52,7 @@ const DraftPreview = (props: DraftPreviewProps) => {
       </Head>
       <main>
         <div className={appStyles.App}>
-          <Scrolling changeStep={changeStep} steps={props.steps} />
+          <Scrolling currentStep={currentStep} changeStep={changeStep} steps={props.steps} />
           <PublishedCodeEditor currentStep={currentStep} />
         </div>
       </main>

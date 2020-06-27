@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import PublishedStep from "./PublishedStep";
 const scrollingStyles = require("../styles/Scrolling.module.scss");
-
-var shortid = require("shortid");
+import { InView } from "react-intersection-observer";
 
 type StepType = {
   text: string;
@@ -12,24 +11,36 @@ type StepType = {
 type ScrollingProps = {
   changeStep: (newStep: number) => void;
   steps: StepType[];
+  currentStep: number;
 };
 
-export default class Scrolling extends Component<ScrollingProps> {
+type ScrollingState = {};
+
+export default class Scrolling extends Component<
+  ScrollingProps,
+  ScrollingState
+> {
   // myRef: React.CreateRef;
   private myRef = React.createRef<HTMLDivElement>();
 
   constructor(props: any) {
     super(props);
 
-    this.state = {
-      inView: 0,
-    };
+    this.state = {};
+  }
+
+  handleChange(inView: boolean, entry: IntersectionObserverEntry) {
+    console.log(entry);
   }
 
   render() {
-    let { steps } = this.props;
+    let { steps, currentStep } = this.props;
     return (
-      <div className={scrollingStyles["scrolling"]}>
+      <InView
+        as="div"
+        className={scrollingStyles["scrolling"]}
+        onChange={this.handleChange}
+      >
         {steps ? (
           steps.map((step, index) => (
             <PublishedStep
@@ -37,12 +48,14 @@ export default class Scrolling extends Component<ScrollingProps> {
               key={step.id}
               changeStep={this.props.changeStep}
               text={step.text}
+              currentStep={currentStep}
+              selected={index === currentStep}
             />
           ))
         ) : (
           <div></div>
         )}
-      </div>
+      </InView>
     );
   }
 }

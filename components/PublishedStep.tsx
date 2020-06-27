@@ -1,14 +1,14 @@
 import React, { Component, useEffect } from "react";
-const StepStyles = require("../styles/Step.module.scss");
-import { InView } from "react-intersection-observer";
+const StepStyles = require("../styles/PublishedStep.module.scss");
 import { useInView } from "react-intersection-observer";
-import next from "next";
 const draftToHtml = require("draftjs-to-html");
 
 type PublishedStepProps = {
   index: number;
   changeStep: (newStep: number) => void;
   text: string;
+  selected: boolean;
+  currentStep: number;
 };
 
 function PublishedStep(props: PublishedStepProps) {
@@ -22,6 +22,7 @@ function PublishedStep(props: PublishedStepProps) {
   useEffect(() => {
     if (inView) {
       props.changeStep(props.index);
+      //   console.log(entry);
     }
   }, [inView]);
 
@@ -31,8 +32,9 @@ function PublishedStep(props: PublishedStepProps) {
     return { __html: markup };
   }
 
+  let stepStyle = props.selected ? "Step--Selected" : "Step";
   return (
-    <div ref={ref} className={StepStyles.Step}>
+    <div ref={ref} className={StepStyles[stepStyle]}>
       {/* <h1>{props.index}</h1> */}
       <div dangerouslySetInnerHTML={renderDraftJS()} />
     </div>

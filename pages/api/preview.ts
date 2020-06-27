@@ -6,13 +6,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   let cookies = req.cookies;
   //   console.log(cookies);
   let userToken = cookies.userToken;
-  console.log("usertoken is", userToken);
   // get draft ID
   // get User email
   let { userRecord, uid } = await getUser(req, res);
   let { draftId } = req.query;
-  console.log(req.query);
-  console.log("draftId is", draftId);
 
   //   let token = createToken();
   res.setPreviewData({
