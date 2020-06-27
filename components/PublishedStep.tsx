@@ -8,12 +8,10 @@ type PublishedStepProps = {
   changeStep: (newStep: number, yPos: number, entered: boolean) => void;
   text: string;
   selected: boolean;
-  currentStep: number;
+  height: number;
 };
 
 type PublishedStepState = {
-  width: number;
-  height: number;
   stepHeight: number;
 };
 
@@ -28,25 +26,12 @@ class PublishedStep extends Component<PublishedStepProps, PublishedStepState> {
     this.myRef = React.createRef();
 
     this.state = {
-      width: 0,
-      height: 0,
       stepHeight: 0,
     };
   }
 
   componentDidMount() {
-    this.updateWindowDimensions();
-    window.addEventListener("resize", this.updateWindowDimensions);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("resize", this.updateWindowDimensions);
-  }
-
-  updateWindowDimensions() {
     this.setState({
-      width: window.innerWidth,
-      height: window.innerHeight,
       stepHeight: this.myRef.current!.clientHeight,
     });
   }
@@ -62,7 +47,6 @@ class PublishedStep extends Component<PublishedStepProps, PublishedStepState> {
   }
 
   scrollIntoView() {
-    console.log(this.myRef.current);
     this.myRef.current?.scrollIntoView({
       behavior: "smooth",
       block: "start",
@@ -71,7 +55,8 @@ class PublishedStep extends Component<PublishedStepProps, PublishedStepState> {
   }
 
   calculateThreshold() {
-    let { stepHeight, height } = this.state;
+    let { stepHeight } = this.state;
+    let { height } = this.props;
 
     // handle case where a step is larger than viewport
     if (stepHeight / height >= 1) {

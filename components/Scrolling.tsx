@@ -14,21 +14,40 @@ type ScrollingProps = {
   currentStep: number;
 };
 
-type ScrollingState = {};
+type ScrollingState = {
+  height: number;
+};
 
 export default class Scrolling extends Component<
   ScrollingProps,
   ScrollingState
 > {
-  
   constructor(props: any) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      height: 0,
+    };
+  }
+
+  componentDidMount() {
+    this.updateWindowDimensions();
+    window.addEventListener("resize", this.updateWindowDimensions);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.updateWindowDimensions);
+  }
+
+  updateWindowDimensions() {
+    this.setState({
+      height: window.innerHeight,
+    });
   }
 
   render() {
     let { steps, currentStep } = this.props;
+    let { height } = this.state;
     return (
       <div className={scrollingStyles["scrolling"]}>
         {steps ? (
@@ -38,13 +57,18 @@ export default class Scrolling extends Component<
               key={step.id}
               changeStep={this.props.changeStep}
               text={step.text}
-              currentStep={currentStep}
               selected={index === currentStep}
+              height={height}
             />
           ))
         ) : (
           <div></div>
         )}
+        <div
+          style={{
+            height: height - 300,
+          }}
+        ></div>
       </div>
     );
   }
