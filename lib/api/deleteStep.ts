@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebaseAdmin, initFirebase } from "../initFirebase";
 const admin = require("firebase-admin");
-import { getUser } from "../userUtils";
+import { getUser, getUserStepsForDraft } from "../userUtils";
 
 let db = admin.firestore();
 initFirebaseAdmin();
@@ -39,7 +39,7 @@ async function deleteStepHandler(req: NextApiRequest, res: NextApiResponse) {
   db.collection("users").doc(uid).collection("drafts").doc(draftId).collection("steps").doc(stepId).delete(); 
 
   res.statusCode = 200;
-  let results = "";
+  let results = await getUserStepsForDraft(uid, draftId);
   res.send(results);
   return;
 }
