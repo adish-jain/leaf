@@ -13,7 +13,7 @@ global.Headers = fetch.Headers;
 const appStyles = require("../../styles/App.module.scss");
 
 const DraftView = () => {
-  const { authenticated, error, loading } = useLoggedIn("/", true);
+  const { authenticated, error, loading } = useLoggedIn();
   const router = useRouter();
 
   // Draft ID

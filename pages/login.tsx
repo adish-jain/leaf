@@ -12,7 +12,7 @@ const loginStyles = require("../styles/Login.module.scss");
 
 export default function Login() {
   const router = useRouter();
-  const { authenticated, error, loading } = useLoggedIn("/landing", false);
+  const { authenticated, error, loading } = useLoggedIn();
 
   const [email, changeEmail] = useState("");
   const [password, changePassword] = useState("");

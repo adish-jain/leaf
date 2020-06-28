@@ -22,7 +22,7 @@ const fetcher = (url: string) =>
 
 export default function Landing() {
   const initialData: any = [];
-  const { authenticated, error, loading } = useLoggedIn("/landing", true);
+  const { authenticated, error, loading } = useLoggedIn();
   let { data: drafts } = useSWR(
     authenticated ? "/api/endpoint" : null,
     fetcher,

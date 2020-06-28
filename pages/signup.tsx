@@ -9,7 +9,7 @@ const loginStyles = require("../styles/Login.module.scss");
 
 export default function SignUp() {
   const router = useRouter();
-  const { authenticated, error } = useLoggedIn("/landing", false);
+  const { authenticated, error } = useLoggedIn();
 
   const [email, changeEmail] = useState("");
   const [password, changePassword] = useState("");

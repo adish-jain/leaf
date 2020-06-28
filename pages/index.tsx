@@ -12,7 +12,7 @@ const appStyles = require("../styles/App.module.scss");
 export default function Pages() {
   const router = useRouter();
 
-  const { authenticated, error, loading } = useLoggedIn("/landing", false);
+  const { authenticated, error, loading } = useLoggedIn();
 
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
