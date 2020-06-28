@@ -4,7 +4,11 @@ initFirebaseAdmin();
 import fetch from "isomorphic-fetch";
 import { NextApiRequest, NextApiResponse } from "next";
 let db = admin.firestore();
-import { setTokenCookies } from "./cookieUtils";
+import {
+  setTokenCookies,
+  updateResponseTokens,
+  removeTokenCookies,
+} from "./cookieUtils";
 
 type GetUserType = {
   uid: string;
@@ -19,11 +23,11 @@ export async function getUser(
 ): Promise<GetUserType> {
   let cookies = req.cookies;
   let userToken = cookies.userToken;
+  // console.log("usertoken is", userToken);
   let refreshToken = cookies.refreshToken;
   try {
     let decodedToken = await admin.auth().verifyIdToken(userToken);
     let uid = decodedToken.uid;
-
     let userRecord = await admin.auth().getUser(uid);
     updateResponseTokens(res, userToken, refreshToken);
     return {
@@ -35,6 +39,7 @@ export async function getUser(
     console.log(error);
     switch (error.code) {
       case "auth/argument-error":
+        console.log("returning argument error");
         return {
           uid: "",
           userRecord: undefined,
@@ -42,11 +47,17 @@ export async function getUser(
       case "auth/id-token-expired":
         console.log("refreshing token");
         let updatedUserToken = await refreshJWT(refreshToken);
-        req.cookies.userToken = updatedUserToken;
-        updateResponseTokens(res, updatedUserToken, refreshToken);
+        console.log("updated user token is", updatedUserToken);
+        let tokens = ["refreshToken", "userToken"];
+        // remove old tokens
+        removeTokenCookies(res, tokens);
+        res = updateResponseTokens(res, updatedUserToken, refreshToken);
         // try again with refreshed token
+        req.cookies.userToken = updatedUserToken;
+        req.cookies.refreshToken = refreshToken;
         return getUser(req, res);
       default:
+        console.log("returning default");
         return {
           uid: "",
           userRecord: undefined,
@@ -63,38 +74,22 @@ export async function refreshJWT(refreshToken: string) {
   try {
     let response = await fetch(refreshTokenURL, {
       method: "POST",
-      headers: new Headers({
-        "Content-Type": "application/x-www-form-urlencoded",
-      }),
-      body: "grant_type=refresh_token&refresh_token=" + refreshToken,
+      body: JSON.stringify({
+        grant_type: 'refresh_token',
+        refresh_token: refreshToken
+      })
     });
 
     let resJSON = await response.json();
     let new_token = resJSON.id_token;
+    console.log(resJSON);
+    console.log("new token is", new_token);
     return new_token;
   } catch (error) {
+    console.log("errored while waiting for refresh token");
     console.log(error);
     return "";
   }
-}
-
-export function updateResponseTokens(
-  res: NextApiResponse,
-  userToken: string,
-  refreshToken: string
-) {
-  let tokens = [
-    {
-      tokenName: "userToken",
-      token: userToken,
-    },
-    {
-      tokenName: "refreshToken",
-      token: refreshToken,
-    },
-  ];
-  setTokenCookies(res, tokens);
-  return res;
 }
 
 export async function getUserDrafts(uid: string) {
@@ -140,8 +135,8 @@ export async function getUserStepsForDraft(uid: string, draftId: string) {
         resultsJSON.id = result.id;
         results.push({
           text: resultsJSON.text,
-          id: resultsJSON.id
-        })
+          id: resultsJSON.id,
+        });
       });
       return results;
     })

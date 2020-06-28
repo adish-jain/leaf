@@ -57,3 +57,22 @@ export function getTokenCookie(req: NextApiRequest) {
   const cookies = parseCookies(req);
   return cookies[TOKEN_NAME];
 }
+
+export function updateResponseTokens(
+  res: NextApiResponse,
+  userToken: string,
+  refreshToken: string
+) {
+  let tokens = [
+    {
+      tokenName: "userToken",
+      token: userToken,
+    },
+    {
+      tokenName: "refreshToken",
+      token: refreshToken,
+    },
+  ];
+  setTokenCookies(res, tokens);
+  return res;
+}
