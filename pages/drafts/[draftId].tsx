@@ -42,8 +42,6 @@ const DraftView = () => {
     { initialData, revalidateOnMount: true }
   );
 
-  // console.log(steps);
-
   // this page should look similar to how pages/article looks right now
   return (
     <div className="container">

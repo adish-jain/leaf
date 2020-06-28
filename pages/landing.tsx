@@ -80,12 +80,10 @@ export default function Landing() {
             __html: `
           if (document.cookie) {
             if (!document.cookie.includes('authed')) {
-              console.log("redirecting to index because no auth");
               window.location.href = "/"
             }
           }
           else {
-            console.log("redirecting to index because no cookie");
             window.location.href = '/'
           }
         `,

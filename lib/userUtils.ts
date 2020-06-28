@@ -22,7 +22,6 @@ export async function getUser(
 ): Promise<GetUserType> {
   let cookies = req.cookies;
   let userToken = cookies.userToken;
-  // console.log("usertoken is", userToken);
   let refreshToken = cookies.refreshToken;
   try {
     let decodedToken = await admin.auth().verifyIdToken(userToken);
@@ -38,7 +37,6 @@ export async function getUser(
     console.log(error);
     switch (error.code) {
       case "auth/argument-error":
-        console.log("returning argument error");
         return {
           uid: "",
           userRecord: undefined,
@@ -51,7 +49,6 @@ export async function getUser(
         handleLoginCookies(res, updatedUserToken, refreshToken);
         return getUser(req, res);
       default:
-        console.log("returning default");
         return {
           uid: "",
           userRecord: undefined,
@@ -101,11 +98,8 @@ export async function refreshJWT(refreshToken: string) {
 
     let resJSON = await response.json();
     let new_token = resJSON.id_token;
-    console.log(resJSON);
-    console.log("new token is", new_token);
     return new_token;
   } catch (error) {
-    console.log("errored while waiting for refresh token");
     console.log(error);
     return "";
   }

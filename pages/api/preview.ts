@@ -4,7 +4,6 @@ var crypto = require("crypto");
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   let cookies = req.cookies;
-  //   console.log(cookies);
   let userToken = cookies.userToken;
   // get draft ID
   // get User email
