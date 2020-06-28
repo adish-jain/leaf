@@ -9,7 +9,7 @@
   border: 1px solid #edece9;
   border-radius: 8px;
   box-sizing: border-box;
-  color: #A1A19C;
+  color: #a1a19c;
 
   cursor: pointer;
 
@@ -19,4 +19,8 @@
     background: #ffffff;
     color: #000000;
   }
+}
+
+.InnerHTML {
+  word-break: break-all;
 }
