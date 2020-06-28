@@ -22,7 +22,7 @@ const fetcher = (url: string) =>
 
 export default function Landing() {
   const initialData: any = [];
-  const { authenticated, error, loading } = useLoggedIn("/", true);
+  const { authenticated, error, loading } = useLoggedIn("/landing", true);
   let { data: drafts } = useSWR(
     authenticated ? "/api/endpoint" : null,
     fetcher,
@@ -75,6 +75,22 @@ export default function Landing() {
       <Head>
         <title>Leaf</title>
         <link rel="icon" href="/favicon.ico" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+          if (document.cookie) {
+            if (!document.cookie.includes('authed')) {
+              console.log("redirecting to index because no auth");
+              window.location.href = "/"
+            }
+          }
+          else {
+            console.log("redirecting to index because no cookie");
+            window.location.href = '/'
+          }
+        `,
+          }}
+        />
       </Head>
       <main>
         <Header />

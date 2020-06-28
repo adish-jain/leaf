@@ -50,6 +50,20 @@ const DraftView = () => {
       <Head>
         <title>Code Tutorials</title>
         <link rel="icon" href="/favicon.ico" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+          if (document.cookie) {
+            if (!document.cookie.includes('authed')) {
+              window.location.href = "/"
+            }
+          }
+          else {
+            window.location.href = '/'
+          }
+        `,
+          }}
+        />
       </Head>
       <main>
         <div className={appStyles.App}>

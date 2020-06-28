@@ -72,6 +72,15 @@ export default function Login() {
       <Head>
         <title>Login</title>
         <link rel="icon" href="/favicon.ico" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+          if (document.cookie && document.cookie.includes('authed')) {
+            window.location.href = "/landing"
+          }
+        `,
+          }}
+        />
       </Head>
       <main className={loginStyles.LoginMain}>
         <div className={loginStyles.Logo}></div>

@@ -1,8 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { removeTokenCookies } from "../../lib/cookieUtils";
+import { handleLogoutCookies } from "../../lib/userUtils";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  let tokens = ["refreshToken", "userToken"];
-  removeTokenCookies(res, tokens);
+  handleLogoutCookies(res);
   res.status(200).end();
 };

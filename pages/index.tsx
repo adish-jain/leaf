@@ -19,15 +19,20 @@ export default function Pages() {
     router.push("/article");
   };
 
-  if (loading) {
-    return <div>Loading</div>;
-  }
-
   return (
     <div className="container">
       <Head>
         <title>Leaf</title>
         <link rel="icon" href="/favicon.ico" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+          if (document.cookie && document.cookie.includes('authed')) {
+            window.location.href = "/landing"
+          }
+        `,
+          }}
+        />
       </Head>
       <main>
         <div>
