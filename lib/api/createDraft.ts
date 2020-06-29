@@ -17,7 +17,7 @@ export default async function createDraftHandler(
     title: "Untitled",
   };
 
-  db.collection("users").doc(uid).collection("drafts").add(newDraft);
+  await db.collection("users").doc(uid).collection("drafts").add(newDraft);
 
   let drafts = await getUserDrafts(uid);
   res.statusCode = 200;

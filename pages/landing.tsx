@@ -8,6 +8,15 @@ const landingStyles = require("../styles/Landing.module.scss");
 
 import { useLoggedIn, logOut } from "../lib/UseLoggedIn";
 
+type DraftType = {
+  id: string;
+  title: string;
+  createdAt: {
+    _nanoseconds: number;
+    _seconds: number;
+  };
+};
+
 const rawData = {
   requestedAPI: "get_drafts",
 };
@@ -21,12 +30,15 @@ const fetcher = (url: string) =>
   fetch(url, myRequest).then((res: any) => res.json());
 
 export default function Landing() {
-  const initialData: any = [];
+  const initialData: DraftType[] = [];
   const { authenticated, error, loading } = useLoggedIn();
-  let { data: drafts } = useSWR(
+  let { data: drafts } = useSWR<DraftType[]>(
     authenticated ? "/api/endpoint" : null,
     fetcher,
-    { initialData, revalidateOnMount: true }
+    {
+      initialData,
+      revalidateOnMount: true,
+    }
   );
 
   async function createNewPost() {
@@ -38,7 +50,7 @@ export default function Landing() {
       }),
     }).then(async (res: any) => {
       let updatedDrafts = await res.json();
-      mutate("/api/endpoint", updatedDrafts);
+      mutate("/api/endpoint", updatedDrafts, false);
       let new_draft_id = updatedDrafts[0].id;
       openDraft(new_draft_id);
     });
@@ -52,6 +64,21 @@ export default function Landing() {
     event: React.MouseEvent<HTMLButtonElement>,
     draft_id: string
   ) {
+
+    // helper function to remove a draft before API call finishes
+    function removeSpecificDraft() {
+      let searchIndex = 0;
+      for (let i = 0; i < drafts!.length; i++) {
+        if (drafts![i].id === draft_id) {
+          searchIndex = i;
+          break;
+        }
+      }
+      let cloneDrafts = drafts?.slice();
+      cloneDrafts!.splice(searchIndex, 1);
+      mutate("/api/endpoint", cloneDrafts, false);
+    }
+
     const requestBody = {
       requestedAPI: "delete_draft",
       draft_id: draft_id,
@@ -63,9 +90,10 @@ export default function Landing() {
       body: JSON.stringify(requestBody),
     };
 
+    removeSpecificDraft();
+
     fetch("api/endpoint", myRequest).then(async (res: any) => {
-      let resJSON = await res.json();
-      let updatedDrafts = resJSON;
+      let updatedDrafts = await res.json();
       mutate("/api/endpoint", updatedDrafts);
     });
   }
@@ -91,47 +119,83 @@ export default function Landing() {
         />
       </Head>
       <main>
-        <Header />
-
+        <LandingHeader />
         <div className={landingStyles.landing}>
-          <div className={landingStyles.left}>
-            <div className={landingStyles["left-header"]}>
-              <h1>Your Drafts</h1>
-              <div
-                onClick={createNewPost}
-                className={landingStyles["create-button-plus"]}
-              >
-                +
-              </div>
-            </div>
-            {drafts ? <div></div> : <div></div>}
-            <hr />
-
-            {drafts ? (
-              drafts.map((draft: any) => (
-                <Draft
-                  deleteDraft={deleteDraft}
-                  key={draft.id}
-                  title={draft.title}
-                  id={draft.id}
-                  openDraft={openDraft}
-                />
-              ))
-            ) : (
-              <div>
-                <p>You have no drafts.</p>
-                <button
-                  className={landingStyles["create-button"]}
-                  onClick={createNewPost}
-                >
-                  Create New Draft
-                </button>
-              </div>
-            )}
-          </div>
+          <YourDrafts
+            deleteDraft={deleteDraft}
+            openDraft={openDraft}
+            drafts={drafts}
+            createNewPost={createNewPost}
+          />
           <NonePublished />
         </div>
       </main>
+    </div>
+  );
+}
+
+function YourDrafts(props: {
+  drafts: DraftType[] | undefined;
+  createNewPost: () => void;
+  deleteDraft: (
+    e: React.MouseEvent<HTMLButtonElement>,
+    draft_id: string
+  ) => void;
+  openDraft: (id: string) => void;
+}) {
+  function renderDrafts() {
+    let { drafts } = props;
+    if (drafts === undefined) {
+      return (
+        <div>
+          <p>You have no drafts.</p>
+          <button
+            className={landingStyles["create-button"]}
+            onClick={createNewPost}
+          >
+            Create New Draft
+          </button>
+        </div>
+      );
+    }
+    return drafts.map((draft: any) => (
+      <Draft
+        deleteDraft={deleteDraft}
+        key={draft.id}
+        title={draft.title}
+        id={draft.id}
+        openDraft={openDraft}
+      />
+    ));
+  }
+
+  let { drafts, deleteDraft, openDraft, createNewPost } = props;
+  return (
+    <div className={landingStyles.left}>
+      <YourDraftsHeader createNewPost={createNewPost} drafts={drafts} />
+      {renderDrafts()}
+    </div>
+  );
+}
+
+function YourDraftsHeader(props: {
+  createNewPost: () => void;
+  drafts: DraftType[] | undefined;
+}) {
+  let { createNewPost, drafts } = props;
+  return (
+    <div>
+      <div className={landingStyles["left-header"]}>
+        <h1>Your Drafts</h1>
+        <div
+          onClick={createNewPost}
+          className={landingStyles["create-button-plus"]}
+        >
+          +
+        </div>
+      </div>
+      {drafts ? <div></div> : <div></div>}
+      <hr />
     </div>
   );
 }
@@ -143,7 +207,7 @@ type DraftProps = {
   deleteDraft: (
     e: React.MouseEvent<HTMLButtonElement>,
     draft_id: string
-  ) => any;
+  ) => void;
   openDraft: (id: string) => void;
 };
 
@@ -160,7 +224,7 @@ function Draft(props: DraftProps) {
   );
 }
 
-function Header() {
+function LandingHeader() {
   return (
     <div className={landingStyles.header}>
       <div className={landingStyles.settings}></div>
