@@ -1,8 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import useSWR from "swr";
 import { initFirebase } from "../../lib/initFirebase";
-import { setTokenCookies } from "../../lib/cookieUtils";
-import { serialize, parse } from "cookie";
 
 import handleLogin from "../../lib/api/login";
 import handleSignup from "../../lib/api/signup";

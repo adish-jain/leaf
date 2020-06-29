@@ -5,9 +5,10 @@ import StoredStep from "./StoredStep";
 const fetch = require("node-fetch");
 global.Headers = fetch.Headers;
 import { convertToRaw, convertFromRaw } from "draft-js";
+import Router from "next/router";
 const descriptionStyles = require("../styles/Description.module.scss");
 
-var shortId = require('shortid');
+var shortId = require("shortid");
 
 type PublishingProps = {
   draftId: any;
@@ -27,7 +28,10 @@ enum PublishingComponentType {
   step = "step",
 }
 
-export default class Publishing extends Component<PublishingProps, PublishingState> {
+export default class Publishing extends Component<
+  PublishingProps,
+  PublishingState
+> {
   constructor(props: PublishingProps) {
     super(props);
 
@@ -65,9 +69,8 @@ export default class Publishing extends Component<PublishingProps, PublishingSta
       headers: new Headers({ "Content-Type": "application/json" }),
     })
       .then((res: any) => {
-        console.log(res);
         if (res.redirected) {
-          window.location.href = res.url;
+          Router.push("/preview");
         }
         // HTTP 301 response
       })
@@ -93,11 +96,25 @@ export default class Publishing extends Component<PublishingProps, PublishingSta
         <div className={descriptionStyles.header}>
           <h1>Title</h1>
         </div>
-        {this.props.storedSteps.map(storedStep => {
-          return <StoredStep id={storedStep.id} draftId={this.props.draftId} text={JSON.parse(storedStep.text)} key={storedStep.id}/>
+        {this.props.storedSteps.map((storedStep) => {
+          return (
+            <StoredStep
+              id={storedStep.id}
+              draftId={this.props.draftId}
+              text={JSON.parse(storedStep.text)}
+              key={storedStep.id}
+            />
+          );
         })}
-        {this.state.steps.map(step => {
-          return <Step closeStep={this.closeStep} id={step} draftId={this.props.draftId} key={step} />;
+        {this.state.steps.map((step) => {
+          return (
+            <Step
+              closeStep={this.closeStep}
+              id={step}
+              draftId={this.props.draftId}
+              key={step}
+            />
+          );
         })}
         <NewStep addStep={this.addStep} />
       </div>

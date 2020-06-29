@@ -31,8 +31,6 @@ async function updateStepHandler(req: NextApiRequest, res: NextApiResponse) {
     return;
   }
 
-  // console.log("user is logged in");
-
   // update text in firebase
   db.collection("users").doc(uid).collection("drafts").doc(draftId).collection("steps").doc(stepId).update({"text": text}); 
   

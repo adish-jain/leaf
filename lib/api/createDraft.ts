@@ -2,7 +2,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebaseAdmin } from "../initFirebase";
 const admin = require("firebase-admin");
 import { getUser, getUserDrafts } from "../userUtils";
-import { updateResponseTokens } from "../../lib/userUtils";
 initFirebaseAdmin();
 
 let db = admin.firestore();

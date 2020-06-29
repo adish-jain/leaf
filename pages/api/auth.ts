@@ -6,14 +6,12 @@ const firebase = require("firebase/app");
 import fetch from "isomorphic-fetch";
 import { getUser, refreshJWT } from "../../lib/userUtils";
 
-import { setTokenCookies } from "../../lib/cookieUtils";
 
 initFirebaseAdmin();
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   let cookies = req.cookies;
   let userToken = cookies.userToken;
-  let refreshToken = cookies.refreshToken;
 
   // If user is logged out
   if (userToken === undefined) {

@@ -82,7 +82,6 @@ export default class PublishedCodeMirror extends Component<
             // },
           }}
           onSelection={(editor, data) => {
-            console.log(editor);
           }}
           editorDidMount={(editor) => {
             this.instance = editor;

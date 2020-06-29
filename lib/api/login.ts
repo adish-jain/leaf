@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebase } from "../../lib/initFirebase";
-import { setTokenCookies } from "../../lib/cookieUtils";
-import { updateResponseTokens } from "../../lib/userUtils";
+import { handleLoginCookies,  } from "../../lib/userUtils";
 
 const firebase = require("firebase/app");
 initFirebase();
@@ -21,7 +20,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       signedin_user.getIdToken().then(function (idToken: string) {
         userToken = idToken;
 
-        updateResponseTokens(res, userToken, refreshToken);
+        handleLoginCookies(res, userToken, refreshToken);
         res.status(200).end();
         return;
       });

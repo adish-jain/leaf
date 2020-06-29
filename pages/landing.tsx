@@ -31,7 +31,7 @@ const fetcher = (url: string) =>
 
 export default function Landing() {
   const initialData: DraftType[] = [];
-  const { authenticated, error, loading } = useLoggedIn("/", true);
+  const { authenticated, error, loading } = useLoggedIn();
   let { data: drafts } = useSWR<DraftType[]>(
     authenticated ? "/api/endpoint" : null,
     fetcher,
@@ -103,6 +103,20 @@ export default function Landing() {
       <Head>
         <title>Leaf</title>
         <link rel="icon" href="/favicon.ico" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+          if (document.cookie) {
+            if (!document.cookie.includes('authed')) {
+              window.location.href = "/"
+            }
+          }
+          else {
+            window.location.href = '/'
+          }
+        `,
+          }}
+        />
       </Head>
       <main>
         <LandingHeader />
