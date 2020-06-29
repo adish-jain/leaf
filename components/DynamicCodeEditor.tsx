@@ -34,12 +34,12 @@ export default class CodeMirror extends Component<
   CodeMirrorProps,
   CodeMirrorState
 > {
-  instance: any;
+  instance: CodeMirror.Editor | undefined;
 
   constructor(props: CodeMirrorProps) {
     super(props);
 
-    this.instance = null;
+    this.instance = undefined;
 
     this.state = {
       value: jsxString,

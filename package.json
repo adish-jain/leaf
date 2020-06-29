@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@types/codemirror": "^0.0.96",
     "@types/cookie": "^0.4.0",
     "@types/draft-js": "^0.10.41",
     "@types/isomorphic-fetch": "0.0.35",
