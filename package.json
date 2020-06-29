@@ -8,6 +8,11 @@
     "start": "next start"
   },
   "dependencies": {
+    "@types/cookie": "^0.4.0",
+    "@types/draft-js": "^0.10.41",
+    "@types/isomorphic-fetch": "0.0.35",
+    "@types/node": "^14.0.6",
+    "@types/react": "^16.9.35",
     "classnames": "^2.2.6",
     "codemirror": "^5.54.0",
     "cookie": "^0.4.1",
@@ -26,14 +31,10 @@
     "react-codemirror2": "^7.2.1",
     "react-dom": "^16.13.1",
     "react-intersection-observer": "^8.26.2",
+    "react-transition-group": "^4.4.1",
     "sass": "^1.26.7",
     "shortid": "^2.2.15",
-    "swr": "^0.2.2",
-    "@types/isomorphic-fetch": "0.0.35",
-    "@types/node": "^14.0.6",
-    "@types/react": "^16.9.35",
-    "@types/cookie": "^0.4.0",
-    "@types/draft-js": "^0.10.41"
+    "swr": "^0.2.2"
   },
   "devDependencies": {
     "typescript": "^3.9.3"

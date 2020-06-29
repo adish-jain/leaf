@@ -3,8 +3,6 @@ import useSWR from "swr";
 import { initFirebase, initFirebaseAdmin } from "../../lib/initFirebase";
 import { setTokenCookies } from "../../lib/cookieUtils";
 
-import { serialize, parse } from "cookie";
-
 const admin = require("firebase-admin");
 const firebase = require("firebase/app");
 

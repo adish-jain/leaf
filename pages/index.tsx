@@ -12,22 +12,27 @@ const appStyles = require("../styles/App.module.scss");
 export default function Pages() {
   const router = useRouter();
 
-  const { authenticated, error, loading } = useLoggedIn("/landing", false);
+  const { authenticated, error, loading } = useLoggedIn();
 
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     router.push("/article");
   };
 
-  if (loading) {
-    return <div>Loading</div>;
-  }
-
   return (
     <div className="container">
       <Head>
         <title>Leaf</title>
         <link rel="icon" href="/favicon.ico" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+          if (document.cookie && document.cookie.includes('authed')) {
+            window.location.href = "/landing"
+          }
+        `,
+          }}
+        />
       </Head>
       <main>
         <div>

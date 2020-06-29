@@ -13,7 +13,7 @@ global.Headers = fetch.Headers;
 const appStyles = require("../../styles/App.module.scss");
 
 const DraftView = () => {
-  const { authenticated, error, loading } = useLoggedIn("/", true);
+  const { authenticated, error, loading } = useLoggedIn();
   const router = useRouter();
 
   // Draft ID
@@ -42,14 +42,26 @@ const DraftView = () => {
     { initialData, revalidateOnMount: true }
   );
 
-  // console.log(steps);
-
   // this page should look similar to how pages/article looks right now
   return (
     <div className="container">
       <Head>
         <title>Code Tutorials</title>
         <link rel="icon" href="/favicon.ico" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+          if (document.cookie) {
+            if (!document.cookie.includes('authed')) {
+              window.location.href = "/"
+            }
+          }
+          else {
+            window.location.href = '/'
+          }
+        `,
+          }}
+        />
       </Head>
       <main>
         <div className={appStyles.App}>

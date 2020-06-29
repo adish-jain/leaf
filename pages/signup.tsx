@@ -9,7 +9,7 @@ const loginStyles = require("../styles/Login.module.scss");
 
 export default function SignUp() {
   const router = useRouter();
-  const { authenticated, error } = useLoggedIn("/landing", false);
+  const { authenticated, error } = useLoggedIn();
 
   const [email, changeEmail] = useState("");
   const [password, changePassword] = useState("");
@@ -41,11 +41,13 @@ export default function SignUp() {
       headers: new Headers({ "Content-Type": "application/json" }),
       credentials: "same-origin",
       body: JSON.stringify(data),
-    }).then((res) => {
-      router.push("/landing");
-    }).catch((error) => {
-      console.log(error);
-    });
+    })
+      .then((res) => {
+        router.push("/landing");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -53,6 +55,15 @@ export default function SignUp() {
       <Head>
         <title>Sign Up</title>
         <link rel="icon" href="/favicon.ico" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+          if (document.cookie && document.cookie.includes('authed')) {
+            window.location.href = "/landing"
+          }
+        `,
+          }}
+        />
       </Head>
       <main className={loginStyles.LoginMain}>
         <div className={loginStyles.Logo}></div>

@@ -12,14 +12,8 @@ const fetcher = (url: string) =>
     headers: new Headers({ "Content-Type": "application/json" }),
   }).then((res) => res.json());
 
-/* redirectURL: the URL to redirect to depending on if the user is 
-authenticated or unauthenticated
 
- redirectToAuthenticate: if true, redirects when user is unauthenticated, if 
- false redirects when authenticated */
 export function useLoggedIn(
-  redirectURL: string,
-  redirectToAuthenticate: boolean
 ) {
   const { data, error } = useSWR("/api/auth", fetcher);
   let loading: boolean;
@@ -29,19 +23,6 @@ export function useLoggedIn(
       return;
     }
 
-    Router.prefetch(redirectURL);
-    let loggedIn = data.authenticated;
-    // Go to redirect URL if user is unauthenticated
-    if (loggedIn && !redirectToAuthenticate) {
-      console.log("redirecting to " + redirectURL + " because unauthenticated");
-      Router.push(redirectURL);
-    }
-
-    // Go to redirect URL if user is authenticated
-    if (!loggedIn && redirectToAuthenticate) {
-      console.log("redirecting to " + redirectURL + " because authenticated");
-      Router.push(redirectURL);
-    }
   }, [data]);
 
   if (data === undefined) {
@@ -65,8 +46,6 @@ export function logOut() {
     headers: new Headers({ "Content-Type": "application/json" }),
   }).then((res) => {
     console.log(res);
-    // reload the page to reset useSWR
-    location.reload();
     Router.replace(`/login`);
   });
 }
