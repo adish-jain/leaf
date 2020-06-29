@@ -11,8 +11,6 @@ export default async function createDraftHandler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  let cookies = req.cookies;
-
   let { uid } = await getUser(req, res);
 
   let newDraft = {
@@ -20,7 +18,7 @@ export default async function createDraftHandler(
     title: "Untitled",
   };
 
-  db.collection("users").doc(uid).collection("drafts").add(newDraft);
+  await db.collection("users").doc(uid).collection("drafts").add(newDraft);
 
   let drafts = await getUserDrafts(uid);
   res.statusCode = 200;
