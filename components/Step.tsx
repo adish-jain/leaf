@@ -14,6 +14,9 @@ type StepProps = {
   closeStep: (
     id: string
   ) => void;
+  associateLines: (
+    id: string
+  ) => void;
   id: string;
   draftId: any;
 };
@@ -58,6 +61,11 @@ export default class Step extends Component<StepProps, StepState> {
 
     this.props.closeStep(this.props.id);
   }
+
+  associateLines(e: React.MouseEvent<HTMLButtonElement>) {
+    this.saveStep(e);
+    this.props.associateLines(this.props.id);
+  }
   
   render() {
     return (
@@ -69,6 +77,7 @@ export default class Step extends Component<StepProps, StepState> {
         </div>
         <div className={StepStyles.Buttons}>
           <button onClick={(e) => {this.saveStep(e)}} className={StepStyles.Save}>Save</button>
+          <button onClick={(e) => {this.associateLines(e)}}>Highlight</button>
           <div onClick={(e) => {this.props.closeStep(this.props.id)}} className={StepStyles.Close}>X</div>
         </div>
         <div></div>

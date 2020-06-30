@@ -11,7 +11,12 @@ const DynamicCodeEditor = dynamic((() => import("./DynamicCodeEditor")) as any, 
   ssr: false,
 });
 
-type CodeEditorProps = {};
+type CodeEditorProps = {
+  highlightLines: (
+    start: any,
+    end: any,
+  ) => void;
+};
 
 type CodeEditorState = {
   language: string;
@@ -38,7 +43,7 @@ export default class CodeEditor extends Component<
         `}</style>
         <PreviewSection />
         <FileBar />
-        <DynamicCodeEditor />
+        <DynamicCodeEditor highlightLines={this.props.highlightLines}/>
         <LanguageBar language={this.state.language} />
       </div>
     );
