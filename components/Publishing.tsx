@@ -20,7 +20,11 @@ type PublishingProps = {
   updateStoredStep: (
     stepId: string,
     text: any,
+    oldLines: any,
+    removeLines: any,
   ) => void;
+  onHighlight: () => void;
+  unHighlight: () => void;
 };
 
 type PublishingState = {
@@ -112,6 +116,8 @@ export default class Publishing extends Component<
               text={JSON.parse(storedStep.text)}
               lines={storedStep.lines}
               updateStoredStep={this.props.updateStoredStep}
+              onHighlight={this.props.onHighlight}
+              unHighlight={this.props.unHighlight}
               key={storedStep.id}
             />
           );
@@ -121,6 +127,8 @@ export default class Publishing extends Component<
             <Step
               closeStep={this.closeStep}
               saveStep={this.props.saveStep}
+              onHighlight={this.props.onHighlight}
+              unHighlight={this.props.unHighlight}
               id={step}
               draftId={this.props.draftId}
               key={step}

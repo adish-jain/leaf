@@ -44,6 +44,8 @@ const DraftView = () => {
 
   // highlighting lines for steps 
   const [lines, changeLines] = useState({});
+  const [saveLines, notSaveLines] = useState(false);
+  // let stepLines;
 
   // DynamicCodeEditor -> CodeEditor -> [draftId]
   function highlightLines(start: any, end: any) {
@@ -53,13 +55,22 @@ const DraftView = () => {
     // console.log(lines);
   }
 
+  function onHighlight() {
+    // stepLines = lines;
+    notSaveLines(true);
+  }
+
+  function unHighlight() {
+    notSaveLines(false);
+  }
+
   function saveStep(stepId: any, text: any) {
     var data = {
       requestedAPI: "save_step",
       text: text,
       draftId: draftId,
       stepId: stepId,
-      lines: lines,
+      lines: saveLines ? lines : null,
     };
 
     fetch("/api/endpoint", {
@@ -71,15 +82,23 @@ const DraftView = () => {
       mutate("/api/endpoint", updatedSteps);
       console.log(res);
     });
+
+    notSaveLines(false);
   }
 
-  function updateStoredStep(stepId: any, text: any) {
+  function updateStoredStep(stepId: any, text: any, oldLines: any, removeLines: any) {
+    let stepLines;
+    if (removeLines) {
+      stepLines = null;
+    } else {
+      stepLines = saveLines ? lines : oldLines;
+    }
     let data = {
       requestedAPI: "update_step",
       text: text,
       draftId: draftId,
       stepId: stepId,
-      lines: lines,
+      lines: stepLines,
     };
     
     fetch("/api/endpoint", {
@@ -91,6 +110,8 @@ const DraftView = () => {
         mutate("/api/endpoint", updatedSteps);
         console.log(res);
     });
+
+    notSaveLines(false);
   }
 
 
@@ -117,8 +138,8 @@ const DraftView = () => {
       </Head>
       <main>
         <div className={appStyles.App}>
-          <Publishing draftId={draftId} storedSteps={steps} saveStep={saveStep} updateStoredStep={updateStoredStep}/>
-          <CodeEditor highlightLines={highlightLines}/>
+          <Publishing draftId={draftId} storedSteps={steps} saveStep={saveStep} updateStoredStep={updateStoredStep} onHighlight={onHighlight} unHighlight={unHighlight}/>
+          <CodeEditor highlightLines={highlightLines} />
         </div>
       </main>
     </div>

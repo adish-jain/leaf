@@ -13,7 +13,11 @@ type StoredStepProps = {
     updateStoredStep: (
         text: any,
         stepId: any,
+        oldLines: any,
+        removeLines: any,
     ) => void;
+    onHighlight: () => void;
+    unHighlight: () => void;
 };
   
 type StoredStepState = {
@@ -66,10 +70,10 @@ export default class StoredStep extends Component<StoredStepProps, StoredStepSta
         });
     }
 
-    updateStoredStep(e: React.MouseEvent<HTMLButtonElement>) {
+    updateStoredStep(e: React.MouseEvent<HTMLButtonElement>, removeLines: boolean) {
         let text = this.state.stepText;
         let stepId =  this.props.id;
-        this.props.updateStoredStep(stepId, text)
+        this.props.updateStoredStep(stepId, text, this.props.lines, removeLines);
         
         this.setState({
             editing: false,
@@ -85,7 +89,9 @@ export default class StoredStep extends Component<StoredStepProps, StoredStepSta
                 (<EditingStoredStep 
                     updateStoredStep={this.updateStoredStep} 
                     onChange={this.onChange} 
-                    editorState={editorState} />) 
+                    editorState={editorState} 
+                    onHighlight={this.props.onHighlight}
+                    unHighlight={this.props.unHighlight}/>) 
                 : 
                 (<RenderedStoredStep 
                     editStoredStep={this.editStoredStep} 

@@ -24,7 +24,12 @@ export default class Step extends Component<RenderedStoredStepProps, RenderedSto
 
 
     render() {
-        let highlightedLines = "lines " + this.props.lines['start']  + "-" + this.props.lines['end'];
+        let highlightedLines;
+        if (this.props.lines) {
+            highlightedLines = "lines " + this.props.lines['start']  + "-" + this.props.lines['end'];
+        } else {
+            highlightedLines = false;
+        }
         return (
             <div className={StepStyles.Step}>
                 <div className={StepStyles.Draft}>
@@ -33,7 +38,8 @@ export default class Step extends Component<RenderedStoredStepProps, RenderedSto
                 }
                 </div>
                 <div className={StepStyles.Buttons}>
-                    <p> {highlightedLines} </p> 
+                    {highlightedLines && 
+                    (<div className={StepStyles.Save}>{highlightedLines}</div>)} 
                     <button onClick={(e) => {this.props.editStoredStep(e)}} className={StepStyles.Save}>Edit</button>
                     <div onClick={(e) => {this.props.deleteStoredStep(e)}} className={StepStyles.Close}>X</div>
                 </div>
