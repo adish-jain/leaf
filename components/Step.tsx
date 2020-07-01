@@ -14,8 +14,9 @@ type StepProps = {
   closeStep: (
     id: string
   ) => void;
-  associateLines: (
-    id: string
+  saveStep: (
+    stepId: any,
+    text: any,
   ) => void;
   id: string;
   draftId: any;
@@ -33,6 +34,7 @@ export default class Step extends Component<StepProps, StepState> {
     super(props);
     this.state = { stepText: "" };
     this.focus = () => this.editor.focus();
+    this.saveStep = this.saveStep.bind(this);
   }
 
   onChange = (stepText: any) => {
@@ -42,29 +44,10 @@ export default class Step extends Component<StepProps, StepState> {
   };
 
   saveStep(e: React.MouseEvent<HTMLButtonElement>) {
-    let data = {
-      requestedAPI: "save_step",
-      text: this.state.stepText,
-      draftId: this.props.draftId,
-      stepId: this.props.id,
-    };
-
-    fetch("/api/endpoint", {
-      method: "POST",
-      headers: new Headers({ "Content-Type": "application/json" }),
-      body: JSON.stringify(data),
-    }).then(async (res: any) => {
-      let updatedSteps = res.json();
-      mutate("/api/endpoint", updatedSteps);
-      console.log(res);
-    });
-
+    let stepId = this.props.id;
+    let text = this.state.stepText;
+    this.props.saveStep(stepId, text);
     this.props.closeStep(this.props.id);
-  }
-
-  associateLines(e: React.MouseEvent<HTMLButtonElement>) {
-    this.saveStep(e);
-    this.props.associateLines(this.props.id);
   }
   
   render() {
@@ -77,7 +60,6 @@ export default class Step extends Component<StepProps, StepState> {
         </div>
         <div className={StepStyles.Buttons}>
           <button onClick={(e) => {this.saveStep(e)}} className={StepStyles.Save}>Save</button>
-          <button onClick={(e) => {this.associateLines(e)}}>Highlight</button>
           <div onClick={(e) => {this.props.closeStep(this.props.id)}} className={StepStyles.Close}>X</div>
         </div>
         <div></div>

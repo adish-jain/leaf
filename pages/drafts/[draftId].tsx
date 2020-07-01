@@ -50,14 +50,13 @@ const DraftView = () => {
     let startLine = start['line'];
     let endLine = end['line'];
     changeLines({'start': startLine, 'end': endLine});
-    console.log(lines);
+    // console.log(lines);
   }
 
-  // Step -> Publishing -> [draftId]
-  function associateLines(stepId: string) {
-    console.log("associateLines");
-    let data = {
-      requestedAPI: "associate_lines",
+  function saveStep(stepId: any, text: any) {
+    var data = {
+      requestedAPI: "save_step",
+      text: text,
       draftId: draftId,
       stepId: stepId,
       lines: lines,
@@ -73,6 +72,27 @@ const DraftView = () => {
       console.log(res);
     });
   }
+
+  function updateStoredStep(stepId: any, text: any) {
+    let data = {
+      requestedAPI: "update_step",
+      text: text,
+      draftId: draftId,
+      stepId: stepId,
+      lines: lines,
+    };
+    
+    fetch("/api/endpoint", {
+        method: "POST",
+        headers: new Headers({ "Content-Type": "application/json" }),
+        body: JSON.stringify(data),
+    }).then(async (res: any) => {
+        let updatedSteps = res.json();
+        mutate("/api/endpoint", updatedSteps);
+        console.log(res);
+    });
+  }
+
 
   // this page should look similar to how pages/article looks right now
   return (
@@ -97,7 +117,7 @@ const DraftView = () => {
       </Head>
       <main>
         <div className={appStyles.App}>
-          <Publishing draftId={draftId} storedSteps={steps} associateLines={associateLines}/>
+          <Publishing draftId={draftId} storedSteps={steps} saveStep={saveStep} updateStoredStep={updateStoredStep}/>
           <CodeEditor highlightLines={highlightLines}/>
         </div>
       </main>

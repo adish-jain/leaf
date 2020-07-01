@@ -79,7 +79,7 @@ export default class CodeMirror extends Component<
             // },
           }}
           onSelection={(editor, data) => {
-            console.log(editor);
+            // console.log(editor);
             this.highlightLines(editor);
             // console.log(editor.getCursor(true));
             // console.log(editor.getCursor(false));

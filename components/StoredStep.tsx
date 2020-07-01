@@ -9,6 +9,11 @@ type StoredStepProps = {
     id: string;
     draftId: any;
     text: any;
+    lines: any;
+    updateStoredStep: (
+        text: any,
+        stepId: any,
+    ) => void;
 };
   
 type StoredStepState = {
@@ -62,23 +67,10 @@ export default class StoredStep extends Component<StoredStepProps, StoredStepSta
     }
 
     updateStoredStep(e: React.MouseEvent<HTMLButtonElement>) {
-        let data = {
-            requestedAPI: "update_step",
-            text: this.state.stepText,
-            draftId: this.props.draftId,
-            stepId: this.props.id,
-        };
+        let text = this.state.stepText;
+        let stepId =  this.props.id;
+        this.props.updateStoredStep(stepId, text)
         
-        fetch("/api/endpoint", {
-            method: "POST",
-            headers: new Headers({ "Content-Type": "application/json" }),
-            body: JSON.stringify(data),
-        }).then(async (res: any) => {
-            let updatedSteps = res.json();
-            mutate("/api/endpoint", updatedSteps);
-            console.log(res);
-        });
-
         this.setState({
             editing: false,
         });
@@ -90,9 +82,16 @@ export default class StoredStep extends Component<StoredStepProps, StoredStepSta
         const editing = this.state.editing;
         return (
             editing ?
-                (<EditingStoredStep updateStoredStep={this.updateStoredStep} onChange={this.onChange} editorState={editorState} />) 
+                (<EditingStoredStep 
+                    updateStoredStep={this.updateStoredStep} 
+                    onChange={this.onChange} 
+                    editorState={editorState} />) 
                 : 
-                (<RenderedStoredStep editStoredStep={this.editStoredStep} deleteStoredStep={this.deleteStoredStep} editorState={editorState} />)
+                (<RenderedStoredStep 
+                    editStoredStep={this.editStoredStep} 
+                    deleteStoredStep={this.deleteStoredStep} 
+                    lines={this.props.lines}
+                    editorState={editorState} />)
         );
     }
 }

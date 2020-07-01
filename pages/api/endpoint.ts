@@ -12,7 +12,6 @@ import handleGetSteps from "../../lib/api/getSteps"
 import handleSaveStep from "../../lib/api/saveStep";
 import handleDeleteStep from "../../lib/api/deleteStep";
 import handleUpdateStep from "../../lib/api/updateStep";
-import handleAssociateLines from "../../lib/api/associateLines";
 
 const firebase = require("firebase/app");
 initFirebase();
@@ -86,10 +85,6 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
     // POST
     case "update_step": {
       return handleUpdateStep(req, res);
-    }
-
-    case "associate_lines": {
-      return handleAssociateLines(req, res);
     }
 
     default: {

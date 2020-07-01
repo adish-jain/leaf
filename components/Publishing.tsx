@@ -13,8 +13,13 @@ var shortId = require("shortid");
 type PublishingProps = {
   draftId: any;
   storedSteps: any[];
-  associateLines: (
+  saveStep: (
     stepId: string,
+    text: any,
+  ) => void;
+  updateStoredStep: (
+    stepId: string,
+    text: any,
   ) => void;
 };
 
@@ -105,6 +110,8 @@ export default class Publishing extends Component<
               id={storedStep.id}
               draftId={this.props.draftId}
               text={JSON.parse(storedStep.text)}
+              lines={storedStep.lines}
+              updateStoredStep={this.props.updateStoredStep}
               key={storedStep.id}
             />
           );
@@ -113,7 +120,7 @@ export default class Publishing extends Component<
           return (
             <Step
               closeStep={this.closeStep}
-              associateLines={this.props.associateLines}
+              saveStep={this.props.saveStep}
               id={step}
               draftId={this.props.draftId}
               key={step}
