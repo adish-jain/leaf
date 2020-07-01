@@ -4,10 +4,7 @@ initFirebaseAdmin();
 import fetch from "isomorphic-fetch";
 import { NextApiRequest, NextApiResponse } from "next";
 let db = admin.firestore();
-import {
-  setTokenCookies,
-  removeTokenCookies,
-} from "./cookieUtils";
+import { setTokenCookies, removeTokenCookies } from "./cookieUtils";
 
 type GetUserType = {
   uid: string;
@@ -33,10 +30,9 @@ export async function getUser(
       userRecord,
     };
   } catch (error) {
-    console.log("errored on userToken " + userToken);
-    console.log(error);
     switch (error.code) {
       case "auth/argument-error":
+        console.log(error);
         return {
           uid: "",
           userRecord: undefined,
@@ -49,6 +45,7 @@ export async function getUser(
         handleLoginCookies(res, updatedUserToken, refreshToken);
         return getUser(req, res);
       default:
+        console.log(error);
         return {
           uid: "",
           userRecord: undefined,
@@ -157,4 +154,16 @@ export async function getUserStepsForDraft(uid: string, draftId: string) {
       console.log(error);
       return [];
     });
+}
+
+
+export async function checkUsernameDNE(username: string) {
+  let usernamesRefKey = db.collection("users").where("username", "==", username)
+    .key;
+
+  if (usernamesRefKey === null) {
+    return true;
+  } else {
+    return false;
+  }
 }

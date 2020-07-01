@@ -8,10 +8,14 @@ import handleLogout from "../../lib/api/logout";
 import handleAddDraft from "../../lib/api/createDraft";
 import handleGetDrafts from "../../lib/api/getDrafts";
 import handleDeleteDraft from "../../lib/api/deleteDraft";
-import handleGetSteps from "../../lib/api/getSteps"
+import handleGetSteps from "../../lib/api/getSteps";
 import handleSaveStep from "../../lib/api/saveStep";
 import handleDeleteStep from "../../lib/api/deleteStep";
 import handleUpdateStep from "../../lib/api/updateStep";
+import handleSetId from "../../lib/api/setId";
+import handlecheckId from "../../lib/api/checkId";
+import handleGetUserInfo from "../../lib/api/getUserInfo";
+import { handleLoginCookies } from "../../lib/userUtils";
 
 const firebase = require("firebase/app");
 initFirebase();
@@ -43,6 +47,22 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
     //POST
     case "logout": {
       return handleLogout(req, res);
+    }
+
+    /*
+    ------ Settings ------
+    */
+
+    case "check_userId": {
+      return handlecheckId(req, res);
+    }
+
+    case "set_userId": {
+      return handleSetId(req, res);
+    }
+
+    case "get_userInfo": {
+      return handleGetUserInfo(req, res);
     }
 
     /* 
