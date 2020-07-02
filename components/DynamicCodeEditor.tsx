@@ -11,7 +11,12 @@ require('codemirror/mode/jsx/jsx');
 // const codeEditorStyles = require("../styles/CodeEditor.module.scss");
 // import "../styles/CodeEditor.module.scss";
 
-type CodeMirrorProps = {};
+type CodeMirrorProps = {
+  highlightLines: (
+    start: any,
+    end: any,
+  ) => void;
+};
 
 type CodeMirrorState = {
   value: string;
@@ -45,6 +50,13 @@ export default class CodeMirror extends Component<
       value: jsxString,
     };
   }
+
+  highlightLines(editor: any) {
+    let start = editor.getCursor(true);
+    let end = editor.getCursor(false);
+    this.props.highlightLines(start, end);
+  }
+
   render() {
     return (
       <div>
@@ -54,7 +66,8 @@ export default class CodeMirror extends Component<
           options={{
             lineNumbers: true,
             mode: 'jsx',
-            theme: 'vscode-dark',
+            theme: 'material',
+            // theme: 'vscode-dark',
             // theme: 'oceanic-next',
             lineWrapping: true
             // configureMouse: (editor: any, e: any) => {
@@ -67,7 +80,10 @@ export default class CodeMirror extends Component<
             // },
           }}
           onSelection={(editor, data) => {
-            console.log(editor);
+            // console.log(editor);
+            this.highlightLines(editor);
+            // console.log(editor.getCursor(true));
+            // console.log(editor.getCursor(false));
           }}
 
           editorDidMount={(editor) => {

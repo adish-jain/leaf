@@ -148,6 +148,7 @@ export async function getUserStepsForDraft(uid: string, draftId: string) {
         resultsJSON.id = result.id;
         results.push({
           text: resultsJSON.text,
+          lines: resultsJSON.lines,
           id: resultsJSON.id,
         });
       });

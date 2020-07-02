@@ -9,7 +9,7 @@
   padding: 24px;
 }
 
-.Draft {
+.Draft {  
   // padding: 24px;
 }
 
@@ -37,6 +37,28 @@
     border: 1px solid #edece9;
     box-sizing: border-box;
     color: #4db6f1;
+    font-size: 14px;
+    line-height: 17px;
+    border-radius: 4px;
+    padding: 4px;
+  }
+
+  .Highlight {
+    background: #0dcf64;
+    border: 1px solid #edece9;
+    box-sizing: border-box;
+    color: #0f5ea4;
+    font-size: 14px;
+    line-height: 17px;
+    border-radius: 4px;
+    padding: 4px;
+  }
+
+  .Remove {
+    background: #cf340d;
+    border: 1px solid #edece9;
+    box-sizing: border-box;
+    color: #0f5ea4;
     font-size: 14px;
     line-height: 17px;
     border-radius: 4px;

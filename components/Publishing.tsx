@@ -13,6 +13,21 @@ var shortId = require("shortid");
 type PublishingProps = {
   draftId: any;
   storedSteps: any[];
+  saveStep: (
+    stepId: string,
+    text: any,
+  ) => void;
+  updateStoredStep: (
+    stepId: string,
+    text: any,
+    oldLines: any,
+    removeLines: any,
+  ) => void;
+  deleteStoredStep: (
+    stepId: any,
+  ) => void;
+  onHighlight: () => void;
+  unHighlight: () => void;
 };
 
 type PublishingState = {
@@ -102,6 +117,11 @@ export default class Publishing extends Component<
               id={storedStep.id}
               draftId={this.props.draftId}
               text={JSON.parse(storedStep.text)}
+              lines={storedStep.lines}
+              deleteStoredStep={this.props.deleteStoredStep}
+              updateStoredStep={this.props.updateStoredStep}
+              onHighlight={this.props.onHighlight}
+              unHighlight={this.props.unHighlight}
               key={storedStep.id}
             />
           );
@@ -110,6 +130,9 @@ export default class Publishing extends Component<
           return (
             <Step
               closeStep={this.closeStep}
+              saveStep={this.props.saveStep}
+              onHighlight={this.props.onHighlight}
+              unHighlight={this.props.unHighlight}
               id={step}
               draftId={this.props.draftId}
               key={step}

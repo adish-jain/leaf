@@ -23,6 +23,7 @@ async function updateStepHandler(req: NextApiRequest, res: NextApiResponse) {
   let text = req.body.text;
   let stepId = req.body.stepId;
   let draftId = req.body.draftId;
+  let lines = req.body.lines;
   let { uid } = await getUser(req, res);
 
   if (uid === "") {
@@ -32,7 +33,7 @@ async function updateStepHandler(req: NextApiRequest, res: NextApiResponse) {
   }
 
   // update text in firebase
-  db.collection("users").doc(uid).collection("drafts").doc(draftId).collection("steps").doc(stepId).update({"text": text}); 
+  db.collection("users").doc(uid).collection("drafts").doc(draftId).collection("steps").doc(stepId).update({"text": text, "lines": lines}); 
   
   res.statusCode = 200;
   let results = await getUserStepsForDraft(uid, draftId);

@@ -14,12 +14,19 @@ type StepProps = {
   closeStep: (
     id: string
   ) => void;
+  saveStep: (
+    stepId: any,
+    text: any,
+  ) => void;
+  onHighlight: () => void;
+  unHighlight: () => void;
   id: string;
   draftId: any;
 };
 
 type StepState = {
   stepText: any;
+  highlight: boolean;
 };
 
 export default class Step extends Component<StepProps, StepState> {
@@ -28,8 +35,11 @@ export default class Step extends Component<StepProps, StepState> {
 
   constructor(props: StepProps) {
     super(props);
-    this.state = { stepText: "" };
+    this.state = { stepText: "" , highlight: false };
     this.focus = () => this.editor.focus();
+    this.saveStep = this.saveStep.bind(this);
+    this.highlight = this.highlight.bind(this);
+    this.unHighlight = this.unHighlight.bind(this);
   }
 
   onChange = (stepText: any) => {
@@ -39,27 +49,28 @@ export default class Step extends Component<StepProps, StepState> {
   };
 
   saveStep(e: React.MouseEvent<HTMLButtonElement>) {
-    let data = {
-      requestedAPI: "save_step",
-      text: this.state.stepText,
-      draftId: this.props.draftId,
-      stepId: this.props.id,
-    };
-
-    fetch("/api/endpoint", {
-      method: "POST",
-      headers: new Headers({ "Content-Type": "application/json" }),
-      body: JSON.stringify(data),
-    }).then(async (res: any) => {
-      let updatedSteps = res.json();
-      mutate("/api/endpoint", updatedSteps);
-      console.log(res);
-    });
-
+    let stepId = this.props.id;
+    let text = this.state.stepText;
+    this.props.saveStep(stepId, text);
     this.props.closeStep(this.props.id);
+  }
+
+  highlight(e: React.MouseEvent<HTMLButtonElement>) {
+    this.props.onHighlight();
+    this.setState({
+      highlight: true,
+    });
+  }
+
+  unHighlight(e: React.MouseEvent<HTMLButtonElement>) {
+    this.props.unHighlight();
+    this.setState({
+      highlight: false,
+    });
   }
   
   render() {
+    const highlight = this.state.highlight;
     return (
       <div className={StepStyles.Step}>
         <div className={StepStyles.Draft}>
@@ -68,6 +79,11 @@ export default class Step extends Component<StepProps, StepState> {
           }
         </div>
         <div className={StepStyles.Buttons}>
+          { highlight ? 
+            ( <button onClick={(e) => {this.unHighlight(e)}} className={StepStyles.Highlight}>un-Select</button> ) 
+            : 
+            ( <button onClick={(e) => {this.highlight(e)}} className={StepStyles.Save}>Code Select</button> ) 
+          }
           <button onClick={(e) => {this.saveStep(e)}} className={StepStyles.Save}>Save</button>
           <div onClick={(e) => {this.props.closeStep(this.props.id)}} className={StepStyles.Close}>X</div>
         </div>
