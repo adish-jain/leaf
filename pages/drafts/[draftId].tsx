@@ -159,6 +159,45 @@ const DraftView = () => {
     });
   }
 
+  function findIdx(stepId: any) {
+    let idx = 0;
+    let counter = 0;
+
+    storedSteps.forEach((element: { id: any; lines: any; text: any; }) => {
+      if (element["id"] == stepId) {
+        idx = counter;
+      } 
+      counter += 1;
+    });
+    return idx;
+  }
+
+  function up(stepId: any) {
+    // let optimisticSteps: { id: any; lines: any; text: any; }[] = [];
+    let idx = findIdx(stepId);
+    if (idx == 0) {
+      return;
+    } 
+    let optimisticSteps = storedSteps;
+    [optimisticSteps[idx], optimisticSteps[idx-1]] = [optimisticSteps[idx-1], optimisticSteps[idx]];
+    console.log(optimisticSteps);
+  
+    mutate("/api/endpoint", optimisticSteps, false);
+  }
+
+  function down(stepId: any) {
+    let idx = findIdx(stepId);
+    if (idx == storedSteps.length-1) {
+      return;
+    } 
+    let optimisticSteps = storedSteps;
+    [optimisticSteps[idx], optimisticSteps[idx+1]] = [optimisticSteps[idx+1], optimisticSteps[idx]];
+    console.log(optimisticSteps);
+  
+    mutate("/api/endpoint", optimisticSteps, false);
+    
+  }
+
   // this page should look similar to how pages/article looks right now
   return (
     <div className="container">
@@ -189,7 +228,9 @@ const DraftView = () => {
             updateStoredStep={updateStoredStep} 
             deleteStoredStep={deleteStoredStep}
             onHighlight={onHighlight} 
-            unHighlight={unHighlight}/>
+            unHighlight={unHighlight}
+            up={up}
+            down={down} />
           <CodeEditor 
             highlightLines={highlightLines} />
         </div>
