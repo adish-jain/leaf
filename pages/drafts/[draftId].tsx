@@ -36,11 +36,13 @@ const DraftView = () => {
 
   const initialData: any = [];
 
-  let { data: steps } = useSWR(
+  let { data: storedSteps } = useSWR(
     authenticated ? "/api/endpoint" : null,
     fetcher,
     { initialData, revalidateOnMount: true }
   );
+
+  // console.log(steps);
 
   // highlighting lines for steps 
   const [lines, changeLines] = useState({});
@@ -73,13 +75,18 @@ const DraftView = () => {
       lines: saveLines ? lines : null,
     };
 
+    let newStep = {"id":stepId, "lines": saveLines ? lines : null, "text": text};
+    let optimisticSteps = [...storedSteps];
+    optimisticSteps.push(newStep);
+    mutate("/api/endpoint", optimisticSteps, false);
+
     fetch("/api/endpoint", {
       method: "POST",
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify(data),
     }).then(async (res: any) => {
       let updatedSteps = res.json();
-      mutate("/api/endpoint", updatedSteps);
+      // mutate("/api/endpoint", updatedSteps);
       console.log(res);
     });
 
@@ -100,6 +107,22 @@ const DraftView = () => {
       stepId: stepId,
       lines: stepLines,
     };
+
+    let newStep = {"id": stepId, "lines": stepLines, "text": text};
+    // @ts-ignore 
+    let optimisticSteps = [];
+
+    // @ts-ignore 
+    storedSteps.forEach(element => {
+      if (element["id"] != stepId) {
+        optimisticSteps.push(element);
+      } else {
+        optimisticSteps.push(newStep);
+      }
+    });
+    
+    // @ts-ignore 
+    mutate("/api/endpoint", optimisticSteps, false);
     
     fetch("/api/endpoint", {
         method: "POST",
@@ -107,11 +130,42 @@ const DraftView = () => {
         body: JSON.stringify(data),
     }).then(async (res: any) => {
         let updatedSteps = res.json();
-        mutate("/api/endpoint", updatedSteps);
+        // mutate("/api/endpoint", updatedSteps);
         console.log(res);
     });
 
     notSaveLines(false);
+  }
+
+  function deleteStoredStep(stepId: any) {
+    let data = {
+      requestedAPI: "delete_step",
+      draftId: draftId,
+      stepId: stepId,
+    };
+
+    // @ts-ignore 
+    let optimisticSteps = [];
+
+    // @ts-ignore 
+    storedSteps.forEach(element => {
+      if (element["id"] != stepId) {
+        optimisticSteps.push(element);
+      } 
+    });
+    
+    // @ts-ignore 
+    mutate("/api/endpoint", optimisticSteps, false);
+
+    fetch("/api/endpoint", {
+        method: "POST",
+        headers: new Headers({ "Content-Type": "application/json" }),
+        body: JSON.stringify(data),
+    }).then(async (res: any) => {
+        let updatedSteps = res.json();
+        // mutate("/api/endpoint", updatedSteps);
+        console.log(res);
+    });
   }
 
 
@@ -138,7 +192,14 @@ const DraftView = () => {
       </Head>
       <main>
         <div className={appStyles.App}>
-          <Publishing draftId={draftId} storedSteps={steps} saveStep={saveStep} updateStoredStep={updateStoredStep} onHighlight={onHighlight} unHighlight={unHighlight}/>
+          <Publishing 
+            draftId={draftId} 
+            storedSteps={storedSteps} 
+            saveStep={saveStep} 
+            updateStoredStep={updateStoredStep} 
+            deleteStoredStep={deleteStoredStep}
+            onHighlight={onHighlight} 
+            unHighlight={unHighlight}/>
           <CodeEditor highlightLines={highlightLines} />
         </div>
       </main>

@@ -66,7 +66,8 @@ export default class CodeMirror extends Component<
           options={{
             lineNumbers: true,
             mode: 'jsx',
-            theme: 'vscode-dark',
+            theme: 'material',
+            // theme: 'vscode-dark',
             // theme: 'oceanic-next',
             lineWrapping: true
             // configureMouse: (editor: any, e: any) => {

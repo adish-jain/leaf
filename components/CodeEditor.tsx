@@ -43,7 +43,9 @@ export default class CodeEditor extends Component<
         `}</style>
         <PreviewSection />
         <FileBar />
-        <DynamicCodeEditor highlightLines={this.props.highlightLines}/>
+        {// @ts-ignore 
+          <DynamicCodeEditor highlightLines={this.props.highlightLines}/>
+        }
         <LanguageBar language={this.state.language} />
       </div>
     );

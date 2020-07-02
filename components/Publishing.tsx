@@ -23,6 +23,9 @@ type PublishingProps = {
     oldLines: any,
     removeLines: any,
   ) => void;
+  deleteStoredStep: (
+    stepId: any,
+  ) => void;
   onHighlight: () => void;
   unHighlight: () => void;
 };
@@ -115,6 +118,7 @@ export default class Publishing extends Component<
               draftId={this.props.draftId}
               text={JSON.parse(storedStep.text)}
               lines={storedStep.lines}
+              deleteStoredStep={this.props.deleteStoredStep}
               updateStoredStep={this.props.updateStoredStep}
               onHighlight={this.props.onHighlight}
               unHighlight={this.props.unHighlight}

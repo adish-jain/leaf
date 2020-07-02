@@ -16,6 +16,9 @@ type StoredStepProps = {
         oldLines: any,
         removeLines: any,
     ) => void;
+    deleteStoredStep: (
+        stepId: any,
+    ) => void;
     onHighlight: () => void;
     unHighlight: () => void;
 };
@@ -47,21 +50,7 @@ export default class StoredStep extends Component<StoredStepProps, StoredStepSta
       };
 
     deleteStoredStep(e: React.MouseEvent<any>) {
-        let data = {
-            requestedAPI: "delete_step",
-            draftId: this.props.draftId,
-            stepId: this.props.id,
-        };
-
-        fetch("/api/endpoint", {
-            method: "POST",
-            headers: new Headers({ "Content-Type": "application/json" }),
-            body: JSON.stringify(data),
-        }).then(async (res: any) => {
-            let updatedSteps = res.json();
-            mutate("/api/endpoint", updatedSteps);
-            console.log(res);
-        });
+        this.props.deleteStoredStep(this.props.id);
     }
 
     editStoredStep(e: React.MouseEvent<HTMLButtonElement>) {
