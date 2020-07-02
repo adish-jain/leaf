@@ -137,7 +137,7 @@ export async function getUserStepsForDraft(uid: string, draftId: string) {
     .collection("drafts")
     .doc(draftId)
     .collection("steps")
-    .orderBy("createdAt");
+    .orderBy("order");
 
   return await stepsRef
     .get()

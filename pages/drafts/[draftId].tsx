@@ -174,15 +174,37 @@ const DraftView = () => {
 
   function up(stepId: any) {
     // let optimisticSteps: { id: any; lines: any; text: any; }[] = [];
-    let idx = findIdx(stepId);
+    let idx = findIdx(stepId); // 1
+    console.log(idx);
     if (idx == 0) {
       return;
     } 
+    
     let optimisticSteps = storedSteps;
+
+    let data = {
+      requestedAPI: "change_step_order",
+      draftId: draftId,
+      stepId: stepId,
+      neighborId: optimisticSteps[idx-1]["id"],
+      oldIdx: idx,
+      newIdx: idx - 1,
+    };
+
     [optimisticSteps[idx], optimisticSteps[idx-1]] = [optimisticSteps[idx-1], optimisticSteps[idx]];
-    console.log(optimisticSteps);
+    // console.log(optimisticSteps); 
   
     mutate("/api/endpoint", optimisticSteps, false);
+
+    fetch("/api/endpoint", {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify(data),
+    }).then(async (res: any) => {
+        let updatedSteps = res.json();
+        mutate("/api/endpoint", updatedSteps);
+        console.log(res);
+    });
   }
 
   function down(stepId: any) {
@@ -191,11 +213,30 @@ const DraftView = () => {
       return;
     } 
     let optimisticSteps = storedSteps;
+
+    let data = {
+      requestedAPI: "change_step_order",
+      draftId: draftId,
+      stepId: stepId,
+      neighborId: optimisticSteps[idx+1]["id"],
+      oldIdx: idx,
+      newIdx: idx + 1,
+    };
+
     [optimisticSteps[idx], optimisticSteps[idx+1]] = [optimisticSteps[idx+1], optimisticSteps[idx]];
-    console.log(optimisticSteps);
+    // console.log(optimisticSteps);
   
     mutate("/api/endpoint", optimisticSteps, false);
-    
+
+    fetch("/api/endpoint", {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify(data),
+    }).then(async (res: any) => {
+        let updatedSteps = res.json();
+        mutate("/api/endpoint", updatedSteps);
+        console.log(res);
+    }); 
   }
 
   // this page should look similar to how pages/article looks right now

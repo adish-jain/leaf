@@ -8,7 +8,8 @@ initFirebaseAdmin();
 initFirebase();
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  return saveStepHandler(req, res);
+  // console.log("in saveStep");
+  return changeStepOrderHandler(req, res);
 };
 
 function handleError(res: NextApiResponse, error: any) {
@@ -18,14 +19,12 @@ function handleError(res: NextApiResponse, error: any) {
   return;
 }
 
-async function saveStepHandler(req: NextApiRequest, res: NextApiResponse) {
-  let cookies = req.cookies;
-  let userToken = cookies.userToken;
-  let refreshToken = cookies.refreshToken;
-  let text = req.body.text;
+async function changeStepOrderHandler(req: NextApiRequest, res: NextApiResponse) {
   let stepId = req.body.stepId;
   let draftId = req.body.draftId;
-  let lines = req.body.lines;
+  let neighborId = req.body.neighborId;
+  let oldIdx = req.body.oldIdx;
+  let newIdx = req.body.newIdx;
   let { uid } = await getUser(req, res);
 
   if (uid === "") {
@@ -34,20 +33,13 @@ async function saveStepHandler(req: NextApiRequest, res: NextApiResponse) {
     return;
   }
 
-  // console.log("user is logged in");
-  let steps = await getUserStepsForDraft(uid, draftId);
-  let order = steps.length;
+  console.log(oldIdx);
+  console.log(newIdx);
 
-  // store text & lines in firebase
-  let stepText = {
-    createdAt: admin.firestore.FieldValue.serverTimestamp(),
-    text: text,
-    lines: lines,
-    order: order
-  };
+  // update order in firebase
+  db.collection("users").doc(uid).collection("drafts").doc(draftId).collection("steps").doc(stepId).update({"order": newIdx}); 
+  db.collection("users").doc(uid).collection("drafts").doc(draftId).collection("steps").doc(neighborId).update({"order": oldIdx}); 
 
-  db.collection("users").doc(uid).collection("drafts").doc(draftId).collection("steps").doc(stepId).set(stepText); 
-  
   res.statusCode = 200;
   let results = await getUserStepsForDraft(uid, draftId);
   res.send(results);
