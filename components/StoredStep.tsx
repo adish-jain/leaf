@@ -41,8 +41,6 @@ export default class StoredStep extends Component<StoredStepProps, StoredStepSta
         };
     }
 
-    // TODO: add in button to be able to re-modify OldSteps and mutate their values in Firestore
-
     onChange = (stepText: any) => {
         this.setState({
             stepText,
@@ -80,7 +78,7 @@ export default class StoredStep extends Component<StoredStepProps, StoredStepSta
                     onChange={this.onChange} 
                     editorState={editorState} 
                     onHighlight={this.props.onHighlight}
-                    unHighlight={this.props.unHighlight}/>) 
+                    unHighlight={this.props.unHighlight} />) 
                 : 
                 (<RenderedStoredStep 
                     editStoredStep={this.editStoredStep} 

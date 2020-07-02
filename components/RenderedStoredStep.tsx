@@ -19,7 +19,7 @@ type RenderedStoredStepState = {
 export default class Step extends Component<RenderedStoredStepProps, RenderedStoredStepState> {
     constructor(props: RenderedStoredStepProps) {
         super(props);
-        console.log(this.props.lines);
+        // console.log(this.props.lines);
     }
 
 

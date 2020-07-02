@@ -36,7 +36,7 @@ async function saveStepHandler(req: NextApiRequest, res: NextApiResponse) {
 
   // console.log("user is logged in");
 
-  // store text in firebase
+  // store text & lines in firebase
   let stepText = {
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
     text: text,

@@ -35,9 +35,11 @@ export default class Step extends Component<StepProps, StepState> {
 
   constructor(props: StepProps) {
     super(props);
-    this.state = { stepText: "" , highlight: false};
+    this.state = { stepText: "" , highlight: false };
     this.focus = () => this.editor.focus();
     this.saveStep = this.saveStep.bind(this);
+    this.highlight = this.highlight.bind(this);
+    this.unHighlight = this.unHighlight.bind(this);
   }
 
   onChange = (stepText: any) => {

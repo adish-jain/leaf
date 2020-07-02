@@ -42,19 +42,15 @@ const DraftView = () => {
     { initialData, revalidateOnMount: true }
   );
 
-  // console.log(steps);
-
   // highlighting lines for steps 
   const [lines, changeLines] = useState({});
   const [saveLines, notSaveLines] = useState(false);
-  // let stepLines;
 
   // DynamicCodeEditor -> CodeEditor -> [draftId]
   function highlightLines(start: any, end: any) {
     let startLine = start['line'];
     let endLine = end['line'];
     changeLines({'start': startLine, 'end': endLine});
-    // console.log(lines);
   }
 
   function onHighlight() {
@@ -75,7 +71,7 @@ const DraftView = () => {
       lines: saveLines ? lines : null,
     };
 
-    let newStep = {"id":stepId, "lines": saveLines ? lines : null, "text": text};
+    let newStep = {"id": stepId, "lines": saveLines ? lines : null, "text": text};
     let optimisticSteps = [...storedSteps];
     optimisticSteps.push(newStep);
     mutate("/api/endpoint", optimisticSteps, false);
@@ -109,11 +105,10 @@ const DraftView = () => {
     };
 
     let newStep = {"id": stepId, "lines": stepLines, "text": text};
-    // @ts-ignore 
-    let optimisticSteps = [];
+    
+    let optimisticSteps: { id: any; lines: any; text: any; }[] = [];
 
-    // @ts-ignore 
-    storedSteps.forEach(element => {
+    storedSteps.forEach((element: { id: any; lines: any; text: any; }) => {
       if (element["id"] != stepId) {
         optimisticSteps.push(element);
       } else {
@@ -121,7 +116,6 @@ const DraftView = () => {
       }
     });
     
-    // @ts-ignore 
     mutate("/api/endpoint", optimisticSteps, false);
     
     fetch("/api/endpoint", {
@@ -144,17 +138,14 @@ const DraftView = () => {
       stepId: stepId,
     };
 
-    // @ts-ignore 
-    let optimisticSteps = [];
+    let optimisticSteps: { id: any; lines: any; text: any; }[] = [];
 
-    // @ts-ignore 
-    storedSteps.forEach(element => {
+    storedSteps.forEach((element: { id: any; lines: any; text: any; }) => {
       if (element["id"] != stepId) {
         optimisticSteps.push(element);
       } 
     });
-    
-    // @ts-ignore 
+  
     mutate("/api/endpoint", optimisticSteps, false);
 
     fetch("/api/endpoint", {
@@ -167,7 +158,6 @@ const DraftView = () => {
         console.log(res);
     });
   }
-
 
   // this page should look similar to how pages/article looks right now
   return (
@@ -200,7 +190,8 @@ const DraftView = () => {
             deleteStoredStep={deleteStoredStep}
             onHighlight={onHighlight} 
             unHighlight={unHighlight}/>
-          <CodeEditor highlightLines={highlightLines} />
+          <CodeEditor 
+            highlightLines={highlightLines} />
         </div>
       </main>
     </div>
