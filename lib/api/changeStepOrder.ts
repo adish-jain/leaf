@@ -33,8 +33,8 @@ async function changeStepOrderHandler(req: NextApiRequest, res: NextApiResponse)
     return;
   }
 
-  console.log(oldIdx);
-  console.log(newIdx);
+//   console.log(oldIdx);
+//   console.log(newIdx);
 
   // update order in firebase
   db.collection("users").doc(uid).collection("drafts").doc(draftId).collection("steps").doc(stepId).update({"order": newIdx}); 

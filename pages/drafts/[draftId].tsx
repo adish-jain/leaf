@@ -1,7 +1,7 @@
 import { useRouter, Router } from "next/router";
 import { useState, useCallback } from "react";
 import { useLoggedIn, logOut } from "../../lib/UseLoggedIn";
-import useSWR, { mutate } from "swr";
+import useSWR from "swr";
 import Publishing from "../../components/Publishing";
 import CodeEditor from "../../components/CodeEditor";
 import Head from "next/head";
@@ -36,7 +36,7 @@ const DraftView = () => {
 
   const initialData: any = [];
 
-  let { data: storedSteps } = useSWR(
+  let { data: storedSteps, mutate } = useSWR(
     authenticated ? "/api/endpoint" : null,
     fetcher,
     { initialData, revalidateOnMount: true }
@@ -74,7 +74,8 @@ const DraftView = () => {
     let newStep = {"id": stepId, "lines": saveLines ? lines : null, "text": text};
     let optimisticSteps = [...storedSteps];
     optimisticSteps.push(newStep);
-    mutate("/api/endpoint", optimisticSteps, false);
+    // mutate("/api/endpoint", optimisticSteps, false);
+    mutate(optimisticSteps, false);
 
     fetch("/api/endpoint", {
       method: "POST",
@@ -116,7 +117,8 @@ const DraftView = () => {
       }
     });
     
-    mutate("/api/endpoint", optimisticSteps, false);
+    // mutate("/api/endpoint", optimisticSteps, false);
+    mutate(optimisticSteps, false);
     
     fetch("/api/endpoint", {
         method: "POST",
@@ -146,7 +148,8 @@ const DraftView = () => {
       } 
     });
   
-    mutate("/api/endpoint", optimisticSteps, false);
+    // mutate("/api/endpoint", optimisticSteps, false);
+    mutate(optimisticSteps, false);
 
     fetch("/api/endpoint", {
         method: "POST",
@@ -180,7 +183,7 @@ const DraftView = () => {
       return;
     } 
     
-    let optimisticSteps = storedSteps;
+    let optimisticSteps = storedSteps.slice();
 
     let data = {
       requestedAPI: "change_step_order",
@@ -192,17 +195,16 @@ const DraftView = () => {
     };
 
     [optimisticSteps[idx], optimisticSteps[idx-1]] = [optimisticSteps[idx-1], optimisticSteps[idx]];
-    // console.log(optimisticSteps); 
-  
-    mutate("/api/endpoint", optimisticSteps, false);
+    mutate(optimisticSteps, false);
 
     fetch("/api/endpoint", {
       method: "POST",
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify(data),
     }).then(async (res: any) => {
-        let updatedSteps = res.json();
-        mutate("/api/endpoint", updatedSteps);
+        let updatedSteps = await res.json();
+        console.log(updatedSteps);
+        // mutate("/api/endpoint", updatedSteps);
         console.log(res);
     });
   }
@@ -212,7 +214,7 @@ const DraftView = () => {
     if (idx == storedSteps.length-1) {
       return;
     } 
-    let optimisticSteps = storedSteps;
+    let optimisticSteps = storedSteps.slice();
 
     let data = {
       requestedAPI: "change_step_order",
@@ -224,9 +226,7 @@ const DraftView = () => {
     };
 
     [optimisticSteps[idx], optimisticSteps[idx+1]] = [optimisticSteps[idx+1], optimisticSteps[idx]];
-    // console.log(optimisticSteps);
-  
-    mutate("/api/endpoint", optimisticSteps, false);
+    mutate(optimisticSteps, false);
 
     fetch("/api/endpoint", {
       method: "POST",
@@ -234,7 +234,7 @@ const DraftView = () => {
       body: JSON.stringify(data),
     }).then(async (res: any) => {
         let updatedSteps = res.json();
-        mutate("/api/endpoint", updatedSteps);
+        // mutate("/api/endpoint", updatedSteps);
         console.log(res);
     }); 
   }
