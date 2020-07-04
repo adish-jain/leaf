@@ -29,7 +29,6 @@ export async function getStaticPaths() {
       }
     });  
   }
-  console.log(paths);
 
   return {
     paths,
@@ -38,6 +37,7 @@ export async function getStaticPaths() {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
+
   return {
     props: {
       publishedPosts: [],

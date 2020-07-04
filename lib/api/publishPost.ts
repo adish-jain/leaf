@@ -10,20 +10,20 @@ initFirebase();
 
 export async function getArticlesFromUsername(username: string) {
   let userRef = db.collection("users").where("username", "==", username);
-  let uid = userRef.get().then(function (userSnapshot: any) {
-    return userSnapshot.id;
+  let uid = await userRef.get().then(function (userSnapshot: any) {
+    let user = userSnapshot.docs[0];
+    return user.id;
   });
-  let postsRef = db
-    .collection("posts")
-    .where("uid", "==", uid)
-    .orderBy("createdAt");
-  let results = postsRef.get().then(function (postsCollection: any) {
+  let postsRef = await db.collection("posts").where("uid", "==", uid);
+  let results = await postsRef.get().then(function (postsCollection: any) {
+    let toReturn: any[] = [];
     postsCollection.forEach(function (result: any) {
       let resultJSON = result.data();
       resultJSON.id = result.id;
-      results.push(result);
+      resultJSON.createdAt = resultJSON.createdAt.toDate().toJSON();
+      toReturn.push(resultJSON);
     });
-    return results;
+    return toReturn;
   });
   return results;
 }
