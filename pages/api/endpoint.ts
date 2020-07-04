@@ -15,7 +15,7 @@ import handleUpdateStep from "../../lib/api/updateStep";
 import handleSetId from "../../lib/api/setId";
 import handlecheckId from "../../lib/api/checkId";
 import handleGetUserInfo from "../../lib/api/getUserInfo";
-import { handleLoginCookies } from "../../lib/userUtils";
+import handlePublishPost from "../../lib/api/publishPost";
 
 const firebase = require("firebase/app");
 initFirebase();
@@ -34,17 +34,14 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
     ------ Authentication ------
     */
 
-    //POST
     case "login": {
       return handleLogin(req, res);
     }
 
-    //POST
     case "signup": {
       return handleSignup(req, res);
     }
 
-    //POST
     case "logout": {
       return handleLogout(req, res);
     }
@@ -70,7 +67,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
     */
 
     case "get_drafts": {
-      /* ----- POST -----
+      /* 
       Get all drafts
       */
       return handleGetDrafts(req, res);
@@ -81,30 +78,30 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     case "delete_draft": {
-      /* ----- POST -----
+      /* 
       Delete Draft
       */
       return handleDeleteDraft(req, res);
     }
 
-    // POST
     case "get_steps": {
       return handleGetSteps(req, res);
     }
 
-    // POST
     case "save_step": {
       return handleSaveStep(req, res);
     }
 
-    // POST
     case "delete_step": {
       return handleDeleteStep(req, res);
     }
 
-    // POST
     case "update_step": {
       return handleUpdateStep(req, res);
+    }
+
+    case "publishPost": {
+      return handlePublishPost(req, res);
     }
 
     default: {

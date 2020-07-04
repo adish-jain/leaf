@@ -38,6 +38,7 @@ export default class Publishing extends Component<
     this.addStep = this.addStep.bind(this);
     this.closeStep = this.closeStep.bind(this);
     this.previewDraft = this.previewDraft.bind(this);
+    this.publishDraft = this.publishDraft.bind(this);
 
     this.state = {
       steps: [],
@@ -56,6 +57,25 @@ export default class Publishing extends Component<
     let new_step = shortId.generate();
     steps.push(new_step);
     this.setState({ steps });
+  }
+
+  publishDraft(e: React.MouseEvent<HTMLButtonElement>) {
+    console.log("fired");
+    let { draftId } = this.props;
+    fetch("/api/endpoint", {
+      method: "POST",
+      // redirect: "follow",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify({ requestedAPI: "publishPost", draftId: draftId }),
+    })
+      .then(async (res: any) => {
+        if (res.redirected) {
+          let resJson = await res.json();
+          console.log(resJson);
+        }
+        // HTTP 301 response
+      })
+      .catch(function (err: any) {});
   }
 
   previewDraft(e: React.MouseEvent<HTMLButtonElement>) {
@@ -90,7 +110,12 @@ export default class Publishing extends Component<
             >
               Preview
             </button>
-            <button className={descriptionStyles.publish}>Publish</button>
+            <button
+              onClick={this.publishDraft}
+              className={descriptionStyles.publish}
+            >
+              Publish
+            </button>
           </div>
         </div>
         <div className={descriptionStyles.header}>
