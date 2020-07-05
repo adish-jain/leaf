@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebaseAdmin, initFirebase } from "../initFirebase";
 const admin = require("firebase-admin");
-import { getUser, getUserStepsForDraft } from "../userUtils";
+import { getUser, getUserStepsForDraft, adjustStepOrder } from "../userUtils";
 
 let db = admin.firestore();
 initFirebaseAdmin();
@@ -25,6 +25,7 @@ async function deleteStepHandler(req: NextApiRequest, res: NextApiResponse) {
   let refreshToken = cookies.refreshToken;
   let stepId = req.body.stepId;
   let draftId = req.body.draftId;
+  let stepsToChange = req.body.stepsToChange;
   let { uid } = await getUser(req, res);
 
   if (uid === "") {
@@ -37,6 +38,9 @@ async function deleteStepHandler(req: NextApiRequest, res: NextApiResponse) {
 
   // delete step from firebase 
   db.collection("users").doc(uid).collection("drafts").doc(draftId).collection("steps").doc(stepId).delete(); 
+
+  // adjust order of all steps after deleted one 
+  await adjustStepOrder(uid, draftId, stepsToChange);
 
   res.statusCode = 200;
   let results = await getUserStepsForDraft(uid, draftId);

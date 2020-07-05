@@ -62,6 +62,19 @@ const DraftView = () => {
     notSaveLines(false);
   }
 
+  function findIdx(stepId: any) {
+    let idx = 0;
+    let counter = 0;
+
+    storedSteps.forEach((element: { id: any; lines: any; text: any; }) => {
+      if (element["id"] == stepId) {
+        idx = counter;
+      } 
+      counter += 1;
+    });
+    return idx;
+  }
+
   function saveStep(stepId: any, text: any) {
     var data = {
       requestedAPI: "save_step",
@@ -74,7 +87,6 @@ const DraftView = () => {
     let newStep = {"id": stepId, "lines": saveLines ? lines : null, "text": text};
     let optimisticSteps = [...storedSteps];
     optimisticSteps.push(newStep);
-    // mutate("/api/endpoint", optimisticSteps, false);
     mutate(optimisticSteps, false);
 
     fetch("/api/endpoint", {
@@ -106,18 +118,9 @@ const DraftView = () => {
     };
 
     let newStep = {"id": stepId, "lines": stepLines, "text": text};
-    
-    let optimisticSteps: { id: any; lines: any; text: any; }[] = [];
-
-    storedSteps.forEach((element: { id: any; lines: any; text: any; }) => {
-      if (element["id"] != stepId) {
-        optimisticSteps.push(element);
-      } else {
-        optimisticSteps.push(newStep);
-      }
-    });
-    
-    // mutate("/api/endpoint", optimisticSteps, false);
+    let optimisticSteps = storedSteps.slice();
+    let idx = findIdx(stepId);
+    optimisticSteps[idx] = newStep;
     mutate(optimisticSteps, false);
     
     fetch("/api/endpoint", {
@@ -134,22 +137,18 @@ const DraftView = () => {
   }
 
   function deleteStoredStep(stepId: any) {
+    let optimisticSteps = storedSteps.slice();
+    let idx = findIdx(stepId);
+    let stepsToChange = optimisticSteps.slice(idx + 1, optimisticSteps.length);
+    optimisticSteps.splice(idx, 1);
+    mutate(optimisticSteps, false);
+
     let data = {
       requestedAPI: "delete_step",
       draftId: draftId,
       stepId: stepId,
+      stepsToChange: stepsToChange,
     };
-
-    let optimisticSteps: { id: any; lines: any; text: any; }[] = [];
-
-    storedSteps.forEach((element: { id: any; lines: any; text: any; }) => {
-      if (element["id"] != stepId) {
-        optimisticSteps.push(element);
-      } 
-    });
-  
-    // mutate("/api/endpoint", optimisticSteps, false);
-    mutate(optimisticSteps, false);
 
     fetch("/api/endpoint", {
         method: "POST",
@@ -162,23 +161,8 @@ const DraftView = () => {
     });
   }
 
-  function findIdx(stepId: any) {
-    let idx = 0;
-    let counter = 0;
-
-    storedSteps.forEach((element: { id: any; lines: any; text: any; }) => {
-      if (element["id"] == stepId) {
-        idx = counter;
-      } 
-      counter += 1;
-    });
-    return idx;
-  }
-
   function up(stepId: any) {
-    // let optimisticSteps: { id: any; lines: any; text: any; }[] = [];
-    let idx = findIdx(stepId); // 1
-    console.log(idx);
+    let idx = findIdx(stepId);
     if (idx == 0) {
       return;
     } 

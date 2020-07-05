@@ -88,6 +88,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
       return handleUpdateStep(req, res);
     }
 
+    // POST
     case "change_step_order": {
       return handleChangeStepOrder(req, res);
     }

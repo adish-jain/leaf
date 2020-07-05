@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebaseAdmin, initFirebase } from "../initFirebase";
-import { getUser, getUserStepsForDraft } from "../userUtils";
+import { getUser, getUserStepsForDraft, maxOrderInSteps } from "../userUtils";
 const admin = require("firebase-admin");
 
 let db = admin.firestore();
@@ -35,8 +35,9 @@ async function saveStepHandler(req: NextApiRequest, res: NextApiResponse) {
   }
 
   // console.log("user is logged in");
-  let steps = await getUserStepsForDraft(uid, draftId);
-  let order = steps.length;
+  let maxOrderStep = await maxOrderInSteps(uid, draftId);
+  // @ts-ignore 
+  let order = maxOrderStep[0] ? maxOrderStep[0]["order"] + 1 : 0;
 
   // store text & lines in firebase
   let stepText = {

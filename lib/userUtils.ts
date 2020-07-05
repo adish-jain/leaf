@@ -159,3 +159,40 @@ export async function getUserStepsForDraft(uid: string, draftId: string) {
       return [];
     });
 }
+
+export async function maxOrderInSteps(uid: string, draftId: string) {
+  let stepsRef = db
+    .collection("users")
+    .doc(uid)
+    .collection("drafts")
+    .doc(draftId)
+    .collection("steps")
+    .orderBy("order", "desc")
+    .limit(1);
+
+  return await stepsRef
+    .get()
+    .then(function (stepsCollection: any) {
+      let results: any[] = [];
+      stepsCollection.forEach(function (result: any) {
+        let resultsJSON = result.data();
+        resultsJSON.id = result.id;
+        results.push({
+          order: resultsJSON.order,
+        });
+      });
+      return results;
+    })
+    .catch(function (error: any) {
+      console.log(error);
+      return [];
+    });
+}
+
+export async function adjustStepOrder(uid: string, draftId: string, stepsToChange: any){
+  stepsToChange.forEach((element: { id: any; lines: any; text: any; }) => {
+    let stepId = element["id"];
+    db.collection("users").doc(uid).collection("drafts").doc(draftId).collection("steps").doc(stepId).update({"order": admin.firestore.FieldValue.increment(-1)});
+  })
+  return;
+}
