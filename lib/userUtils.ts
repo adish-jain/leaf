@@ -137,7 +137,7 @@ export async function getUserStepsForDraft(uid: string, draftId: string) {
     .collection("drafts")
     .doc(draftId)
     .collection("steps")
-    .orderBy("createdAt");
+    .orderBy("order");
 
   return await stepsRef
     .get()
@@ -158,4 +158,12 @@ export async function getUserStepsForDraft(uid: string, draftId: string) {
       console.log(error);
       return [];
     });
+}
+
+export async function adjustStepOrder(uid: string, draftId: string, stepsToChange: any){
+  stepsToChange.forEach((element: { id: any; lines: any; text: any; }) => {
+    let stepId = element["id"];
+    db.collection("users").doc(uid).collection("drafts").doc(draftId).collection("steps").doc(stepId).update({"order": admin.firestore.FieldValue.increment(-1)});
+  })
+  return;
 }

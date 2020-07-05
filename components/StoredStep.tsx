@@ -11,16 +11,22 @@ type StoredStepProps = {
     text: any;
     lines: any;
     updateStoredStep: (
-        text: any,
-        stepId: any,
-        oldLines: any,
-        removeLines: any,
+      text: any,
+      stepId: any,
+      oldLines: any,
+      removeLines: any,
     ) => void;
     deleteStoredStep: (
-        stepId: any,
+      stepId: any,
     ) => void;
     onHighlight: () => void;
     unHighlight: () => void;
+    moveStepUp: (
+      stepId: any,
+    ) => void;
+    moveStepDown: (
+      stepId: any,
+    ) => void;
 };
   
 type StoredStepState = {
@@ -35,6 +41,8 @@ export default class StoredStep extends Component<StoredStepProps, StoredStepSta
         this.deleteStoredStep = this.deleteStoredStep.bind(this);
         this.editStoredStep = this.editStoredStep.bind(this);
         this.updateStoredStep = this.updateStoredStep.bind(this);
+        this.moveStepUp = this.moveStepUp.bind(this);
+        this.moveStepDown = this.moveStepDown.bind(this);
         this.state = {
             stepText: this.props.text,
             editing: false,
@@ -67,6 +75,14 @@ export default class StoredStep extends Component<StoredStepProps, StoredStepSta
         });
     }
 
+    moveStepUp() {
+        this.props.moveStepUp(this.props.id);
+    }
+
+    moveStepDown() {
+        this.props.moveStepDown(this.props.id);
+    }
+
     render() {
         const contentState = convertFromRaw(this.props.text);
         const editorState = EditorState.createWithContent(contentState);
@@ -83,6 +99,8 @@ export default class StoredStep extends Component<StoredStepProps, StoredStepSta
                 (<RenderedStoredStep 
                     editStoredStep={this.editStoredStep} 
                     deleteStoredStep={this.deleteStoredStep} 
+                    moveStepUp={this.moveStepUp}
+                    moveStepDown={this.moveStepDown}
                     lines={this.props.lines}
                     editorState={editorState} />)
         );

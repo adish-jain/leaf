@@ -1,7 +1,7 @@
 import { useRouter, Router } from "next/router";
 import { useState, useCallback } from "react";
 import { useLoggedIn, logOut } from "../../lib/UseLoggedIn";
-import useSWR, { mutate } from "swr";
+import useSWR from "swr";
 import Publishing from "../../components/Publishing";
 import CodeEditor from "../../components/CodeEditor";
 import Head from "next/head";
@@ -36,7 +36,7 @@ const DraftView = () => {
 
   const initialData: any = [];
 
-  let { data: storedSteps } = useSWR(
+  let { data: storedSteps, mutate } = useSWR(
     authenticated ? "/api/endpoint" : null,
     fetcher,
     { initialData, revalidateOnMount: true }
@@ -62,6 +62,25 @@ const DraftView = () => {
     notSaveLines(false);
   }
 
+  /*
+  Helper function to find the step with the associated stepId in `storedSteps`
+  */
+  function findIdx(stepId: any) {
+    let idx = 0;
+    let counter = 0;
+
+    storedSteps.forEach((element: { id: any; lines: any; text: any; }) => {
+      if (element["id"] == stepId) {
+        idx = counter;
+      } 
+      counter += 1;
+    });
+    return idx;
+  }
+
+  /*
+  Saves a step into Firebase. Triggered from `Step.tsx`.
+  */
   function saveStep(stepId: any, text: any) {
     var data = {
       requestedAPI: "save_step",
@@ -69,12 +88,13 @@ const DraftView = () => {
       draftId: draftId,
       stepId: stepId,
       lines: saveLines ? lines : null,
+      order: storedSteps.length,
     };
 
     let newStep = {"id": stepId, "lines": saveLines ? lines : null, "text": text};
     let optimisticSteps = [...storedSteps];
     optimisticSteps.push(newStep);
-    mutate("/api/endpoint", optimisticSteps, false);
+    mutate(optimisticSteps, false);
 
     fetch("/api/endpoint", {
       method: "POST",
@@ -89,6 +109,9 @@ const DraftView = () => {
     notSaveLines(false);
   }
 
+  /*
+  Updates a step in Firebase. Triggered from `EditingStoredStep.tsx`.
+  */
   function updateStoredStep(stepId: any, text: any, oldLines: any, removeLines: any) {
     let stepLines;
     if (removeLines) {
@@ -105,18 +128,10 @@ const DraftView = () => {
     };
 
     let newStep = {"id": stepId, "lines": stepLines, "text": text};
-    
-    let optimisticSteps: { id: any; lines: any; text: any; }[] = [];
-
-    storedSteps.forEach((element: { id: any; lines: any; text: any; }) => {
-      if (element["id"] != stepId) {
-        optimisticSteps.push(element);
-      } else {
-        optimisticSteps.push(newStep);
-      }
-    });
-    
-    mutate("/api/endpoint", optimisticSteps, false);
+    let optimisticSteps = storedSteps.slice();
+    let idx = findIdx(stepId);
+    optimisticSteps[idx] = newStep;
+    mutate(optimisticSteps, false);
     
     fetch("/api/endpoint", {
         method: "POST",
@@ -131,22 +146,22 @@ const DraftView = () => {
     notSaveLines(false);
   }
 
+  /*
+  Deletes a step from Firebase. Triggered from `StoredStep.tsx`.
+  */
   function deleteStoredStep(stepId: any) {
+    let optimisticSteps = storedSteps.slice();
+    let idx = findIdx(stepId);
+    let stepsToChange = optimisticSteps.slice(idx + 1, optimisticSteps.length);
+    optimisticSteps.splice(idx, 1);
+    mutate(optimisticSteps, false);
+
     let data = {
       requestedAPI: "delete_step",
       draftId: draftId,
       stepId: stepId,
+      stepsToChange: stepsToChange,
     };
-
-    let optimisticSteps: { id: any; lines: any; text: any; }[] = [];
-
-    storedSteps.forEach((element: { id: any; lines: any; text: any; }) => {
-      if (element["id"] != stepId) {
-        optimisticSteps.push(element);
-      } 
-    });
-  
-    mutate("/api/endpoint", optimisticSteps, false);
 
     fetch("/api/endpoint", {
         method: "POST",
@@ -157,6 +172,76 @@ const DraftView = () => {
         // mutate("/api/endpoint", updatedSteps);
         console.log(res);
     });
+  }
+
+  /*
+  Moves a step up by changing its order in Firebase & in `optimisticSteps`. 
+  Triggered from `RenderedStoredStep.tsx`.
+  */
+  function moveStepUp(stepId: any) {
+    let idx = findIdx(stepId);
+    if (idx == 0) {
+      return;
+    } 
+    
+    let optimisticSteps = storedSteps.slice();
+
+    let data = {
+      requestedAPI: "change_step_order",
+      draftId: draftId,
+      stepId: stepId,
+      neighborId: optimisticSteps[idx-1]["id"],
+      oldIdx: idx,
+      newIdx: idx - 1,
+    };
+
+    [optimisticSteps[idx], optimisticSteps[idx-1]] = [optimisticSteps[idx-1], optimisticSteps[idx]];
+    mutate(optimisticSteps, false);
+
+    fetch("/api/endpoint", {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify(data),
+    }).then(async (res: any) => {
+        let updatedSteps = await res.json();
+        console.log(updatedSteps);
+        // mutate("/api/endpoint", updatedSteps);
+        console.log(res);
+    });
+  }
+
+  /*
+  Moves a step down by changing its order in Firebase & in `optimisticSteps`. 
+  Triggered from `RenderedStoredStep.tsx`.
+  */
+  function moveStepDown(stepId: any) {
+    let idx = findIdx(stepId);
+    if (idx == storedSteps.length-1) {
+      return;
+    } 
+    let optimisticSteps = storedSteps.slice();
+
+    let data = {
+      requestedAPI: "change_step_order",
+      draftId: draftId,
+      stepId: stepId,
+      neighborId: optimisticSteps[idx+1]["id"],
+      oldIdx: idx,
+      newIdx: idx + 1,
+    };
+
+    [optimisticSteps[idx], optimisticSteps[idx+1]] = [optimisticSteps[idx+1], optimisticSteps[idx]];
+    mutate(optimisticSteps, false);
+
+    fetch("/api/endpoint", {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify(data),
+    }).then(async (res: any) => {
+        let updatedSteps = res.json();
+        // mutate("/api/endpoint", updatedSteps);
+        console.log(res);
+    }); 
   }
 
   // this page should look similar to how pages/article looks right now
@@ -189,7 +274,9 @@ const DraftView = () => {
             updateStoredStep={updateStoredStep} 
             deleteStoredStep={deleteStoredStep}
             onHighlight={onHighlight} 
-            unHighlight={unHighlight}/>
+            unHighlight={unHighlight}
+            moveStepUp={moveStepUp}
+            moveStepDown={moveStepDown} />
           <CodeEditor 
             highlightLines={highlightLines} />
         </div>

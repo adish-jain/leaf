@@ -26,6 +26,7 @@ async function saveStepHandler(req: NextApiRequest, res: NextApiResponse) {
   let stepId = req.body.stepId;
   let draftId = req.body.draftId;
   let lines = req.body.lines;
+  let order = req.body.order;
   let { uid } = await getUser(req, res);
 
   if (uid === "") {
@@ -34,13 +35,11 @@ async function saveStepHandler(req: NextApiRequest, res: NextApiResponse) {
     return;
   }
 
-  // console.log("user is logged in");
-
-  // store text & lines in firebase
   let stepText = {
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
     text: text,
     lines: lines,
+    order: order
   };
 
   db.collection("users").doc(uid).collection("drafts").doc(draftId).collection("steps").doc(stepId).set(stepText); 
