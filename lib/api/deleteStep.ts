@@ -34,8 +34,6 @@ async function deleteStepHandler(req: NextApiRequest, res: NextApiResponse) {
     return;
   }
 
-  // console.log("user is logged in");
-
   // delete step from firebase 
   db.collection("users").doc(uid).collection("drafts").doc(draftId).collection("steps").doc(stepId).delete(); 
 

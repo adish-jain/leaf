@@ -28,10 +28,10 @@ type PublishingProps = {
   ) => void;
   onHighlight: () => void;
   unHighlight: () => void;
-  up: (
+  moveStepUp: (
     stepId: any,
   ) => void;
-  down: (
+  moveStepDown: (
     stepId: any,
   ) => void;
 };
@@ -128,8 +128,8 @@ export default class Publishing extends Component<
               updateStoredStep={this.props.updateStoredStep}
               onHighlight={this.props.onHighlight}
               unHighlight={this.props.unHighlight}
-              up={this.props.up}
-              down={this.props.down}
+              moveStepUp={this.props.moveStepUp}
+              moveStepDown={this.props.moveStepDown}
               key={storedStep.id}
             />
           );

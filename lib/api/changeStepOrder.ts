@@ -19,6 +19,12 @@ function handleError(res: NextApiResponse, error: any) {
   return;
 }
 
+/*
+Changes the order of steps. Triggered from `moveStepUp` & `moveStepDown` in `[draftId].tsx`.
+    neighborId: stepId of the step being switched with
+    oldIdx: index of the step before switch (neighbor's new order)
+    newIdx: index of the neighboring step before switch (step's new order)
+*/
 async function changeStepOrderHandler(req: NextApiRequest, res: NextApiResponse) {
   let stepId = req.body.stepId;
   let draftId = req.body.draftId;

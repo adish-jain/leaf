@@ -62,6 +62,9 @@ const DraftView = () => {
     notSaveLines(false);
   }
 
+  /*
+  Helper function to find the step with the associated stepId in `storedSteps`
+  */
   function findIdx(stepId: any) {
     let idx = 0;
     let counter = 0;
@@ -75,6 +78,9 @@ const DraftView = () => {
     return idx;
   }
 
+  /*
+  Saves a step into Firebase. Triggered from `Step.tsx`.
+  */
   function saveStep(stepId: any, text: any) {
     var data = {
       requestedAPI: "save_step",
@@ -82,6 +88,7 @@ const DraftView = () => {
       draftId: draftId,
       stepId: stepId,
       lines: saveLines ? lines : null,
+      order: storedSteps.length,
     };
 
     let newStep = {"id": stepId, "lines": saveLines ? lines : null, "text": text};
@@ -102,6 +109,9 @@ const DraftView = () => {
     notSaveLines(false);
   }
 
+  /*
+  Updates a step in Firebase. Triggered from `EditingStoredStep.tsx`.
+  */
   function updateStoredStep(stepId: any, text: any, oldLines: any, removeLines: any) {
     let stepLines;
     if (removeLines) {
@@ -136,6 +146,9 @@ const DraftView = () => {
     notSaveLines(false);
   }
 
+  /*
+  Deletes a step from Firebase. Triggered from `StoredStep.tsx`.
+  */
   function deleteStoredStep(stepId: any) {
     let optimisticSteps = storedSteps.slice();
     let idx = findIdx(stepId);
@@ -161,7 +174,11 @@ const DraftView = () => {
     });
   }
 
-  function up(stepId: any) {
+  /*
+  Moves a step up by changing its order in Firebase & in `optimisticSteps`. 
+  Triggered from `RenderedStoredStep.tsx`.
+  */
+  function moveStepUp(stepId: any) {
     let idx = findIdx(stepId);
     if (idx == 0) {
       return;
@@ -193,7 +210,11 @@ const DraftView = () => {
     });
   }
 
-  function down(stepId: any) {
+  /*
+  Moves a step down by changing its order in Firebase & in `optimisticSteps`. 
+  Triggered from `RenderedStoredStep.tsx`.
+  */
+  function moveStepDown(stepId: any) {
     let idx = findIdx(stepId);
     if (idx == storedSteps.length-1) {
       return;
@@ -254,8 +275,8 @@ const DraftView = () => {
             deleteStoredStep={deleteStoredStep}
             onHighlight={onHighlight} 
             unHighlight={unHighlight}
-            up={up}
-            down={down} />
+            moveStepUp={moveStepUp}
+            moveStepDown={moveStepDown} />
           <CodeEditor 
             highlightLines={highlightLines} />
         </div>

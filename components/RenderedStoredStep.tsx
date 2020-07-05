@@ -9,8 +9,8 @@ type RenderedStoredStepProps = {
     deleteStoredStep: (
       e: React.MouseEvent<any>
     ) => void;
-    up: () => void;
-    down: () => void;
+    moveStepUp: () => void;
+    moveStepDown: () => void;
     editorState: any;
     lines: any;
 };
@@ -42,8 +42,8 @@ export default class Step extends Component<RenderedStoredStepProps, RenderedSto
                     {highlightedLines && 
                     (<div className={StepStyles.Save}>{highlightedLines}</div>)} 
                     <button onClick={(e) => {this.props.editStoredStep(e)}} className={StepStyles.Save}>Edit</button>
-                    <div onClick={(e) => {this.props.up()}} className={StepStyles.Up}>↑</div>
-                    <div onClick={(e) => {this.props.down()}} className={StepStyles.Down}>↓</div>
+                    <div onClick={(e) => {this.props.moveStepUp()}} className={StepStyles.Up}>↑</div>
+                    <div onClick={(e) => {this.props.moveStepDown()}} className={StepStyles.Down}>↓</div>
                     <div onClick={(e) => {this.props.deleteStoredStep(e)}} className={StepStyles.Close}>X</div>
                 </div>
             </div>
