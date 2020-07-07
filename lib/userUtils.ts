@@ -127,6 +127,51 @@ export async function getUserDrafts(uid: string) {
     });
 }
 
+export async function getArticlesFromUsername(username: string) {
+  let userRef = db.collection("users").where("username", "==", username);
+  let uid = await userRef.get().then(function (userSnapshot: any) {
+    let user = userSnapshot.docs[0];
+    return user.id;
+  });
+  let postsRef = await db.collection("posts").where("uid", "==", uid);
+  let results = await postsRef.get().then(function (postsCollection: any) {
+    let toReturn: any[] = [];
+    postsCollection.forEach(function (result: any) {
+      let resultJSON = result.data();
+      resultJSON.id = result.id;
+      resultJSON.username = username;
+      resultJSON.createdAt = resultJSON.createdAt.toDate().toJSON();
+      toReturn.push(resultJSON);
+    });
+    return toReturn;
+  });
+  return results;
+}
+
+export async function getArticlesFromUid(uid: string) {
+  let postsRef = await db.collection("posts").where("uid", "==", uid);
+  let results = await postsRef.get().then(function (postsCollection: any) {
+    let toReturn: any[] = [];
+    postsCollection.forEach(function (result: any) {
+      let resultJSON = result.data();
+      resultJSON.id = result.id;
+      resultJSON.createdAt = resultJSON.createdAt.toDate().toJSON();
+      toReturn.push(resultJSON);
+    });
+    return toReturn;
+  });
+  return results;
+}
+
+export async function getUsernameFromUid(uid: string) {
+  let userRef = await db.collection("users").doc(uid);
+  let username = await userRef.get().then(function (userSnapshot: any) {
+    let data = userSnapshot.data();
+    return data.username;
+  });
+  return username;
+}
+
 export async function getUserStepsForDraft(uid: string, draftId: string) {
   let stepsRef = db
     .collection("users")
@@ -155,7 +200,6 @@ export async function getUserStepsForDraft(uid: string, draftId: string) {
       return [];
     });
 }
-
 
 export async function checkUsernameDNE(username: string) {
   let usernamesRefKey = db.collection("users").where("username", "==", username)

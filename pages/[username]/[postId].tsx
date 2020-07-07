@@ -5,7 +5,8 @@ import Head from "next/head";
 import Scrolling from "../../components/Scrolling";
 
 import getUsernames from "../../lib/api/getUsernames";
-import { getArticlesFromUsername, getAllPosts, getUsernameFromUid } from "../../lib/api/publishPost";
+import { getAllPosts } from "../../lib/api/publishPost";
+import { getUsernameFromUid } from "../../lib/userUtils";
 import { format } from "path";
 import { getHeapCodeStatistics } from "v8";
 const appStyles = require("../../styles/App.module.scss");
@@ -21,13 +22,13 @@ export async function getStaticPaths() {
   for (let i = 0; i < posts.length; i++) {
     let uid = posts[i].uid;
     let postId = posts[i].postId;
-    let username = await getUsernameFromUid(uid)
+    let username = await getUsernameFromUid(uid);
     paths.push({
       params: {
         username: username,
-        postId: postId
-      }
-    });  
+        postId: postId,
+      },
+    });
   }
 
   return {
@@ -37,7 +38,6 @@ export async function getStaticPaths() {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-
   return {
     props: {
       publishedPosts: [],

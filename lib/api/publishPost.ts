@@ -8,26 +8,6 @@ let db = admin.firestore();
 initFirebaseAdmin();
 initFirebase();
 
-export async function getArticlesFromUsername(username: string) {
-  let userRef = db.collection("users").where("username", "==", username);
-  let uid = await userRef.get().then(function (userSnapshot: any) {
-    let user = userSnapshot.docs[0];
-    return user.id;
-  });
-  let postsRef = await db.collection("posts").where("uid", "==", uid);
-  let results = await postsRef.get().then(function (postsCollection: any) {
-    let toReturn: any[] = [];
-    postsCollection.forEach(function (result: any) {
-      let resultJSON = result.data();
-      resultJSON.id = result.id;
-      resultJSON.createdAt = resultJSON.createdAt.toDate().toJSON();
-      toReturn.push(resultJSON);
-    });
-    return toReturn;
-  });
-  return results;
-}
-
 export default async function publishPost(
   req: NextApiRequest,
   res: NextApiResponse
@@ -51,15 +31,12 @@ export default async function publishPost(
     return draftData.title;
   });
 
-  console.log("drafttitle is", draftTitle);
-
   let stepsRef = await db
     .collection("users")
     .doc(uid)
     .collection("drafts")
     .doc(draftId)
     .collection("steps");
-  //   console.log(draftRef);
 
   let steps: any[] = [];
 
@@ -98,17 +75,11 @@ export default async function publishPost(
       }
     });
 
+  // Delete draft
+  db.collection("users").doc(uid).collection("drafts").doc(draftId).delete();
+
   res.end();
   return;
-}
-
-export async function getUsernameFromUid(uid: string) {
-  let userRef = await db.collection("users").doc(uid);
-  let username = await userRef.get().then(function (userSnapshot: any) {
-    let data = userSnapshot.data();
-    return data.username;
-  });
-  return username;
 }
 
 export async function getAllPosts() {

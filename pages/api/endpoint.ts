@@ -16,15 +16,11 @@ import handleSetId from "../../lib/api/setId";
 import handlecheckId from "../../lib/api/checkId";
 import handleGetUserInfo from "../../lib/api/getUserInfo";
 import handlePublishPost from "../../lib/api/publishPost";
+import handleGetPosts from "../../lib/api/getPosts";
+import handleDeletePost from "../../lib/api/deletePost";
 
 const firebase = require("firebase/app");
 initFirebase();
-
-// export const config = {
-//   api: {
-//     bodyParser: true,
-//   },
-// };
 
 export default (req: NextApiRequest, res: NextApiResponse) => {
   let requestBody = req.body;
@@ -63,10 +59,10 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     /* 
-    ------ Publishing ------
+    ------ Drafts ------
     */
 
-    case "get_drafts": {
+    case "getDrafts": {
       /* 
       Get all drafts
       */
@@ -100,8 +96,20 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
       return handleUpdateStep(req, res);
     }
 
+    /* 
+    ------ Posts ------
+    */
+
     case "publishPost": {
       return handlePublishPost(req, res);
+    }
+
+    case "getPosts": {
+      return handleGetPosts(req, res);
+    }
+
+    case "deletePost": {
+      return handleDeletePost(req, res);
     }
 
     default: {
