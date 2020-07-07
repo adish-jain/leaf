@@ -21,7 +21,7 @@ const DraftView = () => {
 
   // if there are any steps in this draft, they will be fetched & repopulated
   const rawData = {
-    requestedAPI: "get_steps",
+    requestedAPI: "get_draft_data",
     draftId: draftId,
   };
 

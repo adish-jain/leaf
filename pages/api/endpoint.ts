@@ -8,7 +8,7 @@ import handleLogout from "../../lib/api/logout";
 import handleAddDraft from "../../lib/api/createDraft";
 import handleGetDrafts from "../../lib/api/getDrafts";
 import handleDeleteDraft from "../../lib/api/deleteDraft";
-import handleGetSteps from "../../lib/api/getSteps"
+import handleGetDraftData from "../../lib/api/getDraftData"
 import handleSaveStep from "../../lib/api/saveStep";
 import handleDeleteStep from "../../lib/api/deleteStep";
 import handleUpdateStep from "../../lib/api/updateStep";
@@ -71,8 +71,8 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     // POST
-    case "get_steps": {
-      return handleGetSteps(req, res);
+    case "get_draft_data": {
+      return handleGetDraftData(req, res);
     }
 
     // POST
