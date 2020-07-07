@@ -34,13 +34,19 @@ const DraftView = () => {
   const fetcher = (url: string) =>
     fetch(url, myRequest).then((res: any) => res.json());
 
-  const initialData: any = [];
+  const initialData: any = {"title": "", "optimisticSteps": []};
 
-  let { data: storedSteps, mutate } = useSWR(
+  let { data: draftData, mutate } = useSWR(
     authenticated ? "/api/endpoint" : null,
     fetcher,
     { initialData, revalidateOnMount: true }
   );
+  console.log(draftData);
+  // console.log(data);
+  let draftTitle = draftData["title"];
+  let storedSteps = draftData["optimisticSteps"];
+  console.log(draftTitle);
+  console.log(storedSteps);
 
   // highlighting lines for steps 
   const [lines, changeLines] = useState({});
@@ -82,6 +88,7 @@ const DraftView = () => {
   Saves a step into Firebase. Triggered from `Step.tsx`.
   */
   function saveStep(stepId: any, text: any) {
+    console.log("draft title is " + draftTitle);
     var data = {
       requestedAPI: "save_step",
       text: text,
@@ -92,9 +99,12 @@ const DraftView = () => {
     };
 
     let newStep = {"id": stepId, "lines": saveLines ? lines : null, "text": text};
+    let title = draftTitle;
     let optimisticSteps = [...storedSteps];
     optimisticSteps.push(newStep);
-    mutate(optimisticSteps, false);
+    let mutateState = {title, optimisticSteps}
+    mutate(mutateState, false);
+    // mutate(optimisticSteps, false);
 
     fetch("/api/endpoint", {
       method: "POST",
@@ -128,10 +138,13 @@ const DraftView = () => {
     };
 
     let newStep = {"id": stepId, "lines": stepLines, "text": text};
+    let title = draftTitle;
     let optimisticSteps = storedSteps.slice();
     let idx = findIdx(stepId);
     optimisticSteps[idx] = newStep;
-    mutate(optimisticSteps, false);
+    let mutateState = {title, optimisticSteps}
+    mutate(mutateState, false);
+    // mutate(optimisticSteps, false);
     
     fetch("/api/endpoint", {
         method: "POST",
@@ -154,7 +167,10 @@ const DraftView = () => {
     let idx = findIdx(stepId);
     let stepsToChange = optimisticSteps.slice(idx + 1, optimisticSteps.length);
     optimisticSteps.splice(idx, 1);
-    mutate(optimisticSteps, false);
+    let title = draftTitle;
+    let mutateState = {title, optimisticSteps}
+    mutate(mutateState, false);
+    // mutate(optimisticSteps, false);
 
     let data = {
       requestedAPI: "delete_step",
@@ -196,7 +212,11 @@ const DraftView = () => {
     };
 
     [optimisticSteps[idx], optimisticSteps[idx-1]] = [optimisticSteps[idx-1], optimisticSteps[idx]];
-    mutate(optimisticSteps, false);
+    console.log(draftTitle);
+    let title = draftTitle;
+    let mutateState = {title, optimisticSteps}
+    mutate(mutateState, false);
+    // mutate(optimisticSteps, false);
 
     fetch("/api/endpoint", {
       method: "POST",
@@ -229,9 +249,11 @@ const DraftView = () => {
       oldIdx: idx,
       newIdx: idx + 1,
     };
-
     [optimisticSteps[idx], optimisticSteps[idx+1]] = [optimisticSteps[idx+1], optimisticSteps[idx]];
-    mutate(optimisticSteps, false);
+    let title = draftTitle;
+    let mutateState = {title, optimisticSteps}
+    mutate(mutateState, false);
+    // mutate(optimisticSteps, false);
 
     fetch("/api/endpoint", {
       method: "POST",
@@ -243,6 +265,30 @@ const DraftView = () => {
         console.log(res);
     }); 
   }
+
+  function saveTitle(title: string) {
+    console.log("title is " + title);
+    var data = {
+      requestedAPI: "save_title",
+      draftId: draftId,
+      title: title,
+    };
+    // let optimisticSteps = storedSteps;
+    // let mutateState = {title, optimisticSteps}
+    // mutate(mutateState, false);
+
+    fetch("/api/endpoint", {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify(data),
+    }).then(async (res: any) => {
+      // let drafts = res.json();
+      // mutate("/api/endpoint", updatedSteps);
+      console.log(res);
+    });
+  }
+
+  console.log(draftTitle)
 
   // this page should look similar to how pages/article looks right now
   return (
@@ -269,6 +315,7 @@ const DraftView = () => {
         <div className={appStyles.App}>
           <Publishing 
             draftId={draftId} 
+            title={draftTitle}
             storedSteps={storedSteps} 
             saveStep={saveStep} 
             updateStoredStep={updateStoredStep} 
@@ -276,7 +323,8 @@ const DraftView = () => {
             onHighlight={onHighlight} 
             unHighlight={unHighlight}
             moveStepUp={moveStepUp}
-            moveStepDown={moveStepDown} />
+            moveStepDown={moveStepDown} 
+            saveTitle={saveTitle}/>
           <CodeEditor 
             highlightLines={highlightLines} />
         </div>

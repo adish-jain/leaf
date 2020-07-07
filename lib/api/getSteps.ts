@@ -28,8 +28,17 @@ async function getStepsHandler(req: NextApiRequest, res: NextApiResponse) {
     res.end();
     return;
   }
+  let draftData = await db.collection("users").doc(uid).collection("drafts").doc(draftId).get(); 
+  let title = draftData.data().title;
+  // console.log(title);
 
-  let results = await getUserStepsForDraft(uid, draftId);
+  // let results = await getUserStepsForDraft(uid, draftId);
+  let storedSteps = await getUserStepsForDraft(uid, draftId);
+  let results = {"title": title, "optimisticSteps": storedSteps};
+  // console.log("backend");
+  // console.log(title);
+  // console.log(storedSteps);
+  // console.log(results);
   res.statusCode = 200;
   res.send(results);
   return;

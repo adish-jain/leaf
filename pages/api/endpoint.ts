@@ -13,6 +13,8 @@ import handleSaveStep from "../../lib/api/saveStep";
 import handleDeleteStep from "../../lib/api/deleteStep";
 import handleUpdateStep from "../../lib/api/updateStep";
 import handleChangeStepOrder from "../../lib/api/changeStepOrder"
+import handleSaveTitle from "../../lib/api/saveTitle"
+
 
 const firebase = require("firebase/app");
 initFirebase();
@@ -91,6 +93,11 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
     // POST
     case "change_step_order": {
       return handleChangeStepOrder(req, res);
+    }
+
+    // POST
+    case "save_title": {
+      return handleSaveTitle(req, res);
     }
 
     default: {
