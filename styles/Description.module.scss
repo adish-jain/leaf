@@ -64,6 +64,24 @@
       color: #898984;
     }
 
+    textArea {
+      transition: 
+        border-color .15s ease-in-out, 
+        box-shadow .15s ease-in-out; 
+      outline: 0; 
+      box-shadow: none; 
+      border: none; 
+      border-radius: 0; 
+      box-sizing: content-box; 
+      background-color: transparent; 
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 40px;
+      width: 605px;
+      height: 45px;
+      padding: 1.5rem 0; 
+      resize: none;  
+    }
+
     .titleName {
       color: #27a4eb;
     }

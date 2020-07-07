@@ -12,6 +12,7 @@ type ScrollingProps = {
   changeStep: (newStep: number, yPos: number, entered: boolean) => void;
   steps: StepType[];
   currentStep: number;
+  title: string;
 };
 
 type ScrollingState = {

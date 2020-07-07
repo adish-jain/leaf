@@ -179,15 +179,19 @@ export async function getUsernameFromUid(uid: string) {
 
 export async function getStepsFromPost(username: string, postId: string) {
   let uid = await getUidFromUsername(username);
+
+  // Get desired post
   let myPostRef = await db
     .collection("posts")
     .where("uid", "==", uid)
     .orderBy("createdAt")
     .get()
     .then(function (postsSnapshot: any) {
-      let myPostRef = postsSnapshot.docs[0].ref.collection("steps");
+      let myPostRef = postsSnapshot.docs[0].ref.collection("steps").orderBy("order");
       return myPostRef;
     });
+
+  // Get steps from post
   let steps = await myPostRef.get().then(function (stepsCollection: any) {
     let results: any[] = [];
     stepsCollection.forEach(function (result: any) {
@@ -210,7 +214,7 @@ export async function getUserStepsForDraft(uid: string, draftId: string) {
     .collection("drafts")
     .doc(draftId)
     .collection("steps")
-    .orderBy("createdAt");
+    .orderBy("order");
 
   return await stepsRef
     .get()
@@ -221,6 +225,7 @@ export async function getUserStepsForDraft(uid: string, draftId: string) {
         resultsJSON.id = result.id;
         results.push({
           text: resultsJSON.text,
+          lines: resultsJSON.lines,
           id: resultsJSON.id,
         });
       });
@@ -241,4 +246,22 @@ export async function checkUsernameDNE(username: string) {
   } else {
     return false;
   }
+}
+
+export async function adjustStepOrder(
+  uid: string,
+  draftId: string,
+  stepsToChange: any
+) {
+  stepsToChange.forEach((element: { id: any; lines: any; text: any }) => {
+    let stepId = element["id"];
+    db.collection("users")
+      .doc(uid)
+      .collection("drafts")
+      .doc(draftId)
+      .collection("steps")
+      .doc(stepId)
+      .update({ order: admin.firestore.FieldValue.increment(-1) });
+  });
+  return;
 }

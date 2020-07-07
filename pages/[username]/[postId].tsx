@@ -1,14 +1,12 @@
-import React, { useState, Component } from "react";
-import { GetStaticProps, GetStaticPaths, GetServerSideProps } from "next";
+import React, { useState } from "react";
+import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Scrolling from "../../components/Scrolling";
 import PublishedCodeEditor from "../../components/PublishedCodeEditor";
-import getUsernames from "../../lib/api/getUsernames";
 import { getAllPosts } from "../../lib/api/publishPost";
-import { getUsernameFromUid, getStepsFromPost } from "../../lib/userUtils";
-import { format } from "path";
-import { getHeapCodeStatistics } from "v8";
+import { getUsernameFromUid } from "../../lib/userUtils";
+import { getStepsFromPost } from "../../lib/postUtils";
 const appStyles = require("../../styles/App.module.scss");
 
 export async function getStaticPaths() {
@@ -49,7 +47,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
   let username = context.params.username as string;
   let postId = context.params.postId as string;
   let steps = await getStepsFromPost(username, postId);
-  console.log(steps);
   return {
     props: {
       steps,
@@ -98,6 +95,7 @@ const Post = (props: UserPageProps) => {
             currentStep={currentStep}
             changeStep={changeStep}
             steps={props.steps}
+            title={"untitled"}
           />
           <PublishedCodeEditor currentStep={currentStep} />
         </div>

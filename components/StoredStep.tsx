@@ -9,6 +9,24 @@ type StoredStepProps = {
     id: string;
     draftId: any;
     text: any;
+    lines: any;
+    updateStoredStep: (
+      text: any,
+      stepId: any,
+      oldLines: any,
+      removeLines: any,
+    ) => void;
+    deleteStoredStep: (
+      stepId: any,
+    ) => void;
+    onHighlight: () => void;
+    unHighlight: () => void;
+    moveStepUp: (
+      stepId: any,
+    ) => void;
+    moveStepDown: (
+      stepId: any,
+    ) => void;
 };
   
 type StoredStepState = {
@@ -23,13 +41,13 @@ export default class StoredStep extends Component<StoredStepProps, StoredStepSta
         this.deleteStoredStep = this.deleteStoredStep.bind(this);
         this.editStoredStep = this.editStoredStep.bind(this);
         this.updateStoredStep = this.updateStoredStep.bind(this);
+        this.moveStepUp = this.moveStepUp.bind(this);
+        this.moveStepDown = this.moveStepDown.bind(this);
         this.state = {
             stepText: this.props.text,
             editing: false,
         };
     }
-
-    // TODO: add in button to be able to re-modify OldSteps and mutate their values in Firestore
 
     onChange = (stepText: any) => {
         this.setState({
@@ -38,21 +56,7 @@ export default class StoredStep extends Component<StoredStepProps, StoredStepSta
       };
 
     deleteStoredStep(e: React.MouseEvent<any>) {
-        let data = {
-            requestedAPI: "delete_step",
-            draftId: this.props.draftId,
-            stepId: this.props.id,
-        };
-
-        fetch("/api/endpoint", {
-            method: "POST",
-            headers: new Headers({ "Content-Type": "application/json" }),
-            body: JSON.stringify(data),
-        }).then(async (res: any) => {
-            let updatedSteps = res.json();
-            mutate("/api/endpoint", updatedSteps);
-            console.log(res);
-        });
+        this.props.deleteStoredStep(this.props.id);
     }
 
     editStoredStep(e: React.MouseEvent<HTMLButtonElement>) {
@@ -61,27 +65,22 @@ export default class StoredStep extends Component<StoredStepProps, StoredStepSta
         });
     }
 
-    updateStoredStep(e: React.MouseEvent<HTMLButtonElement>) {
-        let data = {
-            requestedAPI: "update_step",
-            text: this.state.stepText,
-            draftId: this.props.draftId,
-            stepId: this.props.id,
-        };
+    updateStoredStep(e: React.MouseEvent<HTMLButtonElement>, removeLines: boolean) {
+        let text = this.state.stepText;
+        let stepId =  this.props.id;
+        this.props.updateStoredStep(stepId, text, this.props.lines, removeLines);
         
-        fetch("/api/endpoint", {
-            method: "POST",
-            headers: new Headers({ "Content-Type": "application/json" }),
-            body: JSON.stringify(data),
-        }).then(async (res: any) => {
-            let updatedSteps = res.json();
-            mutate("/api/endpoint", updatedSteps);
-            console.log(res);
-        });
-
         this.setState({
             editing: false,
         });
+    }
+
+    moveStepUp() {
+        this.props.moveStepUp(this.props.id);
+    }
+
+    moveStepDown() {
+        this.props.moveStepDown(this.props.id);
     }
 
     render() {
@@ -90,9 +89,20 @@ export default class StoredStep extends Component<StoredStepProps, StoredStepSta
         const editing = this.state.editing;
         return (
             editing ?
-                (<EditingStoredStep updateStoredStep={this.updateStoredStep} onChange={this.onChange} editorState={editorState} />) 
+                (<EditingStoredStep 
+                    updateStoredStep={this.updateStoredStep} 
+                    onChange={this.onChange} 
+                    editorState={editorState} 
+                    onHighlight={this.props.onHighlight}
+                    unHighlight={this.props.unHighlight} />) 
                 : 
-                (<RenderedStoredStep editStoredStep={this.editStoredStep} deleteStoredStep={this.deleteStoredStep} editorState={editorState} />)
+                (<RenderedStoredStep 
+                    editStoredStep={this.editStoredStep} 
+                    deleteStoredStep={this.deleteStoredStep} 
+                    moveStepUp={this.moveStepUp}
+                    moveStepDown={this.moveStepDown}
+                    lines={this.props.lines}
+                    editorState={editorState} />)
         );
     }
 }

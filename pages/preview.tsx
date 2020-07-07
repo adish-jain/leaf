@@ -5,23 +5,27 @@ import Head from "next/head";
 import Scrolling from "../components/Scrolling";
 import PublishedCodeEditor from "../components/PublishedCodeEditor";
 
-import { getUserStepsForDraft } from "../lib/userUtils";
+import { getDraftDataHandler } from "../lib/postUtils";
 const appStyles = require("../styles/App.module.scss");
 
 export const getStaticProps: GetStaticProps = async (context) => {
   if (context.preview) {
     let draftId = context.previewData.draftId;
     let uid = context.previewData.uid;
-    let steps = await getUserStepsForDraft(uid, draftId);
+    let draftData = await getDraftDataHandler(uid, draftId);
+    let title = draftData.title;
+    let steps = draftData.optimisticSteps;
 
     return {
       props: {
+        title,
         steps,
       },
     };
   } else {
     return {
       props: {
+        title: "Untitled",
         steps: [],
       },
     };
@@ -35,6 +39,7 @@ type StepType = {
 
 type DraftPreviewProps = {
   steps: StepType[];
+  title: string;
 };
 
 const stepsInView: { [stepIndex: number]: boolean } = {};
@@ -79,6 +84,7 @@ const DraftPreview = (props: DraftPreviewProps) => {
       <main>
         <div className={appStyles.App}>
           <Scrolling
+            title={props.title}
             currentStep={currentStep}
             changeStep={changeStep}
             steps={props.steps}

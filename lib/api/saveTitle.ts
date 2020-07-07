@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebaseAdmin, initFirebase } from "../initFirebase";
-import { getUser } from "../userUtils";
-import { getUserStepsForDraft } from "../postUtils";
+import { getUser, getUserDrafts } from "../userUtils";
 const admin = require("firebase-admin");
 
 let db = admin.firestore();
@@ -10,7 +9,7 @@ initFirebase();
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   // console.log("in saveStep");
-  return updateStepHandler(req, res);
+  return saveTitleHandler(req, res);
 };
 
 function handleError(res: NextApiResponse, error: any) {
@@ -20,11 +19,9 @@ function handleError(res: NextApiResponse, error: any) {
   return;
 }
 
-async function updateStepHandler(req: NextApiRequest, res: NextApiResponse) {
-  let text = req.body.text;
-  let stepId = req.body.stepId;
+async function saveTitleHandler(req: NextApiRequest, res: NextApiResponse) {
   let draftId = req.body.draftId;
-  let lines = req.body.lines;
+  let title = req.body.title;
   let { uid } = await getUser(req, res);
 
   if (uid === "") {
@@ -33,17 +30,11 @@ async function updateStepHandler(req: NextApiRequest, res: NextApiResponse) {
     return;
   }
 
-  // update text in firebase
-  db.collection("users")
-    .doc(uid)
-    .collection("drafts")
-    .doc(draftId)
-    .collection("steps")
-    .doc(stepId)
-    .update({ text: text, lines: lines });
-
+  // update title in firebase
+  db.collection("users").doc(uid).collection("drafts").doc(draftId).update({"title": title}); 
+  
   res.statusCode = 200;
-  let results = await getUserStepsForDraft(uid, draftId);
+  let results = await getUserDrafts(uid);
   res.send(results);
   return;
 }

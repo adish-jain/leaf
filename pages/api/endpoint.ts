@@ -8,16 +8,18 @@ import handleLogout from "../../lib/api/logout";
 import handleAddDraft from "../../lib/api/createDraft";
 import handleGetDrafts from "../../lib/api/getDrafts";
 import handleDeleteDraft from "../../lib/api/deleteDraft";
-import handleGetSteps from "../../lib/api/getSteps";
-import handleSaveStep from "../../lib/api/saveStep";
-import handleDeleteStep from "../../lib/api/deleteStep";
-import handleUpdateStep from "../../lib/api/updateStep";
 import handleSetId from "../../lib/api/setId";
 import handlecheckId from "../../lib/api/checkId";
 import handleGetUserInfo from "../../lib/api/getUserInfo";
 import handlePublishPost from "../../lib/api/publishPost";
 import handleGetPosts from "../../lib/api/getPosts";
 import handleDeletePost from "../../lib/api/deletePost";
+import handleGetDraftData from "../../lib/api/getDraftData";
+import handleSaveStep from "../../lib/api/saveStep";
+import handleDeleteStep from "../../lib/api/deleteStep";
+import handleUpdateStep from "../../lib/api/updateStep";
+import handleChangeStepOrder from "../../lib/api/changeStepOrder";
+import handleSaveTitle from "../../lib/api/saveTitle";
 
 const firebase = require("firebase/app");
 initFirebase();
@@ -80,8 +82,9 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
       return handleDeleteDraft(req, res);
     }
 
-    case "get_steps": {
-      return handleGetSteps(req, res);
+    // POST
+    case "get_draft_data": {
+      return handleGetDraftData(req, res);
     }
 
     case "save_step": {
@@ -110,6 +113,16 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
 
     case "deletePost": {
       return handleDeletePost(req, res);
+    }
+
+    // POST
+    case "change_step_order": {
+      return handleChangeStepOrder(req, res);
+    }
+
+    // POST
+    case "save_title": {
+      return handleSaveTitle(req, res);
     }
 
     default: {

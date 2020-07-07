@@ -292,7 +292,7 @@ function YourDrafts(props: {
       <Draft
         deleteDraft={deleteDraft}
         key={draft.id}
-        title={draft.title}
+        title={draft.title ? draft.title : "Untitled"}
         id={draft.id}
         openDraft={openDraft}
       />
