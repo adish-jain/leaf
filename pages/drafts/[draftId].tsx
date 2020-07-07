@@ -41,12 +41,9 @@ const DraftView = () => {
     fetcher,
     { initialData, revalidateOnMount: true }
   );
-  console.log(draftData);
-  // console.log(data);
+  
   let draftTitle = draftData["title"];
   let storedSteps = draftData["optimisticSteps"];
-  console.log(draftTitle);
-  console.log(storedSteps);
 
   // highlighting lines for steps 
   const [lines, changeLines] = useState({});
@@ -60,7 +57,6 @@ const DraftView = () => {
   }
 
   function onHighlight() {
-    // stepLines = lines;
     notSaveLines(true);
   }
 
@@ -88,7 +84,6 @@ const DraftView = () => {
   Saves a step into Firebase. Triggered from `Step.tsx`.
   */
   function saveStep(stepId: any, text: any) {
-    console.log("draft title is " + draftTitle);
     var data = {
       requestedAPI: "save_step",
       text: text,
@@ -104,15 +99,12 @@ const DraftView = () => {
     optimisticSteps.push(newStep);
     let mutateState = {title, optimisticSteps}
     mutate(mutateState, false);
-    // mutate(optimisticSteps, false);
 
     fetch("/api/endpoint", {
       method: "POST",
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify(data),
     }).then(async (res: any) => {
-      let updatedSteps = res.json();
-      // mutate("/api/endpoint", updatedSteps);
       console.log(res);
     });
 
@@ -144,15 +136,12 @@ const DraftView = () => {
     optimisticSteps[idx] = newStep;
     let mutateState = {title, optimisticSteps}
     mutate(mutateState, false);
-    // mutate(optimisticSteps, false);
     
     fetch("/api/endpoint", {
         method: "POST",
         headers: new Headers({ "Content-Type": "application/json" }),
         body: JSON.stringify(data),
     }).then(async (res: any) => {
-        let updatedSteps = res.json();
-        // mutate("/api/endpoint", updatedSteps);
         console.log(res);
     });
 
@@ -170,7 +159,6 @@ const DraftView = () => {
     let title = draftTitle;
     let mutateState = {title, optimisticSteps}
     mutate(mutateState, false);
-    // mutate(optimisticSteps, false);
 
     let data = {
       requestedAPI: "delete_step",
@@ -184,8 +172,6 @@ const DraftView = () => {
         headers: new Headers({ "Content-Type": "application/json" }),
         body: JSON.stringify(data),
     }).then(async (res: any) => {
-        let updatedSteps = res.json();
-        // mutate("/api/endpoint", updatedSteps);
         console.log(res);
     });
   }
@@ -212,20 +198,15 @@ const DraftView = () => {
     };
 
     [optimisticSteps[idx], optimisticSteps[idx-1]] = [optimisticSteps[idx-1], optimisticSteps[idx]];
-    console.log(draftTitle);
     let title = draftTitle;
     let mutateState = {title, optimisticSteps}
     mutate(mutateState, false);
-    // mutate(optimisticSteps, false);
 
     fetch("/api/endpoint", {
       method: "POST",
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify(data),
     }).then(async (res: any) => {
-        let updatedSteps = await res.json();
-        console.log(updatedSteps);
-        // mutate("/api/endpoint", updatedSteps);
         console.log(res);
     });
   }
@@ -249,46 +230,40 @@ const DraftView = () => {
       oldIdx: idx,
       newIdx: idx + 1,
     };
+
     [optimisticSteps[idx], optimisticSteps[idx+1]] = [optimisticSteps[idx+1], optimisticSteps[idx]];
     let title = draftTitle;
     let mutateState = {title, optimisticSteps}
     mutate(mutateState, false);
-    // mutate(optimisticSteps, false);
 
     fetch("/api/endpoint", {
       method: "POST",
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify(data),
     }).then(async (res: any) => {
-        let updatedSteps = res.json();
-        // mutate("/api/endpoint", updatedSteps);
         console.log(res);
     }); 
   }
 
+  /*
+  Saves the title of the draft in Firestore. 
+  Triggered from `Publishing.tsx`.
+  */
   function saveTitle(title: string) {
-    console.log("title is " + title);
     var data = {
       requestedAPI: "save_title",
       draftId: draftId,
       title: title,
     };
-    // let optimisticSteps = storedSteps;
-    // let mutateState = {title, optimisticSteps}
-    // mutate(mutateState, false);
 
     fetch("/api/endpoint", {
       method: "POST",
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify(data),
     }).then(async (res: any) => {
-      // let drafts = res.json();
-      // mutate("/api/endpoint", updatedSteps);
       console.log(res);
     });
   }
-
-  console.log(draftTitle)
 
   // this page should look similar to how pages/article looks right now
   return (

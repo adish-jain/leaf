@@ -20,7 +20,6 @@ function handleError(res: NextApiResponse, error: any) {
 }
 
 async function saveTitleHandler(req: NextApiRequest, res: NextApiResponse) {
-  let text = req.body.text;
   let draftId = req.body.draftId;
   let title = req.body.title;
   let { uid } = await getUser(req, res);

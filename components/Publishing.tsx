@@ -105,7 +105,6 @@ export default class Publishing extends Component<
       title: e.target.value,
       saveTitle: true,
     });
-    // console.log(this.state.title);
   }
 
   previewDraft(e: React.MouseEvent<HTMLButtonElement>) {
@@ -130,8 +129,6 @@ export default class Publishing extends Component<
   }
 
   render() {
-    let title = this.props.title;
-
     return (
       <div className={descriptionStyles.publishing}>
         <div className={descriptionStyles.PublishingButtonsWrapper}>
@@ -149,7 +146,8 @@ export default class Publishing extends Component<
           <form>
             <textarea 
               className={descriptionStyles.textArea}
-              defaultValue={title}
+              placeholder={"Untitled"}
+              defaultValue={this.props.title}
               onChange={this.onTitleChange}
               onBlur={this.saveTitle}
               name="title"/>
