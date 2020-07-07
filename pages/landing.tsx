@@ -18,9 +18,13 @@ type DraftType = {
 };
 
 type PostsType = {
+  // url id
   postId: string;
   title: string;
+  // user id
   uid: string;
+  // unique id
+  id: string;
   username: string;
   createdAt: {
     _nanoseconds: number;
@@ -87,6 +91,39 @@ export default function Landing() {
 
   function goToPost(username: string, postId: string) {
     Router.push("/[username]/[postId]", "/" + username + "/" + postId);
+  }
+
+  function deletePost(postUid: string) {
+    function removeSpecificPost() {
+      let searchIndex = 0;
+      for (let i = 0; i < posts!.length; i++) {
+        if (posts![i].uid === postUid) {
+          searchIndex = i;
+          break;
+        }
+      }
+      let clonePosts = posts?.slice();
+      clonePosts!.splice(searchIndex, 1);
+      mutate("getPosts", clonePosts, false);
+    }
+
+    const requestBody = {
+      requestedAPI: "deletePost",
+      postUid: postUid,
+    };
+
+    const myRequest = {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify(requestBody),
+    };
+
+    removeSpecificPost();
+
+    fetch("api/endpoint", myRequest).then(async (res: any) => {
+      let updatedPosts = await res.json();
+      mutate("getPosts", updatedPosts);
+    });
   }
 
   function openDraft(draft_id: string) {
@@ -159,7 +196,11 @@ export default function Landing() {
             drafts={drafts}
             createNewPost={createNewPost}
           />
-          <YourPosts posts={posts} goToPost={goToPost} />
+          <YourPosts
+            deletePost={deletePost}
+            posts={posts}
+            goToPost={goToPost}
+          />
         </div>
       </main>
     </div>
@@ -169,8 +210,9 @@ export default function Landing() {
 function YourPosts(props: {
   posts: PostsType[] | undefined;
   goToPost: (username: string, postId: string) => void;
+  deletePost: (postUid: string) => void;
 }) {
-  let { posts, goToPost } = props;
+  let { posts, goToPost, deletePost } = props;
 
   let content;
   if (posts === undefined || posts === []) {
@@ -184,6 +226,9 @@ function YourPosts(props: {
             title={post.title}
             postId={post.postId}
             goToPost={goToPost}
+            postUid={post.id}
+            deletePost={deletePost}
+            key={post.uid}
           />
         ))}
       </div>
@@ -203,15 +248,18 @@ function Post(props: {
   title: string;
   postId: string;
   username: string;
+  postUid: string;
+  deletePost: (postUid: string) => void;
   goToPost: (username: string, postId: string) => void;
 }) {
-  let { username, postId } = props;
+  let { username, postId, deletePost, postUid } = props;
   return (
-    <div
-      onClick={(e) => props.goToPost(username, postId)}
-      className={landingStyles["draft"]}
-    >
+    <div className={landingStyles["draft"]}>
       <p>{props.title}</p>
+      <button onClick={() => deletePost(postUid)}>Delete Post</button>
+      <button onClick={(e) => props.goToPost(username, postId)}>
+        Open Post
+      </button>
     </div>
   );
 }

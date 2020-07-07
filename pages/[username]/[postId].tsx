@@ -3,10 +3,10 @@ import { GetStaticProps, GetStaticPaths, GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Scrolling from "../../components/Scrolling";
-
+import PublishedCodeEditor from "../../components/PublishedCodeEditor";
 import getUsernames from "../../lib/api/getUsernames";
 import { getAllPosts } from "../../lib/api/publishPost";
-import { getUsernameFromUid } from "../../lib/userUtils";
+import { getUsernameFromUid, getStepsFromPost } from "../../lib/userUtils";
 import { format } from "path";
 import { getHeapCodeStatistics } from "v8";
 const appStyles = require("../../styles/App.module.scss");
@@ -38,18 +38,53 @@ export async function getStaticPaths() {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
+  if (context === undefined || context.params === undefined) {
+    return {
+      props: {
+        steps: [],
+      },
+    };
+  }
+
+  let username = context.params.username as string;
+  let postId = context.params.postId as string;
+  let steps = await getStepsFromPost(username, postId);
+  console.log(steps);
   return {
     props: {
-      publishedPosts: [],
+      steps,
     },
   };
 };
 
-type UserPageProps = {};
+type StepType = {
+  text: string;
+  id: string;
+};
+
+type UserPageProps = {
+  steps: StepType[];
+};
+
+const stepsInView: { [stepIndex: number]: boolean } = {};
 
 const Post = (props: UserPageProps) => {
   const [currentStep, updateStep] = useState(0);
   const router = useRouter();
+
+  function changeStep(newStep: number, yPos: number, entered: boolean) {
+    // stepsInView keeps track of what steps are inside the viewport
+    stepsInView[newStep] = entered;
+
+    /* whichever step is the closest to the top of the viewport 
+    AND is inside the viewport becomes the selected step */
+    for (let step in stepsInView) {
+      if (stepsInView[step]) {
+        updateStep(Number(step));
+        break;
+      }
+    }
+  }
 
   return (
     <div className="container">
@@ -58,7 +93,14 @@ const Post = (props: UserPageProps) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <div>{router.isFallback ? "is fallback" : "not fallback"}</div>
+        <div className={appStyles.App}>
+          <Scrolling
+            currentStep={currentStep}
+            changeStep={changeStep}
+            steps={props.steps}
+          />
+          <PublishedCodeEditor currentStep={currentStep} />
+        </div>
       </main>
     </div>
   );

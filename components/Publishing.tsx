@@ -60,22 +60,22 @@ export default class Publishing extends Component<
   }
 
   publishDraft(e: React.MouseEvent<HTMLButtonElement>) {
-    console.log("fired");
     let { draftId } = this.props;
+    console.log("publishing");
     fetch("/api/endpoint", {
       method: "POST",
-      // redirect: "follow",
+      redirect: "follow",
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify({ requestedAPI: "publishPost", draftId: draftId }),
     })
       .then(async (res: any) => {
-        if (res.redirected) {
-          let resJson = await res.json();
-          console.log(resJson);
-        }
-        // HTTP 301 response
+        let resJson = await res.json();
+        let newUrl = resJson.newURL;
+        Router.push(newUrl);
       })
-      .catch(function (err: any) {});
+      .catch(function (err: any) {
+        console.log(err);
+      });
   }
 
   previewDraft(e: React.MouseEvent<HTMLButtonElement>) {

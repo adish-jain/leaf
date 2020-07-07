@@ -1,7 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebaseAdmin, initFirebase } from "../initFirebase";
-import { getUser, checkUsernameDNE } from "../userUtils";
+import { getUser, checkUsernameDNE, getUsernameFromUid } from "../userUtils";
 import getDrafts from "./getDrafts";
+const shortId = require("shortid");
 const admin = require("firebase-admin");
 
 let db = admin.firestore();
@@ -31,7 +32,7 @@ export default async function publishPost(
     return draftData.title;
   });
 
-  let stepsRef = await db
+  let stepsRef = db
     .collection("users")
     .doc(uid)
     .collection("drafts")
@@ -40,15 +41,18 @@ export default async function publishPost(
 
   let steps: any[] = [];
 
-  stepsRef
+  await stepsRef
     .get()
     .then(function (stepsCollection: any) {
-      stepsCollection.foreach(function (step: any) {
+      stepsCollection.forEach(function (step: any) {
         let stepJSON = step.data();
-        steps.push(step.data);
+        console.log(stepJSON);
+        steps.push(stepJSON);
       });
     })
-    .catch(function (error: any) {});
+    .catch(function (error: any) {
+      // console.log(error);
+    });
 
   let titleWithDashes = draftTitle
     .replace(/\s+/g, "-")
@@ -63,28 +67,42 @@ export default async function publishPost(
     uid: uid,
   };
 
+  console.log("steps are");
+  console.log(steps);
   // add new post and steps from draft
   db.collection("posts")
     .add(newPost)
     .then(function (postRef: any) {
       for (let i = 0; i < steps.length; i++) {
+        console.log(postRef.id);
         db.collection("posts")
           .doc(postRef.id)
           .collection("steps")
-          .add(steps[i]);
+          .doc(shortId.generate())
+          .set(steps[i]);
       }
+    })
+    .catch(function (error: any) {
+      console.log(error);
     });
 
   // Delete draft
-  db.collection("users").doc(uid).collection("drafts").doc(draftId).delete();
-
-  res.end();
+  await db
+    .collection("users")
+    .doc(uid)
+    .collection("drafts")
+    .doc(draftId)
+    .delete();
+  let username = await getUsernameFromUid(uid);
+  let newURL = "/" + username + "/" + postId;
+  res.send({
+    newURL: newURL,
+  });
   return;
 }
 
 export async function getAllPosts() {
   let postsRef = await db.collection("posts").orderBy("createdAt");
-  console.log();
   let results: any[] = [];
   results = await postsRef.get().then(function (postsCollection: any) {
     postsCollection.forEach(function (result: any) {

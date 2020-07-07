@@ -127,12 +127,17 @@ export async function getUserDrafts(uid: string) {
     });
 }
 
-export async function getArticlesFromUsername(username: string) {
+export async function getUidFromUsername(username: string) {
   let userRef = db.collection("users").where("username", "==", username);
   let uid = await userRef.get().then(function (userSnapshot: any) {
     let user = userSnapshot.docs[0];
     return user.id;
   });
+  return uid;
+}
+
+export async function getArticlesFromUsername(username: string) {
+  let uid = await getUidFromUsername(username);
   let postsRef = await db.collection("posts").where("uid", "==", uid);
   let results = await postsRef.get().then(function (postsCollection: any) {
     let toReturn: any[] = [];
@@ -170,6 +175,32 @@ export async function getUsernameFromUid(uid: string) {
     return data.username;
   });
   return username;
+}
+
+export async function getStepsFromPost(username: string, postId: string) {
+  let uid = await getUidFromUsername(username);
+  let myPostRef = await db
+    .collection("posts")
+    .where("uid", "==", uid)
+    .orderBy("createdAt")
+    .get()
+    .then(function (postsSnapshot: any) {
+      let myPostRef = postsSnapshot.docs[0].ref.collection("steps");
+      return myPostRef;
+    });
+  let steps = await myPostRef.get().then(function (stepsCollection: any) {
+    let results: any[] = [];
+    stepsCollection.forEach(function (result: any) {
+      let resultsJSON = result.data();
+      resultsJSON.id = result.id;
+      results.push({
+        text: resultsJSON.text,
+        id: resultsJSON.id,
+      });
+    });
+    return results;
+  });
+  return steps;
 }
 
 export async function getUserStepsForDraft(uid: string, draftId: string) {
