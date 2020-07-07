@@ -1,12 +1,9 @@
 import React, { Component } from "react";
-import { useState } from "react";
-import { mutate } from "swr";
 import NewStep from "./NewStep";
 import Step from "./Step";
 import StoredStep from "./StoredStep";
 const fetch = require("node-fetch");
 global.Headers = fetch.Headers;
-import { convertToRaw, convertFromRaw } from "draft-js";
 import Router from "next/router";
 const descriptionStyles = require("../styles/Description.module.scss");
 
