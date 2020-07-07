@@ -9,7 +9,7 @@ initFirebaseAdmin();
 initFirebase();
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  return getStepsHandler(req, res);
+  return getDraftDataHandler(req, res);
 };
 
 function handleError(res: NextApiResponse, error: any) {
@@ -19,7 +19,7 @@ function handleError(res: NextApiResponse, error: any) {
   return;
 }
 
-async function getStepsHandler(req: NextApiRequest, res: NextApiResponse) {
+async function getDraftDataHandler(req: NextApiRequest, res: NextApiResponse) {
   let { uid } = await getUser(req, res);
   let draftId = req.body.draftId;
 
@@ -28,8 +28,11 @@ async function getStepsHandler(req: NextApiRequest, res: NextApiResponse) {
     res.end();
     return;
   }
+  let draftData = await db.collection("users").doc(uid).collection("drafts").doc(draftId).get(); 
+  let title = draftData.data().title;
+  let storedSteps = await getUserStepsForDraft(uid, draftId);
+  let results = {"title": title, "optimisticSteps": storedSteps};
 
-  let results = await getUserStepsForDraft(uid, draftId);
   res.statusCode = 200;
   res.send(results);
   return;

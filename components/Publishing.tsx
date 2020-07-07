@@ -4,7 +4,6 @@ import Step from "./Step";
 import StoredStep from "./StoredStep";
 const fetch = require("node-fetch");
 global.Headers = fetch.Headers;
-import { convertToRaw, convertFromRaw } from "draft-js";
 import Router from "next/router";
 const descriptionStyles = require("../styles/Description.module.scss");
 
@@ -12,6 +11,7 @@ var shortId = require("shortid");
 
 type PublishingProps = {
   draftId: any;
+  title: string;
   storedSteps: any[];
   saveStep: (
     stepId: string,
@@ -34,10 +34,15 @@ type PublishingProps = {
   moveStepDown: (
     stepId: any,
   ) => void;
+  saveTitle: (
+    title: string,
+  ) => void;
 };
 
 type PublishingState = {
   steps: any[];
+  title: string;
+  saveTitle: boolean;
 };
 
 type PublishingComponent = {
@@ -59,9 +64,13 @@ export default class Publishing extends Component<
     this.addStep = this.addStep.bind(this);
     this.closeStep = this.closeStep.bind(this);
     this.previewDraft = this.previewDraft.bind(this);
+    this.saveTitle = this.saveTitle.bind(this);
+    this.onTitleChange = this.onTitleChange.bind(this);
 
     this.state = {
       steps: [],
+      title: props.title,
+      saveTitle: false,
     };
   }
 
@@ -77,6 +86,22 @@ export default class Publishing extends Component<
     let new_step = shortId.generate();
     steps.push(new_step);
     this.setState({ steps });
+  }
+
+  saveTitle(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    if (this.state.saveTitle) {
+      this.props.saveTitle(this.state.title);
+    }
+    this.setState({
+      saveTitle: false,
+    })
+  }
+
+  onTitleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    this.setState({
+      title: e.target.value,
+      saveTitle: true,
+    });
   }
 
   previewDraft(e: React.MouseEvent<HTMLButtonElement>) {
@@ -115,7 +140,15 @@ export default class Publishing extends Component<
           </div>
         </div>
         <div className={descriptionStyles.header}>
-          <h1>Title</h1>
+          <form>
+            <textarea 
+              className={descriptionStyles.textArea}
+              placeholder={"Untitled"}
+              defaultValue={this.props.title}
+              onChange={this.onTitleChange}
+              onBlur={this.saveTitle}
+              name="title"/>
+          </form>
         </div>
         {this.props.storedSteps.map((storedStep) => {
           return (

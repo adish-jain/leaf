@@ -21,7 +21,7 @@ const DraftView = () => {
 
   // if there are any steps in this draft, they will be fetched & repopulated
   const rawData = {
-    requestedAPI: "get_steps",
+    requestedAPI: "get_draft_data",
     draftId: draftId,
   };
 
@@ -34,13 +34,16 @@ const DraftView = () => {
   const fetcher = (url: string) =>
     fetch(url, myRequest).then((res: any) => res.json());
 
-  const initialData: any = [];
+  const initialData: any = {"title": "", "optimisticSteps": []};
 
-  let { data: storedSteps, mutate } = useSWR(
+  let { data: draftData, mutate } = useSWR(
     authenticated ? "/api/endpoint" : null,
     fetcher,
     { initialData, revalidateOnMount: true }
   );
+  
+  let draftTitle = draftData["title"];
+  let storedSteps = draftData["optimisticSteps"];
 
   // highlighting lines for steps 
   const [lines, changeLines] = useState({});
@@ -54,7 +57,6 @@ const DraftView = () => {
   }
 
   function onHighlight() {
-    // stepLines = lines;
     notSaveLines(true);
   }
 
@@ -92,17 +94,17 @@ const DraftView = () => {
     };
 
     let newStep = {"id": stepId, "lines": saveLines ? lines : null, "text": text};
+    let title = draftTitle;
     let optimisticSteps = [...storedSteps];
     optimisticSteps.push(newStep);
-    mutate(optimisticSteps, false);
+    let mutateState = {title, optimisticSteps}
+    mutate(mutateState, false);
 
     fetch("/api/endpoint", {
       method: "POST",
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify(data),
     }).then(async (res: any) => {
-      let updatedSteps = res.json();
-      // mutate("/api/endpoint", updatedSteps);
       console.log(res);
     });
 
@@ -128,18 +130,18 @@ const DraftView = () => {
     };
 
     let newStep = {"id": stepId, "lines": stepLines, "text": text};
+    let title = draftTitle;
     let optimisticSteps = storedSteps.slice();
     let idx = findIdx(stepId);
     optimisticSteps[idx] = newStep;
-    mutate(optimisticSteps, false);
+    let mutateState = {title, optimisticSteps}
+    mutate(mutateState, false);
     
     fetch("/api/endpoint", {
         method: "POST",
         headers: new Headers({ "Content-Type": "application/json" }),
         body: JSON.stringify(data),
     }).then(async (res: any) => {
-        let updatedSteps = res.json();
-        // mutate("/api/endpoint", updatedSteps);
         console.log(res);
     });
 
@@ -154,7 +156,9 @@ const DraftView = () => {
     let idx = findIdx(stepId);
     let stepsToChange = optimisticSteps.slice(idx + 1, optimisticSteps.length);
     optimisticSteps.splice(idx, 1);
-    mutate(optimisticSteps, false);
+    let title = draftTitle;
+    let mutateState = {title, optimisticSteps}
+    mutate(mutateState, false);
 
     let data = {
       requestedAPI: "delete_step",
@@ -168,8 +172,6 @@ const DraftView = () => {
         headers: new Headers({ "Content-Type": "application/json" }),
         body: JSON.stringify(data),
     }).then(async (res: any) => {
-        let updatedSteps = res.json();
-        // mutate("/api/endpoint", updatedSteps);
         console.log(res);
     });
   }
@@ -196,16 +198,15 @@ const DraftView = () => {
     };
 
     [optimisticSteps[idx], optimisticSteps[idx-1]] = [optimisticSteps[idx-1], optimisticSteps[idx]];
-    mutate(optimisticSteps, false);
+    let title = draftTitle;
+    let mutateState = {title, optimisticSteps}
+    mutate(mutateState, false);
 
     fetch("/api/endpoint", {
       method: "POST",
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify(data),
     }).then(async (res: any) => {
-        let updatedSteps = await res.json();
-        console.log(updatedSteps);
-        // mutate("/api/endpoint", updatedSteps);
         console.log(res);
     });
   }
@@ -231,17 +232,37 @@ const DraftView = () => {
     };
 
     [optimisticSteps[idx], optimisticSteps[idx+1]] = [optimisticSteps[idx+1], optimisticSteps[idx]];
-    mutate(optimisticSteps, false);
+    let title = draftTitle;
+    let mutateState = {title, optimisticSteps}
+    mutate(mutateState, false);
 
     fetch("/api/endpoint", {
       method: "POST",
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify(data),
     }).then(async (res: any) => {
-        let updatedSteps = res.json();
-        // mutate("/api/endpoint", updatedSteps);
         console.log(res);
     }); 
+  }
+
+  /*
+  Saves the title of the draft in Firestore. 
+  Triggered from `Publishing.tsx`.
+  */
+  function saveTitle(title: string) {
+    var data = {
+      requestedAPI: "save_title",
+      draftId: draftId,
+      title: title,
+    };
+
+    fetch("/api/endpoint", {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify(data),
+    }).then(async (res: any) => {
+      console.log(res);
+    });
   }
 
   // this page should look similar to how pages/article looks right now
@@ -269,6 +290,7 @@ const DraftView = () => {
         <div className={appStyles.App}>
           <Publishing 
             draftId={draftId} 
+            title={draftTitle}
             storedSteps={storedSteps} 
             saveStep={saveStep} 
             updateStoredStep={updateStoredStep} 
@@ -276,7 +298,8 @@ const DraftView = () => {
             onHighlight={onHighlight} 
             unHighlight={unHighlight}
             moveStepUp={moveStepUp}
-            moveStepDown={moveStepDown} />
+            moveStepDown={moveStepDown} 
+            saveTitle={saveTitle}/>
           <CodeEditor 
             highlightLines={highlightLines} />
         </div>
