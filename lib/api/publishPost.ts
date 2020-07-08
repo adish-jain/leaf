@@ -46,7 +46,6 @@ export default async function publishPost(
     .then(function (stepsCollection: any) {
       stepsCollection.forEach(function (step: any) {
         let stepJSON = step.data();
-        console.log(stepJSON);
         steps.push(stepJSON);
       });
     })
@@ -67,14 +66,11 @@ export default async function publishPost(
     uid: uid,
   };
 
-  console.log("steps are");
-  console.log(steps);
   // add new post and steps from draft
   db.collection("posts")
     .add(newPost)
     .then(function (postRef: any) {
       for (let i = 0; i < steps.length; i++) {
-        console.log(postRef.id);
         db.collection("posts")
           .doc(postRef.id)
           .collection("steps")

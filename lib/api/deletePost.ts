@@ -18,7 +18,6 @@ initFirebase();
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   let { uid } = await getUser(req, res);
   let postUid = req.body.postUid;
-  console.log();
 
   try {
     await db.collection("posts").doc(postUid).delete();
