@@ -13,8 +13,9 @@ type FinishedStepProps = {
   title: string;
 };
 
+const stepsInView: { [stepIndex: number]: boolean } = {};
+
 const FinishedPost = (props: FinishedStepProps) => {
-  const stepsInView: { [stepIndex: number]: boolean } = {};
   const [currentStep, updateStep] = useState(0);
 
   function changeStep(newStep: number, yPos: number, entered: boolean) {
