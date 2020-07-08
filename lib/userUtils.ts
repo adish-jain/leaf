@@ -177,65 +177,6 @@ export async function getUsernameFromUid(uid: string) {
   return username;
 }
 
-export async function getStepsFromPost(username: string, postId: string) {
-  let uid = await getUidFromUsername(username);
-
-  // Get desired post
-  let myPostRef = await db
-    .collection("posts")
-    .where("uid", "==", uid)
-    .orderBy("createdAt")
-    .get()
-    .then(function (postsSnapshot: any) {
-      let myPostRef = postsSnapshot.docs[0].ref.collection("steps").orderBy("order");
-      return myPostRef;
-    });
-
-  // Get steps from post
-  let steps = await myPostRef.get().then(function (stepsCollection: any) {
-    let results: any[] = [];
-    stepsCollection.forEach(function (result: any) {
-      let resultsJSON = result.data();
-      resultsJSON.id = result.id;
-      results.push({
-        text: resultsJSON.text,
-        id: resultsJSON.id,
-      });
-    });
-    return results;
-  });
-  return steps;
-}
-
-export async function getUserStepsForDraft(uid: string, draftId: string) {
-  let stepsRef = db
-    .collection("users")
-    .doc(uid)
-    .collection("drafts")
-    .doc(draftId)
-    .collection("steps")
-    .orderBy("order");
-
-  return await stepsRef
-    .get()
-    .then(function (stepsCollection: any) {
-      let results: any[] = [];
-      stepsCollection.forEach(function (result: any) {
-        let resultsJSON = result.data();
-        resultsJSON.id = result.id;
-        results.push({
-          text: resultsJSON.text,
-          lines: resultsJSON.lines,
-          id: resultsJSON.id,
-        });
-      });
-      return results;
-    })
-    .catch(function (error: any) {
-      console.log(error);
-      return [];
-    });
-}
 
 export async function checkUsernameDNE(username: string) {
   let usernamesRefKey = db.collection("users").where("username", "==", username)
@@ -246,22 +187,4 @@ export async function checkUsernameDNE(username: string) {
   } else {
     return false;
   }
-}
-
-export async function adjustStepOrder(
-  uid: string,
-  draftId: string,
-  stepsToChange: any
-) {
-  stepsToChange.forEach((element: { id: any; lines: any; text: any }) => {
-    let stepId = element["id"];
-    db.collection("users")
-      .doc(uid)
-      .collection("drafts")
-      .doc(draftId)
-      .collection("steps")
-      .doc(stepId)
-      .update({ order: admin.firestore.FieldValue.increment(-1) });
-  });
-  return;
 }

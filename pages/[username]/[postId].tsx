@@ -6,7 +6,7 @@ import Scrolling from "../../components/Scrolling";
 import PublishedCodeEditor from "../../components/PublishedCodeEditor";
 import { getAllPosts } from "../../lib/api/publishPost";
 import { getUsernameFromUid } from "../../lib/userUtils";
-import { getStepsFromPost } from "../../lib/postUtils";
+import { getStepsFromPost, getPostData } from "../../lib/postUtils";
 const appStyles = require("../../styles/App.module.scss");
 
 export async function getStaticPaths() {
@@ -46,10 +46,13 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   let username = context.params.username as string;
   let postId = context.params.postId as string;
-  let steps = await getStepsFromPost(username, postId);
+  let postData = await getPostData(username, postId);
+  let steps = postData.steps;
+  let title = postData.title;
   return {
     props: {
       steps,
+      title,
     },
   };
 };
@@ -61,6 +64,7 @@ type StepType = {
 
 type UserPageProps = {
   steps: StepType[];
+  title: string;
 };
 
 const stepsInView: { [stepIndex: number]: boolean } = {};
@@ -95,7 +99,7 @@ const Post = (props: UserPageProps) => {
             currentStep={currentStep}
             changeStep={changeStep}
             steps={props.steps}
-            title={"untitled"}
+            title={props.title}
           />
           <PublishedCodeEditor currentStep={currentStep} />
         </div>

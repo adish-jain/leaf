@@ -69,22 +69,32 @@ export async function getUserStepsForDraft(uid: string, draftId: string) {
 export async function getPostData(username: string, postId: string) {
   let uid = await getUidFromUsername(username);
   let steps = await getStepsFromPost(uid, postId);
+  let title = await getPostTitle(uid, postId);
+  return {
+    steps,
+    title,
+  };
 }
 
 export async function getPostTitle(uid: string, postId: string) {
-
+  let myPostRef = await getPostRef(uid, postId);
+  let title = await myPostRef.get().then(function (postSnapshot: any) {
+    let postData = postSnapshot.data();
+    let title = postData.title;
+    return title;
+  });
+  return title;
 }
 
 export async function getPostRef(uid: string, postId: string) {
   let myPostRef = await db
     .collection("posts")
     .where("uid", "==", uid)
+    .where("postId", "==", postId)
     .orderBy("createdAt")
     .get()
     .then(function (postsSnapshot: any) {
-      let myPostRef = postsSnapshot.docs[0].ref
-        .collection("steps")
-        .orderBy("order");
+      let myPostRef = postsSnapshot.docs[0].ref;
       return myPostRef;
     });
 
@@ -94,18 +104,23 @@ export async function getPostRef(uid: string, postId: string) {
 export async function getStepsFromPost(uid: string, postId: string) {
   // Get desired post
   let myPostRef = await getPostRef(uid, postId);
+
   // Get steps from post
-  let steps = await myPostRef.get().then(function (stepsCollection: any) {
-    let results: any[] = [];
-    stepsCollection.forEach(function (result: any) {
-      let resultsJSON = result.data();
-      resultsJSON.id = result.id;
-      results.push({
-        text: resultsJSON.text,
-        id: resultsJSON.id,
+  let steps = await myPostRef
+    .collection("steps")
+    .orderBy("order")
+    .get()
+    .then(function (stepsCollection: any) {
+      let results: any[] = [];
+      stepsCollection.forEach(function (result: any) {
+        let resultsJSON = result.data();
+        resultsJSON.id = result.id;
+        results.push({
+          text: resultsJSON.text,
+          id: resultsJSON.id,
+        });
       });
+      return results;
     });
-    return results;
-  });
   return steps;
 }

@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebaseAdmin, initFirebase } from "../initFirebase";
-import { getUser, getUserStepsForDraft } from "../userUtils";
+import { getUser } from "../userUtils";
+import { getUserStepsForDraft } from "../postUtils";
 const admin = require("firebase-admin");
 
 let db = admin.firestore();
@@ -25,7 +26,10 @@ Changes the order of steps. Triggered from `moveStepUp` & `moveStepDown` in `[dr
     oldIdx: index of the step before switch (neighbor's new order)
     newIdx: index of the neighboring step before switch (step's new order)
 */
-async function changeStepOrderHandler(req: NextApiRequest, res: NextApiResponse) {
+async function changeStepOrderHandler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   let stepId = req.body.stepId;
   let draftId = req.body.draftId;
   let neighborId = req.body.neighborId;
@@ -40,8 +44,20 @@ async function changeStepOrderHandler(req: NextApiRequest, res: NextApiResponse)
   }
 
   // update order in firebase
-  db.collection("users").doc(uid).collection("drafts").doc(draftId).collection("steps").doc(stepId).update({"order": newIdx}); 
-  db.collection("users").doc(uid).collection("drafts").doc(draftId).collection("steps").doc(neighborId).update({"order": oldIdx}); 
+  db.collection("users")
+    .doc(uid)
+    .collection("drafts")
+    .doc(draftId)
+    .collection("steps")
+    .doc(stepId)
+    .update({ order: newIdx });
+  db.collection("users")
+    .doc(uid)
+    .collection("drafts")
+    .doc(draftId)
+    .collection("steps")
+    .doc(neighborId)
+    .update({ order: oldIdx });
 
   res.statusCode = 200;
   let results = await getUserStepsForDraft(uid, draftId);
