@@ -8,22 +8,21 @@ import handleLogout from "../../lib/api/logout";
 import handleAddDraft from "../../lib/api/createDraft";
 import handleGetDrafts from "../../lib/api/getDrafts";
 import handleDeleteDraft from "../../lib/api/deleteDraft";
-import handleGetDraftData from "../../lib/api/getDraftData"
+import handleSetId from "../../lib/api/setId";
+import handlecheckId from "../../lib/api/checkId";
+import handleGetUserInfo from "../../lib/api/getUserInfo";
+import handlePublishPost from "../../lib/api/publishPost";
+import handleGetPosts from "../../lib/api/getPosts";
+import handleDeletePost from "../../lib/api/deletePost";
+import handleGetDraftData from "../../lib/api/getDraftData";
 import handleSaveStep from "../../lib/api/saveStep";
 import handleDeleteStep from "../../lib/api/deleteStep";
 import handleUpdateStep from "../../lib/api/updateStep";
-import handleChangeStepOrder from "../../lib/api/changeStepOrder"
-import handleSaveTitle from "../../lib/api/saveTitle"
-
+import handleChangeStepOrder from "../../lib/api/changeStepOrder";
+import handleSaveTitle from "../../lib/api/saveTitle";
 
 const firebase = require("firebase/app");
 initFirebase();
-
-// export const config = {
-//   api: {
-//     bodyParser: true,
-//   },
-// };
 
 export default (req: NextApiRequest, res: NextApiResponse) => {
   let requestBody = req.body;
@@ -33,27 +32,40 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
     ------ Authentication ------
     */
 
-    //POST
     case "login": {
       return handleLogin(req, res);
     }
 
-    //POST
     case "signup": {
       return handleSignup(req, res);
     }
 
-    //POST
     case "logout": {
       return handleLogout(req, res);
     }
 
-    /* 
-    ------ Publishing ------
+    /*
+    ------ Settings ------
     */
 
-    case "get_drafts": {
-      /* ----- POST -----
+    case "check_userId": {
+      return handlecheckId(req, res);
+    }
+
+    case "set_userId": {
+      return handleSetId(req, res);
+    }
+
+    case "get_userInfo": {
+      return handleGetUserInfo(req, res);
+    }
+
+    /* 
+    ------ Drafts ------
+    */
+
+    case "getDrafts": {
+      /* 
       Get all drafts
       */
       return handleGetDrafts(req, res);
@@ -64,7 +76,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     case "delete_draft": {
-      /* ----- POST -----
+      /* 
       Delete Draft
       */
       return handleDeleteDraft(req, res);
@@ -75,19 +87,32 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
       return handleGetDraftData(req, res);
     }
 
-    // POST
     case "save_step": {
       return handleSaveStep(req, res);
     }
 
-    // POST
     case "delete_step": {
       return handleDeleteStep(req, res);
     }
 
-    // POST
     case "update_step": {
       return handleUpdateStep(req, res);
+    }
+
+    /* 
+    ------ Posts ------
+    */
+
+    case "publishPost": {
+      return handlePublishPost(req, res);
+    }
+
+    case "getPosts": {
+      return handleGetPosts(req, res);
+    }
+
+    case "deletePost": {
+      return handleDeletePost(req, res);
     }
 
     // POST

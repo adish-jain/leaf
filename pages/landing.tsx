@@ -1,11 +1,12 @@
+import { useState } from "react";
 import Head from "next/head";
+import Link from "next/link";
 import Router from "next/router";
 import { useEffect } from "react";
 import useSWR, { SWRConfig, mutate } from "swr";
 const fetch = require("node-fetch");
 global.Headers = fetch.Headers;
 const landingStyles = require("../styles/Landing.module.scss");
-
 import { useLoggedIn, logOut } from "../lib/UseLoggedIn";
 
 type DraftType = {
@@ -17,26 +18,74 @@ type DraftType = {
   };
 };
 
-const rawData = {
-  requestedAPI: "get_drafts",
+type PostsType = {
+  // url id
+  postId: string;
+  title: string;
+  // user id
+  uid: string;
+  // unique id
+  id: string;
+  username: string;
+  createdAt: {
+    _nanoseconds: number;
+    _seconds: number;
+  };
 };
 
-const myRequest = {
-  method: "POST",
-  headers: new Headers({ "Content-Type": "application/json" }),
-  body: JSON.stringify(rawData),
+const myRequest = (requestedAPI: string) => {
+  return {
+    method: "POST",
+    headers: new Headers({ "Content-Type": "application/json" }),
+    body: JSON.stringify({
+      requestedAPI: requestedAPI,
+    }),
+  };
 };
-const fetcher = (url: string) =>
-  fetch(url, myRequest).then((res: any) => res.json());
+
+const postsFetcher = () =>
+  fetch("api/endpoint", myRequest("getPosts")).then((res: any) => res.json());
+
+const draftsFetcher = () =>
+  fetch("api/endpoint", myRequest("getDrafts")).then((res: any) => res.json());
+
+const userInfoFetcher = () =>
+  fetch("api/endpoint", myRequest("get_userInfo")).then((res: any) =>
+    res.json()
+  );
 
 export default function Landing() {
-  const initialData: DraftType[] = [];
+  // authenticate
   const { authenticated, error, loading } = useLoggedIn();
+
+  // Fetch data for drafts
+  const initialDraftsData: DraftType[] = [];
   let { data: drafts } = useSWR<DraftType[]>(
-    authenticated ? "/api/endpoint" : null,
-    fetcher,
+    authenticated ? "getDrafts" : null,
+    draftsFetcher,
     {
-      initialData,
+      initialData: initialDraftsData,
+      revalidateOnMount: true,
+    }
+  );
+
+  const initialUserInfo: any = { username: "" };
+  let { data: userInfo } = useSWR(
+    authenticated ? "getUserInfo" : null,
+    userInfoFetcher,
+    {
+      initialData: initialDraftsData,
+      revalidateOnMount: true,
+    }
+  );
+
+  // Fetch data for posts
+  const initialPostsData: PostsType[] = [];
+  let { data: posts } = useSWR<PostsType[]>(
+    authenticated ? "getPosts" : null,
+    postsFetcher,
+    {
+      initialData: initialPostsData,
       revalidateOnMount: true,
     }
   );
@@ -50,9 +99,46 @@ export default function Landing() {
       }),
     }).then(async (res: any) => {
       let updatedDrafts = await res.json();
-      mutate("/api/endpoint", updatedDrafts, false);
+      mutate("getDrafts", updatedDrafts, false);
       let new_draft_id = updatedDrafts[0].id;
       openDraft(new_draft_id);
+    });
+  }
+
+  function goToPost(username: string, postId: string) {
+    Router.push("/[username]/[postId]", "/" + username + "/" + postId);
+  }
+
+  function deletePost(postUid: string) {
+    function removeSpecificPost() {
+      let searchIndex = 0;
+      for (let i = 0; i < posts!.length; i++) {
+        if (posts![i].uid === postUid) {
+          searchIndex = i;
+          break;
+        }
+      }
+      let clonePosts = posts?.slice();
+      clonePosts!.splice(searchIndex, 1);
+      mutate("getPosts", clonePosts, false);
+    }
+
+    const requestBody = {
+      requestedAPI: "deletePost",
+      postUid: postUid,
+    };
+
+    const myRequest = {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify(requestBody),
+    };
+
+    removeSpecificPost();
+
+    fetch("api/endpoint", myRequest).then(async (res: any) => {
+      let updatedPosts = await res.json();
+      mutate("getPosts", updatedPosts);
     });
   }
 
@@ -64,7 +150,6 @@ export default function Landing() {
     event: React.MouseEvent<HTMLButtonElement>,
     draft_id: string
   ) {
-
     // helper function to remove a draft before API call finishes
     function removeSpecificDraft() {
       let searchIndex = 0;
@@ -76,7 +161,7 @@ export default function Landing() {
       }
       let cloneDrafts = drafts?.slice();
       cloneDrafts!.splice(searchIndex, 1);
-      mutate("/api/endpoint", cloneDrafts, false);
+      mutate("getDrafts", cloneDrafts, false);
     }
 
     const requestBody = {
@@ -94,7 +179,7 @@ export default function Landing() {
 
     fetch("api/endpoint", myRequest).then(async (res: any) => {
       let updatedDrafts = await res.json();
-      mutate("/api/endpoint", updatedDrafts);
+      mutate("getDrafts", updatedDrafts);
     });
   }
 
@@ -119,7 +204,7 @@ export default function Landing() {
         />
       </Head>
       <main>
-        <LandingHeader />
+        <LandingHeader userInfo={userInfo} />
         <div className={landingStyles.landing}>
           <YourDrafts
             deleteDraft={deleteDraft}
@@ -127,9 +212,70 @@ export default function Landing() {
             drafts={drafts}
             createNewPost={createNewPost}
           />
-          <NonePublished />
+          <YourPosts
+            deletePost={deletePost}
+            posts={posts}
+            goToPost={goToPost}
+          />
         </div>
       </main>
+    </div>
+  );
+}
+
+function YourPosts(props: {
+  posts: PostsType[] | undefined;
+  goToPost: (username: string, postId: string) => void;
+  deletePost: (postUid: string) => void;
+}) {
+  let { posts, goToPost, deletePost } = props;
+
+  let content;
+  if (posts === undefined || posts === []) {
+    content = <NonePublished />;
+  } else {
+    content = (
+      <div>
+        {posts.map((post: any) => (
+          <Post
+            username={post.username}
+            title={post.title}
+            postId={post.postId}
+            goToPost={goToPost}
+            postUid={post.id}
+            deletePost={deletePost}
+            key={post.id}
+          />
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div className={landingStyles.right}>
+      <h1>Your Published Posts</h1>
+      <hr />
+      {content}
+    </div>
+  );
+}
+
+function Post(props: {
+  title: string;
+  postId: string;
+  username: string;
+  postUid: string;
+  deletePost: (postUid: string) => void;
+  goToPost: (username: string, postId: string) => void;
+}) {
+  let { username, postId, deletePost, postUid } = props;
+  return (
+    <div className={landingStyles["draft"]}>
+      <p>{props.title}</p>
+      <button onClick={() => deletePost(postUid)}>Delete Post</button>
+      <button onClick={(e) => props.goToPost(username, postId)}>
+        Open Post
+      </button>
     </div>
   );
 }
@@ -224,22 +370,23 @@ function Draft(props: DraftProps) {
   );
 }
 
-function LandingHeader() {
+function LandingHeader(props: any) {
   return (
     <div className={landingStyles.header}>
-      <div className={landingStyles.settings}></div>
-      <div className={landingStyles.settings}>
-        <button onClick={logOut}></button>
-      </div>
+      <button onClick={logOut}>Logout</button>
+      <Link href="/settings">
+        <a>Settings</a>
+      </Link>
+      <Link href={"/" + props.userInfo.username}>
+        <a>My Profile</a>
+      </Link>
     </div>
   );
 }
 
 function NonePublished() {
   return (
-    <div className={landingStyles.right}>
-      <h1>Your Published Posts</h1>
-      <hr />
+    <div>
       <p>You have no published posts. Create a draft to get started.</p>
     </div>
   );

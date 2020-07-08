@@ -4,8 +4,7 @@ import { initFirebaseAdmin, initFirebase } from "../../lib/initFirebase";
 const admin = require("firebase-admin");
 const firebase = require("firebase/app");
 import fetch from "isomorphic-fetch";
-import { getUser, refreshJWT } from "../../lib/userUtils";
-
+import { getUser, handleLogoutCookies } from "../../lib/userUtils";
 
 initFirebaseAdmin();
 
@@ -23,6 +22,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   let { uid, userRecord } = await getUser(req, res);
 
   if (userRecord === undefined) {
+    handleLogoutCookies(res);
     res.statusCode = 200;
     res.send({ authenticated: false });
     return;

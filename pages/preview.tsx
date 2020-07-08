@@ -1,27 +1,27 @@
-import React, { useState, Component } from "react";
+import React from "react";
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from "next";
-import { useRouter } from "next/router";
 import Head from "next/head";
-import Scrolling from "../components/Scrolling";
-import PublishedCodeEditor from "../components/PublishedCodeEditor";
-
-import { getUserStepsForDraft } from "../lib/userUtils";
-const appStyles = require("../styles/App.module.scss");
+import { getDraftDataHandler } from "../lib/postUtils";
+import FinishedPost from "../components/FinishedPost";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   if (context.preview) {
     let draftId = context.previewData.draftId;
     let uid = context.previewData.uid;
-    let steps = await getUserStepsForDraft(uid, draftId);
+    let draftData = await getDraftDataHandler(uid, draftId);
+    let title = draftData.title;
+    let steps = draftData.optimisticSteps;
 
     return {
       props: {
+        title,
         steps,
       },
     };
   } else {
     return {
       props: {
+        title: "Untitled",
         steps: [],
       },
     };
@@ -35,27 +35,12 @@ type StepType = {
 
 type DraftPreviewProps = {
   steps: StepType[];
+  title: string;
 };
 
 const stepsInView: { [stepIndex: number]: boolean } = {};
 
 const DraftPreview = (props: DraftPreviewProps) => {
-  const [currentStep, updateStep] = useState(0);
-
-  function changeStep(newStep: number, yPos: number, entered: boolean) {
-    // stepsInView keeps track of what steps are inside the viewport
-    stepsInView[newStep] = entered;
-
-    /* whichever step is the closest to the top of the viewport 
-    AND is inside the viewport becomes the selected step */
-    for (let step in stepsInView) {
-      if (stepsInView[step]) {
-        updateStep(Number(step));
-        break;
-      }
-    }
-  }
-
   return (
     <div className="container">
       <Head>
@@ -77,14 +62,7 @@ const DraftPreview = (props: DraftPreviewProps) => {
         />
       </Head>
       <main>
-        <div className={appStyles.App}>
-          <Scrolling
-            currentStep={currentStep}
-            changeStep={changeStep}
-            steps={props.steps}
-          />
-          <PublishedCodeEditor currentStep={currentStep} />
-        </div>
+        <FinishedPost steps={props.steps} title={props.title} />
       </main>
     </div>
   );

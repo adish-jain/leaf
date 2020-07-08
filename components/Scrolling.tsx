@@ -12,6 +12,7 @@ type ScrollingProps = {
   changeStep: (newStep: number, yPos: number, entered: boolean) => void;
   steps: StepType[];
   currentStep: number;
+  title: string;
 };
 
 type ScrollingState = {
@@ -46,10 +47,11 @@ export default class Scrolling extends Component<
   }
 
   render() {
-    let { steps, currentStep } = this.props;
+    let { steps, currentStep, title} = this.props;
     let { height } = this.state;
     return (
       <div className={scrollingStyles["scrolling"]}>
+        <h1>{title}</h1>
         {steps ? (
           steps.map((step, index) => (
             <PublishedStep

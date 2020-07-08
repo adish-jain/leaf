@@ -4,10 +4,7 @@ initFirebaseAdmin();
 import fetch from "isomorphic-fetch";
 import { NextApiRequest, NextApiResponse } from "next";
 let db = admin.firestore();
-import {
-  setTokenCookies,
-  removeTokenCookies,
-} from "./cookieUtils";
+import { setTokenCookies, removeTokenCookies } from "./cookieUtils";
 
 type GetUserType = {
   uid: string;
@@ -33,10 +30,9 @@ export async function getUser(
       userRecord,
     };
   } catch (error) {
-    console.log("errored on userToken " + userToken);
-    console.log(error);
     switch (error.code) {
       case "auth/argument-error":
+        console.log(error);
         return {
           uid: "",
           userRecord: undefined,
@@ -49,6 +45,7 @@ export async function getUser(
         handleLoginCookies(res, updatedUserToken, refreshToken);
         return getUser(req, res);
       default:
+        console.log(error);
         return {
           uid: "",
           userRecord: undefined,
@@ -130,40 +127,64 @@ export async function getUserDrafts(uid: string) {
     });
 }
 
-export async function getUserStepsForDraft(uid: string, draftId: string) {
-  let stepsRef = db
-    .collection("users")
-    .doc(uid)
-    .collection("drafts")
-    .doc(draftId)
-    .collection("steps")
-    .orderBy("order");
-
-  return await stepsRef
-    .get()
-    .then(function (stepsCollection: any) {
-      let results: any[] = [];
-      stepsCollection.forEach(function (result: any) {
-        let resultsJSON = result.data();
-        resultsJSON.id = result.id;
-        results.push({
-          text: resultsJSON.text,
-          lines: resultsJSON.lines,
-          id: resultsJSON.id,
-        });
-      });
-      return results;
-    })
-    .catch(function (error: any) {
-      console.log(error);
-      return [];
-    });
+export async function getUidFromUsername(username: string) {
+  let userRef = db.collection("users").where("username", "==", username);
+  let uid = await userRef.get().then(function (userSnapshot: any) {
+    let user = userSnapshot.docs[0];
+    return user.id;
+  });
+  return uid;
 }
 
-export async function adjustStepOrder(uid: string, draftId: string, stepsToChange: any){
-  stepsToChange.forEach((element: { id: any; lines: any; text: any; }) => {
-    let stepId = element["id"];
-    db.collection("users").doc(uid).collection("drafts").doc(draftId).collection("steps").doc(stepId).update({"order": admin.firestore.FieldValue.increment(-1)});
-  })
-  return;
+export async function getArticlesFromUsername(username: string) {
+  let uid = await getUidFromUsername(username);
+  let postsRef = await db.collection("posts").where("uid", "==", uid);
+  let results = await postsRef.get().then(function (postsCollection: any) {
+    let toReturn: any[] = [];
+    postsCollection.forEach(function (result: any) {
+      let resultJSON = result.data();
+      resultJSON.id = result.id;
+      resultJSON.username = username;
+      resultJSON.createdAt = resultJSON.createdAt.toDate().toJSON();
+      toReturn.push(resultJSON);
+    });
+    return toReturn;
+  });
+  return results;
+}
+
+export async function getArticlesFromUid(uid: string) {
+  let postsRef = await db.collection("posts").where("uid", "==", uid);
+  let results = await postsRef.get().then(function (postsCollection: any) {
+    let toReturn: any[] = [];
+    postsCollection.forEach(function (result: any) {
+      let resultJSON = result.data();
+      resultJSON.id = result.id;
+      resultJSON.createdAt = resultJSON.createdAt.toDate().toJSON();
+      toReturn.push(resultJSON);
+    });
+    return toReturn;
+  });
+  return results;
+}
+
+export async function getUsernameFromUid(uid: string) {
+  let userRef = await db.collection("users").doc(uid);
+  let username = await userRef.get().then(function (userSnapshot: any) {
+    let data = userSnapshot.data();
+    return data.username;
+  });
+  return username;
+}
+
+
+export async function checkUsernameDNE(username: string) {
+  let usernamesRefKey = db.collection("users").where("username", "==", username)
+    .key;
+
+  if (usernamesRefKey === null) {
+    return true;
+  } else {
+    return false;
+  }
 }

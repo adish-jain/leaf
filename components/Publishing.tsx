@@ -13,30 +13,19 @@ type PublishingProps = {
   draftId: any;
   title: string;
   storedSteps: any[];
-  saveStep: (
-    stepId: string,
-    text: any,
-  ) => void;
+  saveStep: (stepId: string, text: any) => void;
   updateStoredStep: (
     stepId: string,
     text: any,
     oldLines: any,
-    removeLines: any,
+    removeLines: any
   ) => void;
-  deleteStoredStep: (
-    stepId: any,
-  ) => void;
+  deleteStoredStep: (stepId: any) => void;
   onHighlight: () => void;
   unHighlight: () => void;
-  moveStepUp: (
-    stepId: any,
-  ) => void;
-  moveStepDown: (
-    stepId: any,
-  ) => void;
-  saveTitle: (
-    title: string,
-  ) => void;
+  moveStepUp: (stepId: any) => void;
+  moveStepDown: (stepId: any) => void;
+  saveTitle: (title: string) => void;
 };
 
 type PublishingState = {
@@ -64,6 +53,7 @@ export default class Publishing extends Component<
     this.addStep = this.addStep.bind(this);
     this.closeStep = this.closeStep.bind(this);
     this.previewDraft = this.previewDraft.bind(this);
+    this.publishDraft = this.publishDraft.bind(this);
     this.saveTitle = this.saveTitle.bind(this);
     this.onTitleChange = this.onTitleChange.bind(this);
 
@@ -88,13 +78,31 @@ export default class Publishing extends Component<
     this.setState({ steps });
   }
 
+  publishDraft(e: React.MouseEvent<HTMLButtonElement>) {
+    let { draftId } = this.props;
+    console.log("publishing");
+    fetch("/api/endpoint", {
+      method: "POST",
+      redirect: "follow",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify({ requestedAPI: "publishPost", draftId: draftId }),
+    })
+      .then(async (res: any) => {
+        let resJson = await res.json();
+        let newUrl = resJson.newURL;
+        Router.push(newUrl);
+      })
+      .catch(function (err: any) {
+        console.log(err);
+      });
+  }
   saveTitle(e: React.ChangeEvent<HTMLTextAreaElement>) {
     if (this.state.saveTitle) {
       this.props.saveTitle(this.state.title);
     }
     this.setState({
       saveTitle: false,
-    })
+    });
   }
 
   onTitleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
@@ -136,18 +144,24 @@ export default class Publishing extends Component<
             >
               Preview
             </button>
-            <button className={descriptionStyles.publish}>Publish</button>
+            <button
+              onClick={this.publishDraft}
+              className={descriptionStyles.publish}
+            >
+              Publish
+            </button>
           </div>
         </div>
         <div className={descriptionStyles.header}>
           <form>
-            <textarea 
+            <textarea
               className={descriptionStyles.textArea}
               placeholder={"Untitled"}
               defaultValue={this.props.title}
               onChange={this.onTitleChange}
               onBlur={this.saveTitle}
-              name="title"/>
+              name="title"
+            />
           </form>
         </div>
         {this.props.storedSteps.map((storedStep) => {
