@@ -1,13 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { GetStaticProps } from "next";
-import { useRouter } from "next/router";
 import Head from "next/head";
-import Scrolling from "../../components/Scrolling";
-import PublishedCodeEditor from "../../components/PublishedCodeEditor";
+import FinishedPost from "../../components/FinishedPost";
 import { getAllPosts } from "../../lib/api/publishPost";
 import { getUsernameFromUid } from "../../lib/userUtils";
-import { getStepsFromPost, getPostData } from "../../lib/postUtils";
-const appStyles = require("../../styles/App.module.scss");
+import { getPostData } from "../../lib/postUtils";
 
 export async function getStaticPaths() {
   // get username from router query
@@ -67,26 +64,7 @@ type UserPageProps = {
   title: string;
 };
 
-const stepsInView: { [stepIndex: number]: boolean } = {};
-
 const Post = (props: UserPageProps) => {
-  const [currentStep, updateStep] = useState(0);
-  const router = useRouter();
-
-  function changeStep(newStep: number, yPos: number, entered: boolean) {
-    // stepsInView keeps track of what steps are inside the viewport
-    stepsInView[newStep] = entered;
-
-    /* whichever step is the closest to the top of the viewport 
-    AND is inside the viewport becomes the selected step */
-    for (let step in stepsInView) {
-      if (stepsInView[step]) {
-        updateStep(Number(step));
-        break;
-      }
-    }
-  }
-
   return (
     <div className="container">
       <Head>
@@ -94,15 +72,7 @@ const Post = (props: UserPageProps) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <div className={appStyles.App}>
-          <Scrolling
-            currentStep={currentStep}
-            changeStep={changeStep}
-            steps={props.steps}
-            title={props.title}
-          />
-          <PublishedCodeEditor currentStep={currentStep} />
-        </div>
+        <FinishedPost steps={props.steps} title={props.title} />
       </main>
     </div>
   );

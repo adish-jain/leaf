@@ -1,12 +1,8 @@
-import React, { useState, Component } from "react";
+import React from "react";
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from "next";
-import { useRouter } from "next/router";
 import Head from "next/head";
-import Scrolling from "../components/Scrolling";
-import PublishedCodeEditor from "../components/PublishedCodeEditor";
-
 import { getDraftDataHandler } from "../lib/postUtils";
-const appStyles = require("../styles/App.module.scss");
+import FinishedPost from "../components/FinishedPost";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   if (context.preview) {
@@ -45,22 +41,6 @@ type DraftPreviewProps = {
 const stepsInView: { [stepIndex: number]: boolean } = {};
 
 const DraftPreview = (props: DraftPreviewProps) => {
-  const [currentStep, updateStep] = useState(0);
-
-  function changeStep(newStep: number, yPos: number, entered: boolean) {
-    // stepsInView keeps track of what steps are inside the viewport
-    stepsInView[newStep] = entered;
-
-    /* whichever step is the closest to the top of the viewport 
-    AND is inside the viewport becomes the selected step */
-    for (let step in stepsInView) {
-      if (stepsInView[step]) {
-        updateStep(Number(step));
-        break;
-      }
-    }
-  }
-
   return (
     <div className="container">
       <Head>
@@ -82,15 +62,7 @@ const DraftPreview = (props: DraftPreviewProps) => {
         />
       </Head>
       <main>
-        <div className={appStyles.App}>
-          <Scrolling
-            title={props.title}
-            currentStep={currentStep}
-            changeStep={changeStep}
-            steps={props.steps}
-          />
-          <PublishedCodeEditor currentStep={currentStep} />
-        </div>
+        <FinishedPost steps={props.steps} title={props.title} />
       </main>
     </div>
   );
