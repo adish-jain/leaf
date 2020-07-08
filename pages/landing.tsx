@@ -1,11 +1,12 @@
+import { useState } from "react";
 import Head from "next/head";
+import Link from "next/link";
 import Router from "next/router";
 import { useEffect } from "react";
 import useSWR, { SWRConfig, mutate } from "swr";
 const fetch = require("node-fetch");
 global.Headers = fetch.Headers;
 const landingStyles = require("../styles/Landing.module.scss");
-
 import { useLoggedIn, logOut } from "../lib/UseLoggedIn";
 
 type DraftType = {
@@ -48,6 +49,11 @@ const postsFetcher = () =>
 const draftsFetcher = () =>
   fetch("api/endpoint", myRequest("getDrafts")).then((res: any) => res.json());
 
+const userInfoFetcher = () =>
+  fetch("api/endpoint", myRequest("get_userInfo")).then((res: any) =>
+    res.json()
+  );
+
 export default function Landing() {
   // authenticate
   const { authenticated, error, loading } = useLoggedIn();
@@ -57,6 +63,16 @@ export default function Landing() {
   let { data: drafts } = useSWR<DraftType[]>(
     authenticated ? "getDrafts" : null,
     draftsFetcher,
+    {
+      initialData: initialDraftsData,
+      revalidateOnMount: true,
+    }
+  );
+
+  const initialUserInfo: any = { username: "" };
+  let { data: userInfo } = useSWR(
+    authenticated ? "getUserInfo" : null,
+    userInfoFetcher,
     {
       initialData: initialDraftsData,
       revalidateOnMount: true,
@@ -188,7 +204,7 @@ export default function Landing() {
         />
       </Head>
       <main>
-        <LandingHeader />
+        <LandingHeader userInfo={userInfo} />
         <div className={landingStyles.landing}>
           <YourDrafts
             deleteDraft={deleteDraft}
@@ -228,7 +244,7 @@ function YourPosts(props: {
             goToPost={goToPost}
             postUid={post.id}
             deletePost={deletePost}
-            key={post.uid}
+            key={post.id}
           />
         ))}
       </div>
@@ -354,13 +370,16 @@ function Draft(props: DraftProps) {
   );
 }
 
-function LandingHeader() {
+function LandingHeader(props: any) {
   return (
     <div className={landingStyles.header}>
-      <div className={landingStyles.settings}></div>
-      <div className={landingStyles.settings}>
-        <button onClick={logOut}></button>
-      </div>
+      <button onClick={logOut}>Logout</button>
+      <Link href="/settings">
+        <a>Settings</a>
+      </Link>
+      <Link href={"/" + props.userInfo.username}>
+        <a>My Profile</a>
+      </Link>
     </div>
   );
 }

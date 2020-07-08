@@ -17,7 +17,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     res.end();
     return;
   }
-  let results = getDraftDataHandler(uid, draftId);
+  let results = await getDraftDataHandler(uid, draftId);
   res.statusCode = 200;
   res.send(results);
 };
