@@ -56,6 +56,11 @@ type UserPageProps = {
 const UserPage = (props: UserPageProps) => {
   const [currentStep, updateStep] = useState(0);
   const router = useRouter();
+
+  if (router.isFallback) {
+    return <div>Loading...</div>
+  }
+
   let posts = props.publishedPosts;
   return (
     <div className="container">
