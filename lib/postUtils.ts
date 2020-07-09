@@ -31,8 +31,9 @@ export async function getDraftDataHandler(uid: string, draftId: string) {
     .doc(draftId)
     .get();
   let title = draftData.data().title;
+  let code = draftData.data().code;
   let storedSteps = await getUserStepsForDraft(uid, draftId);
-  let results = { title: title, optimisticSteps: storedSteps };
+  let results = { title: title, optimisticSteps: storedSteps, code: code };
   return results;
 }
 
