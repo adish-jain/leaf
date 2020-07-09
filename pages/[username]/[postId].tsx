@@ -6,6 +6,7 @@ import { getAllPosts } from "../../lib/api/publishPost";
 import { getUsernameFromUid } from "../../lib/userUtils";
 import { getPostData } from "../../lib/postUtils";
 
+
 export async function getStaticPaths() {
   // get username from router query
   // get articles from username
@@ -27,7 +28,7 @@ export async function getStaticPaths() {
   }
 
   return {
-    paths,
+    paths: [],
     fallback: true, // See the "fallback" section below
   };
 }
