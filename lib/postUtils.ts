@@ -68,13 +68,22 @@ export async function getUserStepsForDraft(uid: string, draftId: string) {
 }
 
 export async function getPostData(username: string, postId: string) {
-  let uid = await getUidFromUsername(username);
-  let steps = await getStepsFromPost(uid, postId);
-  let title = await getPostTitle(uid, postId);
-  return {
-    steps,
-    title,
-  };
+  try {
+    let uid = await getUidFromUsername(username);
+    let steps = await getStepsFromPost(uid, postId);
+    let title = await getPostTitle(uid, postId);
+    return {
+      steps,
+      title,
+      errored: false,
+    };
+  } catch (error) {
+    return {
+      steps: [],
+      title: "",
+      errored: true,
+    };
+  }
 }
 
 export async function getPostTitle(uid: string, postId: string) {

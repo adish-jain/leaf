@@ -5,29 +5,12 @@ import FinishedPost from "../../components/FinishedPost";
 import { getAllPosts } from "../../lib/api/publishPost";
 import { getUsernameFromUid } from "../../lib/userUtils";
 import { getPostData } from "../../lib/postUtils";
+import DefaultErrorPage from "next/error";
+import { useRouter } from "next/router";
 
 export async function getStaticPaths() {
-  // get username from router query
-  // get articles from username
-
-  let paths: any[] = [];
-
-  let posts = await getAllPosts();
-  // console.log(posts);
-  for (let i = 0; i < posts.length; i++) {
-    let uid = posts[i].uid;
-    let postId = posts[i].postId;
-    let username = await getUsernameFromUid(uid);
-    paths.push({
-      params: {
-        username: username,
-        postId: postId,
-      },
-    });
-  }
-
   return {
-    paths,
+    paths: [],
     fallback: true, // See the "fallback" section below
   };
 }
@@ -35,6 +18,7 @@ export async function getStaticPaths() {
 export const getStaticProps: GetStaticProps = async (context) => {
   if (context === undefined || context.params === undefined) {
     return {
+      unstable_revalidate: 1,
       props: {
         steps: [],
       },
@@ -46,10 +30,13 @@ export const getStaticProps: GetStaticProps = async (context) => {
   let postData = await getPostData(username, postId);
   let steps = postData.steps;
   let title = postData.title;
+  let errored = postData.errored;
   return {
+    unstable_revalidate: 1,
     props: {
       steps,
       title,
+      errored,
     },
   };
 };
@@ -62,9 +49,16 @@ type StepType = {
 type UserPageProps = {
   steps: StepType[];
   title: string;
+  errored: boolean;
 };
 
 const Post = (props: UserPageProps) => {
+  const router = useRouter();
+
+  if (router.isFallback) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="container">
       <Head>
@@ -72,7 +66,11 @@ const Post = (props: UserPageProps) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <FinishedPost steps={props.steps} title={props.title} />
+        {props.errored ? (
+          <DefaultErrorPage statusCode={404} />
+        ) : (
+          <FinishedPost steps={props.steps} title={props.title} />
+        )}
       </main>
     </div>
   );

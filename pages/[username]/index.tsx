@@ -5,20 +5,12 @@ import Head from "next/head";
 import Scrolling from "../../components/Scrolling";
 import { getArticlesFromUsername } from "../../lib/userUtils";
 import getUsernames from "../../lib/api/getUsernames";
-import { format } from "path";
-import { profile } from "console";
 const profileStyles = require("../../styles/Profile.module.scss");
 
 export async function getStaticPaths() {
-  let usernames = await getUsernames();
-  let paths = usernames.map((username) => ({
-    params: {
-      username: username,
-    },
-  }));
   return {
-    paths,
-    fallback: false, // See the "fallback" section below
+    paths: [],
+    fallback: true, // See the "fallback" section below
   };
 }
 
@@ -26,6 +18,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   let params = context.params;
   if (params === undefined || params.username === undefined) {
     return {
+      unstable_revalidate: 1,
       props: {
         publishedPosts: [],
       },
@@ -35,6 +28,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   let posts = await getArticlesFromUsername(username);
   return {
     props: {
+      unstable_revalidate: 1,
       publishedPosts: posts,
       username: username,
     },
@@ -57,6 +51,11 @@ type UserPageProps = {
 const UserPage = (props: UserPageProps) => {
   const [currentStep, updateStep] = useState(0);
   const router = useRouter();
+
+  if (router.isFallback) {
+    return <div>Loading...</div>;
+  }
+
   let posts = props.publishedPosts;
   return (
     <div className="container">
