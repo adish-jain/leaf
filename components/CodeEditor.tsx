@@ -3,7 +3,6 @@ import dynamic from "next/dynamic";
 import LanguageBar from "./LanguageBar";
 import FileBar from "./FileBar";
 import PreviewSection from "./PreviewSection";
-import { DefaultDraftBlockRenderMap } from "draft-js";
 
 // import CodeMirror from './DynamicComponent';
 // const {CodeMirror} = require('./DynamicComponent');
