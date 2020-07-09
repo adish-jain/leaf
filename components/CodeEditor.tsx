@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import LanguageBar from "./LanguageBar";
 import FileBar from "./FileBar";
 import PreviewSection from "./PreviewSection";
+import { DefaultDraftBlockRenderMap } from "draft-js";
 
 // import CodeMirror from './DynamicComponent';
 // const {CodeMirror} = require('./DynamicComponent');
@@ -12,10 +13,9 @@ const DynamicCodeEditor = dynamic((() => import("./DynamicCodeEditor")) as any, 
 });
 
 type CodeEditorProps = {
-  highlightLines: (
-    start: any,
-    end: any,
-  ) => void;
+  highlightLines: (start: any, end: any) => void;
+  saveCode: (code: string) => void;
+  draftCode: string;
 };
 
 type CodeEditorState = {
@@ -44,7 +44,10 @@ export default class CodeEditor extends Component<
         <PreviewSection />
         <FileBar />
         {// @ts-ignore 
-          <DynamicCodeEditor highlightLines={this.props.highlightLines}/>
+          <DynamicCodeEditor highlightLines={this.props.highlightLines} 
+          saveCode={this.props.saveCode} 
+          draftCode={this.props.draftCode}
+          key={this.props.draftCode.length}/>
         }
         <LanguageBar language={this.state.language} />
       </div>
