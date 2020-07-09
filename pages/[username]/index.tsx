@@ -8,12 +8,6 @@ import getUsernames from "../../lib/api/getUsernames";
 const profileStyles = require("../../styles/Profile.module.scss");
 
 export async function getStaticPaths() {
-  let usernames = await getUsernames();
-  let paths = usernames.map((username) => ({
-    params: {
-      username: username,
-    },
-  }));
   return {
     paths: [],
     fallback: true, // See the "fallback" section below
@@ -24,6 +18,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   let params = context.params;
   if (params === undefined || params.username === undefined) {
     return {
+      unstable_revalidate: 1,
       props: {
         publishedPosts: [],
       },
@@ -58,7 +53,7 @@ const UserPage = (props: UserPageProps) => {
   const router = useRouter();
 
   if (router.isFallback) {
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
 
   let posts = props.publishedPosts;
