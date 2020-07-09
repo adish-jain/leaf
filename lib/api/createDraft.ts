@@ -15,6 +15,7 @@ export default async function createDraftHandler(
   let newDraft = {
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
     title: "Untitled",
+    code: "// Write some code here ... "
   };
 
   await db.collection("users").doc(uid).collection("drafts").add(newDraft);

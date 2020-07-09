@@ -8,8 +8,7 @@ initFirebaseAdmin();
 initFirebase();
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  // console.log("in saveStep");
-  return saveTitleHandler(req, res);
+  return saveCodeHandler(req, res);
 };
 
 function handleError(res: NextApiResponse, error: any) {
@@ -19,9 +18,9 @@ function handleError(res: NextApiResponse, error: any) {
   return;
 }
 
-async function saveTitleHandler(req: NextApiRequest, res: NextApiResponse) {
+async function saveCodeHandler(req: NextApiRequest, res: NextApiResponse) {
   let draftId = req.body.draftId;
-  let title = req.body.title;
+  let code = req.body.code;
   let { uid } = await getUser(req, res);
 
   if (uid === "") {
@@ -30,12 +29,12 @@ async function saveTitleHandler(req: NextApiRequest, res: NextApiResponse) {
     return;
   }
 
-  // update title in firebase
+  // update code in firebase
   db.collection("users")
   .doc(uid)
   .collection("drafts")
   .doc(draftId)
-  .update({"title": title}); 
+  .update({"code": code}); 
   
   res.statusCode = 200;
   let results = await getUserDrafts(uid);

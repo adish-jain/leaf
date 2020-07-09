@@ -12,10 +12,9 @@ require('codemirror/mode/jsx/jsx');
 // import "../styles/CodeEditor.module.scss";
 
 type CodeMirrorProps = {
-  highlightLines: (
-    start: any,
-    end: any,
-  ) => void;
+  highlightLines: (start: any, end: any) => void;
+  saveCode: (code: string) => void;
+  draftCode: string;
 };
 
 type CodeMirrorState = {
@@ -47,7 +46,7 @@ export default class CodeMirror extends Component<
     this.instance = undefined;
 
     this.state = {
-      value: jsxString,
+      value: this.props.draftCode,
     };
   }
 
@@ -55,6 +54,10 @@ export default class CodeMirror extends Component<
     let start = editor.getCursor(true);
     let end = editor.getCursor(false);
     this.props.highlightLines(start, end);
+  }
+
+  saveCode() {
+    this.props.saveCode(this.state.value);
   }
 
   render() {
@@ -88,19 +91,28 @@ export default class CodeMirror extends Component<
 
           editorDidMount={(editor) => {
             this.instance = editor;
-            editor.markText(
-              { line: 0, ch: 0 },
-              { line: 1, ch: 0 },
-              {
-                className: "MarkText",
-              }
-            );
+            // editor.markText(
+            //   { line: 0, ch: 0 },
+            //   { line: 1, ch: 0 },
+            //   {
+            //     className: "MarkText",
+            //   }
+            // );
             editor.setSize(608, 531);
           }}
           onBeforeChange={(editor, data, value) => {
+            // console.log(this.state.value);
             this.setState({
               value,
             });
+          }}
+          onChange={(editor, data, value) => {
+            this.setState({
+              value,
+            });
+          }}
+          onBlur={() => {
+            this.saveCode();
           }}
         />
       </div>
