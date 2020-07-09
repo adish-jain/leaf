@@ -18,6 +18,10 @@ initFirebase();
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   let { uid } = await getUser(req, res);
   let username = await getUsernameFromUid(uid);
+  if (username === undefined) {
+    res.send([]);
+    return;
+  }
   let posts = await getArticlesFromUsername(username);
   res.send(posts);
   return;
