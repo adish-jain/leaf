@@ -5,8 +5,6 @@ import Head from "next/head";
 import Scrolling from "../../components/Scrolling";
 import { getArticlesFromUsername } from "../../lib/userUtils";
 import getUsernames from "../../lib/api/getUsernames";
-import { format } from "path";
-import { profile } from "console";
 const profileStyles = require("../../styles/Profile.module.scss");
 
 export async function getStaticPaths() {
@@ -35,6 +33,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   let posts = await getArticlesFromUsername(username);
   return {
     props: {
+      unstable_revalidate: 1,
       publishedPosts: posts,
       username: username,
     },

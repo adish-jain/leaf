@@ -47,6 +47,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   let steps = postData.steps;
   let title = postData.title;
   return {
+    unstable_revalidate: 1,
     props: {
       steps,
       title,
