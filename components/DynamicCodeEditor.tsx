@@ -5,8 +5,9 @@ import { filenames, Language, reactString, jsxString } from "./code_string";
 
 
 // require('codemirror/mode/xml/xml');
-// require('codemirror/mode/javascript/javascript');
+require('codemirror/mode/javascript/javascript');
 require('codemirror/mode/jsx/jsx');
+require('codemirror/mode/python/python');
 
 // const codeEditorStyles = require("../styles/CodeEditor.module.scss");
 // import "../styles/CodeEditor.module.scss";
@@ -15,6 +16,7 @@ type CodeMirrorProps = {
   highlightLines: (start: any, end: any) => void;
   saveCode: (code: string) => void;
   draftCode: string;
+  language: string;
 };
 
 type CodeMirrorState = {
@@ -68,7 +70,7 @@ export default class CodeMirror extends Component<
           value={this.state.value}
           options={{
             lineNumbers: true,
-            mode: 'jsx',
+            mode: this.props.language,
             theme: 'material',
             // theme: 'vscode-dark',
             // theme: 'oceanic-next',
