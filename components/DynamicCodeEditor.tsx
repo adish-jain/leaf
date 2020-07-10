@@ -14,7 +14,7 @@ require('codemirror/mode/python/python');
 
 type CodeMirrorProps = {
   highlightLines: (start: any, end: any) => void;
-  saveCode: (code: string) => void;
+  saveCode: (code: string, language: string) => void;
   draftCode: string;
   language: string;
 };
@@ -59,7 +59,7 @@ export default class CodeMirror extends Component<
   }
 
   saveCode() {
-    this.props.saveCode(this.state.value);
+    this.props.saveCode(this.state.value, this.props.language);
   }
 
   render() {

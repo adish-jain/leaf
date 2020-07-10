@@ -14,7 +14,9 @@ const DynamicCodeEditor = dynamic((() => import("./DynamicCodeEditor")) as any, 
 type CodeEditorProps = {
   highlightLines: (start: any, end: any) => void;
   saveCode: (code: string) => void;
+  saveLanguage: (language: string) => void;
   draftCode: string;
+  language: string;
 };
 
 type CodeEditorState = {
@@ -29,7 +31,7 @@ export default class CodeEditor extends Component<
     super(props);
 
     this.state = {
-      language: "jsx",
+      language: this.props.language,
     };
 
     this.handleLanguageChange = this.handleLanguageChange.bind(this);
@@ -39,6 +41,7 @@ export default class CodeEditor extends Component<
     this.setState({
       language: language,
     });
+    this.props.saveLanguage(language);
   }
 
   render() {
@@ -54,8 +57,7 @@ export default class CodeEditor extends Component<
           <DynamicCodeEditor highlightLines={this.props.highlightLines} 
           language={this.state.language}
           saveCode={this.props.saveCode} 
-          draftCode={this.props.draftCode}
-          key={this.props.draftCode.length}/>
+          draftCode={this.props.draftCode}/>
         }
         <LanguageBar 
           language={this.state.language} 

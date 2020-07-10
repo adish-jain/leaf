@@ -34,7 +34,7 @@ const DraftView = () => {
   const fetcher = (url: string) =>
     fetch(url, myRequest).then((res: any) => res.json());
 
-  const initialData: any = {"title": "", "optimisticSteps": [], "code": ""};
+  const initialData: any = {"title": "", "optimisticSteps": [], "code": "", "language": ""};
 
   let { data: draftData, mutate } = useSWR(
     authenticated ? "/api/endpoint" : null,
@@ -45,6 +45,7 @@ const DraftView = () => {
   let draftTitle = draftData["title"];
   let storedSteps = draftData["optimisticSteps"];
   let draftCode = draftData["code"];
+  let draftLanguage = draftData["language"];
 
   // highlighting lines for steps 
   const [lines, changeLines] = useState({});
@@ -97,9 +98,10 @@ const DraftView = () => {
     let newStep = {"id": stepId, "lines": saveLines ? lines : null, "text": text};
     let title = draftTitle;
     let code = draftCode;
+    let language = draftLanguage;
     let optimisticSteps = [...storedSteps];
     optimisticSteps.push(newStep);
-    let mutateState = {title, optimisticSteps, code};
+    let mutateState = {title, optimisticSteps, code, language};
     mutate(mutateState, false);
 
     fetch("/api/endpoint", {
@@ -134,10 +136,11 @@ const DraftView = () => {
     let newStep = {"id": stepId, "lines": stepLines, "text": text};
     let title = draftTitle;
     let code = draftCode;
+    let language = draftLanguage;
     let optimisticSteps = storedSteps.slice();
     let idx = findIdx(stepId);
     optimisticSteps[idx] = newStep;
-    let mutateState = {title, optimisticSteps, code};
+    let mutateState = {title, optimisticSteps, code, language};
     mutate(mutateState, false);
     
     fetch("/api/endpoint", {
@@ -161,7 +164,8 @@ const DraftView = () => {
     optimisticSteps.splice(idx, 1);
     let title = draftTitle;
     let code = draftCode;
-    let mutateState = {title, optimisticSteps, code};
+    let language = draftLanguage;
+    let mutateState = {title, optimisticSteps, code, language};
     mutate(mutateState, false);
 
     let data = {
@@ -204,7 +208,8 @@ const DraftView = () => {
     [optimisticSteps[idx], optimisticSteps[idx-1]] = [optimisticSteps[idx-1], optimisticSteps[idx]];
     let title = draftTitle;
     let code = draftCode;
-    let mutateState = {title, optimisticSteps, code};
+    let language = draftLanguage;
+    let mutateState = {title, optimisticSteps, code, language};
     mutate(mutateState, false);
 
     fetch("/api/endpoint", {
@@ -239,7 +244,8 @@ const DraftView = () => {
     [optimisticSteps[idx], optimisticSteps[idx+1]] = [optimisticSteps[idx+1], optimisticSteps[idx]];
     let title = draftTitle;
     let code = draftCode;
-    let mutateState = {title, optimisticSteps, code};
+    let language = draftLanguage;
+    let mutateState = {title, optimisticSteps, code, language};
     mutate(mutateState, false);
 
     fetch("/api/endpoint", {
@@ -276,6 +282,22 @@ const DraftView = () => {
       requestedAPI: "save_code",
       draftId: draftId,
       code: code,
+    };
+
+    fetch("/api/endpoint", {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify(data),
+    }).then(async (res: any) => {
+      console.log(res);
+    });
+  }
+
+  function saveLanguage(language: string) {
+    var data = {
+      requestedAPI: "save_language",
+      draftId: draftId,
+      language: language,
     };
 
     fetch("/api/endpoint", {
@@ -325,7 +347,10 @@ const DraftView = () => {
           <CodeEditor 
             highlightLines={highlightLines} 
             saveCode={saveCode}
-            draftCode={draftCode}/>
+            saveLanguage={saveLanguage}
+            draftCode={draftCode}
+            language={draftLanguage}
+            key={draftCode.length}/>
         </div>
       </main>
     </div>
