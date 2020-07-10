@@ -2,11 +2,9 @@ import React, { Component } from "react";
 import { Controlled as CodeMirror2 } from "react-codemirror2";
 import { filenames, Language, reactString, jsxString } from "./code_string";
 
-
-
 // require('codemirror/mode/xml/xml');
 // require('codemirror/mode/javascript/javascript');
-require('codemirror/mode/jsx/jsx');
+require("codemirror/mode/jsx/jsx");
 
 // const codeEditorStyles = require("../styles/CodeEditor.module.scss");
 // import "../styles/CodeEditor.module.scss";
@@ -15,11 +13,10 @@ type CodeMirrorProps = {
   highlightLines: (start: any, end: any) => void;
   saveCode: (code: string) => void;
   draftCode: string;
+  changeCode: (value: string) => void;
 };
 
-type CodeMirrorState = {
-  value: string;
-};
+type CodeMirrorState = {};
 
 const ranges = [
   {
@@ -44,11 +41,25 @@ export default class CodeMirror extends Component<
     super(props);
 
     this.instance = undefined;
-
-    this.state = {
-      value: this.props.draftCode,
-    };
   }
+
+  componentDidMount() {
+    if (this.instance === undefined) {
+      return;
+    }
+    if (this.instance.getOption("autofocus")) {
+      this.instance.focus();
+    }
+  }
+
+  // shouldComponentUpdate(nextProps: CodeMirrorProps, nextState: CodeMirrorState) {
+  //   console.log("old is", this.props.draftCode, "new is", nextProps.draftCode);
+  //   if (this.props.draftCode !== nextProps.draftCode) {
+  //     console.log("not updating");
+  //     return false;
+  //   }
+  //   return true;
+  // }
 
   highlightLines(editor: any) {
     let start = editor.getCursor(true);
@@ -57,22 +68,25 @@ export default class CodeMirror extends Component<
   }
 
   saveCode() {
-    this.props.saveCode(this.state.value);
+    this.props.saveCode(this.props.draftCode);
   }
 
   render() {
+    let { draftCode } = this.props;
     return (
       <div>
         <CodeMirror2
           className={"CodeEditor"}
-          value={this.state.value}
+          value={draftCode}
+          autoCursor={true}
           options={{
             lineNumbers: true,
-            mode: 'jsx',
-            theme: 'material',
+            mode: "jsx",
+            theme: "material",
+            autofocus: true,
             // theme: 'vscode-dark',
             // theme: 'oceanic-next',
-            lineWrapping: true
+            lineWrapping: true,
             // configureMouse: (editor: any, e: any) => {
             //   editor.setSelections(ranges, 0, {
             //     scroll: false,
@@ -88,28 +102,16 @@ export default class CodeMirror extends Component<
             // console.log(editor.getCursor(true));
             // console.log(editor.getCursor(false));
           }}
-
           editorDidMount={(editor) => {
             this.instance = editor;
-            // editor.markText(
-            //   { line: 0, ch: 0 },
-            //   { line: 1, ch: 0 },
-            //   {
-            //     className: "MarkText",
-            //   }
-            // );
             editor.setSize(608, 531);
           }}
           onBeforeChange={(editor, data, value) => {
             // console.log(this.state.value);
-            this.setState({
-              value,
-            });
+            this.props.changeCode(value);
           }}
           onChange={(editor, data, value) => {
-            this.setState({
-              value,
-            });
+            // this.props.changeCode(value);
           }}
           onBlur={() => {
             this.saveCode();
