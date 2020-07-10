@@ -7,14 +7,31 @@ import PreviewSection from "./PreviewSection";
 // import CodeMirror from './DynamicComponent';
 // const {CodeMirror} = require('./DynamicComponent');
 
-const DynamicCodeEditor = dynamic((() => import("./DynamicCodeEditor")) as any, {
-  ssr: false,
-});
+const DynamicCodeEditor = dynamic(
+  (() => import("./DynamicCodeEditor")) as any,
+  {
+    ssr: false,
+  }
+);
+
+type File = {
+  //replace with enum
+  language: string;
+  code: string;
+};
 
 type CodeEditorProps = {
   highlightLines: (start: any, end: any) => void;
   saveCode: (code: string) => void;
   draftCode: string;
+
+  // filenames map to language
+  files: { [key: string]: File };
+  addFile: (fileName: string) => void;
+  deleteFile: (fileName: string) => void;
+  changeSelectedFile: (fileName: string) => void;
+  selectedFile: string;
+  changeCode: (value: string) => void;
 };
 
 type CodeEditorState = {
@@ -34,21 +51,26 @@ export default class CodeEditor extends Component<
   }
 
   render() {
+    let { saveCode, draftCode, files, changeCode } = this.props;
+    let { language } = this.state;
     return (
       <div>
         <style jsx>{`
           box-shadow: 0px 4px 16px #edece9;
           border-radius: 8px;
         `}</style>
-        <PreviewSection />
-        <FileBar />
-        {// @ts-ignore 
-          <DynamicCodeEditor highlightLines={this.props.highlightLines} 
-          saveCode={this.props.saveCode} 
-          draftCode={this.props.draftCode}
-          key={this.props.draftCode.length}/>
+        <FileBar files={files} />
+        {
+          <DynamicCodeEditor
+            // @ts-ignore
+            highlightLines={this.props.highlightLines}
+            saveCode={saveCode}
+            draftCode={draftCode}
+            key={draftCode.length}
+            changeCode={changeCode}
+          />
         }
-        <LanguageBar language={this.state.language} />
+        <LanguageBar language={language} />
       </div>
     );
   }
