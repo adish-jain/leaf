@@ -93,7 +93,6 @@ const DraftView = () => {
     //     code: value,
     //   },
     // }));
-    console.log("updating to", value);
     changeNewCode(value);
   }
 

@@ -43,24 +43,6 @@ export default class CodeMirror extends Component<
     this.instance = undefined;
   }
 
-  componentDidMount() {
-    if (this.instance === undefined) {
-      return;
-    }
-    if (this.instance.getOption("autofocus")) {
-      this.instance.focus();
-    }
-  }
-
-  // shouldComponentUpdate(nextProps: CodeMirrorProps, nextState: CodeMirrorState) {
-  //   console.log("old is", this.props.draftCode, "new is", nextProps.draftCode);
-  //   if (this.props.draftCode !== nextProps.draftCode) {
-  //     console.log("not updating");
-  //     return false;
-  //   }
-  //   return true;
-  // }
-
   highlightLines(editor: any) {
     let start = editor.getCursor(true);
     let end = editor.getCursor(false);
@@ -78,12 +60,10 @@ export default class CodeMirror extends Component<
         <CodeMirror2
           className={"CodeEditor"}
           value={draftCode}
-          autoCursor={true}
           options={{
             lineNumbers: true,
             mode: "jsx",
             theme: "material",
-            autofocus: true,
             // theme: 'vscode-dark',
             // theme: 'oceanic-next',
             lineWrapping: true,
@@ -107,11 +87,9 @@ export default class CodeMirror extends Component<
             editor.setSize(608, 531);
           }}
           onBeforeChange={(editor, data, value) => {
-            // console.log(this.state.value);
             this.props.changeCode(value);
           }}
           onChange={(editor, data, value) => {
-            // this.props.changeCode(value);
           }}
           onBlur={() => {
             this.saveCode();

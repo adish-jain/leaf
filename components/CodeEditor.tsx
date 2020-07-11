@@ -60,16 +60,13 @@ export default class CodeEditor extends Component<
           border-radius: 8px;
         `}</style>
         <FileBar files={files} />
-        {
-          <DynamicCodeEditor
-            // @ts-ignore
-            highlightLines={this.props.highlightLines}
-            saveCode={saveCode}
-            draftCode={draftCode}
-            key={draftCode.length}
-            changeCode={changeCode}
-          />
-        }
+        <DynamicCodeEditor
+          // @ts-ignore
+          highlightLines={this.props.highlightLines}
+          saveCode={saveCode}
+          draftCode={draftCode}
+          changeCode={changeCode}
+        />
         <LanguageBar language={language} />
       </div>
     );
