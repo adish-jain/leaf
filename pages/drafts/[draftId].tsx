@@ -18,12 +18,16 @@ type File = {
   code: string;
 };
 
+type Files = {
+  [key: string]: File | undefined;
+};
+
 const DraftView = () => {
   const { authenticated, error, loading } = useLoggedIn();
   // manage code files
   const [selectedFile, changeSelectedFile] = useState("untitled.txt");
   //
-  const [files, updateFiles] = useState({
+  const [files, updateFiles] = useState<{ [key: string]: File | undefined }>({
     "untitled.txt": {
       language: "jsx",
       code: "",
@@ -96,10 +100,18 @@ const DraftView = () => {
     changeNewCode(value);
   }
 
-  function addFile(fileName: string) {
+  function addFile() {
+    let count = 2;
+    let newFileName = `untitled${count}.txt`;
+    // make sure file is untitled2, untitled3, etc.
+    while (files[newFileName] !== undefined) {
+      count++;
+      newFileName = `untitled${count}.txt`;
+    }
+
     updateFiles((prevState) => ({
       ...prevState,
-      [fileName]: {
+      [newFileName]: {
         language: "jsx",
         code: "",
       },
@@ -345,9 +357,6 @@ const DraftView = () => {
       // console.log(res);
     });
   }
-
-  console.log(files);
-  console.log();
 
   // this page should look similar to how pages/article looks right now
   return (

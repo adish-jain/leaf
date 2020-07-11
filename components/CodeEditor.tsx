@@ -27,7 +27,7 @@ type CodeEditorProps = {
 
   // filenames map to language
   files: { [key: string]: File };
-  addFile: (fileName: string) => void;
+  addFile: () => void;
   deleteFile: (fileName: string) => void;
   changeSelectedFile: (fileName: string) => void;
   selectedFile: string;
@@ -51,7 +51,14 @@ export default class CodeEditor extends Component<
   }
 
   render() {
-    let { saveCode, draftCode, files, changeCode } = this.props;
+    let {
+      saveCode,
+      draftCode,
+      files,
+      changeCode,
+      changeSelectedFile,
+      addFile,
+    } = this.props;
     let { language } = this.state;
     return (
       <div>
@@ -59,7 +66,11 @@ export default class CodeEditor extends Component<
           box-shadow: 0px 4px 16px #edece9;
           border-radius: 8px;
         `}</style>
-        <FileBar files={files} />
+        <FileBar
+          changeSelectedFile={changeSelectedFile}
+          files={files}
+          addFile={addFile}
+        />
         <DynamicCodeEditor
           // @ts-ignore
           highlightLines={this.props.highlightLines}
