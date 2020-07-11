@@ -14,13 +14,13 @@ require('codemirror/mode/python/python');
 
 type CodeMirrorProps = {
   highlightLines: (start: any, end: any) => void;
-  saveCode: (code: string) => void;
+  saveCode: () => void;
+  handleCodeChange: (code: string) => void;
   draftCode: string;
   language: string;
 };
 
 type CodeMirrorState = {
-  value: string;
 };
 
 const ranges = [
@@ -46,10 +46,6 @@ export default class CodeMirror extends Component<
     super(props);
 
     this.instance = undefined;
-
-    this.state = {
-      value: this.props.draftCode,
-    };
   }
 
   highlightLines(editor: any) {
@@ -58,63 +54,31 @@ export default class CodeMirror extends Component<
     this.props.highlightLines(start, end);
   }
 
-  saveCode() {
-    this.props.saveCode(this.state.value);
-  }
-
   render() {
     return (
       <div>
         <CodeMirror2
           className={"CodeEditor"}
-          value={this.state.value}
+          value={this.props.draftCode}
           options={{
             lineNumbers: true,
             mode: this.props.language,
             theme: 'material',
-            // theme: 'vscode-dark',
-            // theme: 'oceanic-next',
             lineWrapping: true
-            // configureMouse: (editor: any, e: any) => {
-            //   editor.setSelections(ranges, 0, {
-            //     scroll: false,
-            //   });
-            //   return {
-            //     addNew: true,
-            //   };
-            // },
           }}
           onSelection={(editor, data) => {
-            // console.log(editor);
             this.highlightLines(editor);
-            // console.log(editor.getCursor(true));
-            // console.log(editor.getCursor(false));
           }}
 
           editorDidMount={(editor) => {
             this.instance = editor;
-            // editor.markText(
-            //   { line: 0, ch: 0 },
-            //   { line: 1, ch: 0 },
-            //   {
-            //     className: "MarkText",
-            //   }
-            // );
             editor.setSize(608, 531);
           }}
           onBeforeChange={(editor, data, value) => {
-            // console.log(this.state.value);
-            this.setState({
-              value,
-            });
-          }}
-          onChange={(editor, data, value) => {
-            this.setState({
-              value,
-            });
+            this.props.handleCodeChange(value);
           }}
           onBlur={() => {
-            this.saveCode();
+            this.props.saveCode();
           }}
         />
       </div>

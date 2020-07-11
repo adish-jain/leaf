@@ -7,7 +7,6 @@ type LanguageBarProps = {
 };
 
 type LanguageBarState = {
-  language: string;
 };
 
 export default class CodeMirror extends Component<
@@ -16,17 +15,10 @@ export default class CodeMirror extends Component<
 > {
   constructor(props: LanguageBarProps) {
     super(props);
-
-    this.state = {
-      language: this.props.language,
-    };
     this.handleChange = this.handleChange.bind(this);
   }
 
   handleChange(e: React.FormEvent<HTMLSelectElement>) {
-    this.setState({
-      language: e.currentTarget.value,
-    });
     this.props.handleLanguageChange(e.currentTarget.value);
   }
 
@@ -35,7 +27,7 @@ export default class CodeMirror extends Component<
       <div className={languageBarStyles.LanguageBar}>
         <label>
           Language:
-          <select onChange={this.handleChange} value={this.state.language}>
+          <select onChange={this.handleChange} value={this.props.language}>
             <option value="jsx">JSX</option>
             <option value="javascript">Javascript</option>
             <option value="xml">HTML</option>

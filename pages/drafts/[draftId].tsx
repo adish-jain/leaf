@@ -277,11 +277,11 @@ const DraftView = () => {
     });
   }
 
-  function saveCode(code: string) {
+  function saveCode() {
     var data = {
       requestedAPI: "save_code",
       draftId: draftId,
-      code: code,
+      code: draftCode,
     };
 
     fetch("/api/endpoint", {
@@ -291,6 +291,14 @@ const DraftView = () => {
     }).then(async (res: any) => {
       console.log(res);
     });
+  }
+
+  function handleCodeChange(code: string) {
+    let title = draftTitle;
+    let language = draftLanguage;
+    let optimisticSteps = storedSteps.slice();
+    let mutateState = {title, optimisticSteps, code, language};
+    mutate(mutateState, false);
   }
 
   function saveLanguage(language: string) {
@@ -307,6 +315,15 @@ const DraftView = () => {
     }).then(async (res: any) => {
       console.log(res);
     });
+  }
+
+  function handleLanguageChange(language: string) {
+    let title = draftTitle;
+    let code = draftCode;
+    let optimisticSteps = storedSteps.slice();
+    let mutateState = {title, optimisticSteps, code, language};
+    mutate(mutateState, false);
+    saveLanguage(language);
   }
 
   // this page should look similar to how pages/article looks right now
@@ -347,10 +364,10 @@ const DraftView = () => {
           <CodeEditor 
             highlightLines={highlightLines} 
             saveCode={saveCode}
-            saveLanguage={saveLanguage}
+            handleCodeChange={handleCodeChange}
+            handleLanguageChange={handleLanguageChange}
             draftCode={draftCode}
-            language={draftLanguage}
-            key={draftCode.length}/>
+            language={draftLanguage}/>
         </div>
       </main>
     </div>

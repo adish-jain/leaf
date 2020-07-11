@@ -13,14 +13,14 @@ const DynamicCodeEditor = dynamic((() => import("./DynamicCodeEditor")) as any, 
 
 type CodeEditorProps = {
   highlightLines: (start: any, end: any) => void;
-  saveCode: (code: string) => void;
-  saveLanguage: (language: string) => void;
+  saveCode: () => void;
+  handleCodeChange: (code: string) => void;
+  handleLanguageChange: (language: string) => void;
   draftCode: string;
   language: string;
 };
 
 type CodeEditorState = {
-  language: string;
 };
 
 export default class CodeEditor extends Component<
@@ -29,19 +29,6 @@ export default class CodeEditor extends Component<
 > {
   constructor(props: CodeEditorProps) {
     super(props);
-
-    this.state = {
-      language: this.props.language,
-    };
-
-    this.handleLanguageChange = this.handleLanguageChange.bind(this);
-  }
-
-  handleLanguageChange(language: string) {
-    this.setState({
-      language: language,
-    });
-    this.props.saveLanguage(language);
   }
 
   render() {
@@ -56,13 +43,14 @@ export default class CodeEditor extends Component<
         {
           <DynamicCodeEditor // @ts-ignore 
             highlightLines={this.props.highlightLines} 
-            language={this.state.language}
-            saveCode={this.props.saveCode} 
+            language={this.props.language}
+            saveCode={this.props.saveCode}
+            handleCodeChange={this.props.handleCodeChange} 
             draftCode={this.props.draftCode}/>
         }
         <LanguageBar 
-          language={this.state.language} 
-          handleLanguageChange={this.handleLanguageChange}/>
+          language={this.props.language} 
+          handleLanguageChange={this.props.handleLanguageChange}/>
       </div>
     );
   }
