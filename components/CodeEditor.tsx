@@ -37,7 +37,7 @@ export default class CodeEditor extends Component<
     this.handleLanguageChange = this.handleLanguageChange.bind(this);
   }
 
-  handleLanguageChange (language: string) {
+  handleLanguageChange(language: string) {
     this.setState({
       language: language,
     });
@@ -53,11 +53,12 @@ export default class CodeEditor extends Component<
         `}</style>
         <PreviewSection />
         <FileBar />
-        {// @ts-ignore 
-          <DynamicCodeEditor highlightLines={this.props.highlightLines} 
-          language={this.state.language}
-          saveCode={this.props.saveCode} 
-          draftCode={this.props.draftCode}/>
+        {
+          <DynamicCodeEditor // @ts-ignore 
+            highlightLines={this.props.highlightLines} 
+            language={this.state.language}
+            saveCode={this.props.saveCode} 
+            draftCode={this.props.draftCode}/>
         }
         <LanguageBar 
           language={this.state.language} 

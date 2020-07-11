@@ -4,7 +4,7 @@ import { filenames, Language, reactString, jsxString } from "./code_string";
 
 
 
-// require('codemirror/mode/xml/xml');
+require('codemirror/mode/xml/xml');
 require('codemirror/mode/javascript/javascript');
 require('codemirror/mode/jsx/jsx');
 require('codemirror/mode/python/python');
@@ -14,7 +14,7 @@ require('codemirror/mode/python/python');
 
 type CodeMirrorProps = {
   highlightLines: (start: any, end: any) => void;
-  saveCode: (code: string, language: string) => void;
+  saveCode: (code: string) => void;
   draftCode: string;
   language: string;
 };
@@ -59,7 +59,7 @@ export default class CodeMirror extends Component<
   }
 
   saveCode() {
-    this.props.saveCode(this.state.value, this.props.language);
+    this.props.saveCode(this.state.value);
   }
 
   render() {

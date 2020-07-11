@@ -29,7 +29,7 @@ async function saveLanguageHandler(req: NextApiRequest, res: NextApiResponse) {
     return;
   }
 
-  // update code in firebase
+  // update language in firebase
   db.collection("users")
   .doc(uid)
   .collection("drafts")
