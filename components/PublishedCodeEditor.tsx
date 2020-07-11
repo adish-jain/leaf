@@ -52,7 +52,6 @@ export default class PublishedCodeEditor extends Component<
           //@ts-ignore
           <PublishedCodeMirror currentStep={this.props.currentStep} />
         }
-        <LanguageBar language={this.state.language} />
       </div>
     );
   }
