@@ -1,6 +1,8 @@
 import { useRouter, Router } from "next/router";
 import { useState, useCallback } from "react";
 import { useLoggedIn, logOut } from "../../lib/UseLoggedIn";
+import { useFiles } from "../../lib/useFiles";
+
 import useSWR from "swr";
 import Publishing from "../../components/Publishing";
 import CodeEditor from "../../components/CodeEditor";
@@ -19,20 +21,17 @@ type File = {
   name: string;
 };
 
-let numOfUntitleds = 1;
-
 const DraftView = () => {
   const { authenticated, error, loading } = useLoggedIn();
-  // manage code files
-  const [selectedFileIndex, changeSelectedFileIndex] = useState(0);
-  //
-  const [files, updateFiles] = useState<File[]>([
-    {
-      name: "untitled.txt",
-      code: "",
-      language: "jsx",
-    },
-  ]);
+
+  const {
+    files,
+    selectedFileIndex,
+    addFile,
+    deleteFile,
+    changeCode,
+    changeSelectedFileIndex,
+  } = useFiles();
 
   // highlighting lines for steps
   const [lines, changeLines] = useState({});
@@ -57,7 +56,12 @@ const DraftView = () => {
   const fetcher = (url: string) =>
     fetch(url, myRequest).then((res: any) => res.json());
 
-  const initialData: any = {"title": "", "optimisticSteps": [], "code": "", "language": ""};
+  const initialData: any = {
+    title: "",
+    optimisticSteps: [],
+    code: "",
+    language: "",
+  };
 
   let { data: draftData, mutate } = useSWR(
     authenticated ? "/api/endpoint" : null,
@@ -83,47 +87,6 @@ const DraftView = () => {
 
   function unHighlight() {
     notSaveLines(false);
-  }
-
-  // Files functions
-
-  function changeCode(value: string) {
-    let duplicateFiles = [...files];
-    duplicateFiles[selectedFileIndex].code = value;
-    updateFiles(duplicateFiles);
-  }
-
-  function addFile() {
-    // make sure file is untitled2, untitled3, etc.
-    numOfUntitleds++;
-    let newFileName = `untitled${numOfUntitleds}.txt`;
-
-    updateFiles(
-      files.concat({
-        name: newFileName,
-        code: "",
-        language: "jsx",
-      })
-    );
-  }
-
-  function deleteFile(toDeleteIndex: number) {
-    // can have minimum one file
-    if (files.length === 1) {
-      return;
-    }
-    if (toDeleteIndex < 0 || toDeleteIndex > files.length - 1) {
-      return;
-    }
-
-    let cloneFiles = [...files];
-    if (toDeleteIndex <= selectedFileIndex) {
-      // shift selected file index back by one, with minimum index of 0
-      let newIndex = Math.max(selectedFileIndex - 1, 0);
-      changeSelectedFileIndex(newIndex);
-    }
-    cloneFiles.splice(toDeleteIndex, 1);
-    updateFiles(cloneFiles);
   }
 
   /*
@@ -161,9 +124,8 @@ const DraftView = () => {
     let language = draftLanguage;
     let optimisticSteps = [...storedSteps];
     optimisticSteps.push(newStep);
- 
 
-    let mutateState = {title, optimisticSteps, code, language};
+    let mutateState = { title, optimisticSteps, code, language };
     mutate(mutateState, false);
 
     fetch("/api/endpoint", {
@@ -207,7 +169,7 @@ const DraftView = () => {
     let optimisticSteps = storedSteps.slice();
     let idx = findIdx(stepId);
     optimisticSteps[idx] = newStep;
-    let mutateState = {title, optimisticSteps, code, language};
+    let mutateState = { title, optimisticSteps, code, language };
     mutate(mutateState, false);
 
     fetch("/api/endpoint", {
@@ -232,7 +194,7 @@ const DraftView = () => {
     let title = draftTitle;
     let code = draftCode;
     let language = draftLanguage;
-    let mutateState = {title, optimisticSteps, code, language};
+    let mutateState = { title, optimisticSteps, code, language };
     mutate(mutateState, false);
 
     let data = {
@@ -279,7 +241,7 @@ const DraftView = () => {
     let title = draftTitle;
     let code = draftCode;
     let language = draftLanguage;
-    let mutateState = {title, optimisticSteps, code, language};
+    let mutateState = { title, optimisticSteps, code, language };
     mutate(mutateState, false);
 
     fetch("/api/endpoint", {
@@ -318,7 +280,7 @@ const DraftView = () => {
     let title = draftTitle;
     let code = draftCode;
     let language = draftLanguage;
-    let mutateState = {title, optimisticSteps, code, language};
+    let mutateState = { title, optimisticSteps, code, language };
     mutate(mutateState, false);
 
     fetch("/api/endpoint", {
@@ -366,14 +328,6 @@ const DraftView = () => {
     });
   }
 
-  function handleCodeChange(code: string) {
-    let title = draftTitle;
-    let language = draftLanguage;
-    let optimisticSteps = storedSteps.slice();
-    let mutateState = {title, optimisticSteps, code, language};
-    mutate(mutateState, false);
-  }
-
   function saveLanguage(language: string) {
     var data = {
       requestedAPI: "save_language",
@@ -394,12 +348,11 @@ const DraftView = () => {
     let title = draftTitle;
     let code = draftCode;
     let optimisticSteps = storedSteps.slice();
-    let mutateState = {title, optimisticSteps, code, language};
+    let mutateState = { title, optimisticSteps, code, language };
     mutate(mutateState, false);
     saveLanguage(language);
   }
 
-  // this page should look similar to how pages/article looks right now
   return (
     <div className="container">
       <Head>
@@ -438,6 +391,7 @@ const DraftView = () => {
           <CodeEditor
             highlightLines={highlightLines}
             saveCode={saveCode}
+            //manages what code is shown in the editor
             draftCode={files[selectedFileIndex].code}
             files={files}
             addFile={addFile}
@@ -445,9 +399,9 @@ const DraftView = () => {
             selectedFileIndex={selectedFileIndex}
             changeCode={changeCode}
             changeSelectedFile={changeSelectedFileIndex}
-            handleCodeChange={handleCodeChange}
             handleLanguageChange={handleLanguageChange}
-            language={draftLanguage}/>
+            language={draftLanguage}
+          />
         </div>
       </main>
     </div>

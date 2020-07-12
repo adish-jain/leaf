@@ -24,7 +24,6 @@ type File = {
 type CodeEditorProps = {
   highlightLines: (start: any, end: any) => void;
   saveCode: () => void;
-  handleCodeChange: (code: string) => void;
   handleLanguageChange: (language: string) => void;
   draftCode: string;
 
