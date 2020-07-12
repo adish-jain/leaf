@@ -43,7 +43,6 @@ export default function FileName(props: FileNameProps) {
     >
       <div
         onClick={(e) => {
-          console.log("change selected fired");
           props.changeSelectedFile(props.index);
         }}
       >
