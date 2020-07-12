@@ -9,6 +9,7 @@ global.Headers = fetch.Headers;
 const landingStyles = require("../styles/Landing.module.scss");
 import { useLoggedIn, logOut } from "../lib/UseLoggedIn";
 import { useDrafts } from "../lib/useDrafts";
+import { useUserInfo } from "../lib/useUserInfo";
 import auth from "./api/auth";
 
 type DraftType = {
@@ -48,27 +49,16 @@ const myRequest = (requestedAPI: string) => {
 const postsFetcher = () =>
   fetch("api/endpoint", myRequest("getPosts")).then((res: any) => res.json());
 
-const userInfoFetcher = () =>
-  fetch("api/endpoint", myRequest("get_userInfo")).then((res: any) =>
-    res.json()
-  );
-
 export default function Landing() {
   // authenticate
   const { authenticated, error, loading } = useLoggedIn();
 
   // Fetch data for drafts
-  const { drafts, deleteDraft, openDraft, createNewDraft } = useDrafts(authenticated);
-
-  const initialUserInfo: any = { username: "" };
-  let { data: userInfo } = useSWR(
-    authenticated ? "getUserInfo" : null,
-    userInfoFetcher,
-    {
-      initialData: initialUserInfo,
-      revalidateOnMount: true,
-    }
+  const { drafts, deleteDraft, openDraft, createNewDraft } = useDrafts(
+    authenticated
   );
+
+  const { userInfo } = useUserInfo(authenticated);
 
   // Fetch data for posts
   const initialPostsData: PostsType[] = [];
