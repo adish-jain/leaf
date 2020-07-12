@@ -47,7 +47,6 @@ export default class PublishedCodeEditor extends Component<
           margin-top: 2vhpx;
           margin-bottom: 2vh;
         `}</style>
-        <FileBar />
         {
           //@ts-ignore
           <PublishedCodeMirror currentStep={this.props.currentStep} />

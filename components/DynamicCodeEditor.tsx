@@ -2,12 +2,10 @@ import React, { Component } from "react";
 import { Controlled as CodeMirror2 } from "react-codemirror2";
 import { filenames, Language, reactString, jsxString } from "./code_string";
 
-
-
-require('codemirror/mode/xml/xml');
-require('codemirror/mode/javascript/javascript');
-require('codemirror/mode/jsx/jsx');
-require('codemirror/mode/python/python');
+require("codemirror/mode/xml/xml");
+require("codemirror/mode/javascript/javascript");
+require("codemirror/mode/jsx/jsx");
+require("codemirror/mode/python/python");
 
 // const codeEditorStyles = require("../styles/CodeEditor.module.scss");
 // import "../styles/CodeEditor.module.scss";
@@ -15,13 +13,12 @@ require('codemirror/mode/python/python');
 type CodeMirrorProps = {
   highlightLines: (start: any, end: any) => void;
   saveCode: () => void;
-  handleCodeChange: (code: string) => void;
   draftCode: string;
+  changeCode: (value: string) => void;
   language: string;
 };
 
-type CodeMirrorState = {
-};
+type CodeMirrorState = {};
 
 const ranges = [
   {
@@ -54,29 +51,44 @@ export default class CodeMirror extends Component<
     this.props.highlightLines(start, end);
   }
 
+  saveCode() {
+    this.props.saveCode();
+  }
+
   render() {
+    let { draftCode, language } = this.props;
     return (
       <div>
         <CodeMirror2
           className={"CodeEditor"}
-          value={this.props.draftCode}
+          value={draftCode}
           options={{
             lineNumbers: true,
             mode: this.props.language,
-            theme: 'material',
-            lineWrapping: true
+            theme: "material",
+            // theme: 'vscode-dark',
+            // theme: 'oceanic-next',
+            lineWrapping: true,
+            // configureMouse: (editor: any, e: any) => {
+            //   editor.setSelections(ranges, 0, {
+            //     scroll: false,
+            //   });
+            //   return {
+            //     addNew: true,
+            //   };
+            // },
           }}
           onSelection={(editor, data) => {
             this.highlightLines(editor);
           }}
-
           editorDidMount={(editor) => {
             this.instance = editor;
             editor.setSize(608, 531);
           }}
           onBeforeChange={(editor, data, value) => {
-            this.props.handleCodeChange(value);
+            this.props.changeCode(value);
           }}
+          onChange={(editor, data, value) => {}}
           onBlur={() => {
             this.props.saveCode();
           }}

@@ -1,63 +1,54 @@
-import React, { Component, ReactElement } from "react";
-const fileNamesStyle = require('../styles/FileNames.module.scss');
+import React, { Component, ReactElement, useState } from "react";
+const fileNamesStyle = require("../styles/FileNames.module.scss");
 
 type FileNameProps = {
-	selected: boolean;
-	changeSelected: (selected_file: number) => void;
-    index: number;
-    children: string;
+  selected: boolean;
+  changeSelectedFile: (fileIndex: number) => void;
+  name: string;
+  deleteFile: (toDeleteIndex: number) => void;
+  index: number;
 };
 
-export class FileNam1e extends Component<FileNameProps> {
-	constructor(props: FileNameProps) {
-		super(props);
-
-		this.state = {};
-	}
-
-	render() {
-		let style = {
-			color: "white",
-		};
-		if (!this.props.selected) {
-			style.color = "#898984";
-		}
-
-		return (
-			<div
-				style={style}
-				onClick={(e) => {
-					this.props.changeSelected(this.props.index);
-				}}
-				className="filename"
-			>
-				{this.props.children}
-			</div>
-		);
-	}
-}
-
-
 export default function FileName(props: FileNameProps) {
+  let [hovered, toggleHover] = useState(false);
 
-    let style = {
-        color: "white",
-    };
-    if (!props.selected) {
-        style.color = "#898984";
+  let style = {
+    color: "white",
+  };
+  if (!props.selected) {
+    style.color = "#898984";
+  }
+
+  function renderButton() {
+    if (hovered) {
+      return (
+        <button
+          className={fileNamesStyle["Close"]}
+          onClick={(e) => props.deleteFile(props.index)}
+        >
+          X
+        </button>
+      );
+    } else {
+      return <div></div>;
     }
+  }
 
-    return(
-        <div
-				style={style}
-				onClick={(e) => {
-					props.changeSelected(props.index);
-				}}
-				className={fileNamesStyle.filename}
-			>
-				{props.children}
-			</div>
-    );
-
-
+  return (
+    <div
+      onMouseEnter={(e) => toggleHover(true)}
+      onMouseLeave={(e) => toggleHover(false)}
+      style={style}
+      className={fileNamesStyle["NameWrapper"]}
+    >
+      <div
+        onClick={(e) => {
+          props.changeSelectedFile(props.index);
+        }}
+      >
+        {props.name}
+      </div>
+      {renderButton()}
+    </div>
+  );
 }

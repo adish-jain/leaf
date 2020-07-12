@@ -1,6 +1,8 @@
 import { useRouter, Router } from "next/router";
 import { useState, useCallback } from "react";
 import { useLoggedIn, logOut } from "../../lib/UseLoggedIn";
+import { useFiles } from "../../lib/useFiles";
+
 import useSWR from "swr";
 import Publishing from "../../components/Publishing";
 import CodeEditor from "../../components/CodeEditor";
@@ -12,10 +14,30 @@ global.Headers = fetch.Headers;
 
 const appStyles = require("../../styles/App.module.scss");
 
+type File = {
+  //replace with enum
+  language: string;
+  code: string;
+  name: string;
+};
+
 const DraftView = () => {
   const { authenticated, error, loading } = useLoggedIn();
-  const router = useRouter();
 
+  const {
+    files,
+    selectedFileIndex,
+    addFile,
+    deleteFile,
+    changeCode,
+    changeSelectedFileIndex,
+  } = useFiles();
+
+  // highlighting lines for steps
+  const [lines, changeLines] = useState({});
+  const [saveLines, notSaveLines] = useState(false);
+
+  const router = useRouter();
   // Draft ID
   const { draftId } = router.query;
 
@@ -34,28 +56,29 @@ const DraftView = () => {
   const fetcher = (url: string) =>
     fetch(url, myRequest).then((res: any) => res.json());
 
-  const initialData: any = {"title": "", "optimisticSteps": [], "code": "", "language": ""};
+  const initialData: any = {
+    title: "",
+    optimisticSteps: [],
+    code: "",
+    language: "",
+  };
 
   let { data: draftData, mutate } = useSWR(
     authenticated ? "/api/endpoint" : null,
     fetcher,
     { initialData, revalidateOnMount: true }
   );
-  
+
   let draftTitle = draftData["title"];
   let storedSteps = draftData["optimisticSteps"];
   let draftCode = draftData["code"];
   let draftLanguage = draftData["language"];
 
-  // highlighting lines for steps 
-  const [lines, changeLines] = useState({});
-  const [saveLines, notSaveLines] = useState(false);
-
   // DynamicCodeEditor -> CodeEditor -> [draftId]
   function highlightLines(start: any, end: any) {
-    let startLine = start['line'];
-    let endLine = end['line'];
-    changeLines({'start': startLine, 'end': endLine});
+    let startLine = start["line"];
+    let endLine = end["line"];
+    changeLines({ start: startLine, end: endLine });
   }
 
   function onHighlight() {
@@ -73,10 +96,10 @@ const DraftView = () => {
     let idx = 0;
     let counter = 0;
 
-    storedSteps.forEach((element: { id: any; lines: any; text: any; }) => {
+    storedSteps.forEach((element: { id: any; lines: any; text: any }) => {
       if (element["id"] == stepId) {
         idx = counter;
-      } 
+      }
       counter += 1;
     });
     return idx;
@@ -95,13 +118,14 @@ const DraftView = () => {
       order: storedSteps.length,
     };
 
-    let newStep = {"id": stepId, "lines": saveLines ? lines : null, "text": text};
+    let newStep = { id: stepId, lines: saveLines ? lines : null, text: text };
     let title = draftTitle;
     let code = draftCode;
     let language = draftLanguage;
     let optimisticSteps = [...storedSteps];
     optimisticSteps.push(newStep);
-    let mutateState = {title, optimisticSteps, code, language};
+
+    let mutateState = { title, optimisticSteps, code, language };
     mutate(mutateState, false);
 
     fetch("/api/endpoint", {
@@ -118,7 +142,12 @@ const DraftView = () => {
   /*
   Updates a step in Firebase. Triggered from `EditingStoredStep.tsx`.
   */
-  function updateStoredStep(stepId: any, text: any, oldLines: any, removeLines: any) {
+  function updateStoredStep(
+    stepId: any,
+    text: any,
+    oldLines: any,
+    removeLines: any
+  ) {
     let stepLines;
     if (removeLines) {
       stepLines = null;
@@ -133,22 +162,22 @@ const DraftView = () => {
       lines: stepLines,
     };
 
-    let newStep = {"id": stepId, "lines": stepLines, "text": text};
+    let newStep = { id: stepId, lines: stepLines, text: text };
     let title = draftTitle;
     let code = draftCode;
     let language = draftLanguage;
     let optimisticSteps = storedSteps.slice();
     let idx = findIdx(stepId);
     optimisticSteps[idx] = newStep;
-    let mutateState = {title, optimisticSteps, code, language};
+    let mutateState = { title, optimisticSteps, code, language };
     mutate(mutateState, false);
-    
+
     fetch("/api/endpoint", {
-        method: "POST",
-        headers: new Headers({ "Content-Type": "application/json" }),
-        body: JSON.stringify(data),
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify(data),
     }).then(async (res: any) => {
-        console.log(res);
+      console.log(res);
     });
 
     notSaveLines(false);
@@ -165,7 +194,7 @@ const DraftView = () => {
     let title = draftTitle;
     let code = draftCode;
     let language = draftLanguage;
-    let mutateState = {title, optimisticSteps, code, language};
+    let mutateState = { title, optimisticSteps, code, language };
     mutate(mutateState, false);
 
     let data = {
@@ -176,11 +205,11 @@ const DraftView = () => {
     };
 
     fetch("/api/endpoint", {
-        method: "POST",
-        headers: new Headers({ "Content-Type": "application/json" }),
-        body: JSON.stringify(data),
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify(data),
     }).then(async (res: any) => {
-        console.log(res);
+      console.log(res);
     });
   }
 
@@ -192,24 +221,27 @@ const DraftView = () => {
     let idx = findIdx(stepId);
     if (idx == 0) {
       return;
-    } 
-    
+    }
+
     let optimisticSteps = storedSteps.slice();
 
     let data = {
       requestedAPI: "change_step_order",
       draftId: draftId,
       stepId: stepId,
-      neighborId: optimisticSteps[idx-1]["id"],
+      neighborId: optimisticSteps[idx - 1]["id"],
       oldIdx: idx,
       newIdx: idx - 1,
     };
 
-    [optimisticSteps[idx], optimisticSteps[idx-1]] = [optimisticSteps[idx-1], optimisticSteps[idx]];
+    [optimisticSteps[idx], optimisticSteps[idx - 1]] = [
+      optimisticSteps[idx - 1],
+      optimisticSteps[idx],
+    ];
     let title = draftTitle;
     let code = draftCode;
     let language = draftLanguage;
-    let mutateState = {title, optimisticSteps, code, language};
+    let mutateState = { title, optimisticSteps, code, language };
     mutate(mutateState, false);
 
     fetch("/api/endpoint", {
@@ -217,7 +249,7 @@ const DraftView = () => {
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify(data),
     }).then(async (res: any) => {
-        console.log(res);
+      console.log(res);
     });
   }
 
@@ -227,25 +259,28 @@ const DraftView = () => {
   */
   function moveStepDown(stepId: any) {
     let idx = findIdx(stepId);
-    if (idx == storedSteps.length-1) {
+    if (idx == storedSteps.length - 1) {
       return;
-    } 
+    }
     let optimisticSteps = storedSteps.slice();
 
     let data = {
       requestedAPI: "change_step_order",
       draftId: draftId,
       stepId: stepId,
-      neighborId: optimisticSteps[idx+1]["id"],
+      neighborId: optimisticSteps[idx + 1]["id"],
       oldIdx: idx,
       newIdx: idx + 1,
     };
 
-    [optimisticSteps[idx], optimisticSteps[idx+1]] = [optimisticSteps[idx+1], optimisticSteps[idx]];
+    [optimisticSteps[idx], optimisticSteps[idx + 1]] = [
+      optimisticSteps[idx + 1],
+      optimisticSteps[idx],
+    ];
     let title = draftTitle;
     let code = draftCode;
     let language = draftLanguage;
-    let mutateState = {title, optimisticSteps, code, language};
+    let mutateState = { title, optimisticSteps, code, language };
     mutate(mutateState, false);
 
     fetch("/api/endpoint", {
@@ -253,8 +288,8 @@ const DraftView = () => {
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify(data),
     }).then(async (res: any) => {
-        console.log(res);
-    }); 
+      console.log(res);
+    });
   }
 
   /*
@@ -289,16 +324,8 @@ const DraftView = () => {
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify(data),
     }).then(async (res: any) => {
-      console.log(res);
+      // console.log(res);
     });
-  }
-
-  function handleCodeChange(code: string) {
-    let title = draftTitle;
-    let language = draftLanguage;
-    let optimisticSteps = storedSteps.slice();
-    let mutateState = {title, optimisticSteps, code, language};
-    mutate(mutateState, false);
   }
 
   function saveLanguage(language: string) {
@@ -321,12 +348,11 @@ const DraftView = () => {
     let title = draftTitle;
     let code = draftCode;
     let optimisticSteps = storedSteps.slice();
-    let mutateState = {title, optimisticSteps, code, language};
+    let mutateState = { title, optimisticSteps, code, language };
     mutate(mutateState, false);
     saveLanguage(language);
   }
 
-  // this page should look similar to how pages/article looks right now
   return (
     <div className="container">
       <Head>
@@ -349,25 +375,33 @@ const DraftView = () => {
       </Head>
       <main>
         <div className={appStyles.App}>
-          <Publishing 
-            draftId={draftId} 
+          <Publishing
+            draftId={draftId}
             title={draftTitle}
-            storedSteps={storedSteps} 
-            saveStep={saveStep} 
-            updateStoredStep={updateStoredStep} 
+            storedSteps={storedSteps}
+            saveStep={saveStep}
+            updateStoredStep={updateStoredStep}
             deleteStoredStep={deleteStoredStep}
-            onHighlight={onHighlight} 
+            onHighlight={onHighlight}
             unHighlight={unHighlight}
             moveStepUp={moveStepUp}
-            moveStepDown={moveStepDown} 
-            saveTitle={saveTitle}/>
-          <CodeEditor 
-            highlightLines={highlightLines} 
+            moveStepDown={moveStepDown}
+            saveTitle={saveTitle}
+          />
+          <CodeEditor
+            highlightLines={highlightLines}
             saveCode={saveCode}
-            handleCodeChange={handleCodeChange}
+            //manages what code is shown in the editor
+            draftCode={files[selectedFileIndex].code}
+            files={files}
+            addFile={addFile}
+            deleteFile={deleteFile}
+            selectedFileIndex={selectedFileIndex}
+            changeCode={changeCode}
+            changeSelectedFile={changeSelectedFileIndex}
             handleLanguageChange={handleLanguageChange}
-            draftCode={draftCode}
-            language={draftLanguage}/>
+            language={draftLanguage}
+          />
         </div>
       </main>
     </div>
