@@ -57,7 +57,7 @@ const DraftView = () => {
   const fetcher = (url: string) =>
     fetch(url, myRequest).then((res: any) => res.json());
 
-  const initialData: any = { title: "", optimisticSteps: [], code: "" };
+  const initialData: any = {"title": "", "optimisticSteps": [], "code": "", "language": ""};
 
   let { data: draftData, mutate } = useSWR(
     authenticated ? "/api/endpoint" : null,
@@ -68,6 +68,7 @@ const DraftView = () => {
   let draftTitle = draftData["title"];
   let storedSteps = draftData["optimisticSteps"];
   let draftCode = draftData["code"];
+  let draftLanguage = draftData["language"];
 
   // DynamicCodeEditor -> CodeEditor -> [draftId]
   function highlightLines(start: any, end: any) {
@@ -157,9 +158,12 @@ const DraftView = () => {
     let newStep = { id: stepId, lines: saveLines ? lines : null, text: text };
     let title = draftTitle;
     let code = draftCode;
+    let language = draftLanguage;
     let optimisticSteps = [...storedSteps];
     optimisticSteps.push(newStep);
-    let mutateState = { title, optimisticSteps, code };
+ 
+
+    let mutateState = {title, optimisticSteps, code, language};
     mutate(mutateState, false);
 
     fetch("/api/endpoint", {
@@ -199,10 +203,11 @@ const DraftView = () => {
     let newStep = { id: stepId, lines: stepLines, text: text };
     let title = draftTitle;
     let code = draftCode;
+    let language = draftLanguage;
     let optimisticSteps = storedSteps.slice();
     let idx = findIdx(stepId);
     optimisticSteps[idx] = newStep;
-    let mutateState = { title, optimisticSteps, code };
+    let mutateState = {title, optimisticSteps, code, language};
     mutate(mutateState, false);
 
     fetch("/api/endpoint", {
@@ -226,7 +231,8 @@ const DraftView = () => {
     optimisticSteps.splice(idx, 1);
     let title = draftTitle;
     let code = draftCode;
-    let mutateState = { title, optimisticSteps, code };
+    let language = draftLanguage;
+    let mutateState = {title, optimisticSteps, code, language};
     mutate(mutateState, false);
 
     let data = {
@@ -272,7 +278,8 @@ const DraftView = () => {
     ];
     let title = draftTitle;
     let code = draftCode;
-    let mutateState = { title, optimisticSteps, code };
+    let language = draftLanguage;
+    let mutateState = {title, optimisticSteps, code, language};
     mutate(mutateState, false);
 
     fetch("/api/endpoint", {
@@ -310,7 +317,8 @@ const DraftView = () => {
     ];
     let title = draftTitle;
     let code = draftCode;
-    let mutateState = { title, optimisticSteps, code };
+    let language = draftLanguage;
+    let mutateState = {title, optimisticSteps, code, language};
     mutate(mutateState, false);
 
     fetch("/api/endpoint", {
@@ -342,11 +350,11 @@ const DraftView = () => {
     });
   }
 
-  function saveCode(code: string) {
+  function saveCode() {
     var data = {
       requestedAPI: "save_code",
       draftId: draftId,
-      code: code,
+      code: draftCode,
     };
 
     fetch("/api/endpoint", {
@@ -358,6 +366,38 @@ const DraftView = () => {
     });
   }
 
+  function handleCodeChange(code: string) {
+    let title = draftTitle;
+    let language = draftLanguage;
+    let optimisticSteps = storedSteps.slice();
+    let mutateState = {title, optimisticSteps, code, language};
+    mutate(mutateState, false);
+  }
+
+  function saveLanguage(language: string) {
+    var data = {
+      requestedAPI: "save_language",
+      draftId: draftId,
+      language: language,
+    };
+
+    fetch("/api/endpoint", {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify(data),
+    }).then(async (res: any) => {
+      console.log(res);
+    });
+  }
+
+  function handleLanguageChange(language: string) {
+    let title = draftTitle;
+    let code = draftCode;
+    let optimisticSteps = storedSteps.slice();
+    let mutateState = {title, optimisticSteps, code, language};
+    mutate(mutateState, false);
+    saveLanguage(language);
+  }
 
   // this page should look similar to how pages/article looks right now
   return (
@@ -405,7 +445,9 @@ const DraftView = () => {
             selectedFileIndex={selectedFileIndex}
             changeCode={changeCode}
             changeSelectedFile={changeSelectedFileIndex}
-          />
+            handleCodeChange={handleCodeChange}
+            handleLanguageChange={handleLanguageChange}
+            language={draftLanguage}/>
         </div>
       </main>
     </div>

@@ -23,7 +23,9 @@ type File = {
 
 type CodeEditorProps = {
   highlightLines: (start: any, end: any) => void;
-  saveCode: (code: string) => void;
+  saveCode: () => void;
+  handleCodeChange: (code: string) => void;
+  handleLanguageChange: (language: string) => void;
   draftCode: string;
 
   // filenames map to language
@@ -33,11 +35,10 @@ type CodeEditorProps = {
   selectedFileIndex: number;
   changeCode: (value: string) => void;
   changeSelectedFile: (fileIndex: number) => void;
-};
-
-type CodeEditorState = {
   language: string;
 };
+
+type CodeEditorState = {};
 
 export default class CodeEditor extends Component<
   CodeEditorProps,
@@ -45,10 +46,6 @@ export default class CodeEditor extends Component<
 > {
   constructor(props: CodeEditorProps) {
     super(props);
-
-    this.state = {
-      language: "jsx",
-    };
   }
 
   render() {
@@ -60,9 +57,9 @@ export default class CodeEditor extends Component<
       addFile,
       deleteFile,
       selectedFileIndex,
-      changeSelectedFile
+      changeSelectedFile,
+      language,
     } = this.props;
-    let { language } = this.state;
     return (
       <div>
         <style jsx>{`
@@ -82,8 +79,12 @@ export default class CodeEditor extends Component<
           saveCode={saveCode}
           draftCode={draftCode}
           changeCode={changeCode}
+          language={language}
         />
-        <LanguageBar language={language} />
+        <LanguageBar
+          language={this.props.language}
+          handleLanguageChange={this.props.handleLanguageChange}
+        />
       </div>
     );
   }

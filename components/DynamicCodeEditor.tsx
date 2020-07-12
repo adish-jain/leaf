@@ -2,18 +2,20 @@ import React, { Component } from "react";
 import { Controlled as CodeMirror2 } from "react-codemirror2";
 import { filenames, Language, reactString, jsxString } from "./code_string";
 
-// require('codemirror/mode/xml/xml');
-// require('codemirror/mode/javascript/javascript');
+require("codemirror/mode/xml/xml");
+require("codemirror/mode/javascript/javascript");
 require("codemirror/mode/jsx/jsx");
+require("codemirror/mode/python/python");
 
 // const codeEditorStyles = require("../styles/CodeEditor.module.scss");
 // import "../styles/CodeEditor.module.scss";
 
 type CodeMirrorProps = {
   highlightLines: (start: any, end: any) => void;
-  saveCode: (code: string) => void;
+  saveCode: () => void;
   draftCode: string;
   changeCode: (value: string) => void;
+  language: string;
 };
 
 type CodeMirrorState = {};
@@ -50,11 +52,11 @@ export default class CodeMirror extends Component<
   }
 
   saveCode() {
-    this.props.saveCode(this.props.draftCode);
+    this.props.saveCode();
   }
 
   render() {
-    let { draftCode } = this.props;
+    let { draftCode, language } = this.props;
     return (
       <div>
         <CodeMirror2
@@ -62,7 +64,7 @@ export default class CodeMirror extends Component<
           value={draftCode}
           options={{
             lineNumbers: true,
-            mode: "jsx",
+            mode: this.props.language,
             theme: "material",
             // theme: 'vscode-dark',
             // theme: 'oceanic-next',
@@ -77,10 +79,7 @@ export default class CodeMirror extends Component<
             // },
           }}
           onSelection={(editor, data) => {
-            // console.log(editor);
             this.highlightLines(editor);
-            // console.log(editor.getCursor(true));
-            // console.log(editor.getCursor(false));
           }}
           editorDidMount={(editor) => {
             this.instance = editor;
@@ -89,10 +88,9 @@ export default class CodeMirror extends Component<
           onBeforeChange={(editor, data, value) => {
             this.props.changeCode(value);
           }}
-          onChange={(editor, data, value) => {
-          }}
+          onChange={(editor, data, value) => {}}
           onBlur={() => {
-            this.saveCode();
+            this.props.saveCode();
           }}
         />
       </div>
