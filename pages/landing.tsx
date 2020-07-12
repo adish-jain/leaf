@@ -10,6 +10,7 @@ const landingStyles = require("../styles/Landing.module.scss");
 import { useLoggedIn, logOut } from "../lib/UseLoggedIn";
 import { useDrafts } from "../lib/useDrafts";
 import { useUserInfo } from "../lib/useUserInfo";
+import { usePosts } from "../lib/usePosts";
 import auth from "./api/auth";
 
 type DraftType = {
@@ -46,9 +47,6 @@ const myRequest = (requestedAPI: string) => {
   };
 };
 
-const postsFetcher = () =>
-  fetch("api/endpoint", myRequest("getPosts")).then((res: any) => res.json());
-
 export default function Landing() {
   // authenticate
   const { authenticated, error, loading } = useLoggedIn();
@@ -57,56 +55,10 @@ export default function Landing() {
   const { drafts, deleteDraft, openDraft, createNewDraft } = useDrafts(
     authenticated
   );
-
+  // Fetch user ifno
   const { userInfo } = useUserInfo(authenticated);
-
   // Fetch data for posts
-  const initialPostsData: PostsType[] = [];
-  let { data: posts } = useSWR<PostsType[]>(
-    authenticated ? "getPosts" : null,
-    postsFetcher,
-    {
-      initialData: initialPostsData,
-      revalidateOnMount: true,
-    }
-  );
-
-  function goToPost(username: string, postId: string) {
-    Router.push("/[username]/[postId]", "/" + username + "/" + postId);
-  }
-
-  function deletePost(postUid: string) {
-    function removeSpecificPost() {
-      let searchIndex = 0;
-      for (let i = 0; i < posts!.length; i++) {
-        if (posts![i].uid === postUid) {
-          searchIndex = i;
-          break;
-        }
-      }
-      let clonePosts = posts?.slice();
-      clonePosts!.splice(searchIndex, 1);
-      mutate("getPosts", clonePosts, false);
-    }
-
-    const requestBody = {
-      requestedAPI: "deletePost",
-      postUid: postUid,
-    };
-
-    const myRequest = {
-      method: "POST",
-      headers: new Headers({ "Content-Type": "application/json" }),
-      body: JSON.stringify(requestBody),
-    };
-
-    removeSpecificPost();
-
-    fetch("api/endpoint", myRequest).then(async (res: any) => {
-      let updatedPosts = await res.json();
-      mutate("getPosts", updatedPosts);
-    });
-  }
+  const {posts, deletePost, goToPost} = usePosts(authenticated);
 
   return (
     <div className="container">
