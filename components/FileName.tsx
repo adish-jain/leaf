@@ -1,13 +1,17 @@
-import React, { Component, ReactElement } from "react";
+import React, { Component, ReactElement, useState } from "react";
 const fileNamesStyle = require("../styles/FileNames.module.scss");
 
 type FileNameProps = {
   selected: boolean;
-  changeSelected: (selected_file: string) => void;
+  changeSelectedFile: (fileIndex: number) => void;
   name: string;
+  deleteFile: (toDeleteIndex: number) => void;
+  index: number;
 };
 
 export default function FileName(props: FileNameProps) {
+  let [hovered, toggleHover] = useState(false);
+
   let style = {
     color: "white",
   };
@@ -15,15 +19,37 @@ export default function FileName(props: FileNameProps) {
     style.color = "#898984";
   }
 
+  function renderButton() {
+    if (hovered) {
+      return (
+        <button
+          className={fileNamesStyle["Close"]}
+          onClick={(e) => props.deleteFile(props.index)}
+        >
+          X
+        </button>
+      );
+    } else {
+      return <div></div>;
+    }
+  }
+
   return (
     <div
+      onMouseEnter={(e) => toggleHover(true)}
+      onMouseLeave={(e) => toggleHover(false)}
       style={style}
-      onClick={(e) => {
-        props.changeSelected(props.name);
-      }}
-      className={fileNamesStyle.filename}
+      className={fileNamesStyle["NameWrapper"]}
     >
-      {props.name}
+      <div
+        onClick={(e) => {
+          console.log("change selected fired");
+          props.changeSelectedFile(props.index);
+        }}
+      >
+        {props.name}
+      </div>
+      {renderButton()}
     </div>
   );
 }

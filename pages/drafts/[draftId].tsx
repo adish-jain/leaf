@@ -16,25 +16,23 @@ type File = {
   //replace with enum
   language: string;
   code: string;
+  name: string;
 };
 
-type Files = {
-  [key: string]: File | undefined;
-};
+let numOfUntitleds = 1;
 
 const DraftView = () => {
   const { authenticated, error, loading } = useLoggedIn();
   // manage code files
-  const [selectedFile, changeSelectedFile] = useState("untitled.txt");
+  const [selectedFileIndex, changeSelectedFileIndex] = useState(0);
   //
-  const [files, updateFiles] = useState<{ [key: string]: File | undefined }>({
-    "untitled.txt": {
-      language: "jsx",
+  const [files, updateFiles] = useState<File[]>([
+    {
+      name: "untitled.txt",
       code: "",
+      language: "jsx",
     },
-  });
-
-  const [newCode, changeNewCode] = useState("");
+  ]);
 
   // highlighting lines for steps
   const [lines, changeLines] = useState({});
@@ -89,40 +87,42 @@ const DraftView = () => {
   // Files functions
 
   function changeCode(value: string) {
-    // console.log("code change");
-    // updateFiles((prevState) => ({
-    //   ...prevState,
-    //   [selectedFile]: {
-    //     language: "jsx",
-    //     code: value,
-    //   },
-    // }));
-    changeNewCode(value);
+    let duplicateFiles = [...files];
+    duplicateFiles[selectedFileIndex].code = value;
+    updateFiles(duplicateFiles);
   }
 
   function addFile() {
-    let count = 2;
-    let newFileName = `untitled${count}.txt`;
     // make sure file is untitled2, untitled3, etc.
-    while (files[newFileName] !== undefined) {
-      count++;
-      newFileName = `untitled${count}.txt`;
-    }
+    numOfUntitleds++;
+    let newFileName = `untitled${numOfUntitleds}.txt`;
 
-    updateFiles((prevState) => ({
-      ...prevState,
-      [newFileName]: {
-        language: "jsx",
+    updateFiles(
+      files.concat({
+        name: newFileName,
         code: "",
-      },
-    }));
+        language: "jsx",
+      })
+    );
   }
 
-  function deleteFile(fileName: string) {
-    updateFiles((prevState) => ({
-      ...prevState,
-      [fileName]: undefined,
-    }));
+  function deleteFile(toDeleteIndex: number) {
+    // can have minimum one file
+    if (files.length === 1) {
+      return;
+    }
+    if (toDeleteIndex < 0 || toDeleteIndex > files.length - 1) {
+      return;
+    }
+
+    let cloneFiles = [...files];
+    if (toDeleteIndex <= selectedFileIndex) {
+      // shift selected file index back by one, with minimum index of 0
+      let newIndex = Math.max(selectedFileIndex - 1, 0);
+      changeSelectedFileIndex(newIndex);
+    }
+    cloneFiles.splice(toDeleteIndex, 1);
+    updateFiles(cloneFiles);
   }
 
   /*
@@ -358,6 +358,7 @@ const DraftView = () => {
     });
   }
 
+
   // this page should look similar to how pages/article looks right now
   return (
     <div className="container">
@@ -397,13 +398,13 @@ const DraftView = () => {
           <CodeEditor
             highlightLines={highlightLines}
             saveCode={saveCode}
-            draftCode={newCode}
+            draftCode={files[selectedFileIndex].code}
             files={files}
             addFile={addFile}
             deleteFile={deleteFile}
-            selectedFile={selectedFile}
-            changeSelectedFile={changeSelectedFile}
+            selectedFileIndex={selectedFileIndex}
             changeCode={changeCode}
+            changeSelectedFile={changeSelectedFileIndex}
           />
         </div>
       </main>

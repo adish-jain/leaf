@@ -15,6 +15,7 @@ const DynamicCodeEditor = dynamic(
 );
 
 type File = {
+  name: string;
   //replace with enum
   language: string;
   code: string;
@@ -26,12 +27,12 @@ type CodeEditorProps = {
   draftCode: string;
 
   // filenames map to language
-  files: { [key: string]: File };
+  files: File[];
   addFile: () => void;
-  deleteFile: (fileName: string) => void;
-  changeSelectedFile: (fileName: string) => void;
-  selectedFile: string;
+  deleteFile: (toDeleteIndex: number) => void;
+  selectedFileIndex: number;
   changeCode: (value: string) => void;
+  changeSelectedFile: (fileIndex: number) => void;
 };
 
 type CodeEditorState = {
@@ -56,8 +57,10 @@ export default class CodeEditor extends Component<
       draftCode,
       files,
       changeCode,
-      changeSelectedFile,
       addFile,
+      deleteFile,
+      selectedFileIndex,
+      changeSelectedFile
     } = this.props;
     let { language } = this.state;
     return (
@@ -67,9 +70,11 @@ export default class CodeEditor extends Component<
           border-radius: 8px;
         `}</style>
         <FileBar
-          changeSelectedFile={changeSelectedFile}
           files={files}
           addFile={addFile}
+          deleteFile={deleteFile}
+          selectedFileIndex={selectedFileIndex}
+          changeSelectedFile={changeSelectedFile}
         />
         <DynamicCodeEditor
           // @ts-ignore
