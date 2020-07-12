@@ -8,6 +8,8 @@ const fetch = require("node-fetch");
 global.Headers = fetch.Headers;
 const landingStyles = require("../styles/Landing.module.scss");
 import { useLoggedIn, logOut } from "../lib/UseLoggedIn";
+import { useDrafts } from "../lib/useDrafts";
+import auth from "./api/auth";
 
 type DraftType = {
   id: string;
@@ -46,9 +48,6 @@ const myRequest = (requestedAPI: string) => {
 const postsFetcher = () =>
   fetch("api/endpoint", myRequest("getPosts")).then((res: any) => res.json());
 
-const draftsFetcher = () =>
-  fetch("api/endpoint", myRequest("getDrafts")).then((res: any) => res.json());
-
 const userInfoFetcher = () =>
   fetch("api/endpoint", myRequest("get_userInfo")).then((res: any) =>
     res.json()
@@ -59,22 +58,14 @@ export default function Landing() {
   const { authenticated, error, loading } = useLoggedIn();
 
   // Fetch data for drafts
-  const initialDraftsData: DraftType[] = [];
-  let { data: drafts } = useSWR<DraftType[]>(
-    authenticated ? "getDrafts" : null,
-    draftsFetcher,
-    {
-      initialData: initialDraftsData,
-      revalidateOnMount: true,
-    }
-  );
+  const { drafts, deleteDraft, openDraft, createNewDraft } = useDrafts(authenticated);
 
   const initialUserInfo: any = { username: "" };
   let { data: userInfo } = useSWR(
     authenticated ? "getUserInfo" : null,
     userInfoFetcher,
     {
-      initialData: initialDraftsData,
+      initialData: initialUserInfo,
       revalidateOnMount: true,
     }
   );
@@ -89,21 +80,6 @@ export default function Landing() {
       revalidateOnMount: true,
     }
   );
-
-  async function createNewPost() {
-    await fetch("/api/endpoint", {
-      method: "POST",
-      headers: new Headers({ "Content-Type": "application/json" }),
-      body: JSON.stringify({
-        requestedAPI: "add_draft",
-      }),
-    }).then(async (res: any) => {
-      let updatedDrafts = await res.json();
-      mutate("getDrafts", updatedDrafts, false);
-      let new_draft_id = updatedDrafts[0].id;
-      openDraft(new_draft_id);
-    });
-  }
 
   function goToPost(username: string, postId: string) {
     Router.push("/[username]/[postId]", "/" + username + "/" + postId);
@@ -142,47 +118,6 @@ export default function Landing() {
     });
   }
 
-  function openDraft(draft_id: string) {
-    Router.push("/drafts/" + draft_id);
-  }
-
-  async function deleteDraft(
-    event: React.MouseEvent<HTMLButtonElement>,
-    draft_id: string
-  ) {
-    // helper function to remove a draft before API call finishes
-    function removeSpecificDraft() {
-      let searchIndex = 0;
-      for (let i = 0; i < drafts!.length; i++) {
-        if (drafts![i].id === draft_id) {
-          searchIndex = i;
-          break;
-        }
-      }
-      let cloneDrafts = drafts?.slice();
-      cloneDrafts!.splice(searchIndex, 1);
-      mutate("getDrafts", cloneDrafts, false);
-    }
-
-    const requestBody = {
-      requestedAPI: "delete_draft",
-      draft_id: draft_id,
-    };
-
-    const myRequest = {
-      method: "POST",
-      headers: new Headers({ "Content-Type": "application/json" }),
-      body: JSON.stringify(requestBody),
-    };
-
-    removeSpecificDraft();
-
-    fetch("api/endpoint", myRequest).then(async (res: any) => {
-      let updatedDrafts = await res.json();
-      mutate("getDrafts", updatedDrafts);
-    });
-  }
-
   return (
     <div className="container">
       <Head>
@@ -210,7 +145,7 @@ export default function Landing() {
             deleteDraft={deleteDraft}
             openDraft={openDraft}
             drafts={drafts}
-            createNewPost={createNewPost}
+            createNewDraft={createNewDraft}
           />
           <YourPosts
             deletePost={deletePost}
@@ -282,7 +217,7 @@ function Post(props: {
 
 function YourDrafts(props: {
   drafts: DraftType[] | undefined;
-  createNewPost: () => void;
+  createNewDraft: () => void;
   deleteDraft: (
     e: React.MouseEvent<HTMLButtonElement>,
     draft_id: string
@@ -297,7 +232,7 @@ function YourDrafts(props: {
           <p>You have no drafts.</p>
           <button
             className={landingStyles["create-button"]}
-            onClick={createNewPost}
+            onClick={createNewDraft}
           >
             Create New Draft
           </button>
@@ -315,26 +250,26 @@ function YourDrafts(props: {
     ));
   }
 
-  let { drafts, deleteDraft, openDraft, createNewPost } = props;
+  let { drafts, deleteDraft, openDraft, createNewDraft } = props;
   return (
     <div className={landingStyles.left}>
-      <YourDraftsHeader createNewPost={createNewPost} drafts={drafts} />
+      <YourDraftsHeader createNewDraft={createNewDraft} drafts={drafts} />
       {renderDrafts()}
     </div>
   );
 }
 
 function YourDraftsHeader(props: {
-  createNewPost: () => void;
+  createNewDraft: () => void;
   drafts: DraftType[] | undefined;
 }) {
-  let { createNewPost, drafts } = props;
+  let { createNewDraft, drafts } = props;
   return (
     <div>
       <div className={landingStyles["left-header"]}>
         <h1>Your Drafts</h1>
         <div
-          onClick={createNewPost}
+          onClick={createNewDraft}
           className={landingStyles["create-button-plus"]}
         >
           +
