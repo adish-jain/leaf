@@ -79,9 +79,9 @@ const DraftView = () => {
 
   // DynamicCodeEditor -> CodeEditor -> [draftId]
   function highlightLines(start: any, end: any) {
-    let startLine = start["line"];
-    let endLine = end["line"];
-    changeLines({ start: startLine, end: endLine });
+    // let startLine = start["line"] + 1;
+    // let endLine = end["line"] + 1;
+    changeLines({ start: start, end: end });
   }
 
   function onHighlight() {

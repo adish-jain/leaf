@@ -41,18 +41,14 @@ export default class CodeMirror extends Component<
 
   constructor(props: CodeMirrorProps) {
     super(props);
-
     this.instance = undefined;
   }
 
   highlightLines(editor: any) {
-    let start = editor.getCursor(true);
-    let end = editor.getCursor(false);
+    let start = editor.getCursor(true)["line"] + 1;
+    let end = start + editor.getSelection('\n').split(/\r\n|\r|\n/).length - 1;
+    // let end = editor.getCursor(false)["line"] + 1;
     this.props.highlightLines(start, end);
-  }
-
-  saveCode() {
-    this.props.saveCode();
   }
 
   render() {
