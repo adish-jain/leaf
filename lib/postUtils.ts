@@ -32,14 +32,14 @@ export async function getDraftDataHandler(uid: string, draftId: string) {
       .doc(draftId)
       .get();
     let title = draftData.data().title;
-    let code = draftData.data().code;
-    let language = draftData.data().language;
+    // let code = draftData.data().code;
+    // let language = draftData.data().language;
     let storedSteps = await getUserStepsForDraft(uid, draftId);
     let results = { 
       title: title, 
       optimisticSteps: storedSteps, 
-      code: code, 
-      language: language, 
+      // code: code, 
+      // language: language, 
       errored: false 
     };
     return results;
@@ -47,8 +47,8 @@ export async function getDraftDataHandler(uid: string, draftId: string) {
     let results = {
       title: "",
       optimisticSteps: [],
-      code: "",
-      language: "",
+      // code: "",
+      // language: "",
       errored: true
     }
     return results;

@@ -16,6 +16,7 @@ global.Headers = fetch.Headers;
 const appStyles = require("../../styles/App.module.scss");
 
 type File = {
+  id: string;
   //replace with enum
   language: string;
   code: string;
@@ -25,22 +26,26 @@ type File = {
 const DraftView = () => {
   const { authenticated, error, loading } = useLoggedIn();
 
+  const router = useRouter();
+  // Draft ID
+  const { draftId } = router.query;
+
   const {
     files,
     selectedFileIndex,
     addFile,
-    deleteFile,
+    removeFile,
     changeCode,
     changeSelectedFileIndex,
-  } = useFiles();
+    changeFileLanguage,
+    saveFileCode,
+  } = useFiles(draftId);
 
   // highlighting lines for steps
   const [lines, changeLines] = useState({});
   const [saveLines, notSaveLines] = useState(false);
 
-  const router = useRouter();
-  // Draft ID
-  const { draftId } = router.query;
+
 
   // if there are any steps in this draft, they will be fetched & repopulated
   const rawData = {
@@ -60,8 +65,8 @@ const DraftView = () => {
   const initialData: any = {
     title: "",
     optimisticSteps: [],
-    code: "",
-    language: "",
+    // code: "",
+    // language: "",
     errored: false
   };
 
@@ -73,8 +78,8 @@ const DraftView = () => {
 
   let draftTitle = draftData["title"];
   let storedSteps = draftData["optimisticSteps"];
-  let draftCode = draftData["code"];
-  let draftLanguage = draftData["language"];
+  // let draftCode = draftData["code"];
+  // let draftLanguage = draftData["language"];
   let errored = draftData["errored"];
 
   // DynamicCodeEditor -> CodeEditor -> [draftId]
@@ -123,12 +128,13 @@ const DraftView = () => {
 
     let newStep = { id: stepId, lines: saveLines ? lines : null, text: text };
     let title = draftTitle;
-    let code = draftCode;
-    let language = draftLanguage;
+    // let code = draftCode; //modify these to depend on the file youre in 
+    // let language = draftLanguage; //modify these to depend on the file youre in 
     let optimisticSteps = [...storedSteps];
     optimisticSteps.push(newStep);
 
-    let mutateState = { title, optimisticSteps, code, language };
+    let mutateState = { title, optimisticSteps };
+    // let mutateState = { title, optimisticSteps, code, language };
     mutate(mutateState, false);
 
     fetch("/api/endpoint", {
@@ -167,12 +173,13 @@ const DraftView = () => {
 
     let newStep = { id: stepId, lines: stepLines, text: text };
     let title = draftTitle;
-    let code = draftCode;
-    let language = draftLanguage;
+    // let code = draftCode;
+    // let language = draftLanguage;
     let optimisticSteps = storedSteps.slice();
     let idx = findIdx(stepId);
     optimisticSteps[idx] = newStep;
-    let mutateState = { title, optimisticSteps, code, language };
+    let mutateState = { title, optimisticSteps };
+    // let mutateState = { title, optimisticSteps, code, language };
     mutate(mutateState, false);
 
     fetch("/api/endpoint", {
@@ -195,9 +202,11 @@ const DraftView = () => {
     let stepsToChange = optimisticSteps.slice(idx + 1, optimisticSteps.length);
     optimisticSteps.splice(idx, 1);
     let title = draftTitle;
-    let code = draftCode;
-    let language = draftLanguage;
-    let mutateState = { title, optimisticSteps, code, language };
+    // let code = draftCode;
+    // let language = draftLanguage;
+
+    let mutateState = { title, optimisticSteps };
+    // let mutateState = { title, optimisticSteps, code, language };
     mutate(mutateState, false);
 
     let data = {
@@ -242,9 +251,11 @@ const DraftView = () => {
       optimisticSteps[idx],
     ];
     let title = draftTitle;
-    let code = draftCode;
-    let language = draftLanguage;
-    let mutateState = { title, optimisticSteps, code, language };
+    // let code = draftCode;
+    // let language = draftLanguage;
+
+    let mutateState = { title, optimisticSteps };
+    // let mutateState = { title, optimisticSteps, code, language };
     mutate(mutateState, false);
 
     fetch("/api/endpoint", {
@@ -281,9 +292,11 @@ const DraftView = () => {
       optimisticSteps[idx],
     ];
     let title = draftTitle;
-    let code = draftCode;
-    let language = draftLanguage;
-    let mutateState = { title, optimisticSteps, code, language };
+    // let code = draftCode;
+    // let language = draftLanguage;
+
+    let mutateState = { title, optimisticSteps };
+    // let mutateState = { title, optimisticSteps, code, language };
     mutate(mutateState, false);
 
     fetch("/api/endpoint", {
@@ -315,46 +328,51 @@ const DraftView = () => {
     });
   }
 
-  function saveCode() {
-    var data = {
-      requestedAPI: "save_code",
-      draftId: draftId,
-      code: draftCode,
-    };
+  // function saveCode() {
+  //   // var data = {
+  //   //   requestedAPI: "save_code",
+  //   //   draftId: draftId,
+  //   //   code: draftCode,
+  //   // };
 
-    fetch("/api/endpoint", {
-      method: "POST",
-      headers: new Headers({ "Content-Type": "application/json" }),
-      body: JSON.stringify(data),
-    }).then(async (res: any) => {
-      // console.log(res);
-    });
-  }
+  //   // fetch("/api/endpoint", {
+  //   //   method: "POST",
+  //   //   headers: new Headers({ "Content-Type": "application/json" }),
+  //   //   body: JSON.stringify(data),
+  //   // }).then(async (res: any) => {
+  //   //   // console.log(res);
+  //   // });
+  //   changeFileCode(draftCode);
+  // }
 
-  function saveLanguage(language: string) {
-    var data = {
-      requestedAPI: "save_language",
-      draftId: draftId,
-      language: language,
-    };
+  // function saveLanguage(language: string) {
+  //   // var data = {
+  //   //   requestedAPI: "save_language",
+  //   //   draftId: draftId,
+  //   //   language: language,
+  //   // };
 
-    fetch("/api/endpoint", {
-      method: "POST",
-      headers: new Headers({ "Content-Type": "application/json" }),
-      body: JSON.stringify(data),
-    }).then(async (res: any) => {
-      console.log(res);
-    });
-  }
+  //   // fetch("/api/endpoint", {
+  //   //   method: "POST",
+  //   //   headers: new Headers({ "Content-Type": "application/json" }),
+  //   //   body: JSON.stringify(data),
+  //   // }).then(async (res: any) => {
+  //   //   console.log(res);
+  //   // });
 
-  function handleLanguageChange(language: string) {
-    let title = draftTitle;
-    let code = draftCode;
-    let optimisticSteps = storedSteps.slice();
-    let mutateState = { title, optimisticSteps, code, language };
-    mutate(mutateState, false);
-    saveLanguage(language);
-  }
+  // }
+
+  // function handleLanguageChange(language: string) {
+  //   // let title = draftTitle;
+  //   // // let code = draftCode;
+  //   // let optimisticSteps = storedSteps.slice();
+
+  //   // let mutateState = { title, optimisticSteps };
+  //   // let mutateState = { title, optimisticSteps, code, language };
+  //   // mutate(mutateState, false);
+  //   changeFileLanguage(language);
+  //   // saveLanguage(language);
+  // }
 
   return (
     <div className="container">
@@ -395,18 +413,20 @@ const DraftView = () => {
             saveTitle={saveTitle}
           />
           <CodeEditor
+            //@ts-ignore
+            draftId={draftId}
             highlightLines={highlightLines}
-            saveCode={saveCode}
+            saveFileCode={saveFileCode}
             //manages what code is shown in the editor
             draftCode={files[selectedFileIndex].code}
             files={files}
             addFile={addFile}
-            deleteFile={deleteFile}
+            removeFile={removeFile}
             selectedFileIndex={selectedFileIndex}
             changeCode={changeCode}
             changeSelectedFile={changeSelectedFileIndex}
-            handleLanguageChange={handleLanguageChange}
-            language={draftLanguage}
+            changeFileLanguage={changeFileLanguage}
+            language={files[selectedFileIndex].language}
           />
         </div>
         )}

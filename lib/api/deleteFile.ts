@@ -1,0 +1,46 @@
+import { NextApiRequest, NextApiResponse } from "next";
+import { initFirebaseAdmin, initFirebase } from "../initFirebase";
+const admin = require("firebase-admin");
+import { getUser } from "../userUtils";
+import { getUserStepsForDraft, adjustStepOrder } from "../postUtils";
+let db = admin.firestore();
+initFirebaseAdmin();
+initFirebase();
+
+export default async (req: NextApiRequest, res: NextApiResponse) => {
+  // console.log("in deleteStep");
+  return deleteFileHandler(req, res);
+};
+
+function handleError(res: NextApiResponse, error: any) {
+  console.log(error);
+  res.statusCode = 403;
+  res.end();
+  return;
+}
+
+async function deleteFileHandler(req: NextApiRequest, res: NextApiResponse) {
+  let draftId = req.body.draftId;
+  let fileId = req.body.fileId;
+  let { uid } = await getUser(req, res);
+
+  if (uid === "") {
+    res.statusCode = 403;
+    res.end();
+    return;
+  }
+
+  // delete step from firebase
+  db.collection("users")
+    .doc(uid)
+    .collection("drafts")
+    .doc(draftId)
+    .collection("files")
+    .doc(fileId)
+    .delete();
+
+  res.statusCode = 200;
+  let results = await getUserStepsForDraft(uid, draftId);
+  res.send(results);
+  return;
+}

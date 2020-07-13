@@ -12,7 +12,7 @@ require("codemirror/mode/python/python");
 
 type CodeMirrorProps = {
   highlightLines: (start: any, end: any) => void;
-  saveCode: () => void;
+  saveFileCode: () => void;
   draftCode: string;
   changeCode: (value: string) => void;
   language: string;
@@ -46,7 +46,9 @@ export default class CodeMirror extends Component<
 
   highlightLines(editor: any) {
     let start = editor.getCursor(true)["line"] + 1;
-    let end = start + editor.getSelection('\n').split(/\r\n|\r|\n/).length - 1;
+    // console.log(editor.getSelection('\n').split("\n"));
+    // console.log(editor.getSelection('\n').split("\n").length - 1);
+    let end = start + editor.getSelection('\n').split("\n").length - 1;
     // let end = editor.getCursor(false)["line"] + 1;
     this.props.highlightLines(start, end);
   }
@@ -60,7 +62,7 @@ export default class CodeMirror extends Component<
           value={draftCode}
           options={{
             lineNumbers: true,
-            mode: this.props.language,
+            mode: language,
             theme: "material",
             // theme: 'vscode-dark',
             // theme: 'oceanic-next',
@@ -86,7 +88,7 @@ export default class CodeMirror extends Component<
           }}
           onChange={(editor, data, value) => {}}
           onBlur={() => {
-            this.props.saveCode();
+            this.props.saveFileCode();
           }}
         />
       </div>
