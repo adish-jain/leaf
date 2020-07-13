@@ -1,11 +1,56 @@
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+  .App {
+    margin-left: 8px;
+    margin-right: 8px;
+  }
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+  .App {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+  .App {
+    margin-left: 24px;
+    margin-right: 24px;
+  }
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+  .App {
+    margin-left: 64px;
+    margin-right: 64px;
+  }
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+  .App {
+    margin-left: 80px;
+    margin-right: 80px;
+  }
+}
+
+.AppWrapper {
+  height: 100%;
+}
+
 .App {
-  margin-left: 6vh;
-  margin-right: 6vh;
+  // margin-left: 6vh;
+  // margin-right: 6vh;
   margin-bottom: 16px;
   // margin-right: 80px;
   // margin-left: 80px;
   display: flex;
   flex-direction: row;
+  height: 100vh;
 }
 
 .Landing {

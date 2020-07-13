@@ -59,6 +59,9 @@ export default class CodeMirror extends Component<
     let { draftCode, language } = this.props;
     return (
       <div>
+        <style jsx>{`
+          flex-grow: 100;
+        `}</style>
         <CodeMirror2
           className={"CodeEditor"}
           value={draftCode}
@@ -83,7 +86,7 @@ export default class CodeMirror extends Component<
           }}
           editorDidMount={(editor) => {
             this.instance = editor;
-            editor.setSize(608, 531);
+            editor.setSize('100%', '100%');
           }}
           onBeforeChange={(editor, data, value) => {
             this.props.changeCode(value);

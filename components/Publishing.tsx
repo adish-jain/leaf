@@ -5,7 +5,7 @@ import StoredStep from "./StoredStep";
 const fetch = require("node-fetch");
 global.Headers = fetch.Headers;
 import Router from "next/router";
-const descriptionStyles = require("../styles/Description.module.scss");
+const publishingStyles = require("../styles/Publishing.module.scss");
 
 var shortId = require("shortid");
 
@@ -135,27 +135,27 @@ export default class Publishing extends Component<
 
   render() {
     return (
-      <div className={descriptionStyles.publishing}>
-        <div className={descriptionStyles.PublishingButtonsWrapper}>
-          <div className={descriptionStyles.publishingButtons}>
+      <div className={publishingStyles.publishing}>
+        <div className={publishingStyles.PublishingButtonsWrapper}>
+          <div className={publishingStyles.publishingButtons}>
             <button
               onClick={this.previewDraft}
-              className={descriptionStyles.preview}
+              className={publishingStyles.preview}
             >
               Preview
             </button>
             <button
               onClick={this.publishDraft}
-              className={descriptionStyles.publish}
+              className={publishingStyles.publish}
             >
               Publish
             </button>
           </div>
         </div>
-        <div className={descriptionStyles.header}>
+        <div className={publishingStyles.header}>
           <form>
             <textarea
-              className={descriptionStyles.textArea}
+              className={publishingStyles.textArea}
               placeholder={"Untitled"}
               defaultValue={this.props.title}
               onChange={this.onTitleChange}

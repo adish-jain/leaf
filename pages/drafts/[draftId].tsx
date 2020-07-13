@@ -62,7 +62,7 @@ const DraftView = () => {
     optimisticSteps: [],
     code: "",
     language: "",
-    errored: false
+    errored: false,
   };
 
   let { data: draftData, mutate } = useSWR(
@@ -376,39 +376,43 @@ const DraftView = () => {
           }}
         />
       </Head>
-      <main>
+      <main className={appStyles.AppWrapper}>
+        <style>{`
+        div {
+       }
+      `}</style>
         {errored ? (
-          <DefaultErrorPage statusCode={404}/>
+          <DefaultErrorPage statusCode={404} />
         ) : (
-        <div className={appStyles.App}>
-          <Publishing
-            draftId={draftId}
-            title={draftTitle}
-            storedSteps={storedSteps}
-            saveStep={saveStep}
-            updateStoredStep={updateStoredStep}
-            deleteStoredStep={deleteStoredStep}
-            onHighlight={onHighlight}
-            unHighlight={unHighlight}
-            moveStepUp={moveStepUp}
-            moveStepDown={moveStepDown}
-            saveTitle={saveTitle}
-          />
-          <CodeEditor
-            highlightLines={highlightLines}
-            saveCode={saveCode}
-            //manages what code is shown in the editor
-            draftCode={files[selectedFileIndex].code}
-            files={files}
-            addFile={addFile}
-            deleteFile={deleteFile}
-            selectedFileIndex={selectedFileIndex}
-            changeCode={changeCode}
-            changeSelectedFile={changeSelectedFileIndex}
-            handleLanguageChange={handleLanguageChange}
-            language={draftLanguage}
-          />
-        </div>
+          <div className={appStyles.App}>
+            <Publishing
+              draftId={draftId}
+              title={draftTitle}
+              storedSteps={storedSteps}
+              saveStep={saveStep}
+              updateStoredStep={updateStoredStep}
+              deleteStoredStep={deleteStoredStep}
+              onHighlight={onHighlight}
+              unHighlight={unHighlight}
+              moveStepUp={moveStepUp}
+              moveStepDown={moveStepDown}
+              saveTitle={saveTitle}
+            />
+            <CodeEditor
+              highlightLines={highlightLines}
+              saveCode={saveCode}
+              //manages what code is shown in the editor
+              draftCode={files[selectedFileIndex].code}
+              files={files}
+              addFile={addFile}
+              deleteFile={deleteFile}
+              selectedFileIndex={selectedFileIndex}
+              changeCode={changeCode}
+              changeSelectedFile={changeSelectedFileIndex}
+              handleLanguageChange={handleLanguageChange}
+              language={draftLanguage}
+            />
+          </div>
         )}
       </main>
     </div>
