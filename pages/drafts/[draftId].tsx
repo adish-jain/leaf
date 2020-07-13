@@ -394,9 +394,13 @@ const DraftView = () => {
           }}
         />
       </Head>
-      <main>
+      <main className={appStyles.AppWrapper}>
+        <style>{`
+        div {
+       }
+      `}</style>
         {errored ? (
-          <DefaultErrorPage statusCode={404}/>
+          <DefaultErrorPage statusCode={404} />
         ) : (
         <div className={appStyles.App}>
           <Publishing
