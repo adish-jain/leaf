@@ -6,6 +6,7 @@ import { useFiles } from "../../lib/useFiles";
 import useSWR from "swr";
 import Publishing from "../../components/Publishing";
 import CodeEditor from "../../components/CodeEditor";
+import DefaultErrorPage from "next/error";
 import Head from "next/head";
 const fetch = require("node-fetch");
 import { GetStaticProps, GetStaticPaths } from "next";
@@ -61,6 +62,7 @@ const DraftView = () => {
     optimisticSteps: [],
     code: "",
     language: "",
+    errored: false
   };
 
   let { data: draftData, mutate } = useSWR(
@@ -73,6 +75,7 @@ const DraftView = () => {
   let storedSteps = draftData["optimisticSteps"];
   let draftCode = draftData["code"];
   let draftLanguage = draftData["language"];
+  let errored = draftData["errored"];
 
   // DynamicCodeEditor -> CodeEditor -> [draftId]
   function highlightLines(start: any, end: any) {
@@ -374,6 +377,9 @@ const DraftView = () => {
         />
       </Head>
       <main>
+        {errored ? (
+          <DefaultErrorPage statusCode={404}/>
+        ) : (
         <div className={appStyles.App}>
           <Publishing
             draftId={draftId}
@@ -403,6 +409,7 @@ const DraftView = () => {
             language={draftLanguage}
           />
         </div>
+        )}
       </main>
     </div>
   );
