@@ -24,18 +24,35 @@ export async function adjustStepOrder(
 }
 
 export async function getDraftDataHandler(uid: string, draftId: string) {
-  let draftData = await db
-    .collection("users")
-    .doc(uid)
-    .collection("drafts")
-    .doc(draftId)
-    .get();
-  let title = draftData.data().title;
-  let code = draftData.data().code;
-  let language = draftData.data().language;
-  let storedSteps = await getUserStepsForDraft(uid, draftId);
-  let results = { title: title, optimisticSteps: storedSteps, code: code, language: language };
-  return results;
+  try {
+    let draftData = await db
+      .collection("users")
+      .doc(uid)
+      .collection("drafts")
+      .doc(draftId)
+      .get();
+    let title = draftData.data().title;
+    let code = draftData.data().code;
+    let language = draftData.data().language;
+    let storedSteps = await getUserStepsForDraft(uid, draftId);
+    let results = { 
+      title: title, 
+      optimisticSteps: storedSteps, 
+      code: code, 
+      language: language, 
+      errored: false 
+    };
+    return results;
+  } catch (error) {
+    let results = {
+      title: "",
+      optimisticSteps: [],
+      code: "",
+      language: "",
+      errored: true
+    }
+    return results;
+  }
 }
 
 export async function getUserStepsForDraft(uid: string, draftId: string) {

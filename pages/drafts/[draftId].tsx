@@ -6,6 +6,7 @@ import { useFiles } from "../../lib/useFiles";
 import useSWR from "swr";
 import Publishing from "../../components/Publishing";
 import CodeEditor from "../../components/CodeEditor";
+import DefaultErrorPage from "next/error";
 import Head from "next/head";
 const fetch = require("node-fetch");
 import { GetStaticProps, GetStaticPaths } from "next";
@@ -61,6 +62,7 @@ const DraftView = () => {
     optimisticSteps: [],
     code: "",
     language: "",
+    errored: false,
   };
 
   let { data: draftData, mutate } = useSWR(
@@ -73,6 +75,7 @@ const DraftView = () => {
   let storedSteps = draftData["optimisticSteps"];
   let draftCode = draftData["code"];
   let draftLanguage = draftData["language"];
+  let errored = draftData["errored"];
 
   // DynamicCodeEditor -> CodeEditor -> [draftId]
   function highlightLines(start: any, end: any) {
@@ -384,35 +387,39 @@ const DraftView = () => {
         />
       </Head>
       <main className={appStyles.AppWrapper}>
-        <div className={appStyles.App}>
-          <Publishing
-            draftId={draftId}
-            title={draftTitle}
-            storedSteps={storedSteps}
-            saveStep={saveStep}
-            updateStoredStep={updateStoredStep}
-            deleteStoredStep={deleteStoredStep}
-            onHighlight={onHighlight}
-            unHighlight={unHighlight}
-            moveStepUp={moveStepUp}
-            moveStepDown={moveStepDown}
-            saveTitle={saveTitle}
-          />
-          <CodeEditor
-            highlightLines={highlightLines}
-            saveCode={saveCode}
-            //manages what code is shown in the editor
-            draftCode={files[selectedFileIndex].code}
-            files={files}
-            addFile={addFile}
-            deleteFile={deleteFile}
-            selectedFileIndex={selectedFileIndex}
-            changeCode={changeCode}
-            changeSelectedFile={changeSelectedFileIndex}
-            handleLanguageChange={handleLanguageChange}
-            language={draftLanguage}
-          />
-        </div>
+        {errored ? (
+          <DefaultErrorPage statusCode={404} />
+        ) : (
+          <div className={appStyles.App}>
+            <Publishing
+              draftId={draftId}
+              title={draftTitle}
+              storedSteps={storedSteps}
+              saveStep={saveStep}
+              updateStoredStep={updateStoredStep}
+              deleteStoredStep={deleteStoredStep}
+              onHighlight={onHighlight}
+              unHighlight={unHighlight}
+              moveStepUp={moveStepUp}
+              moveStepDown={moveStepDown}
+              saveTitle={saveTitle}
+            />
+            <CodeEditor
+              highlightLines={highlightLines}
+              saveCode={saveCode}
+              //manages what code is shown in the editor
+              draftCode={files[selectedFileIndex].code}
+              files={files}
+              addFile={addFile}
+              deleteFile={deleteFile}
+              selectedFileIndex={selectedFileIndex}
+              changeCode={changeCode}
+              changeSelectedFile={changeSelectedFileIndex}
+              handleLanguageChange={handleLanguageChange}
+              language={draftLanguage}
+            />
+          </div>
+        )}
       </main>
     </div>
   );
