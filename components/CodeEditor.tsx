@@ -64,6 +64,12 @@ export default class CodeEditor extends Component<
         <style jsx>{`
           box-shadow: 0px 4px 16px #edece9;
           border-radius: 8px;
+          width: 100%;
+          max-width: 664px;
+          min-width: 332px;
+          margin-bottom: 16px;
+          display: flex;
+          flex-direction: column;
         `}</style>
         <FileBar
           files={files}
