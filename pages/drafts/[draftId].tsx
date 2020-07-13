@@ -358,16 +358,6 @@ const DraftView = () => {
 
   return (
     <div className="container">
-      <style>{`
-       html,
-       body,
-       body > div:first-child,
-       div#__next,
-       div#__next > div,
-       div#__next > div > div {
-         height: 100%;
-       }
-      `}</style>
       <Head>
         <title>Code Tutorials</title>
         <link rel="icon" href="/favicon.ico" />
@@ -387,6 +377,10 @@ const DraftView = () => {
         />
       </Head>
       <main className={appStyles.AppWrapper}>
+        <style>{`
+        div {
+       }
+      `}</style>
         {errored ? (
           <DefaultErrorPage statusCode={404} />
         ) : (
