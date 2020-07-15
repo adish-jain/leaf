@@ -30,17 +30,6 @@ const DraftView = () => {
   // Draft ID
   const { draftId } = router.query;
 
-  const {
-    files,
-    selectedFileIndex,
-    addFile,
-    removeFile,
-    changeCode,
-    changeSelectedFileIndex,
-    changeFileLanguage,
-    saveFileCode,
-  } = useFiles(draftId);
-
   // highlighting lines for steps
   const [lines, changeLines] = useState({});
   const [saveLines, notSaveLines] = useState(false);
@@ -65,6 +54,12 @@ const DraftView = () => {
   const initialData: any = {
     title: "",
     optimisticSteps: [],
+    files: [{
+      id: "",
+      name: "",
+      code: "",
+      language: "",
+    }],
     // code: "",
     // language: "",
     errored: false
@@ -78,9 +73,23 @@ const DraftView = () => {
 
   let draftTitle = draftData["title"];
   let storedSteps = draftData["optimisticSteps"];
+  let draftFiles = draftData["files"];
   // let draftCode = draftData["code"];
   // let draftLanguage = draftData["language"];
   let errored = draftData["errored"];
+
+  console.log(draftTitle);
+  console.log(draftFiles);
+
+  var {
+    selectedFileIndex,
+    addFile,
+    removeFile,
+    changeCode,
+    changeSelectedFileIndex,
+    changeFileLanguage,
+    saveFileCode,
+  } = useFiles(draftId, draftFiles, draftTitle, storedSteps, mutate);
 
   // DynamicCodeEditor -> CodeEditor -> [draftId]
   function highlightLines(start: any, end: any) {
@@ -96,6 +105,21 @@ const DraftView = () => {
   function unHighlight() {
     notSaveLines(false);
   }
+
+  // function changeCode(value: string) {
+  //   let files = [...draftFiles];
+  //   files[selectedFileIndex].code = value;
+  //   // updateFiles(duplicateFiles);
+  //   // draftFiles = duplicateFiles;
+  //   console.log(files);
+
+  //   let title = draftTitle;
+  //   let optimisticSteps = storedSteps;
+  //   // let files = draftFiles;
+  //   let mutateState = { title, optimisticSteps, files };
+  //   // let mutateState = { title, optimisticSteps, code, language };
+  //   mutate(mutateState, false);
+  // }
 
   /*
   Helper function to find the step with the associated stepId in `storedSteps`
@@ -128,12 +152,14 @@ const DraftView = () => {
 
     let newStep = { id: stepId, lines: saveLines ? lines : null, text: text };
     let title = draftTitle;
+    let files = draftFiles;
+
     // let code = draftCode; //modify these to depend on the file youre in 
     // let language = draftLanguage; //modify these to depend on the file youre in 
     let optimisticSteps = [...storedSteps];
     optimisticSteps.push(newStep);
 
-    let mutateState = { title, optimisticSteps };
+    let mutateState = { title, optimisticSteps, files };
     // let mutateState = { title, optimisticSteps, code, language };
     mutate(mutateState, false);
 
@@ -173,12 +199,13 @@ const DraftView = () => {
 
     let newStep = { id: stepId, lines: stepLines, text: text };
     let title = draftTitle;
+    let files = draftFiles;
     // let code = draftCode;
     // let language = draftLanguage;
     let optimisticSteps = storedSteps.slice();
     let idx = findIdx(stepId);
     optimisticSteps[idx] = newStep;
-    let mutateState = { title, optimisticSteps };
+    let mutateState = { title, optimisticSteps, files };
     // let mutateState = { title, optimisticSteps, code, language };
     mutate(mutateState, false);
 
@@ -202,10 +229,11 @@ const DraftView = () => {
     let stepsToChange = optimisticSteps.slice(idx + 1, optimisticSteps.length);
     optimisticSteps.splice(idx, 1);
     let title = draftTitle;
+    let files = draftFiles;
     // let code = draftCode;
     // let language = draftLanguage;
 
-    let mutateState = { title, optimisticSteps };
+    let mutateState = { title, optimisticSteps, files };
     // let mutateState = { title, optimisticSteps, code, language };
     mutate(mutateState, false);
 
@@ -251,10 +279,11 @@ const DraftView = () => {
       optimisticSteps[idx],
     ];
     let title = draftTitle;
+    let files = draftFiles;
     // let code = draftCode;
     // let language = draftLanguage;
 
-    let mutateState = { title, optimisticSteps };
+    let mutateState = { title, optimisticSteps, files };
     // let mutateState = { title, optimisticSteps, code, language };
     mutate(mutateState, false);
 
@@ -292,10 +321,11 @@ const DraftView = () => {
       optimisticSteps[idx],
     ];
     let title = draftTitle;
+    let files = draftFiles;
     // let code = draftCode;
     // let language = draftLanguage;
 
-    let mutateState = { title, optimisticSteps };
+    let mutateState = { title, optimisticSteps, files };
     // let mutateState = { title, optimisticSteps, code, language };
     mutate(mutateState, false);
 
@@ -422,15 +452,15 @@ const DraftView = () => {
             highlightLines={highlightLines}
             saveFileCode={saveFileCode}
             //manages what code is shown in the editor
-            draftCode={files[selectedFileIndex].code}
-            files={files}
+            draftCode={draftFiles[selectedFileIndex].code}
+            files={draftFiles}
             addFile={addFile}
             removeFile={removeFile}
             selectedFileIndex={selectedFileIndex}
             changeCode={changeCode}
             changeSelectedFile={changeSelectedFileIndex}
             changeFileLanguage={changeFileLanguage}
-            language={files[selectedFileIndex].language}
+            language={draftFiles[selectedFileIndex].language}
           />
         </div>
         )}

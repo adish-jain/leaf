@@ -5,10 +5,6 @@ let db = admin.firestore();
 
 import { getUidFromUsername } from "./userUtils";
 
-export async function getFirstFileData(uid: string, draftId: string) {
-
-}
-
 export async function getFilesForDraft(uid: string, draftId: string) {
     let filesRef = db
     .collection("users")

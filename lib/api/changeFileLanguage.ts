@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebaseAdmin, initFirebase } from "../initFirebase";
 import { getUser, getUserDrafts } from "../userUtils";
+import { getFilesForDraft } from "../fileUtils";
 const admin = require("firebase-admin");
 
 let db = admin.firestore();
@@ -40,7 +41,7 @@ async function changeFileLanguageHandler(req: NextApiRequest, res: NextApiRespon
   .update({ "language": language }); 
   
   res.statusCode = 200;
-  let results = await getUserDrafts(uid);
+  let results = await getFilesForDraft(uid, draftId);
   res.send(results);
   return;
 }

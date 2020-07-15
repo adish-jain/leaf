@@ -1,4 +1,5 @@
 import { initFirebaseAdmin } from "./initFirebase";
+import { getFilesForDraft } from "./fileUtils";
 const admin = require("firebase-admin");
 initFirebaseAdmin();
 let db = admin.firestore();
@@ -35,9 +36,12 @@ export async function getDraftDataHandler(uid: string, draftId: string) {
     // let code = draftData.data().code;
     // let language = draftData.data().language;
     let storedSteps = await getUserStepsForDraft(uid, draftId);
+    let files = await getFilesForDraft(uid, draftId);
+    console.log(files);
     let results = { 
       title: title, 
       optimisticSteps: storedSteps, 
+      files: files,
       // code: code, 
       // language: language, 
       errored: false 
@@ -47,6 +51,7 @@ export async function getDraftDataHandler(uid: string, draftId: string) {
     let results = {
       title: "",
       optimisticSteps: [],
+      files: [],
       // code: "",
       // language: "",
       errored: true

@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebaseAdmin, initFirebase } from "../initFirebase";
 import { getUser } from "../userUtils";
-import { getUserStepsForDraft } from "../postUtils";
+import { getFilesForDraft } from "../fileUtils";
 const admin = require("firebase-admin");
 
 let db = admin.firestore();
@@ -50,7 +50,7 @@ async function saveFileHandler(req: NextApiRequest, res: NextApiResponse) {
 
   res.statusCode = 200;
   // change to getFilesForDraft --> add in fileUtils;
-  let results = await getUserStepsForDraft(uid, draftId);
+  let results = await getFilesForDraft(uid, draftId);
   res.send(results);
   return;
 }

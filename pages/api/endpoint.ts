@@ -26,7 +26,7 @@ import handleSaveFile from "../../lib/api/saveFile";
 import handleDeleteFile from "../../lib/api/deleteFile";
 import handleChangeFileLanguage from "../../lib/api/changeFileLanguage";
 import handleSaveFileCode from "../../lib/api/saveFileCode";
-import handleGetFirstFileData from "../../lib/api/getFirstFileData";
+import handleGetFirstFileData from "../../lib/api/getFirstFileData"; //DELETE
 
 
 const firebase = require("firebase/app");

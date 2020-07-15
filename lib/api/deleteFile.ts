@@ -3,6 +3,7 @@ import { initFirebaseAdmin, initFirebase } from "../initFirebase";
 const admin = require("firebase-admin");
 import { getUser } from "../userUtils";
 import { getUserStepsForDraft, adjustStepOrder } from "../postUtils";
+import { getFilesForDraft } from "../fileUtils";
 let db = admin.firestore();
 initFirebaseAdmin();
 initFirebase();
@@ -40,7 +41,7 @@ async function deleteFileHandler(req: NextApiRequest, res: NextApiResponse) {
     .delete();
 
   res.statusCode = 200;
-  let results = await getUserStepsForDraft(uid, draftId);
+  let results = await getFilesForDraft(uid, draftId);
   res.send(results);
   return;
 }
