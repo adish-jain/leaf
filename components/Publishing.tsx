@@ -32,6 +32,7 @@ type PublishingState = {
   steps: any[];
   title: string;
   saveTitle: boolean;
+  previewLoading: boolean;
 };
 
 type PublishingComponent = {
@@ -61,6 +62,7 @@ export default class Publishing extends Component<
       steps: [],
       title: props.title,
       saveTitle: false,
+      previewLoading: false,
     };
   }
 
@@ -117,6 +119,10 @@ export default class Publishing extends Component<
     let url = `/api/preview?draftId=${draftId}`;
     // window.location.href = url;
 
+    this.setState({
+      previewLoading: true
+    });
+
     fetch(url, {
       method: "POST",
       // redirect: "follow",
@@ -124,7 +130,7 @@ export default class Publishing extends Component<
     })
       .then((res: any) => {
         if (res.redirected) {
-          Router.push("/preview");
+          window.location.href = "/preview";
         }
         // HTTP 301 response
       })
@@ -142,7 +148,7 @@ export default class Publishing extends Component<
               onClick={this.previewDraft}
               className={publishingStyles.preview}
             >
-              Preview
+              {this.state.previewLoading ? "Loading Preview..." : "Preview"}
             </button>
             <button
               onClick={this.publishDraft}
