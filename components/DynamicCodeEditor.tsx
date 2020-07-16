@@ -18,7 +18,9 @@ type CodeMirrorProps = {
   language: string;
 };
 
-type CodeMirrorState = {};
+type CodeMirrorState = {
+  value: string;
+};
 
 const ranges = [
   {
@@ -42,6 +44,9 @@ export default class CodeMirror extends Component<
   constructor(props: CodeMirrorProps) {
     super(props);
     this.instance = undefined;
+    // this.state = {
+    //   value: this.props.draftCode,
+    // }
   }
 
   highlightLines(editor: any) {
@@ -63,6 +68,7 @@ export default class CodeMirror extends Component<
         <CodeMirror2
           className={"CodeEditor"}
           value={draftCode}
+          // value = {this.state.value}
           options={{
             lineNumbers: true,
             mode: language,
@@ -89,11 +95,19 @@ export default class CodeMirror extends Component<
           onBeforeChange={(editor, data, value) => {
             console.log(value);
             this.props.changeCode(value);
+            // this.setState({
+            //   value,
+            // });
           }}
           onChange={(editor, data, value) => {
+            // this.setState({
+            //   value,
+            // })
           }}
           onBlur={() => {
+            console.log("blurred");
             this.props.saveFileCode();
+            // this.props.saveFileCode(this.state.value);
           }}
         />
       </div>

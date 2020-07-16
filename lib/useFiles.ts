@@ -13,6 +13,10 @@ type File = {
   name: string;
 };
 
+type codeFile = {
+  code: string;
+}
+
 export function useFiles(
   draftId: any, 
   draftFiles: any, 
@@ -20,10 +24,19 @@ export function useFiles(
   storedSteps: any,
   mutate: any) {
     let files = [...draftFiles];
-    let numOfUntitleds = files.length; //shouldn't be len, but maxNum
+    // console.log(draftFiles);
 
     // Manages the files within the filebar.
-    // var [files, updateFiles] = useState<File[]>(draftFiles,
+    var [codeFiles, updateFiles] = useState<File[]>(files.slice());
+    // useEffect(() =>
+    //   updateFiles(files.slice())
+    // );
+    if (files[0]["id"] !== codeFiles[0]["id"] || files.length !== codeFiles.length) {
+      updateFiles(files.slice());
+    }
+    console.log(files);
+    console.log(codeFiles);
+    // var codeFiles = files.slice();
       // draftFiles[0],
       // {
       //   id: shortId.generate(),
@@ -33,6 +46,8 @@ export function useFiles(
       // },
       // getFirstFileData(),
     // );
+    let numOfUntitleds = files.length; //shouldn't be len, but maxNum
+
 
     // getFirstFileData();
     // // retrieves the first file information from Firebase & adds to `files`
@@ -66,26 +81,30 @@ export function useFiles(
     * Update the code in DynamicCodeEditor in the correct file
     */
     function changeCode(value: string) {
-      // let duplicateFiles = [...files];
-      console.log(value);
-      files[selectedFileIndex].code = value;
-      // updateFiles(duplicateFiles);
-      // draftFiles = duplicateFiles;
+      // console.log(files);
+      let duplicateFiles = [...codeFiles];
+      // console.log(value);
+      duplicateFiles[selectedFileIndex].code = value;
+      // codeFiles[selectedFileIndex].code = value;
+      // console.log(duplicateFiles);
+      updateFiles(duplicateFiles);
+      // codeFiles = duplicateFiles;
       // console.log(duplicateFiles);
       // files = duplicateFiles;
-      let title = draftTitle;
-      let optimisticSteps = storedSteps;
-      // let files = draftFiles;
-      console.log(files);
-      let mutateState = { title, optimisticSteps, files };
-      // let mutateState = { title, optimisticSteps, code, language };
-      mutate(mutateState, false);
+      // let title = draftTitle;
+      // let optimisticSteps = storedSteps;
+      // // let files = draftFiles;
+      // // console.log(files);
+      // let mutateState = { title, optimisticSteps, files };
+      // // let mutateState = { title, optimisticSteps, code, language };
+      // mutate(mutateState, true);
     }
 
     /*
     * Adds a new file to the Filebar. Currently does not store the new file in firebase.
     */
     function addFile() {
+      console.log("add file");
       // make sure file is untitled2, untitled3, etc.
       numOfUntitleds++;
       let newFileName = `untitled${numOfUntitleds}.txt`;
@@ -100,6 +119,13 @@ export function useFiles(
         language: newFileLang,
       })
 
+      codeFiles.push({
+        name: newFileName,
+        id: newFileId,
+        code: newFileCode,
+        language: newFileLang,
+      })
+
       // updateFiles(
       //   files.concat({
       //     name: newFileName,
@@ -108,13 +134,13 @@ export function useFiles(
       //     language: newFileLang,
       //   })
       // );
-      // console.log(files);
+      console.log(files);
       let title = draftTitle;
       let optimisticSteps = storedSteps;
       // let files = draftFiles;
       let mutateState = { title, optimisticSteps, files };
       // // let mutateState = { title, optimisticSteps, code, language };
-      mutate(mutateState, false);
+      mutate(mutateState, true);
       saveFile(newFileId, newFileName, newFileCode, newFileLang);
     }
 
@@ -146,6 +172,7 @@ export function useFiles(
     * Delete a file in the filebar. Makes sure that the selected file is set correctly after deletion.
     */
     function removeFile(toDeleteIndex: number) {
+      console.log("remove file");
       // can have minimum one file
       if (files.length === 1) {
         return;
@@ -163,6 +190,8 @@ export function useFiles(
       }
       cloneFiles.splice(toDeleteIndex, 1);
       files = cloneFiles;
+      codeFiles = cloneFiles;
+      // updateFiles(cloneFiles);
       let title = draftTitle;
       let optimisticSteps = storedSteps;
       // let files = draftFiles;
@@ -190,10 +219,12 @@ export function useFiles(
     }
 
     function changeFileLanguage(language: string) {
+      console.log("change langugage");
       let fileId = files[selectedFileIndex].id;
-      // let duplicateFiles = [...files];
-      files[selectedFileIndex].language = language;
-      // files = duplicateFiles;
+      let duplicateFiles = [...files];
+      duplicateFiles[selectedFileIndex].language = language;
+      files = duplicateFiles;
+      codeFiles = duplicateFiles;
       // updateFiles(duplicateFiles);
 
       let title = draftTitle;
@@ -220,7 +251,7 @@ export function useFiles(
 
     function saveFileCode() {
       let fileId = files[selectedFileIndex].id;
-      let code = files[selectedFileIndex].code;
+      let code = codeFiles[selectedFileIndex].code;
       var data = {
         requestedAPI: "save_file_code",
         draftId: draftId,
@@ -239,6 +270,7 @@ export function useFiles(
     
     return { 
         selectedFileIndex, 
+        codeFiles,
         addFile, 
         removeFile, 
         changeCode, 

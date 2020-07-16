@@ -82,6 +82,7 @@ const DraftView = () => {
 
   var {
     selectedFileIndex,
+    codeFiles,
     addFile,
     removeFile,
     changeCode,
@@ -402,7 +403,7 @@ const DraftView = () => {
   //   changeFileLanguage(language);
   //   // saveLanguage(language);
   // }
-
+  // console.log(codeFiles);
   return (
     <div className="container">
       <Head>
@@ -451,7 +452,8 @@ const DraftView = () => {
             highlightLines={highlightLines}
             saveFileCode={saveFileCode}
             //manages what code is shown in the editor
-            draftCode={draftFiles[selectedFileIndex].code}
+            // draftCode={draftFiles[selectedFileIndex].code}
+            draftCode={codeFiles[selectedFileIndex].code}
             files={draftFiles}
             addFile={addFile}
             removeFile={removeFile}
@@ -460,6 +462,7 @@ const DraftView = () => {
             changeSelectedFile={changeSelectedFileIndex}
             changeFileLanguage={changeFileLanguage}
             language={draftFiles[selectedFileIndex].language}
+            // key={draftFiles[selectedFileIndex].id}
           />
         </div>
         )}
