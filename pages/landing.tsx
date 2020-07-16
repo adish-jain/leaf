@@ -157,7 +157,9 @@ function YourPosts(props: {
       <h1>Your Published Posts</h1>
       <hr />
       <div className={landingStyles["DraftButtons"]}>
-        <button onClick={togglePostsEdit}>Edit</button>
+        <button onClick={togglePostsEdit}>
+          {postsEditClicked ? "Done" : "Edit"}
+        </button>
       </div>
       {content}
     </div>
@@ -317,7 +319,9 @@ function Draft(props: DraftProps) {
 function LandingHeader(props: any) {
   return (
     <div className={landingStyles.header}>
-      <button className={landingStyles.Logout} onClick={logOut}>Logout</button>
+      <button className={landingStyles.Logout} onClick={logOut}>
+        Logout
+      </button>
       <Link href="/settings">
         <a>Settings</a>
       </Link>
