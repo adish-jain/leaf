@@ -78,7 +78,6 @@ const DraftView = () => {
   // let draftLanguage = draftData["language"];
   let errored = draftData["errored"];
 
-  console.log(draftTitle);
   console.log(draftFiles);
 
   var {

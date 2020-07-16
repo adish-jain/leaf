@@ -87,9 +87,11 @@ export default class CodeMirror extends Component<
             editor.setSize('100%', '100%');
           }}
           onBeforeChange={(editor, data, value) => {
+            console.log(value);
             this.props.changeCode(value);
           }}
-          onChange={(editor, data, value) => {}}
+          onChange={(editor, data, value) => {
+          }}
           onBlur={() => {
             this.props.saveFileCode();
           }}

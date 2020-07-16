@@ -60,6 +60,8 @@ export default class CodeEditor extends Component<
       removeFile,
       selectedFileIndex,
       changeSelectedFile,
+      changeFileLanguage,
+      highlightLines,
       language,
     } = this.props;
     return (
@@ -84,7 +86,7 @@ export default class CodeEditor extends Component<
         />
         <DynamicCodeEditor
           // @ts-ignore
-          highlightLines={this.props.highlightLines}
+          highlightLines={highlightLines}
           saveFileCode={saveFileCode}
           draftCode={draftCode}
           changeCode={changeCode}
@@ -92,7 +94,7 @@ export default class CodeEditor extends Component<
         />
         <LanguageBar
           language={language}
-          changeFileLanguage={this.props.changeFileLanguage}
+          changeFileLanguage={changeFileLanguage}
         />
       </div>
     );

@@ -1,4 +1,4 @@
-import useSWR, { mutate } from "swr";
+import useSWR from "swr";
 import Router from "next/router";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -19,11 +19,9 @@ export function useFiles(
   draftTitle: any,
   storedSteps: any,
   mutate: any) {
-    console.log(draftFiles);
     let files = [...draftFiles];
     let numOfUntitleds = files.length; //shouldn't be len, but maxNum
 
-    console.log(files);
     // Manages the files within the filebar.
     // var [files, updateFiles] = useState<File[]>(draftFiles,
       // draftFiles[0],
@@ -69,6 +67,7 @@ export function useFiles(
     */
     function changeCode(value: string) {
       // let duplicateFiles = [...files];
+      console.log(value);
       files[selectedFileIndex].code = value;
       // updateFiles(duplicateFiles);
       // draftFiles = duplicateFiles;
@@ -77,6 +76,7 @@ export function useFiles(
       let title = draftTitle;
       let optimisticSteps = storedSteps;
       // let files = draftFiles;
+      console.log(files);
       let mutateState = { title, optimisticSteps, files };
       // let mutateState = { title, optimisticSteps, code, language };
       mutate(mutateState, false);
@@ -93,7 +93,7 @@ export function useFiles(
       let newFileLang = "jsx";
       let newFileId = shortId.generate();
 
-      files.concat({
+      files.push({
         name: newFileName,
         id: newFileId,
         code: newFileCode,
@@ -162,9 +162,15 @@ export function useFiles(
         changeSelectedFileIndex(newIndex);
       }
       cloneFiles.splice(toDeleteIndex, 1);
-      deleteFile(toDeleteFileId);
       files = cloneFiles;
+      let title = draftTitle;
+      let optimisticSteps = storedSteps;
+      // let files = draftFiles;
+      let mutateState = { title, optimisticSteps, files };
+      // // let mutateState = { title, optimisticSteps, code, language };
+      mutate(mutateState, false);
       // updateFiles(cloneFiles);
+      deleteFile(toDeleteFileId);
     }
 
     function deleteFile(fileId: string) {
@@ -185,10 +191,17 @@ export function useFiles(
 
     function changeFileLanguage(language: string) {
       let fileId = files[selectedFileIndex].id;
-      let duplicateFiles = [...files];
-      duplicateFiles[selectedFileIndex].language = language;
-      files = duplicateFiles;
+      // let duplicateFiles = [...files];
+      files[selectedFileIndex].language = language;
+      // files = duplicateFiles;
       // updateFiles(duplicateFiles);
+
+      let title = draftTitle;
+      let optimisticSteps = storedSteps;
+      let mutateState = { title, optimisticSteps, files };
+      mutate(mutateState, true); // true, not false
+      console.log(files);
+      
       var data = {
         requestedAPI: "change_file_language",
         draftId: draftId,
