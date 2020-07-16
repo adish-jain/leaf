@@ -52,13 +52,24 @@ export default function Landing() {
   const { authenticated, error, loading } = useLoggedIn();
 
   // Fetch data for drafts
-  const { drafts, deleteDraft, openDraft, createNewDraft } = useDrafts(
-    authenticated
-  );
+  const {
+    drafts,
+    deleteDraft,
+    openDraft,
+    createNewDraft,
+    draftsEditClicked,
+    toggleDraftsEdit,
+  } = useDrafts(authenticated);
   // Fetch user ifno
   const { userInfo } = useUserInfo(authenticated);
   // Fetch data for posts
-  const {posts, deletePost, goToPost} = usePosts(authenticated);
+  const {
+    posts,
+    deletePost,
+    goToPost,
+    postsEditClicked,
+    togglePostsEdit,
+  } = usePosts(authenticated);
 
   return (
     <div className="container">
@@ -88,11 +99,15 @@ export default function Landing() {
             openDraft={openDraft}
             drafts={drafts}
             createNewDraft={createNewDraft}
+            toggleDraftsEdit={toggleDraftsEdit}
+            draftsEditClicked={draftsEditClicked}
           />
           <YourPosts
             deletePost={deletePost}
             posts={posts}
             goToPost={goToPost}
+            togglePostsEdit={togglePostsEdit}
+            postsEditClicked={postsEditClicked}
           />
         </div>
       </main>
@@ -104,8 +119,16 @@ function YourPosts(props: {
   posts: PostsType[] | undefined;
   goToPost: (username: string, postId: string) => void;
   deletePost: (postUid: string) => void;
+  togglePostsEdit: () => void;
+  postsEditClicked: boolean;
 }) {
-  let { posts, goToPost, deletePost } = props;
+  let {
+    posts,
+    goToPost,
+    deletePost,
+    togglePostsEdit,
+    postsEditClicked,
+  } = props;
 
   let content;
   if (posts === undefined || posts === []) {
@@ -122,6 +145,7 @@ function YourPosts(props: {
             postUid={post.id}
             deletePost={deletePost}
             key={post.id}
+            postsEditClicked={postsEditClicked}
           />
         ))}
       </div>
@@ -129,9 +153,12 @@ function YourPosts(props: {
   }
 
   return (
-    <div className={landingStyles.right}>
+    <div className={`${landingStyles.right} ${landingStyles.Section}`}>
       <h1>Your Published Posts</h1>
       <hr />
+      <div className={landingStyles["DraftButtons"]}>
+        <button onClick={togglePostsEdit}>Edit</button>
+      </div>
       {content}
     </div>
   );
@@ -144,15 +171,27 @@ function Post(props: {
   postUid: string;
   deletePost: (postUid: string) => void;
   goToPost: (username: string, postId: string) => void;
+  postsEditClicked: boolean;
 }) {
   let { username, postId, deletePost, postUid } = props;
   return (
-    <div className={landingStyles["draft"]}>
-      <p>{props.title}</p>
-      <button onClick={() => deletePost(postUid)}>Delete Post</button>
-      <button onClick={(e) => props.goToPost(username, postId)}>
-        Open Post
-      </button>
+    <div className={landingStyles["DraftWrapper"]}>
+      {props.postsEditClicked ? (
+        <button
+          onClick={(e) => props.deletePost(postUid)}
+          className={landingStyles["Edit"]}
+        >
+          X
+        </button>
+      ) : (
+        <div></div>
+      )}
+      <div
+        onClick={(e) => props.goToPost(username, postId)}
+        className={landingStyles["draft"]}
+      >
+        <p className={landingStyles["DraftTitle"]}>{props.title}</p>
+      </div>
     </div>
   );
 }
@@ -160,14 +199,13 @@ function Post(props: {
 function YourDrafts(props: {
   drafts: DraftType[] | undefined;
   createNewDraft: () => void;
-  deleteDraft: (
-    e: React.MouseEvent<HTMLButtonElement>,
-    draft_id: string
-  ) => void;
+  deleteDraft: (draft_id: string) => void;
   openDraft: (id: string) => void;
+  draftsEditClicked: boolean;
+  toggleDraftsEdit: () => void;
 }) {
   function renderDrafts() {
-    let { drafts } = props;
+    let { drafts, draftsEditClicked } = props;
     if (drafts === undefined) {
       return (
         <div>
@@ -183,6 +221,7 @@ function YourDrafts(props: {
     }
     return drafts.map((draft: any) => (
       <Draft
+        draftsEditClicked={draftsEditClicked}
         deleteDraft={deleteDraft}
         key={draft.id}
         title={draft.title ? draft.title : "Untitled"}
@@ -192,10 +231,22 @@ function YourDrafts(props: {
     ));
   }
 
-  let { drafts, deleteDraft, openDraft, createNewDraft } = props;
+  let {
+    drafts,
+    deleteDraft,
+    openDraft,
+    createNewDraft,
+    draftsEditClicked,
+    toggleDraftsEdit,
+  } = props;
   return (
-    <div className={landingStyles.left}>
-      <YourDraftsHeader createNewDraft={createNewDraft} drafts={drafts} />
+    <div className={`${landingStyles.left} ${landingStyles.Section}`}>
+      <YourDraftsHeader
+        toggleDraftsEdit={toggleDraftsEdit}
+        draftsEditClicked={draftsEditClicked}
+        createNewDraft={createNewDraft}
+        drafts={drafts}
+      />
       {renderDrafts()}
     </div>
   );
@@ -204,21 +255,28 @@ function YourDrafts(props: {
 function YourDraftsHeader(props: {
   createNewDraft: () => void;
   drafts: DraftType[] | undefined;
+  toggleDraftsEdit: () => void;
+  draftsEditClicked: boolean;
 }) {
-  let { createNewDraft, drafts } = props;
+  let { createNewDraft, drafts, toggleDraftsEdit, draftsEditClicked } = props;
   return (
     <div>
       <div className={landingStyles["left-header"]}>
         <h1>Your Drafts</h1>
-        <div
-          onClick={createNewDraft}
-          className={landingStyles["create-button-plus"]}
-        >
-          +
-        </div>
       </div>
       {drafts ? <div></div> : <div></div>}
       <hr />
+      <div className={landingStyles["DraftButtons"]}>
+        <button
+          className={landingStyles["CreateButton"]}
+          onClick={(e) => createNewDraft()}
+        >
+          Create New Post
+        </button>
+        <button onClick={toggleDraftsEdit}>
+          {draftsEditClicked ? "Done" : "Edit"}
+        </button>
+      </div>
     </div>
   );
 }
@@ -227,22 +285,31 @@ type DraftProps = {
   title: string;
   id: string;
   key: string;
-  deleteDraft: (
-    e: React.MouseEvent<HTMLButtonElement>,
-    draft_id: string
-  ) => void;
+  deleteDraft: (draft_id: string) => void;
   openDraft: (id: string) => void;
+  draftsEditClicked: boolean;
 };
 
 function Draft(props: DraftProps) {
   return (
-    <div className={landingStyles["draft"]}>
-      <p>{props.title}</p>
-      {props.id}
-      <button onClick={(e) => props.deleteDraft(e, props.id)}>
-        Delete Draft
-      </button>
-      <button onClick={(e) => props.openDraft(props.id)}>Open Draft</button>
+    <div className={landingStyles["DraftWrapper"]}>
+      {props.draftsEditClicked ? (
+        <button
+          onClick={(e) => props.deleteDraft(props.id)}
+          className={landingStyles["Edit"]}
+        >
+          X
+        </button>
+      ) : (
+        <div></div>
+      )}
+
+      <div
+        onClick={(e) => props.openDraft(props.id)}
+        className={landingStyles["draft"]}
+      >
+        <p className={landingStyles["DraftTitle"]}>{props.title}</p>
+      </div>
     </div>
   );
 }
@@ -250,7 +317,7 @@ function Draft(props: DraftProps) {
 function LandingHeader(props: any) {
   return (
     <div className={landingStyles.header}>
-      <button onClick={logOut}>Logout</button>
+      <button className={landingStyles.Logout} onClick={logOut}>Logout</button>
       <Link href="/settings">
         <a>Settings</a>
       </Link>

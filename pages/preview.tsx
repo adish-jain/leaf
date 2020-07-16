@@ -13,6 +13,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     let steps = draftData.optimisticSteps;
 
     return {
+      unstable_revalidate: 1,
       props: {
         title,
         steps,

@@ -31,6 +31,7 @@ const postsFetcher = () =>
   fetch("api/endpoint", myRequest("getPosts")).then((res: any) => res.json());
 
 export function usePosts(authenticated: boolean) {
+  const [postsEditClicked, changeEditClicked] = useState(false);
   const initialPostsData: PostsType[] = [];
   let { data: posts } = useSWR<PostsType[]>(
     authenticated ? "getPosts" : null,
@@ -41,6 +42,7 @@ export function usePosts(authenticated: boolean) {
     }
   );
 
+  // Deletes a published post.
   function deletePost(postUid: string) {
     function removeSpecificPost() {
       let searchIndex = 0;
@@ -74,13 +76,21 @@ export function usePosts(authenticated: boolean) {
     });
   }
 
+  // Redirects to a published Post
   function goToPost(username: string, postId: string) {
     Router.push("/[username]/[postId]", "/" + username + "/" + postId);
+  }
+
+  // Toggles the edit button for published posts
+  async function togglePostsEdit() {
+    changeEditClicked(!postsEditClicked);
   }
 
   return {
     posts,
     deletePost,
-    goToPost
+    goToPost,
+    postsEditClicked,
+    togglePostsEdit
   };
 }
