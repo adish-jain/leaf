@@ -1,14 +1,15 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebaseAdmin, initFirebase } from "../initFirebase";
-import { getUser, getUserDrafts } from "../userUtils";
 const admin = require("firebase-admin");
-
+import { getUser } from "../userUtils";
+import { getFilesForDraft } from "../fileUtils";
 let db = admin.firestore();
 initFirebaseAdmin();
 initFirebase();
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  return saveLanguageHandler(req, res);
+  // console.log("in deleteStep");
+  return deleteFileHandler(req, res);
 };
 
 function handleError(res: NextApiResponse, error: any) {
@@ -18,9 +19,9 @@ function handleError(res: NextApiResponse, error: any) {
   return;
 }
 
-async function saveLanguageHandler(req: NextApiRequest, res: NextApiResponse) {
+async function deleteFileHandler(req: NextApiRequest, res: NextApiResponse) {
   let draftId = req.body.draftId;
-  let language = req.body.language;
+  let fileId = req.body.fileId;
   let { uid } = await getUser(req, res);
 
   if (uid === "") {
@@ -29,15 +30,17 @@ async function saveLanguageHandler(req: NextApiRequest, res: NextApiResponse) {
     return;
   }
 
-  // update language in firebase
+  // delete file from firebase
   db.collection("users")
-  .doc(uid)
-  .collection("drafts")
-  .doc(draftId)
-  .update({"language": language}); 
-  
+    .doc(uid)
+    .collection("drafts")
+    .doc(draftId)
+    .collection("files")
+    .doc(fileId)
+    .delete();
+
   res.statusCode = 200;
-  let results = await getUserDrafts(uid);
+  let results = await getFilesForDraft(uid, draftId);
   res.send(results);
   return;
 }

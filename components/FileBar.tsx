@@ -3,6 +3,7 @@ import FileName from "./FileName";
 const fileBarStyles = require("../styles/FileBar.module.scss");
 
 type File = {
+  id: string;
   name: string;
   //replace with enum
   language: string;
@@ -10,10 +11,11 @@ type File = {
 };
 
 type FileBarProps = {
+  draftId: string;
   files: File[];
   changeSelectedFile: (fileIndex: number) => void;
-  addFile: () => void;
-  deleteFile: (toDeleteIndex: number) => void;
+  addFile: (draftId: string) => void;
+  removeFile: (toDeleteIndex: number) => void;
   selectedFileIndex: number;
 };
 
@@ -25,10 +27,11 @@ export default class FileBar extends Component<FileBarProps> {
 
   render() {
     let {
+      draftId,
       files,
       changeSelectedFile,
       addFile,
-      deleteFile,
+      removeFile,
       selectedFileIndex,
     } = this.props;
 
@@ -40,11 +43,11 @@ export default class FileBar extends Component<FileBarProps> {
             key={file.name}
             changeSelectedFile={changeSelectedFile}
             selected={selectedFileIndex === index}
-            deleteFile={deleteFile}
+            removeFile={removeFile}
             index={index}
           />
         ))}
-        <button onClick={addFile}>+</button>
+        <button onClick={e => addFile(draftId)}>+</button>
       </div>
     );
   }

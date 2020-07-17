@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebaseAdmin, initFirebase } from "../initFirebase";
-import { getUser, getUserDrafts } from "../userUtils";
+import { getUser } from "../userUtils";
+import { getFilesForDraft } from "../fileUtils";
 const admin = require("firebase-admin");
 
 let db = admin.firestore();
@@ -8,7 +9,7 @@ initFirebaseAdmin();
 initFirebase();
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  return saveCodeHandler(req, res);
+  return changeFileLanguageHandler(req, res);
 };
 
 function handleError(res: NextApiResponse, error: any) {
@@ -18,9 +19,10 @@ function handleError(res: NextApiResponse, error: any) {
   return;
 }
 
-async function saveCodeHandler(req: NextApiRequest, res: NextApiResponse) {
+async function changeFileLanguageHandler(req: NextApiRequest, res: NextApiResponse) {
   let draftId = req.body.draftId;
-  let code = req.body.code;
+  let fileId = req.body.fileId;
+  let language = req.body.language;
   let { uid } = await getUser(req, res);
 
   if (uid === "") {
@@ -29,15 +31,17 @@ async function saveCodeHandler(req: NextApiRequest, res: NextApiResponse) {
     return;
   }
 
-  // update code in firebase
+  // update language for file in firebase
   db.collection("users")
   .doc(uid)
   .collection("drafts")
   .doc(draftId)
-  .update({"code": code}); 
+  .collection("files")
+  .doc(fileId)
+  .update({ "language": language }); 
   
   res.statusCode = 200;
-  let results = await getUserDrafts(uid);
+  let results = await getFilesForDraft(uid, draftId);
   res.send(results);
   return;
 }

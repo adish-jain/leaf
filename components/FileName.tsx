@@ -5,7 +5,7 @@ type FileNameProps = {
   selected: boolean;
   changeSelectedFile: (fileIndex: number) => void;
   name: string;
-  deleteFile: (toDeleteIndex: number) => void;
+  removeFile: (toDeleteIndex: number) => void;
   index: number;
 };
 
@@ -24,7 +24,7 @@ export default function FileName(props: FileNameProps) {
       return (
         <button
           className={fileNamesStyle["Close"]}
-          onClick={(e) => props.deleteFile(props.index)}
+          onClick={(e) => props.removeFile(props.index)}
         >
           X
         </button>

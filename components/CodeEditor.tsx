@@ -15,6 +15,7 @@ const DynamicCodeEditor = dynamic(
 );
 
 type File = {
+  id: string;
   name: string;
   //replace with enum
   language: string;
@@ -22,15 +23,16 @@ type File = {
 };
 
 type CodeEditorProps = {
+  draftId: string;
   highlightLines: (start: any, end: any) => void;
-  saveCode: () => void;
-  handleLanguageChange: (language: string) => void;
+  saveFileCode: () => void;
+  changeFileLanguage: (language: string) => void;
   draftCode: string;
 
   // filenames map to language
   files: File[];
-  addFile: () => void;
-  deleteFile: (toDeleteIndex: number) => void;
+  addFile: (draftId: string) => void;
+  removeFile: (toDeleteIndex: number) => void;
   selectedFileIndex: number;
   changeCode: (value: string) => void;
   changeSelectedFile: (fileIndex: number) => void;
@@ -49,14 +51,17 @@ export default class CodeEditor extends Component<
 
   render() {
     let {
-      saveCode,
+      draftId,
+      saveFileCode,
       draftCode,
       files,
       changeCode,
       addFile,
-      deleteFile,
+      removeFile,
       selectedFileIndex,
       changeSelectedFile,
+      changeFileLanguage,
+      highlightLines,
       language,
     } = this.props;
     return (
@@ -72,23 +77,24 @@ export default class CodeEditor extends Component<
           flex-direction: column;
         `}</style>
         <FileBar
+          draftId={draftId}
           files={files}
           addFile={addFile}
-          deleteFile={deleteFile}
+          removeFile={removeFile}
           selectedFileIndex={selectedFileIndex}
           changeSelectedFile={changeSelectedFile}
         />
         <DynamicCodeEditor
           // @ts-ignore
-          highlightLines={this.props.highlightLines}
-          saveCode={saveCode}
+          highlightLines={highlightLines}
+          saveFileCode={saveFileCode}
           draftCode={draftCode}
           changeCode={changeCode}
           language={language}
         />
         <LanguageBar
-          language={this.props.language}
-          handleLanguageChange={this.props.handleLanguageChange}
+          language={language}
+          changeFileLanguage={changeFileLanguage}
         />
       </div>
     );

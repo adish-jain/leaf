@@ -9,15 +9,14 @@ import CodeEditor from "../../components/CodeEditor";
 import DefaultErrorPage from "next/error";
 import Head from "next/head";
 const fetch = require("node-fetch");
-import { GetStaticProps, GetStaticPaths } from "next";
 
 global.Headers = fetch.Headers;
 
 const appStyles = require("../../styles/App.module.scss");
 
 type File = {
-  //replace with enum
-  language: string;
+  id: string;
+  language: string;  //replace with enum
   code: string;
   name: string;
 };
@@ -25,22 +24,13 @@ type File = {
 const DraftView = () => {
   const { authenticated, error, loading } = useLoggedIn();
 
-  const {
-    files,
-    selectedFileIndex,
-    addFile,
-    deleteFile,
-    changeCode,
-    changeSelectedFileIndex,
-  } = useFiles();
+  const router = useRouter();
+  // Draft ID
+  const { draftId } = router.query;
 
   // highlighting lines for steps
   const [lines, changeLines] = useState({});
   const [saveLines, notSaveLines] = useState(false);
-
-  const router = useRouter();
-  // Draft ID
-  const { draftId } = router.query;
 
   // if there are any steps in this draft, they will be fetched & repopulated
   const rawData = {
@@ -60,9 +50,13 @@ const DraftView = () => {
   const initialData: any = {
     title: "",
     optimisticSteps: [],
-    code: "",
-    language: "",
-    errored: false,
+    files: [{
+      id: "",
+      name: "",
+      code: "",
+      language: "",
+    }],
+    errored: false
   };
 
   let { data: draftData, mutate } = useSWR(
@@ -73,15 +67,23 @@ const DraftView = () => {
 
   let draftTitle = draftData["title"];
   let storedSteps = draftData["optimisticSteps"];
-  let draftCode = draftData["code"];
-  let draftLanguage = draftData["language"];
+  let draftFiles = draftData["files"];
   let errored = draftData["errored"];
+
+  var {
+    selectedFileIndex,
+    codeFiles,
+    addFile,
+    removeFile,
+    changeCode,
+    changeSelectedFileIndex,
+    changeFileLanguage,
+    saveFileCode,
+  } = useFiles(draftId, draftFiles, draftTitle, storedSteps, mutate);
 
   // DynamicCodeEditor -> CodeEditor -> [draftId]
   function highlightLines(start: any, end: any) {
-    let startLine = start["line"];
-    let endLine = end["line"];
-    changeLines({ start: startLine, end: endLine });
+    changeLines({ start: start, end: end });
   }
 
   function onHighlight() {
@@ -123,12 +125,12 @@ const DraftView = () => {
 
     let newStep = { id: stepId, lines: saveLines ? lines : null, text: text };
     let title = draftTitle;
-    let code = draftCode;
-    let language = draftLanguage;
+    let files = draftFiles;
+
     let optimisticSteps = [...storedSteps];
     optimisticSteps.push(newStep);
 
-    let mutateState = { title, optimisticSteps, code, language };
+    let mutateState = { title, optimisticSteps, files };
     mutate(mutateState, false);
 
     fetch("/api/endpoint", {
@@ -167,12 +169,12 @@ const DraftView = () => {
 
     let newStep = { id: stepId, lines: stepLines, text: text };
     let title = draftTitle;
-    let code = draftCode;
-    let language = draftLanguage;
+    let files = draftFiles;
     let optimisticSteps = storedSteps.slice();
     let idx = findIdx(stepId);
     optimisticSteps[idx] = newStep;
-    let mutateState = { title, optimisticSteps, code, language };
+
+    let mutateState = { title, optimisticSteps, files };
     mutate(mutateState, false);
 
     fetch("/api/endpoint", {
@@ -195,9 +197,9 @@ const DraftView = () => {
     let stepsToChange = optimisticSteps.slice(idx + 1, optimisticSteps.length);
     optimisticSteps.splice(idx, 1);
     let title = draftTitle;
-    let code = draftCode;
-    let language = draftLanguage;
-    let mutateState = { title, optimisticSteps, code, language };
+    let files = draftFiles;
+
+    let mutateState = { title, optimisticSteps, files };
     mutate(mutateState, false);
 
     let data = {
@@ -242,9 +244,9 @@ const DraftView = () => {
       optimisticSteps[idx],
     ];
     let title = draftTitle;
-    let code = draftCode;
-    let language = draftLanguage;
-    let mutateState = { title, optimisticSteps, code, language };
+    let files = draftFiles;
+
+    let mutateState = { title, optimisticSteps, files };
     mutate(mutateState, false);
 
     fetch("/api/endpoint", {
@@ -281,9 +283,9 @@ const DraftView = () => {
       optimisticSteps[idx],
     ];
     let title = draftTitle;
-    let code = draftCode;
-    let language = draftLanguage;
-    let mutateState = { title, optimisticSteps, code, language };
+    let files = draftFiles;
+
+    let mutateState = { title, optimisticSteps, files };
     mutate(mutateState, false);
 
     fetch("/api/endpoint", {
@@ -315,47 +317,6 @@ const DraftView = () => {
     });
   }
 
-  function saveCode() {
-    var data = {
-      requestedAPI: "save_code",
-      draftId: draftId,
-      code: draftCode,
-    };
-
-    fetch("/api/endpoint", {
-      method: "POST",
-      headers: new Headers({ "Content-Type": "application/json" }),
-      body: JSON.stringify(data),
-    }).then(async (res: any) => {
-      // console.log(res);
-    });
-  }
-
-  function saveLanguage(language: string) {
-    var data = {
-      requestedAPI: "save_language",
-      draftId: draftId,
-      language: language,
-    };
-
-    fetch("/api/endpoint", {
-      method: "POST",
-      headers: new Headers({ "Content-Type": "application/json" }),
-      body: JSON.stringify(data),
-    }).then(async (res: any) => {
-      console.log(res);
-    });
-  }
-
-  function handleLanguageChange(language: string) {
-    let title = draftTitle;
-    let code = draftCode;
-    let optimisticSteps = storedSteps.slice();
-    let mutateState = { title, optimisticSteps, code, language };
-    mutate(mutateState, false);
-    saveLanguage(language);
-  }
-
   return (
     <div className="container">
       <Head>
@@ -384,35 +345,35 @@ const DraftView = () => {
         {errored ? (
           <DefaultErrorPage statusCode={404} />
         ) : (
-          <div className={appStyles.App}>
-            <Publishing
-              draftId={draftId}
-              title={draftTitle}
-              storedSteps={storedSteps}
-              saveStep={saveStep}
-              updateStoredStep={updateStoredStep}
-              deleteStoredStep={deleteStoredStep}
-              onHighlight={onHighlight}
-              unHighlight={unHighlight}
-              moveStepUp={moveStepUp}
-              moveStepDown={moveStepDown}
-              saveTitle={saveTitle}
-            />
-            <CodeEditor
-              highlightLines={highlightLines}
-              saveCode={saveCode}
-              //manages what code is shown in the editor
-              draftCode={files[selectedFileIndex].code}
-              files={files}
-              addFile={addFile}
-              deleteFile={deleteFile}
-              selectedFileIndex={selectedFileIndex}
-              changeCode={changeCode}
-              changeSelectedFile={changeSelectedFileIndex}
-              handleLanguageChange={handleLanguageChange}
-              language={draftLanguage}
-            />
-          </div>
+        <div className={appStyles.App}>
+          <Publishing
+            draftId={draftId}
+            title={draftTitle}
+            storedSteps={storedSteps}
+            saveStep={saveStep}
+            updateStoredStep={updateStoredStep}
+            deleteStoredStep={deleteStoredStep}
+            onHighlight={onHighlight}
+            unHighlight={unHighlight}
+            moveStepUp={moveStepUp}
+            moveStepDown={moveStepDown}
+            saveTitle={saveTitle}
+          />
+          <CodeEditor
+            draftId={draftId as string}
+            highlightLines={highlightLines}
+            saveFileCode={saveFileCode}
+            draftCode={codeFiles[selectedFileIndex].code}
+            files={draftFiles}
+            addFile={addFile}
+            removeFile={removeFile}
+            selectedFileIndex={selectedFileIndex}
+            changeCode={changeCode}
+            changeSelectedFile={changeSelectedFileIndex}
+            changeFileLanguage={changeFileLanguage}
+            language={draftFiles[selectedFileIndex].language}
+          />
+        </div>
         )}
       </main>
     </div>
