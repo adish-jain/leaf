@@ -5,6 +5,7 @@ import Router from "next/router";
 type DraftType = {
   id: string;
   title: string;
+  edit?: boolean;
   createdAt: {
     _nanoseconds: number;
     _seconds: number;
@@ -25,6 +26,7 @@ const draftsFetcher = () =>
   fetch("api/endpoint", myRequest("getDrafts")).then((res: any) => res.json());
 
 export function useDrafts(authenticated: boolean) {
+  const [draftsEditClicked, changeEditClicked] = useState(false);
   const initialDraftsData: DraftType[] = [];
   let { data: drafts } = useSWR<DraftType[]>(
     authenticated ? "getDrafts" : null,
@@ -35,19 +37,21 @@ export function useDrafts(authenticated: boolean) {
     }
   );
 
-  async function deleteDraft(
-    event: React.MouseEvent<HTMLButtonElement>,
-    draft_id: string
-  ) {
+  function findDraftIndex(draftId: string) {
+    let searchIndex = 0;
+    for (let i = 0; i < drafts!.length; i++) {
+      if (drafts![i].id === draftId) {
+        searchIndex = i;
+        return searchIndex;
+      }
+    }
+  }
+
+  // Deletes a draft
+  async function deleteDraft(draft_id: string) {
     // helper function to remove a draft before API call finishes
     function removeSpecificDraft() {
-      let searchIndex = 0;
-      for (let i = 0; i < drafts!.length; i++) {
-        if (drafts![i].id === draft_id) {
-          searchIndex = i;
-          break;
-        }
-      }
+      let searchIndex = findDraftIndex(draft_id) as number;
       let cloneDrafts = drafts?.slice();
       cloneDrafts!.splice(searchIndex, 1);
       mutate("getDrafts", cloneDrafts, false);
@@ -72,10 +76,12 @@ export function useDrafts(authenticated: boolean) {
     });
   }
 
+  // Redirects to a draft
   function openDraft(draft_id: string) {
     Router.push("/drafts/" + draft_id);
   }
 
+  // Creates a new draft
   async function createNewDraft() {
     await fetch("/api/endpoint", {
       method: "POST",
@@ -91,7 +97,17 @@ export function useDrafts(authenticated: boolean) {
     });
   }
 
+  // Toggles the edit button for drafts
+  async function toggleDraftsEdit() {
+    changeEditClicked(!draftsEditClicked);
+  }
+
   return {
-    drafts, deleteDraft, openDraft, createNewDraft
+    drafts,
+    deleteDraft,
+    openDraft,
+    createNewDraft,
+    draftsEditClicked,
+    toggleDraftsEdit,
   };
 }
