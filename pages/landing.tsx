@@ -192,7 +192,7 @@ function Post(props: {
         onClick={(e) => props.goToPost(username, postId)}
         className={landingStyles["draft"]}
       >
-        <p className={landingStyles["DraftTitle"]}>{props.title}</p>
+        <p className={landingStyles["Draft-Title"]}>{props.title}</p>
       </div>
     </div>
   );
@@ -310,7 +310,7 @@ function Draft(props: DraftProps) {
         onClick={(e) => props.openDraft(props.id)}
         className={landingStyles["draft"]}
       >
-        <p className={landingStyles["DraftTitle"]}>{props.title}</p>
+        <p className={landingStyles["Draft-Title"]}>{props.title}</p>
       </div>
     </div>
   );
