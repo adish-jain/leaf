@@ -1,3 +1,79 @@
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+  .Section {
+    h1 {
+      font-size: 24px;
+    }
+  }
+
+  .Draft-Title {
+    font-size: 16px;
+  }
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+  .Section {
+    h1 {
+      font-size: 24px;
+    }
+  }
+
+  .Draft-Title {
+    font-size: 20px;
+  }
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+  .Draft-Title {
+    font-size: 24px;
+  }
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+  .Section {
+    h1 {
+      font-size: 40px;
+    }
+  }
+
+  .Draft-Title {
+    font-size: 32px;
+  }
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+  .Section {
+    h1 {
+      font-size: 60px;
+    }
+  }
+  .Draft-Title {
+    font-size: 40px;
+  }
+}
+
+.Draft-Title {
+  font-weight: bold;
+  margin-bottom: 0px;
+  margin-top: 0px;
+}
+
+.draft {
+  flex-grow: 100;
+  border-style: solid;
+  border: 1px solid #edece9;
+  border-radius: 8px;
+  color: black;
+  padding: 16px;
+  margin-bottom: 12px;
+  background: white;
+  box-shadow: 0px 4px 16px #edece9;
+  cursor: pointer;
+}
 
 .left-header {
   display: flex;
@@ -10,12 +86,58 @@
   margin-left: 40px;
   margin-right: 40px;
   margin-top: 40px;
-  margin-bottom: 0px;
+  margin-bottom: 24px;
 
   a {
     margin-right: 16px;
   }
-  
+}
+
+.Section {
+  width: 100%;
+  h1 {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-style: normal;
+    font-weight: bold;
+    // font-size: 60px;
+    line-height: auto;
+
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
+
+  hr {
+    border: 1px solid #e9ede9;
+  }
+
+  .create-button {
+    padding: 20px;
+    font-size: 36px;
+    line-height: auto;
+    color: #ffffff;
+
+    background: #37abda;
+    border: 1px solid #329bc5;
+    box-shadow: 0px 4px 16px #edece9;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .create-button-plus {
+    background: #37abda;
+    box-shadow: 0px 7.87218px 31.4887px #edece9;
+    border-radius: 7.87218px;
+    width: 55px;
+    height: 55px;
+    text-align: center;
+
+    margin-left: 16px;
+
+    color: white;
+    font-size: 62.9774px;
+    line-height: 44px;
+    cursor: pointer;
+  }
 }
 
 .landing {
@@ -23,58 +145,6 @@
   flex-direction: row;
   margin-left: 80px;
   margin-right: 80px;
-
-  div {
-    width: 608px;
-    h1 {
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      font-style: normal;
-      font-weight: bold;
-      font-size: 60px;
-      line-height: 72px;
-
-      margin-top: 0px;
-      margin-bottom: 0px;
-    }
-
-    hr {
-      border: 1px solid #e9ede9;
-    }
-
-    p {
-      font-size: 36px;
-      line-height: 43px;
-    }
-
-    .create-button {
-      padding: 20px;
-      font-size: 36px;
-      line-height: 43px;
-      color: #ffffff;
-
-      background: #37abda;
-      border: 1px solid #329bc5;
-      box-shadow: 0px 4px 16px #edece9;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .create-button-plus {
-      background: #37abda;
-      box-shadow: 0px 7.87218px 31.4887px #edece9;
-      border-radius: 7.87218px;
-      width: 55px;
-      height: 55px;
-      text-align: center;
-
-      margin-left: 16px;
-
-      color: white;
-      font-size: 62.9774px;
-      line-height: 44px;
-      cursor: pointer;
-    }
-  }
 }
 
 .left {
@@ -85,29 +155,70 @@
   margin-left: 32px;
 }
 
-.draft {
+.DraftWrapper {
   width: 100%;
-  border-style: solid;
-  border-width: 1px;
-  border-color: #37abda;
-  border-radius: 4px;
-  padding: 16px;
-  margin-bottom: 12px;
-  background: white;
+  display: flex;
+  align-items: center;
+  transition: all ease-in-out 0.2s;
+}
+
+.Edit {
+  // width: 40px;
+
+  background: #ffffff;
+  border: 1px solid #edece9;
+  color: #f71600;
   box-shadow: 0px 4px 16px #edece9;
 
-  p {
-    font-weight: bold;
-    font-size: 40px;
-    margin-bottom: 0px;
-    margin-top: 0px;
-  }
+  border-radius: 16px;
+  border-width: 1px;
+  width: 32px;
+  height: 32px;
+  text-emphasis: center;
+  margin-right: 16px;
+  line-height: 20px;
+  font-weight: bold;
 }
 
 .Post {
-  
 }
 
 .HeaderPane {
+}
 
+.DraftButtons {
+  margin-top: 16px;
+  margin-bottom: 16px;
+
+  .CreateButton {
+    background: #37abda;
+    border: 1px solid #329bc5;
+    color: white;
+  }
+
+  button {
+    margin-right: 20px;
+
+    background: #ffffff;
+    border: 1px solid #edece9;
+    box-sizing: border-box;
+    border-radius: 4px;
+    padding: 8px;
+
+    font-size: 16px;
+    line-height: 19px;
+  }
+}
+
+.Logout {
+  margin-right: 20px;
+  background: #ffffff;
+  border: 1px solid #edece9;
+  box-sizing: border-box;
+  border-radius: 4px;
+  padding: 8px;
+  font-size: 16px;
+  line-height: 19px;
+  position: relative;
+  top: -8px;
 }

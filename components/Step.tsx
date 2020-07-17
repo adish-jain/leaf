@@ -87,7 +87,7 @@ export default class Step extends Component<StepProps, StepState> {
           <button onClick={(e) => {this.saveStep(e)}} className={StepStyles.Save}>Save</button>
           <div onClick={(e) => {this.props.closeStep(this.props.id)}} className={StepStyles.Close}>X</div>
         </div>
-        <div></div>
+        <div className={StepStyles["LineInfo"]}></div>
       </div>
     );
   }
