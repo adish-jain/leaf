@@ -360,8 +360,7 @@ const DraftView = () => {
             saveTitle={saveTitle}
           />
           <CodeEditor
-            //@ts-ignore
-            draftId={draftId}
+            draftId={draftId as string}
             highlightLines={highlightLines}
             saveFileCode={saveFileCode}
             draftCode={codeFiles[selectedFileIndex].code}

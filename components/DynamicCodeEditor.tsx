@@ -68,7 +68,7 @@ export default class CodeMirror extends Component<
           options={{
             lineNumbers: true,
             mode: language,
-            theme: "vscode-dark",
+            theme: "material",
             // theme: 'vscode-dark',
             // theme: 'oceanic-next',
             lineWrapping: true,

@@ -19,16 +19,24 @@ type codeFile = {
 export function useFiles(
   draftId: any, 
   draftFiles: any, 
-  draftTitle: any,
+  draftTitle: string,
   storedSteps: any,
   mutate: any) {
 
-    // Manages the files within filebar.
-    // The id, language, & name fields are guaranteed to be correct.
+    /*
+    Manages the files within filebar.
+    The id, language, & name fields are guaranteed to be correct.
+    */
     let files = [...draftFiles];
 
-    // Manages the code within the files.
-    // The code field is guaranteed to be correct.
+    /*
+    Manages the code within the files. 
+    The code field is guaranteed to be correct.
+    Create this separation to maintain consistency between local state 
+    of `files` and Firebase `files` collection. `codeFiles` maintains 
+    local changes to code until it is saved, propagated to Firebase,
+    and then `files` is updated to reflect the new code changes. 
+    */
     var [codeFiles, updateFiles] = useState<File[]>(files.slice());
     if (files[0]["id"] !== codeFiles[0]["id"] || files.length !== codeFiles.length) {
       updateFiles(files.slice());
