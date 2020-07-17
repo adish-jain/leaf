@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebaseAdmin, initFirebase } from "../initFirebase";
-import { getUser, getUserDrafts } from "../userUtils";
+import { getUser } from "../userUtils";
 import { getFilesForDraft } from "../fileUtils";
 const admin = require("firebase-admin");
 
@@ -31,7 +31,7 @@ async function saveFileCodeHandler(req: NextApiRequest, res: NextApiResponse) {
     return;
   }
 
-  // update language in firebase
+  // update code for file in firebase
   db.collection("users")
   .doc(uid)
   .collection("drafts")

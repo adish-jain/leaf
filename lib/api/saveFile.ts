@@ -49,7 +49,6 @@ async function saveFileHandler(req: NextApiRequest, res: NextApiResponse) {
     .set(newFile);
 
   res.statusCode = 200;
-  // change to getFilesForDraft --> add in fileUtils;
   let results = await getFilesForDraft(uid, draftId);
   res.send(results);
   return;

@@ -9,7 +9,6 @@ import CodeEditor from "../../components/CodeEditor";
 import DefaultErrorPage from "next/error";
 import Head from "next/head";
 const fetch = require("node-fetch");
-import { GetStaticProps, GetStaticPaths } from "next";
 
 global.Headers = fetch.Headers;
 
@@ -17,8 +16,7 @@ const appStyles = require("../../styles/App.module.scss");
 
 type File = {
   id: string;
-  //replace with enum
-  language: string;
+  language: string;  //replace with enum
   code: string;
   name: string;
 };
@@ -33,8 +31,6 @@ const DraftView = () => {
   // highlighting lines for steps
   const [lines, changeLines] = useState({});
   const [saveLines, notSaveLines] = useState(false);
-
-
 
   // if there are any steps in this draft, they will be fetched & repopulated
   const rawData = {
@@ -60,8 +56,6 @@ const DraftView = () => {
       code: "",
       language: "",
     }],
-    // code: "",
-    // language: "",
     errored: false
   };
 
@@ -74,11 +68,7 @@ const DraftView = () => {
   let draftTitle = draftData["title"];
   let storedSteps = draftData["optimisticSteps"];
   let draftFiles = draftData["files"];
-  // let draftCode = draftData["code"];
-  // let draftLanguage = draftData["language"];
   let errored = draftData["errored"];
-
-  console.log(draftFiles);
 
   var {
     selectedFileIndex,
@@ -93,8 +83,6 @@ const DraftView = () => {
 
   // DynamicCodeEditor -> CodeEditor -> [draftId]
   function highlightLines(start: any, end: any) {
-    // let startLine = start["line"] + 1;
-    // let endLine = end["line"] + 1;
     changeLines({ start: start, end: end });
   }
 
@@ -105,21 +93,6 @@ const DraftView = () => {
   function unHighlight() {
     notSaveLines(false);
   }
-
-  // function changeCode(value: string) {
-  //   let files = [...draftFiles];
-  //   files[selectedFileIndex].code = value;
-  //   // updateFiles(duplicateFiles);
-  //   // draftFiles = duplicateFiles;
-  //   console.log(files);
-
-  //   let title = draftTitle;
-  //   let optimisticSteps = storedSteps;
-  //   // let files = draftFiles;
-  //   let mutateState = { title, optimisticSteps, files };
-  //   // let mutateState = { title, optimisticSteps, code, language };
-  //   mutate(mutateState, false);
-  // }
 
   /*
   Helper function to find the step with the associated stepId in `storedSteps`
@@ -154,13 +127,10 @@ const DraftView = () => {
     let title = draftTitle;
     let files = draftFiles;
 
-    // let code = draftCode; //modify these to depend on the file youre in 
-    // let language = draftLanguage; //modify these to depend on the file youre in 
     let optimisticSteps = [...storedSteps];
     optimisticSteps.push(newStep);
 
     let mutateState = { title, optimisticSteps, files };
-    // let mutateState = { title, optimisticSteps, code, language };
     mutate(mutateState, false);
 
     fetch("/api/endpoint", {
@@ -200,13 +170,11 @@ const DraftView = () => {
     let newStep = { id: stepId, lines: stepLines, text: text };
     let title = draftTitle;
     let files = draftFiles;
-    // let code = draftCode;
-    // let language = draftLanguage;
     let optimisticSteps = storedSteps.slice();
     let idx = findIdx(stepId);
     optimisticSteps[idx] = newStep;
+
     let mutateState = { title, optimisticSteps, files };
-    // let mutateState = { title, optimisticSteps, code, language };
     mutate(mutateState, false);
 
     fetch("/api/endpoint", {
@@ -230,11 +198,8 @@ const DraftView = () => {
     optimisticSteps.splice(idx, 1);
     let title = draftTitle;
     let files = draftFiles;
-    // let code = draftCode;
-    // let language = draftLanguage;
 
     let mutateState = { title, optimisticSteps, files };
-    // let mutateState = { title, optimisticSteps, code, language };
     mutate(mutateState, false);
 
     let data = {
@@ -280,11 +245,8 @@ const DraftView = () => {
     ];
     let title = draftTitle;
     let files = draftFiles;
-    // let code = draftCode;
-    // let language = draftLanguage;
 
     let mutateState = { title, optimisticSteps, files };
-    // let mutateState = { title, optimisticSteps, code, language };
     mutate(mutateState, false);
 
     fetch("/api/endpoint", {
@@ -322,11 +284,8 @@ const DraftView = () => {
     ];
     let title = draftTitle;
     let files = draftFiles;
-    // let code = draftCode;
-    // let language = draftLanguage;
 
     let mutateState = { title, optimisticSteps, files };
-    // let mutateState = { title, optimisticSteps, code, language };
     mutate(mutateState, false);
 
     fetch("/api/endpoint", {
@@ -358,52 +317,6 @@ const DraftView = () => {
     });
   }
 
-  // function saveCode() {
-  //   // var data = {
-  //   //   requestedAPI: "save_code",
-  //   //   draftId: draftId,
-  //   //   code: draftCode,
-  //   // };
-
-  //   // fetch("/api/endpoint", {
-  //   //   method: "POST",
-  //   //   headers: new Headers({ "Content-Type": "application/json" }),
-  //   //   body: JSON.stringify(data),
-  //   // }).then(async (res: any) => {
-  //   //   // console.log(res);
-  //   // });
-  //   changeFileCode(draftCode);
-  // }
-
-  // function saveLanguage(language: string) {
-  //   // var data = {
-  //   //   requestedAPI: "save_language",
-  //   //   draftId: draftId,
-  //   //   language: language,
-  //   // };
-
-  //   // fetch("/api/endpoint", {
-  //   //   method: "POST",
-  //   //   headers: new Headers({ "Content-Type": "application/json" }),
-  //   //   body: JSON.stringify(data),
-  //   // }).then(async (res: any) => {
-  //   //   console.log(res);
-  //   // });
-
-  // }
-
-  // function handleLanguageChange(language: string) {
-  //   // let title = draftTitle;
-  //   // // let code = draftCode;
-  //   // let optimisticSteps = storedSteps.slice();
-
-  //   // let mutateState = { title, optimisticSteps };
-  //   // let mutateState = { title, optimisticSteps, code, language };
-  //   // mutate(mutateState, false);
-  //   changeFileLanguage(language);
-  //   // saveLanguage(language);
-  // }
-  // console.log(codeFiles);
   return (
     <div className="container">
       <Head>
@@ -451,8 +364,6 @@ const DraftView = () => {
             draftId={draftId}
             highlightLines={highlightLines}
             saveFileCode={saveFileCode}
-            //manages what code is shown in the editor
-            // draftCode={draftFiles[selectedFileIndex].code}
             draftCode={codeFiles[selectedFileIndex].code}
             files={draftFiles}
             addFile={addFile}
@@ -462,7 +373,6 @@ const DraftView = () => {
             changeSelectedFile={changeSelectedFileIndex}
             changeFileLanguage={changeFileLanguage}
             language={draftFiles[selectedFileIndex].language}
-            // key={draftFiles[selectedFileIndex].id}
           />
         </div>
         )}

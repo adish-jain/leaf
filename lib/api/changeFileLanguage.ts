@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebaseAdmin, initFirebase } from "../initFirebase";
-import { getUser, getUserDrafts } from "../userUtils";
+import { getUser } from "../userUtils";
 import { getFilesForDraft } from "../fileUtils";
 const admin = require("firebase-admin");
 
@@ -31,7 +31,7 @@ async function changeFileLanguageHandler(req: NextApiRequest, res: NextApiRespon
     return;
   }
 
-  // update language in firebase
+  // update language for file in firebase
   db.collection("users")
   .doc(uid)
   .collection("drafts")

@@ -6,9 +6,8 @@ var shortId = require("shortid");
 const fetch = require("node-fetch");
 
 type File = {
-  //replace with enum
   id: string;
-  language: string;
+  language: string; //replace with enum
   code: string;
   name: string;
 };
@@ -23,54 +22,20 @@ export function useFiles(
   draftTitle: any,
   storedSteps: any,
   mutate: any) {
-    let files = [...draftFiles];
-    // console.log(draftFiles);
 
-    // Manages the files within the filebar.
+    // Manages the files within filebar.
+    // The id, language, & name fields are guaranteed to be correct.
+    let files = [...draftFiles];
+
+    // Manages the code within the files.
+    // The code field is guaranteed to be correct.
     var [codeFiles, updateFiles] = useState<File[]>(files.slice());
-    // useEffect(() =>
-    //   updateFiles(files.slice())
-    // );
     if (files[0]["id"] !== codeFiles[0]["id"] || files.length !== codeFiles.length) {
       updateFiles(files.slice());
     }
-    console.log(files);
-    console.log(codeFiles);
-    // var codeFiles = files.slice();
-      // draftFiles[0],
-      // {
-      //   id: shortId.generate(),
-      //   name: "untitled.txt",
-      //   code: "// Write some code here ...",
-      //   language: "jsx",
-      // },
-      // getFirstFileData(),
-    // );
-    let numOfUntitleds = files.length; //shouldn't be len, but maxNum
 
-
-    // getFirstFileData();
-    // // retrieves the first file information from Firebase & adds to `files`
-    // function getFirstFileData(): File { 
-    //   var data = {
-    //     requestedAPI: "get_first_file_data",
-    //     draftId: draftId,
-    //   }
-    //   let results;
-    //   fetch("/api/endpoint", {
-    //     method: "POST",
-    //     headers: new Headers({ "Content-Type": "application/json" }),
-    //     body: JSON.stringify(data),
-    //   }).then(async (res: any) => {
-    //     console.log(res);
-    //     results = res;
-    //   });
-    //   console.log(results);
-    //   //@ts-ignore
-    //   return results;
-    // }
-    
-    // saveFile(files[0]["id"], files[0]["name"], files[0]["code"], files[0]["language"]);
+    // Need to fix this to be maxNum of files so far to avoid duplicate keys  
+    let numOfUntitleds = files.length; 
 
     /* Manages which file is selected in the filebar.
     * files[selectedfileIndex] will give you the current selected file
@@ -81,30 +46,15 @@ export function useFiles(
     * Update the code in DynamicCodeEditor in the correct file
     */
     function changeCode(value: string) {
-      // console.log(files);
       let duplicateFiles = [...codeFiles];
-      // console.log(value);
       duplicateFiles[selectedFileIndex].code = value;
-      // codeFiles[selectedFileIndex].code = value;
-      // console.log(duplicateFiles);
       updateFiles(duplicateFiles);
-      // codeFiles = duplicateFiles;
-      // console.log(duplicateFiles);
-      // files = duplicateFiles;
-      // let title = draftTitle;
-      // let optimisticSteps = storedSteps;
-      // // let files = draftFiles;
-      // // console.log(files);
-      // let mutateState = { title, optimisticSteps, files };
-      // // let mutateState = { title, optimisticSteps, code, language };
-      // mutate(mutateState, true);
     }
 
     /*
     * Adds a new file to the Filebar. Currently does not store the new file in firebase.
     */
     function addFile() {
-      console.log("add file");
       // make sure file is untitled2, untitled3, etc.
       numOfUntitleds++;
       let newFileName = `untitled${numOfUntitleds}.txt`;
@@ -126,20 +76,10 @@ export function useFiles(
         language: newFileLang,
       })
 
-      // updateFiles(
-      //   files.concat({
-      //     name: newFileName,
-      //     id: newFileId,
-      //     code: newFileCode,
-      //     language: newFileLang,
-      //   })
-      // );
-      console.log(files);
       let title = draftTitle;
       let optimisticSteps = storedSteps;
-      // let files = draftFiles;
       let mutateState = { title, optimisticSteps, files };
-      // // let mutateState = { title, optimisticSteps, code, language };
+
       mutate(mutateState, true);
       saveFile(newFileId, newFileName, newFileCode, newFileLang);
     }
@@ -149,30 +89,29 @@ export function useFiles(
       fileName: string,
       fileCode: string,
       fileLang: string) {
-        // save file 
-        var data = {
-          requestedAPI: "save_file",
-          draftId: draftId,
-          fileId: fileId,
-          fileName: fileName,
-          fileCode: fileCode,
-          fileLang: fileLang,
-        }
-
-        fetch("/api/endpoint", {
-          method: "POST",
-          headers: new Headers({ "Content-Type": "application/json" }),
-          body: JSON.stringify(data),
-        }).then(async (res: any) => {
-          console.log(res);
-        });
+      // save file 
+      var data = {
+        requestedAPI: "save_file",
+        draftId: draftId,
+        fileId: fileId,
+        fileName: fileName,
+        fileCode: fileCode,
+        fileLang: fileLang,
       }
+
+      fetch("/api/endpoint", {
+        method: "POST",
+        headers: new Headers({ "Content-Type": "application/json" }),
+        body: JSON.stringify(data),
+      }).then(async (res: any) => {
+        console.log(res);
+      });
+    }
 
       /*
     * Delete a file in the filebar. Makes sure that the selected file is set correctly after deletion.
     */
     function removeFile(toDeleteIndex: number) {
-      console.log("remove file");
       // can have minimum one file
       if (files.length === 1) {
         return;
@@ -188,17 +127,16 @@ export function useFiles(
         let newIndex = Math.max(selectedFileIndex - 1, 0);
         changeSelectedFileIndex(newIndex);
       }
+     
       cloneFiles.splice(toDeleteIndex, 1);
       files = cloneFiles;
       codeFiles = cloneFiles;
-      // updateFiles(cloneFiles);
+
       let title = draftTitle;
       let optimisticSteps = storedSteps;
-      // let files = draftFiles;
+      
       let mutateState = { title, optimisticSteps, files };
-      // // let mutateState = { title, optimisticSteps, code, language };
       mutate(mutateState, false);
-      // updateFiles(cloneFiles);
       deleteFile(toDeleteFileId);
     }
 
@@ -219,19 +157,17 @@ export function useFiles(
     }
 
     function changeFileLanguage(language: string) {
-      console.log("change langugage");
       let fileId = files[selectedFileIndex].id;
       let duplicateFiles = [...files];
       duplicateFiles[selectedFileIndex].language = language;
       files = duplicateFiles;
       codeFiles = duplicateFiles;
-      // updateFiles(duplicateFiles);
 
       let title = draftTitle;
       let optimisticSteps = storedSteps;
+
       let mutateState = { title, optimisticSteps, files };
-      mutate(mutateState, true); // true, not false
-      console.log(files);
+      mutate(mutateState, true); 
       
       var data = {
         requestedAPI: "change_file_language",
@@ -252,6 +188,7 @@ export function useFiles(
     function saveFileCode() {
       let fileId = files[selectedFileIndex].id;
       let code = codeFiles[selectedFileIndex].code;
+
       var data = {
         requestedAPI: "save_file_code",
         draftId: draftId,
@@ -278,4 +215,4 @@ export function useFiles(
         changeFileLanguage,
         saveFileCode,
     }
-  }
+}

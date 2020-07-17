@@ -20,13 +20,10 @@ import handleDeleteStep from "../../lib/api/deleteStep";
 import handleUpdateStep from "../../lib/api/updateStep";
 import handleChangeStepOrder from "../../lib/api/changeStepOrder";
 import handleSaveTitle from "../../lib/api/saveTitle";
-import handleSaveCode from "../../lib/api/saveCode"; //DELETE 
-import handleSaveLanguage from "../../lib/api/saveLanguage"; //DELETE
 import handleSaveFile from "../../lib/api/saveFile";
 import handleDeleteFile from "../../lib/api/deleteFile";
 import handleChangeFileLanguage from "../../lib/api/changeFileLanguage";
 import handleSaveFileCode from "../../lib/api/saveFileCode";
-import handleGetFirstFileData from "../../lib/api/getFirstFileData"; //DELETE
 
 
 const firebase = require("firebase/app");
@@ -133,15 +130,9 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
       return handleSaveTitle(req, res);
     }
 
-    // POST
-    case "save_code": {
-      return handleSaveCode(req, res);
-    }
-
-     // POST
-     case "save_language": {
-      return handleSaveLanguage(req, res);
-    }
+    /* 
+    ------ Files ------
+    */
 
     // POST
     case "save_file": {
@@ -158,10 +149,6 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
 
     case "save_file_code": {
       return handleSaveFileCode(req, res);
-    }
-
-    case "get_first_file_data": {
-      return handleGetFirstFileData(req, res);
     }
 
     default: {

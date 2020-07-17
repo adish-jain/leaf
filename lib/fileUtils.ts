@@ -3,8 +3,6 @@ const admin = require("firebase-admin");
 initFirebaseAdmin();
 let db = admin.firestore();
 
-import { getUidFromUsername } from "./userUtils";
-
 export async function getFilesForDraft(uid: string, draftId: string) {
     let filesRef = db
     .collection("users")

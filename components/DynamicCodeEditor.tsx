@@ -44,15 +44,10 @@ export default class CodeMirror extends Component<
   constructor(props: CodeMirrorProps) {
     super(props);
     this.instance = undefined;
-    // this.state = {
-    //   value: this.props.draftCode,
-    // }
   }
 
   highlightLines(editor: any) {
     let start = editor.getCursor(true)["line"] + 1;
-    // console.log(editor.getSelection('\n').split("\n"));
-    // console.log(editor.getSelection('\n').split("\n").length - 1);
     let end = start + editor.getSelection('\n').split("\n").length - 1;
     // let end = editor.getCursor(false)["line"] + 1;
     this.props.highlightLines(start, end);
@@ -72,7 +67,7 @@ export default class CodeMirror extends Component<
           options={{
             lineNumbers: true,
             mode: language,
-            theme: "material",
+            theme: "vscode-dark",
             // theme: 'vscode-dark',
             // theme: 'oceanic-next',
             lineWrapping: true,
@@ -93,21 +88,12 @@ export default class CodeMirror extends Component<
             editor.setSize('100%', '100%');
           }}
           onBeforeChange={(editor, data, value) => {
-            console.log(value);
             this.props.changeCode(value);
-            // this.setState({
-            //   value,
-            // });
           }}
           onChange={(editor, data, value) => {
-            // this.setState({
-            //   value,
-            // })
           }}
           onBlur={() => {
-            console.log("blurred");
             this.props.saveFileCode();
-            // this.props.saveFileCode(this.state.value);
           }}
         />
       </div>

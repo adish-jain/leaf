@@ -16,8 +16,6 @@ export default async function createDraftHandler(
   let newDraft = {
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
     title: "Untitled",
-    // code: "// Write some code here ... ",
-    // language: "JSX"
   };
 
   let newFileId = shortId.generate();
@@ -33,9 +31,6 @@ export default async function createDraftHandler(
           .collection("drafts")
           .add(newDraft);
 
-  // await db.collection.
-
-
   let drafts = await getUserDrafts(uid);
   let draftId = drafts[0].id;
 
@@ -46,7 +41,6 @@ export default async function createDraftHandler(
           .collection("files")
           .doc(newFileId)
           .set(newFile)
-
 
   res.statusCode = 200;
   res.send(drafts);
