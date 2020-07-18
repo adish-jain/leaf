@@ -29,7 +29,6 @@ type PublishingProps = {
 };
 
 type PublishingState = {
-  steps: any[];
   title: string;
   saveTitle: boolean;
   previewLoading: boolean;
@@ -59,25 +58,35 @@ export default class Publishing extends Component<
     this.onTitleChange = this.onTitleChange.bind(this);
 
     this.state = {
-      steps: [],
       title: props.title,
       saveTitle: false,
       previewLoading: false,
     };
   }
 
-  closeStep(id: string) {
-    let steps = this.state.steps;
-    let idx = steps.indexOf(id, 0);
-    steps.splice(idx, 1);
-    this.setState({ steps: steps });
+  closeStep(stepId: string) {
+    this.props.deleteStoredStep(stepId);
   }
 
   addStep(e: React.MouseEvent<HTMLButtonElement>) {
-    let steps = this.state.steps;
-    let new_step = shortId.generate();
-    steps.push(new_step);
-    this.setState({ steps });
+    let stepId = shortId.generate();
+
+    let emptyJSON = {
+      blocks: [
+        {
+          key: stepId,
+          text: "Enter content here",
+          type: "unstyled",
+          depth: 0,
+          inlineStyleRanges: [],
+          entityRanges: [],
+          data: {},
+        },
+      ],
+      entityMap: {},
+    };
+
+    this.props.saveStep(stepId, JSON.stringify(emptyJSON));
   }
 
   publishDraft(e: React.MouseEvent<HTMLButtonElement>) {
@@ -120,7 +129,7 @@ export default class Publishing extends Component<
     // window.location.href = url;
 
     this.setState({
-      previewLoading: true
+      previewLoading: true,
     });
 
     fetch(url, {
@@ -184,19 +193,6 @@ export default class Publishing extends Component<
               moveStepUp={this.props.moveStepUp}
               moveStepDown={this.props.moveStepDown}
               key={storedStep.id}
-            />
-          );
-        })}
-        {this.state.steps.map((step) => {
-          return (
-            <Step
-              closeStep={this.closeStep}
-              saveStep={this.props.saveStep}
-              onHighlight={this.props.onHighlight}
-              unHighlight={this.props.unHighlight}
-              id={step}
-              draftId={this.props.draftId}
-              key={step}
             />
           );
         })}

@@ -32,7 +32,6 @@ initFirebase();
 export default (req: NextApiRequest, res: NextApiResponse) => {
   let requestBody = req.body;
   let requestedAPI = requestBody.requestedAPI;
-  console.log(requestedAPI);
   switch (requestedAPI) {
     /* 
     ------ Authentication ------

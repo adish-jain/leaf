@@ -96,8 +96,6 @@ const DraftView = () => {
     authenticated
   );
 
-  console.log(realSteps);
-
   // DynamicCodeEditor -> CodeEditor -> [draftId]
   function highlightLines(start: any, end: any) {
     changeLines({ start: start, end: end });

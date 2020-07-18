@@ -43,7 +43,7 @@ async function saveStepHandler(req: NextApiRequest, res: NextApiResponse) {
     order: order,
   };
 
-  db.collection("users")
+  await db.collection("users")
     .doc(uid)
     .collection("drafts")
     .doc(draftId)
