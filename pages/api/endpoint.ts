@@ -14,6 +14,7 @@ import handleGetUserInfo from "../../lib/api/getUserInfo";
 import handlePublishPost from "../../lib/api/publishPost";
 import handleGetPosts from "../../lib/api/getPosts";
 import handleDeletePost from "../../lib/api/deletePost";
+import handleGetSteps from "../../lib/api/getDraftSteps";
 import handleGetDraftData from "../../lib/api/getDraftData";
 import handleSaveStep from "../../lib/api/saveStep";
 import handleDeleteStep from "../../lib/api/deleteStep";
@@ -25,13 +26,13 @@ import handleDeleteFile from "../../lib/api/deleteFile";
 import handleChangeFileLanguage from "../../lib/api/changeFileLanguage";
 import handleSaveFileCode from "../../lib/api/saveFileCode";
 
-
 const firebase = require("firebase/app");
 initFirebase();
 
 export default (req: NextApiRequest, res: NextApiResponse) => {
   let requestBody = req.body;
   let requestedAPI = requestBody.requestedAPI;
+  console.log(requestedAPI);
   switch (requestedAPI) {
     /* 
     ------ Authentication ------
@@ -90,6 +91,10 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
     // POST
     case "get_draft_data": {
       return handleGetDraftData(req, res);
+    }
+
+    case "getDraftSteps": {
+      return handleGetSteps(req, res);
     }
 
     case "save_step": {
