@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Controlled as CodeMirror2 } from "react-codemirror2";
 import { filenames, Language, reactString, jsxString } from "./code_string";
-
+import CodeEditorStyles from "../styles/CodeEditor.module.scss";
 require("codemirror/mode/xml/xml");
 require("codemirror/mode/javascript/javascript");
 require("codemirror/mode/jsx/jsx");
@@ -18,8 +18,15 @@ type CodeMirrorProps = {
   language: string;
 };
 
+type Line = {
+  lineNumber: number;
+  char: number;
+};
+
 type CodeMirrorState = {
-  value: string;
+  showModal: boolean;
+  end: Line;
+  start: Line;
 };
 
 const ranges = [
@@ -43,24 +50,82 @@ export default class CodeMirror extends Component<
 
   constructor(props: CodeMirrorProps) {
     super(props);
+    this.state = {
+      showModal: false,
+      start: { lineNumber: 0, char: 0 },
+      end: { lineNumber: 0, char: 0 },
+    };
     this.instance = undefined;
   }
 
   highlightLines(editor: any) {
+    // console.log(editor.listSelections());
     let start = editor.getCursor(true)["line"] + 1;
-    let end = start + editor.getSelection('\n').split("\n").length - 1;
+    let end = start + editor.getSelection("\n").split("\n").length - 1;
     // let end = editor.getCursor(false)["line"] + 1;
     this.props.highlightLines(start, end);
   }
 
+  handleMouseUp() {
+    let editor = this.instance;
+    let lines = editor?.listSelections();
+    console.log(lines);
+    let anchor = lines![0].anchor;
+    let head = lines![0].head;
+    let { start, end } = this.state;
+
+    // if highlight is not in start position
+    if (!(head.ch === anchor.ch && head.line === anchor.line)) {
+      if (anchor.line > head.line) {
+        this.setState({
+          showModal: true,
+          end: { lineNumber: anchor.line + 1, char: anchor.ch },
+          start: { lineNumber: head.line + 1, char: head.ch },
+        });
+      } else {
+        this.setState({
+          showModal: true,
+          start: { lineNumber: anchor.line + 1, char: anchor.ch },
+          end: { lineNumber: head.line + 1, char: head.ch },
+        });
+      }
+    } else {
+      this.setState({
+        showModal: false,
+      });
+    }
+  }
+
   render() {
+    const LineModal = () => {
+      if (this.state.showModal) {
+        return (
+          <div className={CodeEditorStyles["line-modal"]}>
+            <div className={CodeEditorStyles["adjusted"]}>
+              <p>
+                Highlight lines {this.state.start.lineNumber} to{" "}
+                {this.state.end.lineNumber}
+              </p>
+              <button>OK</button>
+              <button>X</button>
+            </div>
+          </div>
+        );
+      } else {
+        return <div></div>;
+      }
+    };
+
     let { draftCode, language } = this.props;
     return (
-      <div>
+      <div onMouseUp={this.handleMouseUp.bind(this)}>
         <style jsx>{`
           flex-grow: 100;
           overflow-y: scroll;
+          position: relative;
+          background-color: #263238;
         `}</style>
+        <LineModal />
         <CodeMirror2
           className={"CodeEditor"}
           value={draftCode}
@@ -91,10 +156,12 @@ export default class CodeMirror extends Component<
           onBeforeChange={(editor, data, value) => {
             this.props.changeCode(value);
           }}
-          onChange={(editor, data, value) => {
-          }}
+          onChange={(editor, data, value) => {}}
           onBlur={() => {
             this.props.saveFileCode();
+          }}
+          onDragLeave={(editor, event) => {
+            console.log("drag left");
           }}
         />
       </div>

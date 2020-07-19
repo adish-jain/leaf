@@ -149,6 +149,7 @@ export default class Publishing extends Component<
   }
 
   render() {
+    let {storedSteps} = this.props;
     return (
       <div className={publishingStyles.publishing}>
         <div className={publishingStyles.PublishingButtonsWrapper}>
@@ -179,7 +180,7 @@ export default class Publishing extends Component<
             />
           </form>
         </div>
-        {this.props.storedSteps.map((storedStep) => {
+        {storedSteps.map((storedStep, index) => {
           return (
             <StoredStep
               id={storedStep.id}

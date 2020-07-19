@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import dynamic from "next/dynamic";
 import LanguageBar from "./LanguageBar";
 import FileBar from "./FileBar";
-import PreviewSection from "./PreviewSection";
 
 // import CodeMirror from './DynamicComponent';
 // const {CodeMirror} = require('./DynamicComponent');

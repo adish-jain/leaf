@@ -5,17 +5,18 @@
   box-sizing: border-box;
   box-shadow: 0px 4px 16px #edece9;
   border-radius: 8px;
-
-  // padding: 24px;
+  padding: 24px 24px 0px 24px;
+  z-index: 3;
 }
 
-.Draft {  
+.Draft {
   // padding: 24px;
 }
 
 .Buttons {
   display: flex;
   flex-direction: row-reverse;
+  padding-bottom: 24px;
 
   .Close {
     border-radius: 50%;
@@ -98,5 +99,39 @@
 
 .LineInfo {
   height: 40px;
-  border-top: 1px solid #EBEBEB;
+  border-top: 1px solid #ebebeb;
+}
+
+.line-indicator {
+  z-index: 1;
+  display: flex;
+  // position: absolute;
+  // bottom: 0;
+  // left: 50%;
+  justify-content: center;
+}
+
+.step-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+
+.center-indicator {
+  display: flex;
+  background: #ffffff;
+  box-shadow: 0px 4px 16px #edece9;
+  border-radius: 0px 0px 8px 8px;
+
+  .lines-prompt {
+    padding: 12px;
+  }
+
+  .lines-selected {
+    background: #37ABDA;
+    color: white;
+    padding: 12px;
+    border-radius: 0px 0px 8px 0px;
+  }
 }
