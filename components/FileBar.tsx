@@ -14,7 +14,7 @@ type FileBarProps = {
   draftId: string;
   files: File[];
   changeSelectedFile: (fileIndex: number) => void;
-  saveFileName: (value: string) => void;
+  saveFileName: (value: string, external: boolean) => void;
   addFile: (draftId: string) => void;
   removeFile: (toDeleteIndex: number) => void;
   selectedFileIndex: number;

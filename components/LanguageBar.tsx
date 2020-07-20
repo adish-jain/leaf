@@ -3,7 +3,7 @@ const languageBarStyles = require("../styles/LanguageBar.module.scss");
 
 type LanguageBarProps = {
   language: string;
-  changeFileLanguage: (language: string) => void;
+  changeFileLanguage: (language: string, external: boolean) => void;
 };
 
 type LanguageBarState = {
@@ -19,7 +19,7 @@ export default class CodeMirror extends Component<
   }
 
   handleChange(e: React.FormEvent<HTMLSelectElement>) {
-    this.props.changeFileLanguage(e.currentTarget.value);
+    this.props.changeFileLanguage(e.currentTarget.value, true);
   }
 
   render() {

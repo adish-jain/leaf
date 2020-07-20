@@ -50,6 +50,22 @@ export function useFiles(
     */
     const [selectedFileIndex, changeSelectedFileIndex] = useState(0);
 
+    const extToName = {
+      "py": "python", 
+      "jsx": "jsx", 
+      "js": "javascript", 
+      "html": "xml"
+    }
+    Object.freeze(extToName);
+
+    const nameToExt = {
+      "python": "py", 
+      "jsx": "jsx", 
+      "javascript": "js", 
+      "xml": "html"
+    }
+    Object.freeze(nameToExt);
+
     /*
     * Update the code in DynamicCodeEditor in the correct file
     */
@@ -59,11 +75,14 @@ export function useFiles(
       updateFiles(duplicateFiles);
     }
 
-    function saveFileName(value: string) {
+    function saveFileName(value: string, external: boolean) {
       let duplicateFiles = [...files];
       duplicateFiles[selectedFileIndex].name = value;
       files = duplicateFiles;
       updateFiles(duplicateFiles);
+      if (external) {
+        setLangFromName(value);
+      }
       
       let title = draftTitle;
       let optimisticSteps = storedSteps;
@@ -85,6 +104,24 @@ export function useFiles(
       }).then(async (res: any) => {
         console.log(res);
       });
+    }
+
+    function setLangFromName(value: string) {
+      let fileNameTokens = value.split(".");
+      let langType = fileNameTokens[fileNameTokens.length - 1];
+      // @ts-ignore
+      changeFileLanguage(extToName[langType], false);
+    }
+
+    function setNameFromLang(value: string) {
+      // @ts-ignore
+      let extension = nameToExt[value];
+      let fileName = files[selectedFileIndex].name;
+      let fileNameTokens = fileName.split(".");
+      let len = fileNameTokens.length;
+      let beforeExt = fileNameTokens.slice(0, len - 1).join("");
+      let newName = beforeExt + "." + extension;
+      saveFileName(newName, false);
     }
 
     /*
@@ -192,12 +229,15 @@ export function useFiles(
       });
     }
 
-    function changeFileLanguage(language: string) {
+    function changeFileLanguage(language: string, external: boolean) {
       let fileId = files[selectedFileIndex].id;
       let duplicateFiles = [...files];
       duplicateFiles[selectedFileIndex].language = language;
       files = duplicateFiles;
       codeFiles = duplicateFiles;
+      if (external) {
+        setNameFromLang(language);
+      }
 
       let title = draftTitle;
       let optimisticSteps = storedSteps;

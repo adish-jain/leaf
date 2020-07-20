@@ -4,16 +4,12 @@ const fileNamesStyle = require("../styles/FileNames.module.scss");
 type FileNameProps = {
   selected: boolean;
   changeSelectedFile: (fileIndex: number) => void;
-  saveFileName: (value: string) => void;
+  saveFileName: (value: string, external: boolean) => void;
   name: string;
   removeFile: (toDeleteIndex: number) => void;
   index: number;
 };
 
-// type FileNameState = {
-
-
-// }
 
 export default function FileName(props: FileNameProps) {
   let [hovered, toggleHover] = useState(false);
@@ -48,7 +44,7 @@ export default function FileName(props: FileNameProps) {
 
   function saveFileName() {
     console.log("blur");
-    props.saveFileName(name);
+    props.saveFileName(name, true);
     dblClick(false);
   }
 
@@ -66,36 +62,26 @@ export default function FileName(props: FileNameProps) {
       >
 
       <div
-      onDoubleClick={(e) => {
-        dblClick(true);
-      }}>
+        onDoubleClick={(e) => {
+          dblClick(true);
+        }}
+      >
 
       {/* <div
         onBlur={(e) => {
-          console.log("blur");
-          dblClick(false);
+          console.log("blur1");
+          saveFileName();
       }}> */}
-      {/* {editing && (</div>
-        <textarea
-          className={fileNamesStyle["filenames"]}
-          placeholder={"Untitled"}
-          defaultValue={props.name}
-          // onChange={this.onTitleChange}
-          // onBlur={this.saveTitle}
-          name="title"
-        />)} */}
         {editing ? 
           (<textarea
             className={fileNamesStyle["filenames"]}
-            placeholder={"Untitled"}
             defaultValue={name}
             onChange={onNameChange}
             onBlur={saveFileName}
             name="title"
           />) 
-          : name}
-        {/* {props.name} */}
-        
+          : name
+        }        
       </div>
       </div>
       {/* </div> */}

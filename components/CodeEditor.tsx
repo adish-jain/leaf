@@ -26,8 +26,8 @@ type CodeEditorProps = {
   draftId: string;
   highlightLines: (start: any, end: any) => void;
   saveFileCode: () => void;
-  changeFileLanguage: (language: string) => void;
-  saveFileName: (value: string) => void;
+  changeFileLanguage: (language: string, external: boolean) => void;
+  saveFileName: (value: string, external: boolean) => void;
   draftCode: string;
 
   // filenames map to language
