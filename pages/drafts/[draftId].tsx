@@ -78,6 +78,7 @@ const DraftView = () => {
     changeCode,
     changeSelectedFileIndex,
     changeFileLanguage,
+    saveFileName,
     saveFileCode,
   } = useFiles(draftId, draftFiles, draftTitle, storedSteps, mutate);
 
@@ -371,6 +372,7 @@ const DraftView = () => {
             changeCode={changeCode}
             changeSelectedFile={changeSelectedFileIndex}
             changeFileLanguage={changeFileLanguage}
+            saveFileName={saveFileName}
             language={draftFiles[selectedFileIndex].language}
           />
         </div>

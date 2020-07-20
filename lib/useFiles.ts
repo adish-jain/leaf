@@ -59,6 +59,34 @@ export function useFiles(
       updateFiles(duplicateFiles);
     }
 
+    function saveFileName(value: string) {
+      let duplicateFiles = [...files];
+      duplicateFiles[selectedFileIndex].name = value;
+      files = duplicateFiles;
+      updateFiles(duplicateFiles);
+      
+      let title = draftTitle;
+      let optimisticSteps = storedSteps;
+      let mutateState = { title, optimisticSteps, files };
+
+      mutate(mutateState, false);
+
+      var data = {
+        requestedAPI: "save_file_name",
+        draftId: draftId,
+        fileId: files[selectedFileIndex].id,
+        fileName: value,
+      }
+
+      fetch("/api/endpoint", {
+        method: "POST",
+        headers: new Headers({ "Content-Type": "application/json" }),
+        body: JSON.stringify(data),
+      }).then(async (res: any) => {
+        console.log(res);
+      });
+    }
+
     /*
     * Adds a new file to the Filebar. Currently does not store the new file in firebase.
     */
@@ -221,6 +249,7 @@ export function useFiles(
         changeCode, 
         changeSelectedFileIndex, 
         changeFileLanguage,
+        saveFileName,
         saveFileCode,
     }
 }

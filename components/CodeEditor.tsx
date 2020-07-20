@@ -27,6 +27,7 @@ type CodeEditorProps = {
   highlightLines: (start: any, end: any) => void;
   saveFileCode: () => void;
   changeFileLanguage: (language: string) => void;
+  saveFileName: (value: string) => void;
   draftCode: string;
 
   // filenames map to language
@@ -61,6 +62,7 @@ export default class CodeEditor extends Component<
       selectedFileIndex,
       changeSelectedFile,
       changeFileLanguage,
+      saveFileName,
       highlightLines,
       language,
     } = this.props;
@@ -83,6 +85,7 @@ export default class CodeEditor extends Component<
           removeFile={removeFile}
           selectedFileIndex={selectedFileIndex}
           changeSelectedFile={changeSelectedFile}
+          saveFileName={saveFileName}
         />
         <DynamicCodeEditor
           // @ts-ignore

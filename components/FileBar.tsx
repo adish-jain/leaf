@@ -14,6 +14,7 @@ type FileBarProps = {
   draftId: string;
   files: File[];
   changeSelectedFile: (fileIndex: number) => void;
+  saveFileName: (value: string) => void;
   addFile: (draftId: string) => void;
   removeFile: (toDeleteIndex: number) => void;
   selectedFileIndex: number;
@@ -30,6 +31,7 @@ export default class FileBar extends Component<FileBarProps> {
       draftId,
       files,
       changeSelectedFile,
+      saveFileName,
       addFile,
       removeFile,
       selectedFileIndex,
@@ -42,6 +44,7 @@ export default class FileBar extends Component<FileBarProps> {
             name={file.name}
             key={file.name}
             changeSelectedFile={changeSelectedFile}
+            saveFileName={saveFileName}
             selected={selectedFileIndex === index}
             removeFile={removeFile}
             index={index}
