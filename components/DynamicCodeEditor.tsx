@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Controlled as CodeMirror2 } from "react-codemirror2";
 import { filenames, Language, reactString, jsxString } from "./code_string";
 import CodeEditorStyles from "../styles/CodeEditor.module.scss";
+import { EDOM } from "constants";
 require("codemirror/mode/xml/xml");
 require("codemirror/mode/javascript/javascript");
 require("codemirror/mode/jsx/jsx");
@@ -58,38 +59,101 @@ export default class CodeMirror extends Component<
     this.instance = undefined;
   }
 
-  highlightLines(editor: any) {
-    // console.log(editor.listSelections());
-    let start = editor.getCursor(true)["line"] + 1;
-    let end = start + editor.getSelection("\n").split("\n").length - 1;
-    // let end = editor.getCursor(false)["line"] + 1;
-    this.props.highlightLines(start, end);
+  highlightLines(editor: CodeMirror.Editor) {
+    let lines = editor.listSelections();
+    let anchor = lines![0].anchor;
+    let head = lines![0].head;
+    let { start, end } = this.state;
+    console.log(lines);
+
+    if (head.ch === anchor.ch && head.line === anchor.line) {
+      this.setState({
+        showModal: false,
+      });
+      return;
+    }
+
+    let equalSelectionsCaseOne =
+      start.lineNumber - 1 === anchor.line &&
+      start.char === anchor.ch &&
+      end.lineNumber - 1 === head.line &&
+      end.char === head.ch;
+    let equalSelectionsCaseTwo =
+      start.lineNumber - 1 === head.line &&
+      start.char === head.ch &&
+      end.lineNumber - 1 === anchor.line &&
+      end.char === anchor.ch;
+
+    if (equalSelectionsCaseOne || equalSelectionsCaseTwo) {
+      console.log("equal selection");
+      this.setState({
+        showModal: false,
+      });
+      return;
+    }
+
+    if (anchor.line > head.line) {
+      this.setState({
+        showModal: true,
+        end: { lineNumber: anchor.line + 1, char: anchor.ch },
+        start: { lineNumber: head.line + 1, char: head.ch },
+      });
+    } else {
+      this.setState({
+        showModal: true,
+        start: { lineNumber: anchor.line + 1, char: anchor.ch },
+        end: { lineNumber: head.line + 1, char: head.ch },
+      });
+    }
+
+    // this.props.highlightLines(start, end);
   }
 
   handleMouseUp() {
     let editor = this.instance;
     let lines = editor?.listSelections();
-    console.log(lines);
+    // console.log(lines);
     let anchor = lines![0].anchor;
     let head = lines![0].head;
     let { start, end } = this.state;
 
-    // if highlight is not in start position
+    // handle case where clicking inside selection
+    let equalSelectionsCaseOne =
+      start.lineNumber - 1 === anchor.line &&
+      start.char === anchor.ch &&
+      end.lineNumber - 1 === head.line &&
+      end.char === head.ch;
+    let equalSelectionsCaseTwo =
+      start.lineNumber - 1 === head.line &&
+      start.char === head.ch &&
+      end.lineNumber - 1 === anchor.line &&
+      end.char === anchor.ch;
+
+    // if (equalSelectionsCaseOne || equalSelectionsCaseTwo) {
+    //   console.log("equal selection");
+    //   this.setState({
+    //     showModal: false,
+    //   });
+    //   return;
+    // }
+
+    // closeModal if highlight is in start position
     if (!(head.ch === anchor.ch && head.line === anchor.line)) {
-      if (anchor.line > head.line) {
-        this.setState({
-          showModal: true,
-          end: { lineNumber: anchor.line + 1, char: anchor.ch },
-          start: { lineNumber: head.line + 1, char: head.ch },
-        });
-      } else {
-        this.setState({
-          showModal: true,
-          start: { lineNumber: anchor.line + 1, char: anchor.ch },
-          end: { lineNumber: head.line + 1, char: head.ch },
-        });
-      }
+      // if (anchor.line > head.line) {
+      //   this.setState({
+      //     showModal: true,
+      //     end: { lineNumber: anchor.line + 1, char: anchor.ch },
+      //     start: { lineNumber: head.line + 1, char: head.ch },
+      //   });
+      // } else {
+      //   this.setState({
+      //     showModal: true,
+      //     start: { lineNumber: anchor.line + 1, char: anchor.ch },
+      //     end: { lineNumber: head.line + 1, char: head.ch },
+      //   });
+      // }
     } else {
+      console.log("start position");
       this.setState({
         showModal: false,
       });
@@ -104,9 +168,9 @@ export default class CodeMirror extends Component<
             <div className={CodeEditorStyles["adjusted"]}>
               <p>
                 Highlight lines {this.state.start.lineNumber} to{" "}
-                {this.state.end.lineNumber}
+                {this.state.end.lineNumber}?
               </p>
-              <button>OK</button>
+              <button>Highlight</button>
               <button>X</button>
             </div>
           </div>
@@ -119,6 +183,7 @@ export default class CodeMirror extends Component<
     let { draftCode, language } = this.props;
     return (
       <div onMouseUp={this.handleMouseUp.bind(this)}>
+        {/* <div> */}
         <style jsx>{`
           flex-grow: 100;
           overflow-y: scroll;
