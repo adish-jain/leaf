@@ -62,7 +62,7 @@ const DraftView = () => {
   let { data: draftData, mutate } = useSWR(
     authenticated ? "/api/endpoint" : null,
     fetcher,
-    { initialData, revalidateOnMount: true }
+    { initialData, revalidateOnMount: true, revalidateOnFocus: false }
   );
 
   let draftTitle = draftData["title"];
@@ -138,6 +138,8 @@ const DraftView = () => {
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify(data),
     }).then(async (res: any) => {
+      let updatedDraftData = await res.json();
+      mutate(updatedDraftData);
       console.log(res);
     });
 
@@ -182,6 +184,8 @@ const DraftView = () => {
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify(data),
     }).then(async (res: any) => {
+      let updatedDraftData = await res.json();
+      mutate(updatedDraftData);
       console.log(res);
     });
 
@@ -214,6 +218,8 @@ const DraftView = () => {
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify(data),
     }).then(async (res: any) => {
+      let updatedDraftData = await res.json();
+      mutate(updatedDraftData);
       console.log(res);
     });
   }
@@ -254,6 +260,8 @@ const DraftView = () => {
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify(data),
     }).then(async (res: any) => {
+      let updatedDraftData = await res.json();
+      mutate(updatedDraftData);
       console.log(res);
     });
   }
@@ -293,6 +301,8 @@ const DraftView = () => {
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify(data),
     }).then(async (res: any) => {
+      let updatedDraftData = await res.json();
+      mutate(updatedDraftData);
       console.log(res);
     });
   }

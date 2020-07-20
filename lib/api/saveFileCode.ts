@@ -32,7 +32,7 @@ async function saveFileCodeHandler(req: NextApiRequest, res: NextApiResponse) {
   }
 
   // update code for file in firebase
-  db.collection("users")
+  await db.collection("users")
   .doc(uid)
   .collection("drafts")
   .doc(draftId)

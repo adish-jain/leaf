@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebaseAdmin, initFirebase } from "../initFirebase";
 import { getUser } from "../userUtils";
 import { getFilesForDraft } from "../fileUtils";
+import { getDraftDataHandler } from "../postUtils";
 const admin = require("firebase-admin");
 
 let db = admin.firestore();
@@ -49,7 +50,7 @@ async function saveFileHandler(req: NextApiRequest, res: NextApiResponse) {
     .set(newFile);
 
   res.statusCode = 200;
-  let results = await getFilesForDraft(uid, draftId);
+  let results = await getDraftDataHandler(uid, draftId);
   res.send(results);
   return;
 }

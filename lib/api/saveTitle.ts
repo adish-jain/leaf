@@ -31,7 +31,7 @@ async function saveTitleHandler(req: NextApiRequest, res: NextApiResponse) {
   }
 
   // update title in firebase
-  db.collection("users")
+  await db.collection("users")
   .doc(uid)
   .collection("drafts")
   .doc(draftId)

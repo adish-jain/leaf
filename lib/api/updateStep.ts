@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebaseAdmin, initFirebase } from "../initFirebase";
 import { getUser } from "../userUtils";
-import { getUserStepsForDraft } from "../postUtils";
+import { getDraftDataHandler } from "../postUtils";
 const admin = require("firebase-admin");
 
 let db = admin.firestore();
@@ -34,7 +34,7 @@ async function updateStepHandler(req: NextApiRequest, res: NextApiResponse) {
   }
 
   // update text in firebase
-  db.collection("users")
+  await db.collection("users")
     .doc(uid)
     .collection("drafts")
     .doc(draftId)
@@ -43,7 +43,7 @@ async function updateStepHandler(req: NextApiRequest, res: NextApiResponse) {
     .update({ text: text, lines: lines });
 
   res.statusCode = 200;
-  let results = await getUserStepsForDraft(uid, draftId);
+  let results = await getDraftDataHandler(uid, draftId);
   res.send(results);
   return;
 }

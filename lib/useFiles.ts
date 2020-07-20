@@ -38,10 +38,13 @@ export function useFiles(
     and then `files` is updated to reflect the new code changes. 
     */
     var [codeFiles, updateFiles] = useState<File[]>(files.slice());
-    if (files[0]["id"] !== codeFiles[0]["id"] || files.length !== codeFiles.length) {
-      updateFiles(files.slice());
+    try {
+      if (files[0]["id"] !== codeFiles[0]["id"] || files.length !== codeFiles.length) {
+        updateFiles(files.slice());
+      }  
+    } catch (error) {
     }
-
+    
     // Need to fix this to be maxNum of files so far to avoid duplicate keys  
     let numOfUntitleds = files.length; 
 
@@ -112,6 +115,8 @@ export function useFiles(
         headers: new Headers({ "Content-Type": "application/json" }),
         body: JSON.stringify(data),
       }).then(async (res: any) => {
+        let updatedDraftData = await res.json();
+        mutate(updatedDraftData);
         console.log(res);
       });
     }
@@ -160,6 +165,8 @@ export function useFiles(
         headers: new Headers({ "Content-Type": "application/json" }),
         body: JSON.stringify(data),
       }).then(async (res: any) => {
+        let updatedDraftData = await res.json();
+        mutate(updatedDraftData);
         console.log(res);
       });
     }
@@ -175,7 +182,7 @@ export function useFiles(
       let optimisticSteps = storedSteps;
 
       let mutateState = { title, optimisticSteps, files };
-      mutate(mutateState, true); 
+      mutate(mutateState, false); 
       
       var data = {
         requestedAPI: "change_file_language",
@@ -189,6 +196,8 @@ export function useFiles(
         headers: new Headers({ "Content-Type": "application/json" }),
         body: JSON.stringify(data),
       }).then(async (res: any) => {
+        let updatedDraftData = await res.json();
+        mutate(updatedDraftData);
         console.log(res);
       });
     }

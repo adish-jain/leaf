@@ -11,17 +11,21 @@ export async function adjustStepOrder(
   draftId: string,
   stepsToChange: any
 ) {
-  stepsToChange.forEach((element: { id: any; lines: any; text: any }) => {
-    let stepId = element["id"];
-    db.collection("users")
-      .doc(uid)
-      .collection("drafts")
-      .doc(draftId)
-      .collection("steps")
-      .doc(stepId)
-      .update({ order: admin.firestore.FieldValue.increment(-1) });
-  });
-  return;
+  try {
+    await stepsToChange.forEach((element: { id: any; lines: any; text: any }) => {
+      let stepId = element["id"];
+       db.collection("users")
+        .doc(uid)
+        .collection("drafts")
+        .doc(draftId)
+        .collection("steps")
+        .doc(stepId)
+        .update({ order: admin.firestore.FieldValue.increment(-1) });
+    });
+    return;
+  } catch (error) {
+  }
+  
 }
 
 export async function getDraftDataHandler(uid: string, draftId: string) {

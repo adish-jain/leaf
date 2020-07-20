@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebaseAdmin, initFirebase } from "../initFirebase";
 import { getUser } from "../userUtils";
-import { getUserStepsForDraft } from "../postUtils";
+import { getDraftDataHandler } from "../postUtils";
 const admin = require("firebase-admin");
 
 let db = admin.firestore();
@@ -44,14 +44,14 @@ async function changeStepOrderHandler(
   }
 
   // update order in firebase
-  db.collection("users")
+  await db.collection("users")
     .doc(uid)
     .collection("drafts")
     .doc(draftId)
     .collection("steps")
     .doc(stepId)
     .update({ order: newIdx });
-  db.collection("users")
+  await db.collection("users")
     .doc(uid)
     .collection("drafts")
     .doc(draftId)
@@ -60,7 +60,7 @@ async function changeStepOrderHandler(
     .update({ order: oldIdx });
 
   res.statusCode = 200;
-  let results = await getUserStepsForDraft(uid, draftId);
+  let results = await getDraftDataHandler(uid, draftId);
   res.send(results);
   return;
 }
