@@ -7,10 +7,12 @@ const StepStyles = require("../styles/Step.module.scss");
 const fetch = require("node-fetch");
 
 type StoredStepProps = {
+  editing: boolean;
   id: string;
   draftId: string;
   text: any;
   lines: any;
+  index: number;
   updateStoredStep: (
     text: any,
     stepId: any,
@@ -22,11 +24,11 @@ type StoredStepProps = {
   unHighlight: () => void;
   moveStepUp: (stepId: any) => void;
   moveStepDown: (stepId: any) => void;
+  changeEditingStep: (editingStep: number) => void;
 };
 
 type StoredStepState = {
   stepText: any;
-  editing: boolean;
 };
 
 export default class StoredStep extends Component<
@@ -42,7 +44,6 @@ export default class StoredStep extends Component<
     this.moveStepDown = this.moveStepDown.bind(this);
     this.state = {
       stepText: this.props.text,
-      editing: false,
     };
   }
 
@@ -57,9 +58,7 @@ export default class StoredStep extends Component<
   }
 
   editStoredStep(e: React.MouseEvent<HTMLButtonElement>) {
-    this.setState({
-      editing: true,
-    });
+    this.props.changeEditingStep(this.props.index);
   }
 
   updateStoredStep(
@@ -70,9 +69,7 @@ export default class StoredStep extends Component<
     let stepId = this.props.id;
     this.props.updateStoredStep(stepId, text, this.props.lines, removeLines);
 
-    this.setState({
-      editing: false,
-    });
+    this.props.changeEditingStep(-1);
   }
 
   moveStepUp() {
@@ -86,7 +83,7 @@ export default class StoredStep extends Component<
   render() {
     const contentState = convertFromRaw(this.props.text);
     const editorState = EditorState.createWithContent(contentState);
-    const editing = this.state.editing;
+    const editing = this.props.editing;
     return (
       <div>
         {editing ? (

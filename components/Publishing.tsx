@@ -32,6 +32,7 @@ type PublishingState = {
   title: string;
   saveTitle: boolean;
   previewLoading: boolean;
+  editingStep: number;
 };
 
 type PublishingComponent = {
@@ -56,11 +57,13 @@ export default class Publishing extends Component<
     this.publishDraft = this.publishDraft.bind(this);
     this.saveTitle = this.saveTitle.bind(this);
     this.onTitleChange = this.onTitleChange.bind(this);
+    this.changeEditingStep = this.changeEditingStep.bind(this);
 
     this.state = {
       title: props.title,
       saveTitle: false,
       previewLoading: false,
+      editingStep: -1,
     };
   }
 
@@ -148,8 +151,15 @@ export default class Publishing extends Component<
       });
   }
 
+  changeEditingStep(editingStep: number) {
+    this.setState({
+      editingStep,
+    });
+  }
+
   render() {
-    let {storedSteps} = this.props;
+    let { storedSteps } = this.props;
+    let { editingStep } = this.state;
     return (
       <div className={publishingStyles.publishing}>
         <div className={publishingStyles.PublishingButtonsWrapper}>
@@ -184,6 +194,7 @@ export default class Publishing extends Component<
           return (
             <StoredStep
               id={storedStep.id}
+              index={index}
               draftId={this.props.draftId}
               text={JSON.parse(storedStep.text)}
               lines={storedStep.lines}
@@ -194,6 +205,8 @@ export default class Publishing extends Component<
               moveStepUp={this.props.moveStepUp}
               moveStepDown={this.props.moveStepDown}
               key={storedStep.id}
+              editing={editingStep === index}
+              changeEditingStep={this.changeEditingStep}
             />
           );
         })}
