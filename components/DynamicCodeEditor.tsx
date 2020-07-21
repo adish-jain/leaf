@@ -17,6 +17,7 @@ type CodeMirrorProps = {
   draftCode: string;
   changeCode: (value: string) => void;
   language: string;
+  editing: boolean;
 };
 
 type Line = {
@@ -162,6 +163,10 @@ export default class CodeMirror extends Component<
 
   render() {
     const LineModal = () => {
+      if (!this.props.editing) {
+        return <div></div>;
+      }
+
       if (this.state.showModal) {
         return (
           <div className={CodeEditorStyles["line-modal"]}>
@@ -170,7 +175,7 @@ export default class CodeMirror extends Component<
                 Highlight lines {this.state.start.lineNumber} to{" "}
                 {this.state.end.lineNumber}?
               </p>
-              <button>Highlight</button>
+              <button>Attach highlighted lines to step.</button>
               <button>X</button>
             </div>
           </div>
@@ -212,7 +217,9 @@ export default class CodeMirror extends Component<
             // },
           }}
           onSelection={(editor, data) => {
-            this.highlightLines(editor);
+            if (this.props.editing) {
+              this.highlightLines(editor);
+            }
           }}
           editorDidMount={(editor) => {
             this.instance = editor;

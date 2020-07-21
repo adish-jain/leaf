@@ -25,6 +25,7 @@ type CodeEditorProps = {
   draftId: string;
   highlightLines: (start: any, end: any) => void;
   saveFileCode: () => void;
+  editingStep: number;
   changeFileLanguage: (language: string) => void;
   draftCode: string;
 
@@ -62,6 +63,7 @@ export default class CodeEditor extends Component<
       changeFileLanguage,
       highlightLines,
       language,
+      editingStep
     } = this.props;
     return (
       <div>
@@ -90,6 +92,7 @@ export default class CodeEditor extends Component<
           draftCode={draftCode}
           changeCode={changeCode}
           language={language}
+          editing={editingStep !== -1}
         />
         <LanguageBar
           language={language}

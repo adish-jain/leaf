@@ -11,7 +11,7 @@ type StoredStepProps = {
   id: string;
   draftId: string;
   text: any;
-  lines: any;
+  lines: { start: number; end: number };
   index: number;
   updateStoredStep: (
     text: any,
@@ -93,6 +93,7 @@ export default class StoredStep extends Component<
             editorState={editorState}
             onHighlight={this.props.onHighlight}
             unHighlight={this.props.unHighlight}
+            lines={this.props.lines}
           />
         ) : (
           <RenderedStoredStep

@@ -19,7 +19,6 @@ type EditingStoredStepProps = {
 
 type EditingStoredStepState = {
   remove: boolean;
-  highlight: boolean;
 };
 
 export default class Step extends Component<
@@ -28,41 +27,15 @@ export default class Step extends Component<
 > {
   constructor(props: EditingStoredStepProps) {
     super(props);
-    this.state = { highlight: false, remove: false };
-  }
-
-  highlight(e: React.MouseEvent<HTMLButtonElement>) {
-    this.props.onHighlight();
-    this.setState({
-      highlight: true,
-    });
-  }
-
-  unHighlight(e: React.MouseEvent<HTMLButtonElement>) {
-    this.props.unHighlight();
-    this.setState({
-      highlight: false,
-    });
-  }
-
-  removeSelect(e: React.MouseEvent<HTMLButtonElement>) {
-    this.setState({
-      remove: true,
-      highlight: false,
-    });
+    this.state = { remove: false };
   }
 
   saveEditingStoredStep(e: React.MouseEvent<HTMLButtonElement>) {
     this.props.updateStoredStep(e, this.state.remove);
-    this.setState({
-      highlight: false,
-    });
   }
 
   render() {
     let { onChange, editorState } = this.props;
-    const highlight = this.state.highlight;
-    const remove = this.state.remove;
 
     const Buttons = () => {
       return (

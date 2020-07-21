@@ -1,4 +1,5 @@
 import useSWR, { SWRConfig } from "swr";
+import { useState } from "react";
 
 export function useSteps(
   draftId: string,
@@ -32,6 +33,8 @@ export function useSteps(
       revalidateOnMount: true,
     }
   );
+
+  const [editingStep, changeEditingStep] = useState(-1);
 
   /*
   Helper function to find the step with the associated stepId in `storedSteps`
@@ -229,5 +232,7 @@ export function useSteps(
     moveStepUp,
     moveStepDown,
     realSteps: storedSteps,
+    editingStep,
+    changeEditingStep,
   };
 }

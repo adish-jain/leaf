@@ -88,6 +88,8 @@ const DraftView = () => {
     moveStepUp,
     moveStepDown,
     realSteps,
+    editingStep,
+    changeEditingStep
   } = useSteps(
     draftId as string,
     saveLines,
@@ -170,9 +172,12 @@ const DraftView = () => {
               moveStepUp={moveStepUp}
               moveStepDown={moveStepDown}
               saveTitle={saveTitle}
+              editingStep={editingStep}
+              changeEditingStep={changeEditingStep}
             />
             <CodeEditor
               draftId={draftId as string}
+              editingStep={editingStep}
               highlightLines={highlightLines}
               saveFileCode={saveFileCode}
               draftCode={codeFiles[selectedFileIndex].code}
