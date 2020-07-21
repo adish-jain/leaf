@@ -43,7 +43,7 @@ export default function FileName(props: FileNameProps) {
   }
 
   function saveFileName() {
-    console.log("blur");
+    // console.log("blur");
     props.saveFileName(name, true);
     dblClick(false);
   }

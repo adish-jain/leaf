@@ -54,7 +54,16 @@ export function useFiles(
       "py": "python", 
       "jsx": "jsx", 
       "js": "javascript", 
-      "html": "xml"
+      "html": "xml",
+      "go": "go",
+      "css": "css",
+      "c": "text/x-csrc",
+      "h": "text/x-csrc",
+      "cpp": "text/x-c++src",
+      "java": "text/x-java",
+      "php": "php",
+      "rb": "ruby",
+      "txt": "textile",
     }
     Object.freeze(extToName);
 
@@ -62,7 +71,15 @@ export function useFiles(
       "python": "py", 
       "jsx": "jsx", 
       "javascript": "js", 
-      "xml": "html"
+      "xml": "html", 
+      "go": "go",
+      "css": "css",
+      "text/x-csrc": "c",
+      "text/x-c++src": "cpp",
+      "text/x-java": "java",
+      "php": "php",
+      "ruby": "rb",
+      "textile": "txt",
     }
     Object.freeze(nameToExt);
 
@@ -106,9 +123,52 @@ export function useFiles(
       });
     }
 
+    function changeFileLanguage(language: string, external: boolean) {
+      let fileId = files[selectedFileIndex].id;
+      let duplicateFiles = [...files];
+      duplicateFiles[selectedFileIndex].language = language;
+      files = duplicateFiles;
+      codeFiles = duplicateFiles;
+      if (external) {
+        setNameFromLang(language);
+      }
+
+      let title = draftTitle;
+      let optimisticSteps = storedSteps;
+
+      let mutateState = { title, optimisticSteps, files };
+      mutate(mutateState, true); 
+      
+      var data = {
+        requestedAPI: "change_file_language",
+        draftId: draftId,
+        fileId: fileId,
+        language: language,
+      }
+
+      fetch("/api/endpoint", {
+        method: "POST",
+        headers: new Headers({ "Content-Type": "application/json" }),
+        body: JSON.stringify(data),
+      }).then(async (res: any) => {
+        console.log(res);
+      });
+    }
+
     function setLangFromName(value: string) {
       let fileNameTokens = value.split(".");
-      let langType = fileNameTokens[fileNameTokens.length - 1];
+      let langType;
+      if (fileNameTokens.length === 1) { // no extension defaults to txt
+        langType = "txt";
+      } else {
+        langType = fileNameTokens[fileNameTokens.length - 1];
+      }
+
+      if (!(langType in extToName)) { // if extension type isn't supported
+        alert("This file extension is not supported yet!");
+        langType = "txt";
+      }
+
       // @ts-ignore
       changeFileLanguage(extToName[langType], false);
     }
@@ -117,10 +177,15 @@ export function useFiles(
       // @ts-ignore
       let extension = nameToExt[value];
       let fileName = files[selectedFileIndex].name;
-      let fileNameTokens = fileName.split(".");
-      let len = fileNameTokens.length;
-      let beforeExt = fileNameTokens.slice(0, len - 1).join("");
-      let newName = beforeExt + "." + extension;
+      let newName;
+      if (!(fileName.includes("."))) {
+        newName = fileName + "." + extension;
+      } else {
+        let extIdx = fileName.lastIndexOf(".");
+        let beforeExt = fileName.slice(0, extIdx);
+        newName = beforeExt + "." + extension;
+      }
+      
       saveFileName(newName, false);
     }
 
@@ -130,9 +195,9 @@ export function useFiles(
     function addFile() {
       // make sure file is untitled2, untitled3, etc.
       numOfUntitleds++;
-      let newFileName = `untitled${numOfUntitleds}.txt`;
+      let newFileName = `untitled${numOfUntitleds}`;
       let newFileCode = "// Write some code here ...";
-      let newFileLang = "jsx";
+      let newFileLang = "textile";
       let newFileId = shortId.generate();
 
       files.push({
@@ -218,38 +283,6 @@ export function useFiles(
         requestedAPI: "delete_file",
         draftId: draftId,
         fileId: fileId,
-      }
-
-      fetch("/api/endpoint", {
-        method: "POST",
-        headers: new Headers({ "Content-Type": "application/json" }),
-        body: JSON.stringify(data),
-      }).then(async (res: any) => {
-        console.log(res);
-      });
-    }
-
-    function changeFileLanguage(language: string, external: boolean) {
-      let fileId = files[selectedFileIndex].id;
-      let duplicateFiles = [...files];
-      duplicateFiles[selectedFileIndex].language = language;
-      files = duplicateFiles;
-      codeFiles = duplicateFiles;
-      if (external) {
-        setNameFromLang(language);
-      }
-
-      let title = draftTitle;
-      let optimisticSteps = storedSteps;
-
-      let mutateState = { title, optimisticSteps, files };
-      mutate(mutateState, true); 
-      
-      var data = {
-        requestedAPI: "change_file_language",
-        draftId: draftId,
-        fileId: fileId,
-        language: language,
       }
 
       fetch("/api/endpoint", {

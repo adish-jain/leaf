@@ -28,10 +28,19 @@ export default class CodeMirror extends Component<
         <label>
           Language:
           <select onChange={this.handleChange} value={this.props.language}>
+            <option value="textile">Text</option>
+            <option value="xml">HTML</option>
+            <option value="css">CSS</option>
             <option value="jsx">JSX</option>
             <option value="javascript">Javascript</option>
-            <option value="xml">HTML</option>
             <option value="python">Python</option>
+            <option value="text/x-csrc">C</option>
+            <option value="text/x-c++src">C++</option>
+            <option value="text/x-java">Java</option>
+            <option value="go">Go</option>
+            <option value="php">PHP</option>
+            <option value="ruby">Ruby</option>
+
           </select>
         </label>
       </div>
