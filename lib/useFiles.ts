@@ -49,8 +49,16 @@ export function useFiles(
     * files[selectedfileIndex] will give you the current selected file
     */
     const [selectedFileIndex, changeSelectedFileIndex] = useState(0);
+    
+    type tExtToName = {
+      [key: string]: string
+    }
 
-    const extToName = {
+    type tNameToExt = {
+      [key: string]: string
+    }
+
+    const extToName: tExtToName = {
       "py": "python", 
       "jsx": "jsx", 
       "js": "javascript", 
@@ -67,7 +75,7 @@ export function useFiles(
     }
     Object.freeze(extToName);
 
-    const nameToExt = {
+    const nameToExt: tNameToExt = {
       "python": "py", 
       "jsx": "jsx", 
       "javascript": "js", 
@@ -164,17 +172,17 @@ export function useFiles(
         langType = fileNameTokens[fileNameTokens.length - 1];
       }
 
+      langType = langType.trim();
+
       if (!(langType in extToName)) { // if extension type isn't supported
         alert("This file extension is not supported yet!");
         langType = "txt";
       }
 
-      // @ts-ignore
       changeFileLanguage(extToName[langType], false);
     }
 
     function setNameFromLang(value: string) {
-      // @ts-ignore
       let extension = nameToExt[value];
       let fileName = files[selectedFileIndex].name;
       let newName;
@@ -183,7 +191,11 @@ export function useFiles(
       } else {
         let extIdx = fileName.lastIndexOf(".");
         let beforeExt = fileName.slice(0, extIdx);
-        newName = beforeExt + "." + extension;
+        if (value == "textile") {
+          newName = beforeExt;
+        } else {
+          newName = beforeExt + "." + extension;
+        }
       }
       
       saveFileName(newName, false);
@@ -297,6 +309,13 @@ export function useFiles(
     function saveFileCode() {
       let fileId = files[selectedFileIndex].id;
       let code = codeFiles[selectedFileIndex].code;
+
+      files[selectedFileIndex].code = code;
+      let title = draftTitle;
+      let optimisticSteps = storedSteps;
+      
+      let mutateState = { title, optimisticSteps, files };
+      mutate(mutateState, false);
 
       var data = {
         requestedAPI: "save_file_code",

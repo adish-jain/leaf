@@ -68,6 +68,7 @@ export default class CodeMirror extends Component<
         <style jsx>{`
           flex-grow: 100;
           overflow-y: scroll;
+          font-size: 12px;
         `}</style>
         <CodeMirror2
           className={"CodeEditor"}
@@ -76,7 +77,9 @@ export default class CodeMirror extends Component<
           options={{
             lineNumbers: true,
             mode: language,
-            theme: "material",
+            // theme: "solarized",
+            theme: "monokai-sublime",
+            // theme: "material",
             // theme: 'vscode-dark',
             // theme: 'oceanic-next',
             lineWrapping: true,
