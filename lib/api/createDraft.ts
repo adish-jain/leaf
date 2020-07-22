@@ -21,9 +21,9 @@ export default async function createDraftHandler(
   let newFileId = shortId.generate();
   let newFile = {
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
-    name: "untitled.txt",
+    name: "untitled",
     code: "// Write some code here ...",
-    language: "jsx",
+    language: "textile",
   }
 
   await db.collection("users")

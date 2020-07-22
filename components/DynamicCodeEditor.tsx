@@ -1,11 +1,19 @@
 import React, { Component } from "react";
 import { Controlled as CodeMirror2 } from "react-codemirror2";
 import { filenames, Language, reactString, jsxString } from "./code_string";
+import "codemirror/addon/edit/matchbrackets.js";
+import "codemirror/addon/edit/closebrackets.js";
+import "codemirror/mode/go/go.js";
+import "codemirror/mode/css/css.js";
+import "codemirror/mode/clike/clike.js";
+import "codemirror/mode/php/php.js";
+import "codemirror/mode/ruby/ruby.js";
+import "codemirror/mode/textile/textile.js";
+import "codemirror/mode/xml/xml";
+import "codemirror/mode/javascript/javascript";
+import "codemirror/mode/jsx/jsx";
+import "codemirror/mode/python/python";
 
-require("codemirror/mode/xml/xml");
-require("codemirror/mode/javascript/javascript");
-require("codemirror/mode/jsx/jsx");
-require("codemirror/mode/python/python");
 
 // const codeEditorStyles = require("../styles/CodeEditor.module.scss");
 // import "../styles/CodeEditor.module.scss";
@@ -60,6 +68,7 @@ export default class CodeMirror extends Component<
         <style jsx>{`
           flex-grow: 100;
           overflow-y: scroll;
+          font-size: 12px;
         `}</style>
         <CodeMirror2
           className={"CodeEditor"}
@@ -68,10 +77,14 @@ export default class CodeMirror extends Component<
           options={{
             lineNumbers: true,
             mode: language,
-            theme: "material",
+            // theme: "solarized",
+            theme: "monokai-sublime",
+            // theme: "material",
             // theme: 'vscode-dark',
             // theme: 'oceanic-next',
             lineWrapping: true,
+            matchBrackets: true,
+            autoCloseBrackets: true,
             // configureMouse: (editor: any, e: any) => {
             //   editor.setSelections(ranges, 0, {
             //     scroll: false,

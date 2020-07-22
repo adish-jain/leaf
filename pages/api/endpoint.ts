@@ -24,6 +24,7 @@ import handleSaveFile from "../../lib/api/saveFile";
 import handleDeleteFile from "../../lib/api/deleteFile";
 import handleChangeFileLanguage from "../../lib/api/changeFileLanguage";
 import handleSaveFileCode from "../../lib/api/saveFileCode";
+import handleSaveFileName from "../../lib/api/saveFileName";
 
 
 const firebase = require("firebase/app");
@@ -149,6 +150,10 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
 
     case "save_file_code": {
       return handleSaveFileCode(req, res);
+    }
+
+    case "save_file_name": {
+      return handleSaveFileName(req, res);
     }
 
     default: {
