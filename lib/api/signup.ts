@@ -19,9 +19,20 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   // Promise<UserCredential>
   let userCredential = await firebase
     .auth()
-    .createUserWithEmailAndPassword(email, password);
+    .createUserWithEmailAndPassword(email, password)
 
   let signedin_user = userCredential.user;
+  
+  let currentUser = await firebase.auth().currentUser;
+  // console.log(currentUser);
+
+  await currentUser.sendEmailVerification();
+  // console.log(signedin_user.emailVerified);
+
+  while (currentUser.emailVerified != true) {
+    await currentUser.reload();
+  }
+
   db.collection("users").doc(signedin_user.uid).set({
     email: signedin_user.email,
   });
