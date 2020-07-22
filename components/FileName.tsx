@@ -65,25 +65,18 @@ export default function FileName(props: FileNameProps) {
           dblClick(true);
         }}
       >
-
-      {/* <div
-        onBlur={(e) => {
-          console.log("blur1");
-          saveFileName();
-      }}> */}
         {editing ? 
           (<textarea
             className={fileNamesStyle["filenames"]}
             defaultValue={name}
             onChange={onNameChange}
             onBlur={saveFileName}
-            name="title"
+            name="fileName"
           />) 
           : name
         }        
       </div>
       </div>
-      {/* </div> */}
       {renderButton()}
     </div>
   );

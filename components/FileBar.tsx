@@ -15,7 +15,7 @@ type FileBarProps = {
   files: File[];
   changeSelectedFile: (fileIndex: number) => void;
   saveFileName: (value: string, external: boolean) => void;
-  addFile: (draftId: string) => void;
+  addFile: () => void;
   removeFile: (toDeleteIndex: number) => void;
   selectedFileIndex: number;
 };
@@ -50,7 +50,7 @@ export default class FileBar extends Component<FileBarProps> {
             index={index}
           />
         ))}
-        <button onClick={e => addFile(draftId)}>+</button>
+        <button onClick={e => addFile()}>+</button>
       </div>
     );
   }

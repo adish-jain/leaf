@@ -45,8 +45,9 @@ export function useFiles(
     // Need to fix this to be maxNum of files so far to avoid duplicate keys  
     let numOfUntitleds = files.length; 
 
-    /* Manages which file is selected in the filebar.
-    * files[selectedfileIndex] will give you the current selected file
+    /* 
+    Manages which file is selected in the filebar.
+    files[selectedfileIndex] will give you the current selected file
     */
     const [selectedFileIndex, changeSelectedFileIndex] = useState(0);
     
@@ -58,6 +59,10 @@ export function useFiles(
       [key: string]: string
     }
 
+    /*
+    Maps file extensions -> value that will be passed to CodeMirror to syntax highlight.
+    Used to map file names to language selection for file. 
+    */
     const extToName: tExtToName = {
       "py": "python", 
       "jsx": "jsx", 
@@ -75,6 +80,10 @@ export function useFiles(
     }
     Object.freeze(extToName);
 
+    /*
+    Maps value from languageBar selection to file extension.
+    Used to map language selection for file to proper file extension name. 
+    */
     const nameToExt: tNameToExt = {
       "python": "py", 
       "jsx": "jsx", 
@@ -92,7 +101,7 @@ export function useFiles(
     Object.freeze(nameToExt);
 
     /*
-    * Update the code in DynamicCodeEditor in the correct file
+    Update the code in DynamicCodeEditor in the correct file
     */
     function changeCode(value: string) {
       let duplicateFiles = [...codeFiles];
@@ -100,6 +109,13 @@ export function useFiles(
       updateFiles(duplicateFiles);
     }
 
+    /*
+    Saves the file name to Firebase. Triggered from `FileName.tsx`. 
+    Also updates the language selection for the file to match the new file name.
+    If no extension is given, file defaults to a text file. 
+      `value` is the file name as a string.
+      `external` is true when triggered from `FileName.tsx` & false otherwise.
+    */
     function saveFileName(value: string, external: boolean) {
       let duplicateFiles = [...files];
       duplicateFiles[selectedFileIndex].name = value;
@@ -131,6 +147,12 @@ export function useFiles(
       });
     }
 
+    /*
+    Saves the language selection to Firebase. Triggered from `LanguageBar.tsx`. 
+    Also updates the file name to match the new language selection. 
+      `language` is the language selection as a string.
+      `external` is true when triggered from `LanguageBar.tsx` & false otherwise.
+    */
     function changeFileLanguage(language: string, external: boolean) {
       let fileId = files[selectedFileIndex].id;
       let duplicateFiles = [...files];
@@ -163,6 +185,12 @@ export function useFiles(
       });
     }
 
+    /*
+    Sets the language of the file given the file name. 
+    Called by saveFileName (defined above) when `external` is true. 
+    If no extension is included in the filename, default to text file.
+    Throws an alert if an unsupported extension is given, and defaults to text file.
+    */
     function setLangFromName(value: string) {
       let fileNameTokens = value.split(".");
       let langType;
@@ -182,6 +210,10 @@ export function useFiles(
       changeFileLanguage(extToName[langType], false);
     }
 
+    /*
+    Sets the extension of the file given the language selection. 
+    Called by changeFileLanguage (defined above) when `external` is true.
+    */
     function setNameFromLang(value: string) {
       let extension = nameToExt[value];
       let fileName = files[selectedFileIndex].name;
@@ -202,7 +234,10 @@ export function useFiles(
     }
 
     /*
-    * Adds a new file to the Filebar. Currently does not store the new file in firebase.
+    Adds a new file to the Filebar. 
+    Calls saveFile to save file to Firebase.
+    New files are by default text files. 
+    Triggered from `FileBar.tsx`.
     */
     function addFile() {
       // make sure file is untitled2, untitled3, etc.
@@ -234,6 +269,9 @@ export function useFiles(
       saveFile(newFileId, newFileName, newFileCode, newFileLang);
     }
 
+    /*
+    Saves a file to Firebase. 
+    */
     function saveFile(
       fileId: string,
       fileName: string,
@@ -258,8 +296,10 @@ export function useFiles(
       });
     }
 
-      /*
-    * Delete a file in the filebar. Makes sure that the selected file is set correctly after deletion.
+    /*
+    Deletes a file in the filebar. 
+    Makes sure that the selected file is set correctly after deletion.
+    Triggered from `FileName.tsx`.
     */
     function removeFile(toDeleteIndex: number) {
       // can have minimum one file
@@ -290,6 +330,9 @@ export function useFiles(
       deleteFile(toDeleteFileId);
     }
 
+    /*
+    Removes file from Firebase.
+    */
     function deleteFile(fileId: string) {
       var data = {
         requestedAPI: "delete_file",
@@ -306,6 +349,9 @@ export function useFiles(
       });
     }
 
+    /*
+    Saves file code to Firebase. Triggered from `DynamicCodeEditor.tsx`. 
+    */
     function saveFileCode() {
       let fileId = files[selectedFileIndex].id;
       let code = codeFiles[selectedFileIndex].code;

@@ -32,7 +32,7 @@ type CodeEditorProps = {
 
   // filenames map to language
   files: File[];
-  addFile: (draftId: string) => void;
+  addFile: () => void;
   removeFile: (toDeleteIndex: number) => void;
   selectedFileIndex: number;
   changeCode: (value: string) => void;
