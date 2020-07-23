@@ -45,13 +45,63 @@ export function useFiles(
     // Need to fix this to be maxNum of files so far to avoid duplicate keys  
     let numOfUntitleds = files.length; 
 
-    /* Manages which file is selected in the filebar.
-    * files[selectedfileIndex] will give you the current selected file
+    /* 
+    Manages which file is selected in the filebar.
+    files[selectedfileIndex] will give you the current selected file
     */
     const [selectedFileIndex, changeSelectedFileIndex] = useState(0);
+    
+    type tExtToName = {
+      [key: string]: string
+    }
+
+    type tNameToExt = {
+      [key: string]: string
+    }
 
     /*
-    * Update the code in DynamicCodeEditor in the correct file
+    Maps file extensions -> value that will be passed to CodeMirror to syntax highlight.
+    Used to map file names to language selection for file. 
+    */
+    const extToName: tExtToName = {
+      "py": "python", 
+      "jsx": "jsx", 
+      "js": "javascript", 
+      "html": "xml",
+      "go": "go",
+      "css": "css",
+      "c": "text/x-csrc",
+      "h": "text/x-csrc",
+      "cpp": "text/x-c++src",
+      "java": "text/x-java",
+      "php": "php",
+      "rb": "ruby",
+      "txt": "textile",
+    }
+    Object.freeze(extToName);
+
+    /*
+    Maps value from languageBar selection to file extension.
+    Used to map language selection for file to proper file extension name. 
+    */
+    const nameToExt: tNameToExt = {
+      "python": "py", 
+      "jsx": "jsx", 
+      "javascript": "js", 
+      "xml": "html", 
+      "go": "go",
+      "css": "css",
+      "text/x-csrc": "c",
+      "text/x-c++src": "cpp",
+      "text/x-java": "java",
+      "php": "php",
+      "ruby": "rb",
+      "textile": "txt",
+    }
+    Object.freeze(nameToExt);
+
+    /*
+    Update the code in DynamicCodeEditor in the correct file
     */
     function changeCode(value: string) {
       let duplicateFiles = [...codeFiles];
@@ -60,14 +110,141 @@ export function useFiles(
     }
 
     /*
-    * Adds a new file to the Filebar. Currently does not store the new file in firebase.
+    Saves the file name to Firebase. Triggered from `FileName.tsx`. 
+    Also updates the language selection for the file to match the new file name.
+    If no extension is given, file defaults to a text file. 
+      `value` is the file name as a string.
+      `external` is true when triggered from `FileName.tsx` & false otherwise.
+    */
+    function saveFileName(value: string, external: boolean) {
+      let duplicateFiles = [...files];
+      duplicateFiles[selectedFileIndex].name = value;
+      files = duplicateFiles;
+      updateFiles(duplicateFiles);
+      if (external) {
+        setLangFromName(value);
+      }
+      
+      let title = draftTitle;
+      let optimisticSteps = storedSteps;
+      let mutateState = { title, optimisticSteps, files };
+
+      mutate(mutateState, false);
+
+      var data = {
+        requestedAPI: "save_file_name",
+        draftId: draftId,
+        fileId: files[selectedFileIndex].id,
+        fileName: value,
+      }
+
+      fetch("/api/endpoint", {
+        method: "POST",
+        headers: new Headers({ "Content-Type": "application/json" }),
+        body: JSON.stringify(data),
+      }).then(async (res: any) => {
+        console.log(res);
+      });
+    }
+
+    /*
+    Saves the language selection to Firebase. Triggered from `LanguageBar.tsx`. 
+    Also updates the file name to match the new language selection. 
+      `language` is the language selection as a string.
+      `external` is true when triggered from `LanguageBar.tsx` & false otherwise.
+    */
+    function changeFileLanguage(language: string, external: boolean) {
+      let fileId = files[selectedFileIndex].id;
+      let duplicateFiles = [...files];
+      duplicateFiles[selectedFileIndex].language = language;
+      files = duplicateFiles;
+      codeFiles = duplicateFiles;
+      if (external) {
+        setNameFromLang(language);
+      }
+
+      let title = draftTitle;
+      let optimisticSteps = storedSteps;
+
+      let mutateState = { title, optimisticSteps, files };
+      mutate(mutateState, true); 
+      
+      var data = {
+        requestedAPI: "change_file_language",
+        draftId: draftId,
+        fileId: fileId,
+        language: language,
+      }
+
+      fetch("/api/endpoint", {
+        method: "POST",
+        headers: new Headers({ "Content-Type": "application/json" }),
+        body: JSON.stringify(data),
+      }).then(async (res: any) => {
+        console.log(res);
+      });
+    }
+
+    /*
+    Sets the language of the file given the file name. 
+    Called by saveFileName (defined above) when `external` is true. 
+    If no extension is included in the filename, default to text file.
+    Throws an alert if an unsupported extension is given, and defaults to text file.
+    */
+    function setLangFromName(value: string) {
+      let fileNameTokens = value.split(".");
+      let langType;
+      if (fileNameTokens.length === 1) { // no extension defaults to txt
+        langType = "txt";
+      } else {
+        langType = fileNameTokens[fileNameTokens.length - 1];
+      }
+
+      langType = langType.trim();
+
+      if (!(langType in extToName)) { // if extension type isn't supported
+        alert("This file extension is not supported yet!");
+        langType = "txt";
+      }
+
+      changeFileLanguage(extToName[langType], false);
+    }
+
+    /*
+    Sets the extension of the file given the language selection. 
+    Called by changeFileLanguage (defined above) when `external` is true.
+    */
+    function setNameFromLang(value: string) {
+      let extension = nameToExt[value];
+      let fileName = files[selectedFileIndex].name;
+      let newName;
+      if (!(fileName.includes("."))) {
+        newName = fileName + "." + extension;
+      } else {
+        let extIdx = fileName.lastIndexOf(".");
+        let beforeExt = fileName.slice(0, extIdx);
+        if (value == "textile") {
+          newName = beforeExt;
+        } else {
+          newName = beforeExt + "." + extension;
+        }
+      }
+      
+      saveFileName(newName, false);
+    }
+
+    /*
+    Adds a new file to the Filebar. 
+    Calls saveFile to save file to Firebase.
+    New files are by default text files. 
+    Triggered from `FileBar.tsx`.
     */
     function addFile() {
       // make sure file is untitled2, untitled3, etc.
       numOfUntitleds++;
-      let newFileName = `untitled${numOfUntitleds}.txt`;
+      let newFileName = `untitled${numOfUntitleds}`;
       let newFileCode = "// Write some code here ...";
-      let newFileLang = "jsx";
+      let newFileLang = "textile";
       let newFileId = shortId.generate();
 
       files.push({
@@ -92,6 +269,9 @@ export function useFiles(
       saveFile(newFileId, newFileName, newFileCode, newFileLang);
     }
 
+    /*
+    Saves a file to Firebase. 
+    */
     function saveFile(
       fileId: string,
       fileName: string,
@@ -116,8 +296,10 @@ export function useFiles(
       });
     }
 
-      /*
-    * Delete a file in the filebar. Makes sure that the selected file is set correctly after deletion.
+    /*
+    Deletes a file in the filebar. 
+    Makes sure that the selected file is set correctly after deletion.
+    Triggered from `FileName.tsx`.
     */
     function removeFile(toDeleteIndex: number) {
       // can have minimum one file
@@ -148,6 +330,9 @@ export function useFiles(
       deleteFile(toDeleteFileId);
     }
 
+    /*
+    Removes file from Firebase.
+    */
     function deleteFile(fileId: string) {
       var data = {
         requestedAPI: "delete_file",
@@ -164,38 +349,19 @@ export function useFiles(
       });
     }
 
-    function changeFileLanguage(language: string) {
-      let fileId = files[selectedFileIndex].id;
-      let duplicateFiles = [...files];
-      duplicateFiles[selectedFileIndex].language = language;
-      files = duplicateFiles;
-      codeFiles = duplicateFiles;
-
-      let title = draftTitle;
-      let optimisticSteps = storedSteps;
-
-      let mutateState = { title, optimisticSteps, files };
-      mutate(mutateState, true); 
-      
-      var data = {
-        requestedAPI: "change_file_language",
-        draftId: draftId,
-        fileId: fileId,
-        language: language,
-      }
-
-      fetch("/api/endpoint", {
-        method: "POST",
-        headers: new Headers({ "Content-Type": "application/json" }),
-        body: JSON.stringify(data),
-      }).then(async (res: any) => {
-        console.log(res);
-      });
-    }
-
+    /*
+    Saves file code to Firebase. Triggered from `DynamicCodeEditor.tsx`. 
+    */
     function saveFileCode() {
       let fileId = files[selectedFileIndex].id;
       let code = codeFiles[selectedFileIndex].code;
+
+      files[selectedFileIndex].code = code;
+      let title = draftTitle;
+      let optimisticSteps = storedSteps;
+      
+      let mutateState = { title, optimisticSteps, files };
+      mutate(mutateState, false);
 
       var data = {
         requestedAPI: "save_file_code",
@@ -221,6 +387,7 @@ export function useFiles(
         changeCode, 
         changeSelectedFileIndex, 
         changeFileLanguage,
+        saveFileName,
         saveFileCode,
     }
 }

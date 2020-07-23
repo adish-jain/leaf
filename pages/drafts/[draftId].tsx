@@ -78,6 +78,7 @@ const DraftView = () => {
     changeCode,
     changeSelectedFileIndex,
     changeFileLanguage,
+    saveFileName,
     saveFileCode,
   } = useFiles(draftId, draftFiles, draftTitle, storedSteps, mutate);
 
@@ -89,11 +90,8 @@ const DraftView = () => {
     moveStepDown,
     realSteps,
     editingStep,
-    changeEditingStep
-  } = useSteps(
-    draftId as string,
-    authenticated
-  );
+    changeEditingStep,
+  } = useSteps(draftId as string, authenticated);
 
   // DynamicCodeEditor -> CodeEditor -> [draftId]
   function highlightLines(start: number, end: number) {
@@ -176,6 +174,7 @@ const DraftView = () => {
               changeCode={changeCode}
               changeSelectedFile={changeSelectedFileIndex}
               changeFileLanguage={changeFileLanguage}
+              saveFileName={saveFileName}
               language={draftFiles[selectedFileIndex].language}
             />
           </div>
