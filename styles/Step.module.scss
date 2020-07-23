@@ -1,3 +1,41 @@
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+  .none-selected {
+    font-size: 12px;
+  }
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+  .none-selected {
+    font-size: 12px;
+    // float: right;
+    // display: inline-block;
+    padding: 4px !important;
+  }
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+  .none-selected {
+    font-size: 12px;
+  }
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+  .none-selected {
+    font-size: 14px;
+  }
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+  .none-selected {
+    font-size: 14px;
+  }
+}
+
 .Step {
   margin-top: 24px;
   background: #ffffff;
@@ -5,8 +43,10 @@
   box-sizing: border-box;
   box-shadow: 0px 4px 16px #edece9;
   border-radius: 8px;
-  padding: 24px 24px 0px 24px;
+  // padding: 24px 24px 0px 24px;
   z-index: 3;
+  position: relative;
+  overflow: auto;
 }
 
 .Draft {
@@ -16,7 +56,7 @@
 .Buttons {
   display: flex;
   flex-direction: row-reverse;
-  padding-bottom: 24px;
+  // padding-bottom: 24px;
 
   .Close {
     border-radius: 50%;
@@ -129,9 +169,26 @@
   }
 
   .lines-selected {
-    background: #37ABDA;
+    background: #37abda;
     color: white;
     padding: 12px;
     border-radius: 0px 0px 8px 0px;
   }
+}
+
+.none-selected {
+  background: #ebebeb;
+  border: 1px solid #ebebeb;
+  box-sizing: border-box;
+  border-radius: 0px 0px 8px 0px;
+  padding: 8px 16px 8px 16px;
+  text-align: right;
+
+  // position: absolute;
+  // bottom: 0;
+  // right: 0;
+}
+
+.main-content {
+  padding: 16px;
 }

@@ -73,11 +73,14 @@ export default class CodeEditor extends Component<
           box-shadow: 0px 4px 16px #edece9;
           border-radius: 8px;
           width: 100%;
+          height: 96vh;
+          position: sticky;
+          top: 2vh;
           max-width: 664px;
           min-width: 332px;
-          margin-bottom: 16px;
           display: flex;
           flex-direction: column;
+          margin-top: 2vh;
         `}</style>
         <FileBar
           draftId={draftId}

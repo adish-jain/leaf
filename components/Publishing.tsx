@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import NewStep from "./NewStep";
-import Step from "./Step";
 import StoredStep from "./StoredStep";
 const fetch = require("node-fetch");
 global.Headers = fetch.Headers;

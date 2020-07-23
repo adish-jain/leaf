@@ -112,6 +112,31 @@ export function useSteps(draftId: string, authenticated: boolean) {
     });
   }
 
+  function saveLines(stepId: string, text: any) {
+    let data = {
+      requestedAPI: "update_step",
+      text: text,
+      draftId: draftId,
+      stepId: stepId,
+      lines: lines,
+    };
+
+    // optimistic mutate
+    let newStep = { id: stepId, lines: lines, text: text };
+    let optimisticSteps = storedSteps!.slice();
+    let idx = findIdx(stepId);
+    optimisticSteps[idx] = newStep;
+    mutate(optimisticSteps, false);
+
+    fetch("/api/endpoint", {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify(data),
+    }).then(async (res: any) => {
+      console.log(res);
+    });
+  }
+
   /*
   Deletes a step from Firebase. Triggered from `StoredStep.tsx`.
   */

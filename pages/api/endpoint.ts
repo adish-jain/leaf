@@ -19,6 +19,7 @@ import handleGetDraftData from "../../lib/api/getDraftData";
 import handleSaveStep from "../../lib/api/saveStep";
 import handleDeleteStep from "../../lib/api/deleteStep";
 import handleUpdateStep from "../../lib/api/updateStep";
+import handleUpdateStepLines from "../../lib/api/updateStepLines";
 import handleChangeStepOrder from "../../lib/api/changeStepOrder";
 import handleSaveTitle from "../../lib/api/saveTitle";
 import handleSaveFile from "../../lib/api/saveFile";
@@ -107,6 +108,10 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
 
     case "update_step": {
       return handleUpdateStep(req, res);
+    }
+
+    case "updateStepLines": {
+      return handleUpdateStepLines(req, res);
     }
 
     /* 
