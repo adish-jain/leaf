@@ -21,15 +21,20 @@ type File = {
   code: string;
 };
 
+type Line = {
+  lineNumber: number;
+  char: number;
+};
+
 type CodeEditorProps = {
   draftId: string;
-  highlightLines: (start: any, end: any) => void;
   saveFileCode: () => void;
   editingStep: number;
   changeFileLanguage: (language: string, external: boolean) => void;
   saveFileName: (value: string, external: boolean) => void;
   draftCode: string;
-
+  changeLines: (lines: { start: Line; end: Line }) => void;
+  saveLines: () => void;
   // filenames map to language
   files: File[];
   addFile: () => void;
@@ -38,6 +43,7 @@ type CodeEditorProps = {
   changeCode: (value: string) => void;
   changeSelectedFile: (fileIndex: number) => void;
   language: string;
+  lines: { start: Line; end: Line };
 };
 
 type CodeEditorState = {};
@@ -63,9 +69,11 @@ export default class CodeEditor extends Component<
       changeSelectedFile,
       changeFileLanguage,
       saveFileName,
-      highlightLines,
       language,
       editingStep,
+      changeLines,
+      saveLines,
+      lines,
     } = this.props;
     return (
       <div>
@@ -93,12 +101,14 @@ export default class CodeEditor extends Component<
         />
         <DynamicCodeEditor
           // @ts-ignore
-          highlightLines={highlightLines}
           saveFileCode={saveFileCode}
           draftCode={draftCode}
           changeCode={changeCode}
           language={language}
           editing={editingStep !== -1}
+          changeLines={changeLines}
+          saveLines={saveLines}
+          lines={lines}
         />
         <LanguageBar
           language={language}

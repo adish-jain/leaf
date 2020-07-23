@@ -29,8 +29,10 @@ async function updateStepLinesHandler(
     return;
   }
 
+  console.log(lines);
+
   // update text in firebase
-  db.collection("users")
+  await db.collection("users")
     .doc(uid)
     .collection("drafts")
     .doc(draftId)

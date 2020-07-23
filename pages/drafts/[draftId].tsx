@@ -27,8 +27,6 @@ const DraftView = () => {
   // Draft ID
   const { draftId } = router.query;
   // highlighting lines for steps
-  const [lines, changeLines] = useState({});
-  const [saveLines, notSaveLines] = useState(false);
 
   // if there are any steps in this draft, they will be fetched & repopulated
   const rawData = {
@@ -91,12 +89,10 @@ const DraftView = () => {
     realSteps,
     editingStep,
     changeEditingStep,
+    lines,
+    changeLines,
+    saveLines
   } = useSteps(draftId as string, authenticated);
-
-  // DynamicCodeEditor -> CodeEditor -> [draftId]
-  function highlightLines(start: number, end: number) {
-    changeLines({ start: start, end: end });
-  }
 
   /*
   Saves the title of the draft in Firestore. 
@@ -160,11 +156,11 @@ const DraftView = () => {
               editingStep={editingStep}
               changeEditingStep={changeEditingStep}
               selectedFile={codeFiles[selectedFileIndex]}
+              lines={lines}
             />
             <CodeEditor
               draftId={draftId as string}
               editingStep={editingStep}
-              highlightLines={highlightLines}
               saveFileCode={saveFileCode}
               draftCode={codeFiles[selectedFileIndex].code}
               files={draftFiles}
@@ -176,6 +172,9 @@ const DraftView = () => {
               changeFileLanguage={changeFileLanguage}
               saveFileName={saveFileName}
               language={draftFiles[selectedFileIndex].language}
+              changeLines={changeLines}
+              saveLines={saveLines}
+              lines={lines}
             />
           </div>
         )}

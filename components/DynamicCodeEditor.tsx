@@ -20,24 +20,28 @@ import "codemirror/mode/python/python";
 // const codeEditorStyles = require("../styles/CodeEditor.module.scss");
 // import "../styles/CodeEditor.module.scss";
 
-type CodeMirrorProps = {
-  highlightLines: (start: any, end: any) => void;
-  saveFileCode: () => void;
-  draftCode: string;
-  changeCode: (value: string) => void;
-  language: string;
-  editing: boolean;
-};
-
 type Line = {
   lineNumber: number;
   char: number;
 };
 
+type CodeMirrorProps = {
+  highlightLines: (start: any, end: any) => void;
+  saveFileCode: () => void;
+  draftCode: string;
+  changeCode: (value: string) => void;
+  changeLines: (lines: { start: Line; end: Line }) => void;
+  saveLines: () => void;
+  language: string;
+  editing: boolean;
+  lines: {
+    start: Line;
+    end: Line;
+  };
+};
+
 type CodeMirrorState = {
   showModal: boolean;
-  end: Line;
-  start: Line;
 };
 
 const ranges = [
@@ -63,19 +67,18 @@ export default class CodeMirror extends Component<
     super(props);
     this.state = {
       showModal: false,
-      start: { lineNumber: 0, char: 0 },
-      end: { lineNumber: 0, char: 0 },
     };
     this.instance = undefined;
   }
 
   highlightLines(editor: CodeMirror.Editor) {
-    let lines = editor.listSelections();
-    let anchor = lines![0].anchor;
-    let head = lines![0].head;
-    let { start, end } = this.state;
-    console.log(lines);
+    let selectedLines = editor.listSelections();
+    let anchor = selectedLines![0].anchor;
+    let head = selectedLines![0].head;
+    let { changeLines, lines } = this.props;
+    let { start, end } = lines;
 
+    // if selection is just a cursor, do not show modal
     if (head.ch === anchor.ch && head.line === anchor.line) {
       this.setState({
         showModal: false,
@@ -83,6 +86,7 @@ export default class CodeMirror extends Component<
       return;
     }
 
+    // handle another case where selection is just a cursor
     let equalSelectionsCaseOne =
       start.lineNumber - 1 === anchor.line &&
       start.char === anchor.ch &&
@@ -93,9 +97,7 @@ export default class CodeMirror extends Component<
       start.char === head.ch &&
       end.lineNumber - 1 === anchor.line &&
       end.char === anchor.ch;
-
     if (equalSelectionsCaseOne || equalSelectionsCaseTwo) {
-      console.log("equal selection");
       this.setState({
         showModal: false,
       });
@@ -105,27 +107,28 @@ export default class CodeMirror extends Component<
     if (anchor.line > head.line) {
       this.setState({
         showModal: true,
-        end: { lineNumber: anchor.line + 1, char: anchor.ch },
+      });
+      changeLines({
         start: { lineNumber: head.line + 1, char: head.ch },
+        end: { lineNumber: anchor.line + 1, char: anchor.ch },
       });
     } else {
       this.setState({
         showModal: true,
+      });
+      changeLines({
         start: { lineNumber: anchor.line + 1, char: anchor.ch },
         end: { lineNumber: head.line + 1, char: head.ch },
       });
     }
-
-    // this.props.highlightLines(start, end);
   }
 
   handleMouseUp() {
     let editor = this.instance;
-    let lines = editor?.listSelections();
-    // console.log(lines);
-    let anchor = lines![0].anchor;
-    let head = lines![0].head;
-    let { start, end } = this.state;
+    let selectedLines = editor?.listSelections();
+    let anchor = selectedLines![0].anchor;
+    let head = selectedLines![0].head;
+    let { start, end } = this.props.lines;
 
     // handle case where clicking inside selection
     let equalSelectionsCaseOne =
@@ -139,31 +142,8 @@ export default class CodeMirror extends Component<
       end.lineNumber - 1 === anchor.line &&
       end.char === anchor.ch;
 
-    // if (equalSelectionsCaseOne || equalSelectionsCaseTwo) {
-    //   console.log("equal selection");
-    //   this.setState({
-    //     showModal: false,
-    //   });
-    //   return;
-    // }
-
     // closeModal if highlight is in start position
-    if (!(head.ch === anchor.ch && head.line === anchor.line)) {
-      // if (anchor.line > head.line) {
-      //   this.setState({
-      //     showModal: true,
-      //     end: { lineNumber: anchor.line + 1, char: anchor.ch },
-      //     start: { lineNumber: head.line + 1, char: head.ch },
-      //   });
-      // } else {
-      //   this.setState({
-      //     showModal: true,
-      //     start: { lineNumber: anchor.line + 1, char: anchor.ch },
-      //     end: { lineNumber: head.line + 1, char: head.ch },
-      //   });
-      // }
-    } else {
-      console.log("start position");
+    if (head.ch === anchor.ch && head.line === anchor.line) {
       this.setState({
         showModal: false,
       });
@@ -171,6 +151,9 @@ export default class CodeMirror extends Component<
   }
 
   render() {
+    let { saveLines } = this.props;
+    let { start, end } = this.props.lines;
+
     const LineModal = () => {
       if (!this.props.editing) {
         return <div></div>;
@@ -181,10 +164,11 @@ export default class CodeMirror extends Component<
           <div className={CodeEditorStyles["line-modal"]}>
             <div className={CodeEditorStyles["adjusted"]}>
               <p>
-                Highlight lines {this.state.start.lineNumber} to{" "}
-                {this.state.end.lineNumber}?
+                Highlight lines {start.lineNumber} to {end.lineNumber}?
               </p>
-              <button>Attach highlighted lines to step.</button>
+              <button onClick={(e) => saveLines()}>
+                Attach highlighted lines to step.
+              </button>
               <button>X</button>
             </div>
           </div>
@@ -197,7 +181,6 @@ export default class CodeMirror extends Component<
     let { draftCode, language } = this.props;
     return (
       <div onMouseUp={this.handleMouseUp.bind(this)}>
-        {/* <div> */}
         <style jsx>{`
           flex-grow: 100;
           overflow-y: scroll;

@@ -72,7 +72,15 @@ export default class Step extends Component<
           </div>
         );
       } else {
-        return <div></div>;
+        return (
+          <div className={StepStyles["none-selected"]}>
+            <style jsx>{`
+              color: white;
+              background-color: #37abda;
+            `}</style>
+            Selected lines {lines.start} to {lines.end}
+          </div>
+        );
       }
     };
 

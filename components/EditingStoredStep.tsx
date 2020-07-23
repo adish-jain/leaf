@@ -34,7 +34,7 @@ export default class Step extends Component<
   }
 
   render() {
-    let { onChange, editorState } = this.props;
+    let { onChange, editorState, lines } = this.props;
 
     const Buttons = () => {
       return (
@@ -47,6 +47,27 @@ export default class Step extends Component<
           >
             Save
           </button>
+        </div>
+      );
+    };
+
+    const Lines = () => {
+      return (
+        <div className={StepStyles["line-indicator"]}>
+          <div className={StepStyles["center-indicator"]}>
+            <div className={StepStyles["lines-prompt"]}>
+              Highlight code in the editor to attach to this step.
+            </div>
+            {!lines ? (
+              <div className={StepStyles["lines-selected"]}>
+                No lines currently selected.
+              </div>
+            ) : (
+              <div className={StepStyles["lines-selected"]}>
+                Selected lines {lines.start} to {lines.end}
+              </div>
+            )}
+          </div>
         </div>
       );
     };
@@ -64,16 +85,7 @@ export default class Step extends Component<
             }
           </div>
           <Buttons />
-        </div>
-        <div className={StepStyles["line-indicator"]}>
-          <div className={StepStyles["center-indicator"]}>
-            <div className={StepStyles["lines-prompt"]}>
-              Highlight code in the editor to attach to this step.
-            </div>
-            <div className={StepStyles["lines-selected"]}>
-              No lines currently selected.
-            </div>
-          </div>
+          <Lines />
         </div>
       </div>
     );

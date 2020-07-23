@@ -1,6 +1,17 @@
 import useSWR, { SWRConfig } from "swr";
 import { useState } from "react";
 
+type Line = {
+  lineNumber: number;
+  char: number;
+};
+
+type Step = {
+  id: string;
+  lines?: { start: number; end: number };
+  text: any;
+};
+
 export function useSteps(draftId: string, authenticated: boolean) {
   const myRequest = (requestedAPI: string) => {
     return {
@@ -20,7 +31,7 @@ export function useSteps(draftId: string, authenticated: boolean) {
 
   // Fetch steps data
   const initialStepsData: any[] = [];
-  let { data: storedSteps, mutate } = useSWR<any[]>(
+  let { data: storedSteps, mutate } = useSWR<Step[]>(
     authenticated ? "getSteps" : null,
     stepsFetcher,
     {
@@ -29,13 +40,14 @@ export function useSteps(draftId: string, authenticated: boolean) {
     }
   );
 
+  console.log(storedSteps);
   // What step is currently being edited?
   const [editingStep, changeEditingStep] = useState(-1);
 
   // What lines are currently highlighted?
-  const [lines, changeLines] = useState<{ start: number; end: number }>({
-    start: 0,
-    end: 0,
+  const [lines, changeLines] = useState<{ start: Line; end: Line }>({
+    start: { lineNumber: 0, char: 0 },
+    end: { lineNumber: 0, char: 0 },
   });
 
   /*
@@ -45,7 +57,7 @@ export function useSteps(draftId: string, authenticated: boolean) {
     let idx = 0;
     let counter = 0;
 
-    storedSteps!.forEach((element: { id: any; lines: any; text: any }) => {
+    storedSteps!.forEach((element: Step) => {
       if (element["id"] == stepId) {
         idx = counter;
       }
@@ -63,11 +75,11 @@ export function useSteps(draftId: string, authenticated: boolean) {
       text: text,
       draftId: draftId,
       stepId: stepId,
-      lines: null,
+      lines: undefined,
       order: storedSteps!.length,
     };
 
-    let newStep = { id: stepId, lines: null, text: text };
+    let newStep = { id: stepId, lines: undefined, text: text };
 
     let optimisticSteps = [...storedSteps!];
     optimisticSteps.push(newStep);
@@ -93,13 +105,15 @@ export function useSteps(draftId: string, authenticated: boolean) {
       text: text,
       draftId: draftId,
       stepId: stepId,
-      lines: null,
     };
 
-    let newStep = { id: stepId, lines: null, text: text };
     let optimisticSteps = storedSteps!.slice();
     let idx = findIdx(stepId);
-    optimisticSteps[idx] = newStep;
+
+    optimisticSteps[idx] = {
+      ...optimisticSteps[idx],
+      text,
+    };
 
     mutate(optimisticSteps, false);
 
@@ -112,20 +126,27 @@ export function useSteps(draftId: string, authenticated: boolean) {
     });
   }
 
-  function saveLines(stepId: string, text: any) {
+  function saveLines() {
+    let stepId = storedSteps![editingStep].id;
+    let linesData = {
+      start: lines.start.lineNumber,
+      end: lines.end.lineNumber,
+    };
+    
     let data = {
-      requestedAPI: "update_step",
-      text: text,
+      requestedAPI: "updateStepLines",
       draftId: draftId,
       stepId: stepId,
-      lines: lines,
+      lines: linesData,
     };
 
     // optimistic mutate
-    let newStep = { id: stepId, lines: lines, text: text };
     let optimisticSteps = storedSteps!.slice();
     let idx = findIdx(stepId);
-    optimisticSteps[idx] = newStep;
+    optimisticSteps[idx] = {
+      ...optimisticSteps[idx],
+      lines: linesData,
+    };
     mutate(optimisticSteps, false);
 
     fetch("/api/endpoint", {
@@ -248,5 +269,6 @@ export function useSteps(draftId: string, authenticated: boolean) {
     changeEditingStep,
     lines,
     changeLines,
+    saveLines,
   };
 }

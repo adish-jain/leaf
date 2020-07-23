@@ -15,6 +15,11 @@ type File = {
   name: string;
 };
 
+type Line = {
+  lineNumber: number;
+  char: number;
+};
+
 type PublishingProps = {
   draftId: any;
   title: string;
@@ -33,6 +38,7 @@ type PublishingProps = {
   moveStepDown: (stepId: any) => void;
   saveTitle: (title: string) => void;
   selectedFile: File;
+  lines: { start: Line; end: Line };
 };
 
 type PublishingState = {
