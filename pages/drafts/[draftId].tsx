@@ -92,23 +92,12 @@ const DraftView = () => {
     changeEditingStep
   } = useSteps(
     draftId as string,
-    saveLines,
-    lines,
-    notSaveLines,
     authenticated
   );
 
   // DynamicCodeEditor -> CodeEditor -> [draftId]
-  function highlightLines(start: any, end: any) {
+  function highlightLines(start: number, end: number) {
     changeLines({ start: start, end: end });
-  }
-
-  function onHighlight() {
-    notSaveLines(true);
-  }
-
-  function unHighlight() {
-    notSaveLines(false);
   }
 
   /*
@@ -167,13 +156,12 @@ const DraftView = () => {
               saveStep={saveStep}
               updateStoredStep={updateStoredStep}
               deleteStoredStep={deleteStoredStep}
-              onHighlight={onHighlight}
-              unHighlight={unHighlight}
               moveStepUp={moveStepUp}
               moveStepDown={moveStepDown}
               saveTitle={saveTitle}
               editingStep={editingStep}
               changeEditingStep={changeEditingStep}
+              selectedFile={codeFiles[selectedFileIndex]}
             />
             <CodeEditor
               draftId={draftId as string}

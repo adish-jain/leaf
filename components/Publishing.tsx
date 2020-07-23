@@ -9,6 +9,13 @@ const publishingStyles = require("../styles/Publishing.module.scss");
 
 var shortId = require("shortid");
 
+type File = {
+  id: string;
+  language: string; //replace with enum
+  code: string;
+  name: string;
+};
+
 type PublishingProps = {
   draftId: any;
   title: string;
@@ -23,11 +30,10 @@ type PublishingProps = {
     removeLines: any
   ) => void;
   deleteStoredStep: (stepId: any) => void;
-  onHighlight: () => void;
-  unHighlight: () => void;
   moveStepUp: (stepId: any) => void;
   moveStepDown: (stepId: any) => void;
   saveTitle: (title: string) => void;
+  selectedFile: File;
 };
 
 type PublishingState = {
@@ -192,8 +198,6 @@ export default class Publishing extends Component<
               lines={storedStep.lines}
               deleteStoredStep={this.props.deleteStoredStep}
               updateStoredStep={this.props.updateStoredStep}
-              onHighlight={this.props.onHighlight}
-              unHighlight={this.props.unHighlight}
               moveStepUp={this.props.moveStepUp}
               moveStepDown={this.props.moveStepDown}
               key={storedStep.id}

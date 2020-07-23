@@ -1,13 +1,7 @@
 import useSWR, { SWRConfig } from "swr";
 import { useState } from "react";
 
-export function useSteps(
-  draftId: string,
-  saveLines: boolean,
-  lines: any,
-  notSaveLines: any,
-  authenticated: boolean
-) {
+export function useSteps(draftId: string, authenticated: boolean) {
   const myRequest = (requestedAPI: string) => {
     return {
       method: "POST",
@@ -24,6 +18,7 @@ export function useSteps(
       res.json()
     );
 
+  // Fetch steps data
   const initialStepsData: any[] = [];
   let { data: storedSteps, mutate } = useSWR<any[]>(
     authenticated ? "getSteps" : null,
@@ -34,7 +29,14 @@ export function useSteps(
     }
   );
 
+  // What step is currently being edited?
   const [editingStep, changeEditingStep] = useState(-1);
+
+  // What lines are currently highlighted?
+  const [lines, changeLines] = useState<{ start: number; end: number }>({
+    start: 0,
+    end: 0,
+  });
 
   /*
   Helper function to find the step with the associated stepId in `storedSteps`
@@ -61,11 +63,11 @@ export function useSteps(
       text: text,
       draftId: draftId,
       stepId: stepId,
-      lines: saveLines ? lines : null,
+      lines: null,
       order: storedSteps!.length,
     };
 
-    let newStep = { id: stepId, lines: saveLines ? lines : null, text: text };
+    let newStep = { id: stepId, lines: null, text: text };
 
     let optimisticSteps = [...storedSteps!];
     optimisticSteps.push(newStep);
@@ -80,34 +82,21 @@ export function useSteps(
       let resJSON = await res.json();
       mutate(resJSON);
     });
-
-    notSaveLines(false);
   }
 
   /*
   Updates a step in Firebase. Triggered from `EditingStoredStep.tsx`.
   */
-  function updateStoredStep(
-    stepId: any,
-    text: any,
-    oldLines: any,
-    removeLines: any
-  ) {
-    let stepLines;
-    if (removeLines) {
-      stepLines = null;
-    } else {
-      stepLines = saveLines ? lines : oldLines;
-    }
+  function updateStoredStep(stepId: any, text: any) {
     let data = {
       requestedAPI: "update_step",
       text: text,
       draftId: draftId,
       stepId: stepId,
-      lines: stepLines,
+      lines: null,
     };
 
-    let newStep = { id: stepId, lines: stepLines, text: text };
+    let newStep = { id: stepId, lines: null, text: text };
     let optimisticSteps = storedSteps!.slice();
     let idx = findIdx(stepId);
     optimisticSteps[idx] = newStep;
@@ -121,8 +110,6 @@ export function useSteps(
     }).then(async (res: any) => {
       console.log(res);
     });
-
-    notSaveLines(false);
   }
 
   /*
@@ -234,5 +221,7 @@ export function useSteps(
     realSteps: storedSteps,
     editingStep,
     changeEditingStep,
+    lines,
+    changeLines,
   };
 }

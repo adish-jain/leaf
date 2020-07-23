@@ -12,9 +12,8 @@ type EditingStoredStepProps = {
     removeLines: any
   ) => void;
   onChange: (stepText: any) => void;
-  onHighlight: () => void;
-  unHighlight: () => void;
   editorState: any;
+  lines: { start: number; end: number };
 };
 
 type EditingStoredStepState = {

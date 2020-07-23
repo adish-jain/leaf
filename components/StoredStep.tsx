@@ -20,8 +20,6 @@ type StoredStepProps = {
     removeLines: any
   ) => void;
   deleteStoredStep: (stepId: any) => void;
-  onHighlight: () => void;
-  unHighlight: () => void;
   moveStepUp: (stepId: any) => void;
   moveStepDown: (stepId: any) => void;
   changeEditingStep: (editingStep: number) => void;
@@ -91,8 +89,6 @@ export default class StoredStep extends Component<
             updateStoredStep={this.updateStoredStep}
             onChange={this.onChange}
             editorState={editorState}
-            onHighlight={this.props.onHighlight}
-            unHighlight={this.props.unHighlight}
             lines={this.props.lines}
           />
         ) : (
