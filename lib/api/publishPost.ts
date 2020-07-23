@@ -23,14 +23,14 @@ export default async function publishPost(
   }
    
   // check to see user email is verified
-  // let currentUser = await firebase.auth().currentUser;
-  // await currentUser.reload();
-  // if (currentUser.emailVerified != true) {
-  //   res.json({
-  //     newURL: "unverified",
-  //   });
-  //   return;
-  // }
+  let currentUser = await firebase.auth().currentUser;
+  await currentUser.reload();
+  if (currentUser.emailVerified != true) {
+    res.json({
+      newURL: "unverified",
+    });
+    return;
+  }
 
   let draftsRef = await db
     .collection("users")
@@ -43,7 +43,6 @@ export default async function publishPost(
     return draftData.title;
   });
 
-  // replace with getUserStepsForDraft in userUtils.ts
   let stepsRef = db
     .collection("users")
     .doc(uid)

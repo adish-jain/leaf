@@ -101,7 +101,7 @@ export default function SignUp() {
               <button className={loginStyles.LoginButton} onClick={handleClick}>
                 Sign Up
               </button>
-              {signup && (<div>Email Verification Sent.</div>)}
+              {signup && (<div><br/>Email Verification Sent. Welcome to Leaf! 🍃</div>)}
             </div>
           </div>
         </div>
