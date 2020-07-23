@@ -29,9 +29,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   await currentUser.sendEmailVerification();
   // console.log(signedin_user.emailVerified);
 
-  while (currentUser.emailVerified != true) {
-    await currentUser.reload();
-  }
+  // while (currentUser.emailVerified != true) {
+  //   await currentUser.reload();
+  // }
 
   db.collection("users").doc(signedin_user.uid).set({
     email: signedin_user.email,
