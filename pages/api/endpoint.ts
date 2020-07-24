@@ -37,6 +37,7 @@ import handleGetTitle from '../../lib/api/getTitle';
 import handleSaveFile from "../../lib/api/saveFile";
 import handleDeleteFile from "../../lib/api/deleteFile";
 import handleChangeFileLanguage from "../../lib/api/changeFileLanguage";
+import handleGetFiles from '../../lib/api/getFiles';
 import handleSaveFileCode from "../../lib/api/saveFileCode";
 import handleSaveFileName from "../../lib/api/saveFileName";
 
@@ -161,6 +162,10 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
     */
 
     // POST
+    case "getFiles": {
+      return handleGetFiles(req, res);
+    }
+
     case "save_file": {
       return handleSaveFile(req, res);
     }

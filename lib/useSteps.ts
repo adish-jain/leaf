@@ -31,7 +31,7 @@ export function useSteps(draftId: string, authenticated: boolean) {
     );
 
   // Fetch steps data
-  const initialStepsData: any[] = [];
+  const initialStepsData: Step[] = [];
   let { data: storedSteps, mutate } = useSWR<Step[]>(
     authenticated ? "getSteps" : null,
     stepsFetcher,
