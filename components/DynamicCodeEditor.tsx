@@ -25,19 +25,28 @@ type Line = {
   char: number;
 };
 
+type File = {
+  id: string;
+  name: string;
+  //replace with enum
+  language: string;
+  code: string;
+};
+
 type CodeMirrorProps = {
   highlightLines: (start: any, end: any) => void;
   saveFileCode: () => void;
   draftCode: string;
   changeCode: (value: string) => void;
   changeLines: (lines: { start: Line; end: Line }) => void;
-  saveLines: () => void;
+  saveLines: (fileName: string, remove: boolean) => void;
   language: string;
   editing: boolean;
   lines: {
     start: Line;
     end: Line;
   };
+  selectedFile: File;
 };
 
 type CodeMirrorState = {
@@ -150,6 +159,13 @@ export default class CodeMirror extends Component<
     }
   }
 
+  saveLinesWrapper() {
+    this.props.saveLines(this.props.selectedFile.name, false);
+    this.setState({
+      showModal: false,
+    });
+  }
+
   render() {
     let { saveLines } = this.props;
     let { start, end } = this.props.lines;
@@ -166,7 +182,7 @@ export default class CodeMirror extends Component<
               <p>
                 Highlight lines {start.lineNumber} to {end.lineNumber}?
               </p>
-              <button onClick={(e) => saveLines()}>
+              <button onClick={(e) => this.saveLinesWrapper()}>
                 Attach highlighted lines to step.
               </button>
               <button>X</button>

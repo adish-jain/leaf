@@ -28,13 +28,13 @@ type Line = {
 
 type CodeEditorProps = {
   draftId: string;
-  saveFileCode: () => void;
+  saveFileCode: (fileName: string) => void;
   editingStep: number;
   changeFileLanguage: (language: string, external: boolean) => void;
   saveFileName: (value: string, external: boolean) => void;
   draftCode: string;
   changeLines: (lines: { start: Line; end: Line }) => void;
-  saveLines: () => void;
+  saveLines: (fileName: string, remove: boolean) => void;
   // filenames map to language
   files: File[];
   addFile: () => void;
@@ -109,6 +109,7 @@ export default class CodeEditor extends Component<
           changeLines={changeLines}
           saveLines={saveLines}
           lines={lines}
+          selectedFile={files[selectedFileIndex]}
         />
         <LanguageBar
           language={language}

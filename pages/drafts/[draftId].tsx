@@ -157,6 +157,7 @@ const DraftView = () => {
               changeEditingStep={changeEditingStep}
               selectedFile={codeFiles[selectedFileIndex]}
               lines={lines}
+              saveLines={saveLines}
             />
             <CodeEditor
               draftId={draftId as string}

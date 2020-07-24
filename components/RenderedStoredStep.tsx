@@ -9,6 +9,7 @@ type RenderedStoredStepProps = {
   moveStepDown: () => void;
   editorState: any;
   lines: { start: number; end: number };
+  attachedFileName: string;
 };
 
 type RenderedStoredStepState = {};
@@ -23,7 +24,7 @@ export default class Step extends Component<
   }
 
   render() {
-    let { lines } = this.props;
+    let { lines, attachedFileName } = this.props;
 
     const Buttons = () => {
       return (
@@ -65,7 +66,7 @@ export default class Step extends Component<
     };
 
     const LineStatus = () => {
-      if (lines === null) {
+      if (lines === undefined || lines === null) {
         return (
           <div className={StepStyles["none-selected"]}>
             No lines of code are associated with this step.
@@ -78,7 +79,7 @@ export default class Step extends Component<
               color: white;
               background-color: #37abda;
             `}</style>
-            Selected lines {lines.start} to {lines.end}
+            Selected lines {lines.start} to {lines.end} in {attachedFileName}
           </div>
         );
       }

@@ -39,6 +39,7 @@ type PublishingProps = {
   saveTitle: (title: string) => void;
   selectedFile: File;
   lines: { start: Line; end: Line };
+  saveLines: (fileName: string, remove: boolean) => void;
 };
 
 type PublishingState = {
@@ -162,7 +163,13 @@ export default class Publishing extends Component<
   }
 
   render() {
-    let { storedSteps, editingStep, changeEditingStep } = this.props;
+    let {
+      storedSteps,
+      editingStep,
+      changeEditingStep,
+      selectedFile,
+      saveLines,
+    } = this.props;
     return (
       <div className={publishingStyles.publishing}>
         <div className={publishingStyles.PublishingButtonsWrapper}>
@@ -208,6 +215,9 @@ export default class Publishing extends Component<
               key={storedStep.id}
               editing={editingStep === index}
               changeEditingStep={changeEditingStep}
+              selectedFile={selectedFile}
+              saveLines={saveLines}
+              attachedFileName={storedStep.fileName}
             />
           );
         })}

@@ -6,6 +6,13 @@ import RenderedStoredStep from "./RenderedStoredStep";
 const StepStyles = require("../styles/Step.module.scss");
 const fetch = require("node-fetch");
 
+type File = {
+  id: string;
+  language: string; //replace with enum
+  code: string;
+  name: string;
+};
+
 type StoredStepProps = {
   editing: boolean;
   id: string;
@@ -23,6 +30,9 @@ type StoredStepProps = {
   moveStepUp: (stepId: any) => void;
   moveStepDown: (stepId: any) => void;
   changeEditingStep: (editingStep: number) => void;
+  selectedFile: File;
+  attachedFileName: string;
+  saveLines: (fileName: string, remove: boolean) => void;
 };
 
 type StoredStepState = {
@@ -79,6 +89,7 @@ export default class StoredStep extends Component<
   }
 
   render() {
+    let { saveLines, attachedFileName } = this.props;
     const contentState = convertFromRaw(this.props.text);
     const editorState = EditorState.createWithContent(contentState);
     const editing = this.props.editing;
@@ -90,6 +101,8 @@ export default class StoredStep extends Component<
             onChange={this.onChange}
             editorState={editorState}
             lines={this.props.lines}
+            saveLines={saveLines}
+            attachedFileName={attachedFileName}
           />
         ) : (
           <RenderedStoredStep
@@ -99,6 +112,7 @@ export default class StoredStep extends Component<
             moveStepDown={this.moveStepDown}
             lines={this.props.lines}
             editorState={editorState}
+            attachedFileName={attachedFileName}
           />
         )}
       </div>

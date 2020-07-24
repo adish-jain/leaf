@@ -14,6 +14,8 @@ type EditingStoredStepProps = {
   onChange: (stepText: any) => void;
   editorState: any;
   lines: { start: number; end: number };
+  saveLines: (fileName: string, remove: boolean) => void;
+  attachedFileName: string;
 };
 
 type EditingStoredStepState = {
@@ -34,7 +36,13 @@ export default class Step extends Component<
   }
 
   render() {
-    let { onChange, editorState, lines } = this.props;
+    let {
+      onChange,
+      editorState,
+      lines,
+      saveLines,
+      attachedFileName,
+    } = this.props;
 
     const Buttons = () => {
       return (
@@ -55,16 +63,30 @@ export default class Step extends Component<
       return (
         <div className={StepStyles["line-indicator"]}>
           <div className={StepStyles["center-indicator"]}>
-            <div className={StepStyles["lines-prompt"]}>
-              Highlight code in the editor to attach to this step.
-            </div>
             {!lines ? (
-              <div className={StepStyles["lines-selected"]}>
-                No lines currently selected.
+              <div className={StepStyles["lines-wrapper"]}>
+                <div className={StepStyles["lines-prompt"]}>
+                  Highlight code in the editor to attach to this step.
+                </div>
+                <div className={StepStyles["lines-selected"]}>
+                  No lines currently selected.
+                </div>
               </div>
             ) : (
-              <div className={StepStyles["lines-selected"]}>
-                Selected lines {lines.start} to {lines.end}
+              <div className={StepStyles["lines-wrapper"]}>
+                <div className={StepStyles["lines-prompt"]}></div>
+                <div className={StepStyles["lines-selected"]}>
+                  <p>
+                    Selected lines {lines.start} to {lines.end} in{" "}
+                    {attachedFileName}
+                  </p>
+                  <button
+                    className={StepStyles["Close"]}
+                    onClick={(e) => saveLines("", true)}
+                  >
+                    X
+                  </button>
+                </div>
               </div>
             )}
           </div>

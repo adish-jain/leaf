@@ -10,6 +10,7 @@ type Step = {
   id: string;
   lines?: { start: number; end: number };
   text: any;
+  fileName?: string;
 };
 
 export function useSteps(draftId: string, authenticated: boolean) {
@@ -40,7 +41,6 @@ export function useSteps(draftId: string, authenticated: boolean) {
     }
   );
 
-  console.log(storedSteps);
   // What step is currently being edited?
   const [editingStep, changeEditingStep] = useState(-1);
 
@@ -100,6 +100,7 @@ export function useSteps(draftId: string, authenticated: boolean) {
   Updates a step in Firebase. Triggered from `EditingStoredStep.tsx`.
   */
   function updateStoredStep(stepId: any, text: any) {
+    console.log("update step called");
     let data = {
       requestedAPI: "update_step",
       text: text,
@@ -126,27 +127,46 @@ export function useSteps(draftId: string, authenticated: boolean) {
     });
   }
 
-  function saveLines() {
+  /* 
+  Attach lines selected in the code editor to the current editing step.
+  if remove is true, fileName and lines are cleared from the step
+  */
+  function saveLines(fileName: string, remove: boolean) {
     let stepId = storedSteps![editingStep].id;
     let linesData = {
       start: lines.start.lineNumber,
       end: lines.end.lineNumber,
     };
-    
-    let data = {
-      requestedAPI: "updateStepLines",
-      draftId: draftId,
-      stepId: stepId,
-      lines: linesData,
-    };
 
     // optimistic mutate
     let optimisticSteps = storedSteps!.slice();
     let idx = findIdx(stepId);
-    optimisticSteps[idx] = {
-      ...optimisticSteps[idx],
-      lines: linesData,
-    };
+    let data;
+    if (remove) {
+      data = {
+        requestedAPI: "updateStepLines",
+        draftId: draftId,
+        stepId: stepId,
+        lines: undefined,
+        fileName: undefined,
+      };
+      optimisticSteps[idx] = {
+        ...optimisticSteps[idx],
+        lines: undefined,
+      };
+    } else {
+      data = {
+        requestedAPI: "updateStepLines",
+        draftId: draftId,
+        stepId: stepId,
+        lines: linesData,
+        fileName: fileName,
+      };
+      optimisticSteps[idx] = {
+        ...optimisticSteps[idx],
+        lines: linesData,
+      };
+    }
     mutate(optimisticSteps, false);
 
     fetch("/api/endpoint", {

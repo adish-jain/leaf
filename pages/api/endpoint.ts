@@ -27,6 +27,7 @@ import handleDeleteFile from "../../lib/api/deleteFile";
 import handleChangeFileLanguage from "../../lib/api/changeFileLanguage";
 import handleSaveFileCode from "../../lib/api/saveFileCode";
 import handleSaveFileName from "../../lib/api/saveFileName";
+import handleLinkFileToStep from "../../lib/api/linkFileToStep";
 
 const firebase = require("firebase/app");
 initFirebase();
