@@ -1,9 +1,10 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebaseAdmin, initFirebase } from "../initFirebase";
 import { getUser, checkUsernameDNE, getUsernameFromUid } from "../userUtils";
-import getDrafts from "./getDrafts";
+import { getUserStepsForDraft } from "../postUtils";
 const shortId = require("shortid");
 const admin = require("firebase-admin");
+const firebase = require("firebase/app");
 
 let db = admin.firestore();
 initFirebaseAdmin();
@@ -18,6 +19,16 @@ export default async function publishPost(
   if (uid === "") {
     res.statusCode = 403;
     res.end();
+    return;
+  }
+   
+  // check to see user email is verified
+  let currentUser = await firebase.auth().currentUser;
+  await currentUser.reload();
+  if (currentUser.emailVerified != true) {
+    res.json({
+      newURL: "unverified",
+    });
     return;
   }
 

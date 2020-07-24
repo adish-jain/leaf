@@ -203,6 +203,7 @@ export default class CodeMirror extends Component<
           position: relative;
           background-color: #263238;
           font-size: 12px;
+          height: 0px;
         `}</style>
         <LineModal />
         <CodeMirror2
