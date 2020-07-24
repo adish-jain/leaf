@@ -64,7 +64,6 @@ const DraftView = () => {
     { initialData, revalidateOnMount: true }
   );
 
-  // let storedSteps = draftData["optimisticSteps"];
   let draftFiles = draftData["files"];
   let errored = draftData["errored"];
 

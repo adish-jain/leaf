@@ -14,6 +14,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   return updateStepLinesHandler(req, res);
 };
 
+/*
+ * Updates the file name and line numbers associated with a step.
+ */
 async function updateStepLinesHandler(
   req: NextApiRequest,
   res: NextApiResponse

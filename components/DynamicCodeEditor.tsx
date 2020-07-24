@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import { Controlled as CodeMirror2 } from "react-codemirror2";
-import { filenames, Language, reactString, jsxString } from "./code_string";
 import CodeEditorStyles from "../styles/CodeEditor.module.scss";
-import { EDOM } from "constants";
 
 import "codemirror/addon/edit/matchbrackets.js";
 import "codemirror/addon/edit/closebrackets.js";
@@ -132,6 +130,11 @@ export default class CodeMirror extends Component<
     }
   }
 
+  /*
+   * When the mouse is clicked, codemirror sets selections that are
+   * not caught by the onSelection event handler. This method attempts to capture
+   * these selections.
+   */
   handleMouseUp() {
     let editor = this.instance;
     let selectedLines = editor?.listSelections();
@@ -209,26 +212,13 @@ export default class CodeMirror extends Component<
         <CodeMirror2
           className={"CodeEditor"}
           value={draftCode}
-          // value = {this.state.value}
           options={{
             lineNumbers: true,
             mode: language,
-            // theme: "solarized",
             theme: "monokai-sublime",
-            // theme: "material",
-            // theme: 'vscode-dark',
-            // theme: 'oceanic-next',
             lineWrapping: true,
             matchBrackets: true,
             autoCloseBrackets: true,
-            // configureMouse: (editor: any, e: any) => {
-            //   editor.setSelections(ranges, 0, {
-            //     scroll: false,
-            //   });
-            //   return {
-            //     addNew: true,
-            //   };
-            // },
           }}
           onSelection={(editor, data) => {
             if (this.props.editing) {
@@ -242,12 +232,8 @@ export default class CodeMirror extends Component<
           onBeforeChange={(editor, data, value) => {
             this.props.changeCode(value);
           }}
-          onChange={(editor, data, value) => {}}
           onBlur={() => {
             this.props.saveFileCode();
-          }}
-          onDragLeave={(editor, event) => {
-            console.log("drag left");
           }}
         />
       </div>

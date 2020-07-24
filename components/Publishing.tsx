@@ -24,6 +24,7 @@ type PublishingProps = {
   draftId: any;
   title: string;
   storedSteps: any[];
+  // what step is currently being edited? -1 means no steps being edited
   editingStep: number;
   changeEditingStep: (editingStep: number) => void;
   saveStep: (stepId: string, text: any) => void;
