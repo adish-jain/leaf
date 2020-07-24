@@ -82,7 +82,6 @@ export default class Publishing extends Component<
 
   publishDraft(e: React.MouseEvent<HTMLButtonElement>) {
     let { draftId } = this.props;
-    console.log("publishing");
     fetch("/api/endpoint", {
       method: "POST",
       redirect: "follow",
@@ -92,7 +91,12 @@ export default class Publishing extends Component<
       .then(async (res: any) => {
         let resJson = await res.json();
         let newUrl = resJson.newURL;
-        Router.push(newUrl);
+        if (newUrl === "unverified") {
+          alert("Please verify your email before publishing.");
+        } else {
+          Router.push(newUrl);
+        }
+        // Router.push(newUrl);
       })
       .catch(function (err: any) {
         console.log(err);

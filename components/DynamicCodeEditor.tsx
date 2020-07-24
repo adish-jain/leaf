@@ -69,6 +69,7 @@ export default class CodeMirror extends Component<
           flex-grow: 100;
           overflow-y: scroll;
           font-size: 12px;
+          height: 0px;
         `}</style>
         <CodeMirror2
           className={"CodeEditor"}

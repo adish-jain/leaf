@@ -13,6 +13,7 @@ export default function SignUp() {
 
   const [email, changeEmail] = useState("");
   const [password, changePassword] = useState("");
+  const [signup, clicked] = useState(false);
   const [verifyPassword, changeVerifyPassword] = useState("");
 
   const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,6 +31,7 @@ export default function SignUp() {
   };
 
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
+    clicked(true);
     let data = {
       requestedAPI: "signup",
       email: email,
@@ -99,6 +101,7 @@ export default function SignUp() {
               <button className={loginStyles.LoginButton} onClick={handleClick}>
                 Sign Up
               </button>
+              {signup && (<div><br/>Email Verification Sent. Welcome to Leaf! 🍃</div>)}
             </div>
           </div>
         </div>
