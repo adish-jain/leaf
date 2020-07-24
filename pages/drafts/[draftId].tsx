@@ -3,6 +3,7 @@ import { useState, useCallback } from "react";
 import { useLoggedIn, logOut } from "../../lib/UseLoggedIn";
 import { useFiles } from "../../lib/useFiles";
 import { useSteps } from "../../lib/useSteps";
+import { useDraftTitle } from "../../lib/useDraftTitle";
 import useSWR from "swr";
 import Publishing from "../../components/Publishing";
 import CodeEditor from "../../components/CodeEditor";
@@ -63,22 +64,14 @@ const DraftView = () => {
     { initialData, revalidateOnMount: true }
   );
 
-  let draftTitle = draftData["title"];
-  let storedSteps = draftData["optimisticSteps"];
+  // let storedSteps = draftData["optimisticSteps"];
   let draftFiles = draftData["files"];
   let errored = draftData["errored"];
 
-  let {
-    selectedFileIndex,
-    codeFiles,
-    addFile,
-    removeFile,
-    changeCode,
-    changeSelectedFileIndex,
-    changeFileLanguage,
-    saveFileName,
-    saveFileCode,
-  } = useFiles(draftId, draftFiles, draftTitle, storedSteps, mutate);
+  let { saveTitle, draftTitle } = useDraftTitle(
+    draftId as string,
+    authenticated
+  );
 
   let {
     saveStep,
@@ -91,28 +84,20 @@ const DraftView = () => {
     changeEditingStep,
     lines,
     changeLines,
-    saveLines
+    saveLines,
   } = useSteps(draftId as string, authenticated);
 
-  /*
-  Saves the title of the draft in Firestore. 
-  Triggered from `Publishing.tsx`.
-  */
-  function saveTitle(title: string) {
-    var data = {
-      requestedAPI: "save_title",
-      draftId: draftId,
-      title: title,
-    };
-
-    fetch("/api/endpoint", {
-      method: "POST",
-      headers: new Headers({ "Content-Type": "application/json" }),
-      body: JSON.stringify(data),
-    }).then(async (res: any) => {
-      console.log(res);
-    });
-  }
+  let {
+    selectedFileIndex,
+    codeFiles,
+    addFile,
+    removeFile,
+    changeCode,
+    changeSelectedFileIndex,
+    changeFileLanguage,
+    saveFileName,
+    saveFileCode,
+  } = useFiles(draftId, draftFiles, draftTitle, realSteps, mutate);
 
   return (
     <div className="container">
