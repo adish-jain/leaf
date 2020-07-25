@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Controlled as CodeMirror2 } from "react-codemirror2";
+import { Editor } from "draft-js";
 
 // require('codemirror/mode/xml/xml');
 // require('codemirror/mode/javascript/javascript');
@@ -38,32 +39,36 @@ const ranges = [
 ];
 
 const rangetest = {};
-var markers = [];
+var markers: CodeMirror.TextMarker[] = [];
 
 export default class PublishedCodeMirror extends Component<
   CodeMirrorProps,
   CodeMirrorState
 > {
-  instance: any;
+  instance: CodeMirror.Editor | undefined;
 
   constructor(props: CodeMirrorProps) {
     super(props);
 
-    this.instance = null;
+    this.instance = undefined;
   }
 
   componentDidUpdate(prevProps: CodeMirrorProps) {
     let { currentStep } = this.props;
 
     if (currentStep.lines !== null && currentStep.lines !== undefined) {
-      let newMarker = this.instance.markText(
+      for (let i = 0; i < markers.length; i++) {
+        markers[i].clear();
+      }
+      let newMarker = this.instance?.markText(
         { line: currentStep.lines.start, ch: 0 },
         { line: currentStep.lines.end, ch: 5 },
         {
           className: "MarkText",
         }
       );
-      markers.push(newMarker);
+      markers.push(newMarker!);
+      this.instance?.scrollIntoView({ line: currentStep.lines.end, ch: 0 }, 300);
     }
   }
 
