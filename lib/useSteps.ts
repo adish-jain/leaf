@@ -100,7 +100,6 @@ export function useSteps(draftId: string, authenticated: boolean) {
   Updates a step in Firebase. Triggered from `EditingStoredStep.tsx`.
   */
   function updateStoredStep(stepId: any, text: any) {
-    console.log("update step called");
     let data = {
       requestedAPI: "update_step",
       text: text,
