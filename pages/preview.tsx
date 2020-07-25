@@ -12,6 +12,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
     let title = draftData.title;
     let steps = draftData.optimisticSteps;
 
+    for (let i = 0; i < steps.length; i++) {
+      if (steps[i].lines === undefined || steps[i].lines === null) {
+        steps[i].lines = null;
+        console.log("setting ", i, " to null");
+        steps[i].fileName = null;
+      }
+    }
+
     return {
       unstable_revalidate: 1,
       props: {
