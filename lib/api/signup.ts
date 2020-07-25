@@ -15,11 +15,24 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   let requestBody = req.body;
   let email = requestBody.email;
   let password = requestBody.password;
+  var errored = false;
 
   // Promise<UserCredential>
   let userCredential = await firebase
     .auth()
     .createUserWithEmailAndPassword(email, password)
+    .catch(function(error: any) {
+      var errorMsg = error.message;
+      res.json({
+        msg: errorMsg,
+      });
+      errored = true;
+      return;
+    })
+    
+  if (errored) {
+    return;
+  }
 
   let signedin_user = userCredential.user;
   
@@ -50,7 +63,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       token: refreshToken,
     },
   ];
-
+  res.json({
+    msg: "",
+  });
   setTokenCookies(res, tokens);
   res.status(200).end();
 };

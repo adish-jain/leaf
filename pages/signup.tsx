@@ -9,12 +9,16 @@ const loginStyles = require("../styles/Login.module.scss");
 
 export default function SignUp() {
   const router = useRouter();
-  const { authenticated, error } = useLoggedIn();
+  // const { authenticated, error } = useLoggedIn();
 
   const [email, changeEmail] = useState("");
   const [password, changePassword] = useState("");
-  const [signup, clicked] = useState(false);
   const [verifyPassword, changeVerifyPassword] = useState("");
+  const [errorMsg, updateMsg] = useState("");
+  const [signup, clicked] = useState(false);
+  const [error, errored] = useState(false);
+  const [match, passwordsMatch] = useState(true);
+
 
   const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     changeEmail(e.target.value);
@@ -22,16 +26,35 @@ export default function SignUp() {
 
   const handleChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     changePassword(e.target.value);
+    if (e.target.value != verifyPassword) {
+      // console.log(password);
+      // console.log(verifyPassword);
+      passwordsMatch(false);
+    } else {
+      passwordsMatch(true);
+    }
   };
 
   const handleChangeVerifyPassword = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     changeVerifyPassword(e.target.value);
+    // console.log(e.target.value);
+    // console.log(verifyPassword);
+    if (password != e.target.value) {
+      // console.log(password);
+      // console.log(verifyPassword);
+      passwordsMatch(false);
+    } else {
+      passwordsMatch(true);
+    }
   };
 
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     clicked(true);
+    if (!match) {
+      return;
+    }
     let data = {
       requestedAPI: "signup",
       email: email,
@@ -44,8 +67,16 @@ export default function SignUp() {
       credentials: "same-origin",
       body: JSON.stringify(data),
     })
-      .then((res) => {
-        router.push("/landing");
+      .then(async (res: any) => {
+        let resJson = await res.json();
+        let msg = resJson.msg;
+        console.log(msg);
+        if (msg === "") {
+          router.push("/landing");
+        } else {
+          errored(true);
+          updateMsg(msg);
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -101,7 +132,9 @@ export default function SignUp() {
               <button className={loginStyles.LoginButton} onClick={handleClick}>
                 Sign Up
               </button>
-              {signup && (<div><br/>Email Verification Sent. Welcome to Leaf! 🍃</div>)}
+              {signup && !error && (<div><br/>Email Verification Sent. Welcome to Leaf! 🍃</div>)}
+              {error && (<div><br/>{errorMsg}</div>)}
+              {!match && (<div><br/>Passwords don't match</div>)}
             </div>
           </div>
         </div>
