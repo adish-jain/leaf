@@ -11,6 +11,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     let draftData = await getDraftDataHandler(uid, draftId);
     let title = draftData.title;
     let steps = draftData.optimisticSteps;
+    let files = draftData.files;
 
     for (let i = 0; i < steps.length; i++) {
       if (steps[i].lines === undefined || steps[i].lines === null) {
@@ -25,6 +26,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
       props: {
         title,
         steps,
+        files,
       },
     };
   } else {
@@ -42,12 +44,18 @@ type StepType = {
   id: string;
 };
 
+type File = {
+  id: string;
+  language: string;
+  code: string;
+  name: string;
+};
+
 type DraftPreviewProps = {
   steps: StepType[];
   title: string;
+  files: File[];
 };
-
-const stepsInView: { [stepIndex: number]: boolean } = {};
 
 const DraftPreview = (props: DraftPreviewProps) => {
   return (
@@ -71,7 +79,11 @@ const DraftPreview = (props: DraftPreviewProps) => {
         />
       </Head>
       <main>
-        <FinishedPost steps={props.steps} title={props.title} />
+        <FinishedPost
+          steps={props.steps}
+          title={props.title}
+          files={props.files}
+        />
       </main>
     </div>
   );

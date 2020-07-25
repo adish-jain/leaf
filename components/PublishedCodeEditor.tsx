@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import dynamic from "next/dynamic";
-import LanguageBar from "./LanguageBar";
-import FileBar from "./FileBar";
-import PreviewSection from "./PreviewSection";
+import PublishedLanguageBar from "./PublishedLanguageBar";
+import PublishedFileBar from "./PublishedFileBar";
+import PublishedCodeEditorStyles from "../styles/PublishedCodeEditor.module.scss";
 
 // import CodeMirror from './DynamicComponent';
 // const {CodeMirror} = require('./DynamicComponent');
@@ -14,9 +14,18 @@ const PublishedCodeMirror = dynamic(
   }
 );
 
+type File = {
+  id: string;
+  language: string;
+  code: string;
+  name: string;
+};
+
 type PublishedCodeEditorProps = {
   // changeStep: (newStep: number) => void;
   currentStep: number;
+  files: File[];
+  currentFile: File;
 };
 
 type PublishedCodeEditorState = {
@@ -36,21 +45,18 @@ export default class PublishedCodeEditor extends Component<
   }
 
   render() {
+    let { files, currentFile, currentStep } = this.props;
     return (
-      <div>
-        <style jsx>{`
-          box-shadow: 0px 4px 16px #edece9;
-          border-radius: 8px;
-          position: sticky;
-          top: 2vh;
-          height: 96vh;
-          margin-top: 2vhpx;
-          margin-bottom: 2vh;
-        `}</style>
+      <div className={PublishedCodeEditorStyles["editor-wrapper"]}>
+        <PublishedFileBar files={files}/>
         {
-          //@ts-ignore
-          <PublishedCodeMirror currentStep={this.props.currentStep} />
+          <PublishedCodeMirror
+            //@ts-ignore
+            currentFile={currentFile}
+            currentStep={currentStep}
+          />
         }
+        <PublishedLanguageBar language={currentFile.language} />
       </div>
     );
   }

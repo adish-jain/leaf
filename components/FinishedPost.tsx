@@ -8,15 +8,24 @@ type StepType = {
   id: string;
 };
 
+type File = {
+  id: string;
+  language: string;
+  code: string;
+  name: string;
+};
+
 type FinishedStepProps = {
   steps: StepType[];
   title: string;
+  files: File[];
 };
 
 const stepsInView: { [stepIndex: number]: boolean } = {};
 
 const FinishedPost = (props: FinishedStepProps) => {
   const [currentStep, updateStep] = useState(0);
+  const [currentFile, updateFile] = useState(0);
 
   function changeStep(newStep: number, yPos: number, entered: boolean) {
     // stepsInView keeps track of what steps are inside the viewport
@@ -40,7 +49,11 @@ const FinishedPost = (props: FinishedStepProps) => {
         changeStep={changeStep}
         steps={props.steps}
       />
-      <PublishedCodeEditor currentStep={currentStep} />
+      <PublishedCodeEditor
+        currentFile={props.files[currentFile]}
+        files={props.files}
+        currentStep={currentStep}
+      />
     </div>
   );
 };

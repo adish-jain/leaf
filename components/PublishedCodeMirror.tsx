@@ -11,10 +11,18 @@ require("codemirror/mode/jsx/jsx");
 
 type CodeMirrorProps = {
   currentStep: number;
+  currentFile: File;
 };
 
 type CodeMirrorState = {
   value: string;
+};
+
+type File = {
+  id: string;
+  language: string;
+  code: string;
+  name: string;
 };
 
 const ranges = [
@@ -63,13 +71,21 @@ export default class PublishedCodeMirror extends Component<
   render() {
     return (
       <div>
+        <style jsx>{`
+          flex-grow: 100;
+          overflow-y: scroll;
+          position: relative;
+          background-color: #263238;
+          font-size: 12px;
+          height: auto;
+        `}</style>
         <CodeMirror2
           className={"CodeEditor"}
           value={this.state.value}
           options={{
             lineNumbers: true,
             mode: "jsx",
-            theme: "vscode-dark",
+            theme: "monokai-sublime",
             // theme: 'oceanic-next',
             lineWrapping: true,
             // configureMouse: (editor: any, e: any) => {
@@ -81,8 +97,7 @@ export default class PublishedCodeMirror extends Component<
             //   };
             // },
           }}
-          onSelection={(editor, data) => {
-          }}
+          onSelection={(editor, data) => {}}
           editorDidMount={(editor) => {
             this.instance = editor;
             editor.markText(
@@ -92,9 +107,7 @@ export default class PublishedCodeMirror extends Component<
                 className: "MarkText",
               }
             );
-            // editor.setSize(608, 531);
-            editor.setSize("48vw", "90vh");
-            // editor.setSize(608, "96%");
+            editor.setSize("100%", "100%");
           }}
           scroll={{
             y: 0,
