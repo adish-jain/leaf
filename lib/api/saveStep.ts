@@ -36,14 +36,25 @@ async function saveStepHandler(req: NextApiRequest, res: NextApiResponse) {
     return;
   }
 
-  let stepText = {
-    createdAt: admin.firestore.FieldValue.serverTimestamp(),
-    text: text,
-    lines: lines,
-    order: order,
-  };
+  let stepText;
+  if (lines === undefined) {
+    stepText = {
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      text: text,
+      order: order,
+    };
+  }
+  else {
+    stepText = {
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      text: text,
+      lines: lines,
+      order: order,
+    };
+  }
 
-  db.collection("users")
+  await db
+    .collection("users")
     .doc(uid)
     .collection("drafts")
     .doc(draftId)

@@ -24,7 +24,6 @@ async function updateStepHandler(req: NextApiRequest, res: NextApiResponse) {
   let text = req.body.text;
   let stepId = req.body.stepId;
   let draftId = req.body.draftId;
-  let lines = req.body.lines;
   let { uid } = await getUser(req, res);
 
   if (uid === "") {
@@ -40,7 +39,7 @@ async function updateStepHandler(req: NextApiRequest, res: NextApiResponse) {
     .doc(draftId)
     .collection("steps")
     .doc(stepId)
-    .update({ text: text, lines: lines });
+    .update({ text: text });
 
   res.statusCode = 200;
   let results = await getUserStepsForDraft(uid, draftId);

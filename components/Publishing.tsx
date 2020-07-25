@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import NewStep from "./NewStep";
-import Step from "./Step";
 import StoredStep from "./StoredStep";
 const fetch = require("node-fetch");
 global.Headers = fetch.Headers;
@@ -9,10 +8,25 @@ const publishingStyles = require("../styles/Publishing.module.scss");
 
 var shortId = require("shortid");
 
+type File = {
+  id: string;
+  language: string; //replace with enum
+  code: string;
+  name: string;
+};
+
+type Line = {
+  lineNumber: number;
+  char: number;
+};
+
 type PublishingProps = {
   draftId: any;
   title: string;
   storedSteps: any[];
+  // what step is currently being edited? -1 means no steps being edited
+  editingStep: number;
+  changeEditingStep: (editingStep: number) => void;
   saveStep: (stepId: string, text: any) => void;
   updateStoredStep: (
     stepId: string,
@@ -21,15 +35,15 @@ type PublishingProps = {
     removeLines: any
   ) => void;
   deleteStoredStep: (stepId: any) => void;
-  onHighlight: () => void;
-  unHighlight: () => void;
   moveStepUp: (stepId: any) => void;
   moveStepDown: (stepId: any) => void;
   saveTitle: (title: string) => void;
+  selectedFile: File;
+  lines: { start: Line; end: Line };
+  saveLines: (fileName: string, remove: boolean) => void;
 };
 
 type PublishingState = {
-  steps: any[];
   title: string;
   saveTitle: boolean;
   previewLoading: boolean;
@@ -59,25 +73,35 @@ export default class Publishing extends Component<
     this.onTitleChange = this.onTitleChange.bind(this);
 
     this.state = {
-      steps: [],
       title: props.title,
       saveTitle: false,
       previewLoading: false,
     };
   }
 
-  closeStep(id: string) {
-    let steps = this.state.steps;
-    let idx = steps.indexOf(id, 0);
-    steps.splice(idx, 1);
-    this.setState({ steps: steps });
+  closeStep(stepId: string) {
+    this.props.deleteStoredStep(stepId);
   }
 
   addStep(e: React.MouseEvent<HTMLButtonElement>) {
-    let steps = this.state.steps;
-    let new_step = shortId.generate();
-    steps.push(new_step);
-    this.setState({ steps });
+    let stepId = shortId.generate();
+
+    let emptyJSON = {
+      blocks: [
+        {
+          key: stepId,
+          text: "Enter content here",
+          type: "unstyled",
+          depth: 0,
+          inlineStyleRanges: [],
+          entityRanges: [],
+          data: {},
+        },
+      ],
+      entityMap: {},
+    };
+
+    this.props.saveStep(stepId, JSON.stringify(emptyJSON));
   }
 
   publishDraft(e: React.MouseEvent<HTMLButtonElement>) {
@@ -124,7 +148,7 @@ export default class Publishing extends Component<
     // window.location.href = url;
 
     this.setState({
-      previewLoading: true
+      previewLoading: true,
     });
 
     fetch(url, {
@@ -144,6 +168,13 @@ export default class Publishing extends Component<
   }
 
   render() {
+    let {
+      storedSteps,
+      editingStep,
+      changeEditingStep,
+      selectedFile,
+      saveLines,
+    } = this.props;
     return (
       <div className={publishingStyles.publishing}>
         <div className={publishingStyles.PublishingButtonsWrapper}>
@@ -174,33 +205,24 @@ export default class Publishing extends Component<
             />
           </form>
         </div>
-        {this.props.storedSteps.map((storedStep) => {
+        {storedSteps.map((storedStep, index) => {
           return (
             <StoredStep
               id={storedStep.id}
+              index={index}
               draftId={this.props.draftId}
               text={JSON.parse(storedStep.text)}
               lines={storedStep.lines}
               deleteStoredStep={this.props.deleteStoredStep}
               updateStoredStep={this.props.updateStoredStep}
-              onHighlight={this.props.onHighlight}
-              unHighlight={this.props.unHighlight}
               moveStepUp={this.props.moveStepUp}
               moveStepDown={this.props.moveStepDown}
               key={storedStep.id}
-            />
-          );
-        })}
-        {this.state.steps.map((step) => {
-          return (
-            <Step
-              closeStep={this.closeStep}
-              saveStep={this.props.saveStep}
-              onHighlight={this.props.onHighlight}
-              unHighlight={this.props.unHighlight}
-              id={step}
-              draftId={this.props.draftId}
-              key={step}
+              editing={editingStep === index}
+              changeEditingStep={changeEditingStep}
+              selectedFile={selectedFile}
+              saveLines={saveLines}
+              attachedFileName={storedStep.fileName}
             />
           );
         })}

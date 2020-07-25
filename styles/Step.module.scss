@@ -1,3 +1,41 @@
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+  .none-selected {
+    font-size: 12px;
+  }
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+  .none-selected {
+    font-size: 12px;
+    // float: right;
+    // display: inline-block;
+    padding: 4px !important;
+  }
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+  .none-selected {
+    font-size: 12px;
+  }
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+  .none-selected {
+    font-size: 14px;
+  }
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+  .none-selected {
+    font-size: 14px;
+  }
+}
+
 .Step {
   margin-top: 24px;
   background: #ffffff;
@@ -5,32 +43,35 @@
   box-sizing: border-box;
   box-shadow: 0px 4px 16px #edece9;
   border-radius: 8px;
+  // padding: 24px 24px 0px 24px;
+  z-index: 3;
+  position: relative;
+  overflow: auto;
+}
 
+.Draft {
   // padding: 24px;
 }
 
-.Draft {  
-  // padding: 24px;
+.Close {
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid #edece9;
+  color: #f71600;
+
+  line-height: 24px;
+
+  width: 24px;
+  height: 24px;
+
+  text-align: center;
+  margin-right: 16px;
 }
 
 .Buttons {
   display: flex;
   flex-direction: row-reverse;
-
-  .Close {
-    border-radius: 50%;
-    background: #ffffff;
-    border: 1px solid #edece9;
-    color: #f71600;
-
-    line-height: 24px;
-
-    width: 24px;
-    height: 24px;
-
-    text-align: center;
-    margin-right: 16px;
-  }
+  // padding-bottom: 24px;
 
   .Up {
     border-radius: 50%;
@@ -98,5 +139,69 @@
 
 .LineInfo {
   height: 40px;
-  border-top: 1px solid #EBEBEB;
+  border-top: 1px solid #ebebeb;
+}
+
+.line-indicator {
+  z-index: 1;
+  display: flex;
+  // position: absolute;
+  // bottom: 0;
+  // left: 50%;
+  justify-content: center;
+}
+
+.step-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+
+.center-indicator {
+  display: flex;
+  background: #ffffff;
+  box-shadow: 0px 4px 16px #edece9;
+  border-radius: 0px 0px 8px 8px;
+  width: 100%;
+}
+
+.lines-prompt {
+  padding: 12px;
+  flex-grow: 100;
+  text-align: right;
+}
+
+.lines-wrapper {
+  width: 100%;
+  display: flex;
+}
+
+.lines-selected {
+  background: #37abda;
+  color: white;
+  padding: 12px;
+  border-radius: 0px 0px 8px 0px;
+  display: flex;
+  p {
+    padding: 0;
+    margin: 0px 8px 0px 0px;
+  }
+}
+
+.none-selected {
+  background: #ebebeb;
+  border: 1px solid #ebebeb;
+  box-sizing: border-box;
+  border-radius: 0px 0px 8px 0px;
+  padding: 8px 16px 8px 16px;
+  text-align: right;
+
+  // position: absolute;
+  // bottom: 0;
+  // right: 0;
+}
+
+.main-content {
+  padding: 16px;
 }
