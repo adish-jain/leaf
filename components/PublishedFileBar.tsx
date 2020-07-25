@@ -12,18 +12,35 @@ type File = {
 
 type PublishedFileBarProps = {
   files: File[];
+  updateFile: (fileIndex: number) => void;
 };
 
 export default function PublishedFileBar(props: PublishedFileBarProps) {
   return (
     <div className={fileBarStyles["published-filebar"]}>
-      {props.files.map((file) => (
-        <File key={file.id} name={file.name} />
+      {props.files.map((file, index) => (
+        <File
+          key={file.id}
+          index={index}
+          name={file.name}
+          updateFile={props.updateFile}
+        />
       ))}
     </div>
   );
 }
 
-function File(props: { name: string }) {
-  return <div>{props.name}</div>;
+function File(props: {
+  name: string;
+  index: number;
+  updateFile: (fileIndex: number) => void;
+}) {
+  return (
+    <div
+      onClick={(e) => props.updateFile(props.index)}
+      className={fileBarStyles["published-file"]}
+    >
+      {props.name}
+    </div>
+  );
 }

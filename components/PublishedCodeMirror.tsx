@@ -1,22 +1,23 @@
 import React, { Component } from "react";
 import { Controlled as CodeMirror2 } from "react-codemirror2";
-import { filenames, Language, reactString, jsxString } from "./code_string";
 
 // require('codemirror/mode/xml/xml');
 // require('codemirror/mode/javascript/javascript');
 require("codemirror/mode/jsx/jsx");
 
-// const codeEditorStyles = require("../styles/CodeEditor.module.scss");
-// import "../styles/CodeEditor.module.scss";
-
 type CodeMirrorProps = {
-  currentStep: number;
+  currentStep: StepType;
   currentFile: File;
 };
 
-type CodeMirrorState = {
-  value: string;
+type StepType = {
+  text: string;
+  id: string;
+  fileName: string;
+  lines: { start: number; end: number };
 };
+
+type CodeMirrorState = {};
 
 type File = {
   id: string;
@@ -37,6 +38,7 @@ const ranges = [
 ];
 
 const rangetest = {};
+var markers = [];
 
 export default class PublishedCodeMirror extends Component<
   CodeMirrorProps,
@@ -48,24 +50,21 @@ export default class PublishedCodeMirror extends Component<
     super(props);
 
     this.instance = null;
-
-    this.state = {
-      value: jsxString,
-    };
   }
 
   componentDidUpdate(prevProps: CodeMirrorProps) {
     let { currentStep } = this.props;
 
-    // console.log("step was", prevProps.currentStep, "step now is", currentStep);
-
-    this.instance.markText(
-      { line: currentStep, ch: 0 },
-      { line: currentStep, ch: 5 },
-      {
-        className: "MarkText",
-      }
-    );
+    if (currentStep.lines !== null && currentStep.lines !== undefined) {
+      let newMarker = this.instance.markText(
+        { line: currentStep.lines.start, ch: 0 },
+        { line: currentStep.lines.end, ch: 5 },
+        {
+          className: "MarkText",
+        }
+      );
+      markers.push(newMarker);
+    }
   }
 
   render() {
@@ -81,45 +80,22 @@ export default class PublishedCodeMirror extends Component<
         `}</style>
         <CodeMirror2
           className={"CodeEditor"}
-          value={this.state.value}
+          value={this.props.currentFile.code}
           options={{
             lineNumbers: true,
             mode: "jsx",
             theme: "monokai-sublime",
-            // theme: 'oceanic-next',
             lineWrapping: true,
-            // configureMouse: (editor: any, e: any) => {
-            //   editor.setSelections(ranges, 0, {
-            //     scroll: false,
-            //   });
-            //   return {
-            //     addNew: true,
-            //   };
-            // },
           }}
           onSelection={(editor, data) => {}}
           editorDidMount={(editor) => {
             this.instance = editor;
-            editor.markText(
-              { line: 0, ch: 0 },
-              { line: 1, ch: 0 },
-              {
-                className: "MarkText",
-              }
-            );
             editor.setSize("100%", "100%");
           }}
           scroll={{
             y: 0,
           }}
           onBeforeChange={(editor, data, value) => {
-            editor.markText(
-              { line: 0, ch: 0 },
-              { line: this.props.currentStep, ch: 0 },
-              {
-                className: "MarkText",
-              }
-            );
             this.setState({
               value,
             });

@@ -6,6 +6,8 @@ const appStyles = require("../styles/App.module.scss");
 type StepType = {
   text: string;
   id: string;
+  fileName: string;
+  lines: { start: number; end: number };
 };
 
 type File = {
@@ -15,7 +17,7 @@ type File = {
   name: string;
 };
 
-type FinishedStepProps = {
+type FinishedPostProps = {
   steps: StepType[];
   title: string;
   files: File[];
@@ -23,8 +25,8 @@ type FinishedStepProps = {
 
 const stepsInView: { [stepIndex: number]: boolean } = {};
 
-const FinishedPost = (props: FinishedStepProps) => {
-  const [currentStep, updateStep] = useState(0);
+const FinishedPost = (props: FinishedPostProps) => {
+  const [currentStepIndex, updateStep] = useState(0);
   const [currentFile, updateFile] = useState(0);
 
   function changeStep(newStep: number, yPos: number, entered: boolean) {
@@ -45,14 +47,15 @@ const FinishedPost = (props: FinishedStepProps) => {
     <div className={appStyles.App}>
       <Scrolling
         title={props.title}
-        currentStep={currentStep}
+        currentStepIndex={currentStepIndex}
         changeStep={changeStep}
         steps={props.steps}
       />
       <PublishedCodeEditor
         currentFile={props.files[currentFile]}
         files={props.files}
-        currentStep={currentStep}
+        currentStep={props.steps[currentStepIndex]}
+        updateFile={updateFile}
       />
     </div>
   );
