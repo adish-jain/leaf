@@ -179,10 +179,15 @@ export async function getUsernameFromUid(uid: string) {
 
 
 export async function checkUsernameDNE(username: string) {
-  let usernamesRefKey = db.collection("users").where("username", "==", username)
-    .key;
-
-  if (usernamesRefKey === null) {
+  let size;
+  await db
+    .collection("users")
+    .where("username", "==", username)
+    .get()
+    .then(function (snapshot: any){
+      size = snapshot.size;
+    });
+  if (size === 0) {
     return true;
   } else {
     return false;
