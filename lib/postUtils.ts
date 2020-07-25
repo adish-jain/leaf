@@ -35,11 +35,11 @@ export async function getDraftDataHandler(uid: string, draftId: string) {
     let title = draftData.data().title;
     let storedSteps = await getUserStepsForDraft(uid, draftId);
     let files = await getFilesForDraft(uid, draftId);
-    let results = { 
-      title: title, 
-      optimisticSteps: storedSteps, 
+    let results = {
+      title: title,
+      optimisticSteps: storedSteps,
       files: files,
-      errored: false 
+      errored: false,
     };
     return results;
   } catch (error) {
@@ -47,8 +47,8 @@ export async function getDraftDataHandler(uid: string, draftId: string) {
       title: "",
       optimisticSteps: [],
       files: [],
-      errored: true
-    }
+      errored: true,
+    };
     return results;
   }
 }
@@ -72,6 +72,7 @@ export async function getUserStepsForDraft(uid: string, draftId: string) {
         results.push({
           text: resultsJSON.text,
           lines: resultsJSON.lines,
+          fileName: resultsJSON.fileName,
           id: resultsJSON.id,
         });
       });

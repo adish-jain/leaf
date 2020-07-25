@@ -33,8 +33,8 @@
 /* Extra large devices (large laptops and desktops, 1200px and up) */
 @media only screen and (min-width: 1200px) {
   .App {
-    margin-left: 80px;
-    margin-right: 80px;
+    margin-left: 40px;
+    margin-right: 40px;
   }
 }
 
@@ -45,12 +45,12 @@
 .App {
   // margin-left: 6vh;
   // margin-right: 6vh;
-  margin-bottom: 16px;
+  // margin-bottom: 16px;
   // margin-right: 80px;
   // margin-left: 80px;
   display: flex;
   flex-direction: row;
-  height: 100vh;
+  // height: 100vh;
 }
 
 .Landing {

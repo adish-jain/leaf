@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import dynamic from "next/dynamic";
 import LanguageBar from "./LanguageBar";
 import FileBar from "./FileBar";
-import PreviewSection from "./PreviewSection";
 
 // import CodeMirror from './DynamicComponent';
 // const {CodeMirror} = require('./DynamicComponent');
@@ -22,14 +21,20 @@ type File = {
   code: string;
 };
 
+type Line = {
+  lineNumber: number;
+  char: number;
+};
+
 type CodeEditorProps = {
   draftId: string;
-  highlightLines: (start: any, end: any) => void;
-  saveFileCode: () => void;
+  saveFileCode: (fileName: string) => void;
+  editingStep: number;
   changeFileLanguage: (language: string, external: boolean) => void;
   saveFileName: (value: string, external: boolean) => void;
   draftCode: string;
-
+  changeLines: (lines: { start: Line; end: Line }) => void;
+  saveLines: (fileName: string, remove: boolean) => void;
   // filenames map to language
   files: File[];
   addFile: () => void;
@@ -38,6 +43,7 @@ type CodeEditorProps = {
   changeCode: (value: string) => void;
   changeSelectedFile: (fileIndex: number) => void;
   language: string;
+  lines: { start: Line; end: Line };
 };
 
 type CodeEditorState = {};
@@ -63,8 +69,11 @@ export default class CodeEditor extends Component<
       changeSelectedFile,
       changeFileLanguage,
       saveFileName,
-      highlightLines,
       language,
+      editingStep,
+      changeLines,
+      saveLines,
+      lines,
     } = this.props;
     return (
       <div>
@@ -72,11 +81,14 @@ export default class CodeEditor extends Component<
           box-shadow: 0px 4px 16px #edece9;
           border-radius: 8px;
           width: 100%;
+          height: 96vh;
+          position: sticky;
+          top: 2vh;
           max-width: 664px;
           min-width: 332px;
-          margin-bottom: 16px;
           display: flex;
           flex-direction: column;
+          margin-top: 2vh;
         `}</style>
         <FileBar
           draftId={draftId}
@@ -89,11 +101,15 @@ export default class CodeEditor extends Component<
         />
         <DynamicCodeEditor
           // @ts-ignore
-          highlightLines={highlightLines}
           saveFileCode={saveFileCode}
           draftCode={draftCode}
           changeCode={changeCode}
           language={language}
+          editing={editingStep !== -1}
+          changeLines={changeLines}
+          saveLines={saveLines}
+          lines={lines}
+          selectedFile={files[selectedFileIndex]}
         />
         <LanguageBar
           language={language}
