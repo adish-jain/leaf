@@ -12,29 +12,53 @@ export default function SignUp() {
   const { authenticated, error } = useLoggedIn();
 
   const [email, changeEmail] = useState("");
+  const [username, changeUsername] = useState("");
   const [password, changePassword] = useState("");
-  const [signup, clicked] = useState(false);
   const [verifyPassword, changeVerifyPassword] = useState("");
+  const [errorMsg, updateErrorMsg] = useState("");
+  const [errored, updateErrored] = useState(false);
+  const [signingUp, changeSigningUp] = useState(false);
 
   const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
+    updateErrored(false);
     changeEmail(e.target.value);
   };
 
+  const handleChangeUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
+    updateErrored(false);
+    changeUsername(e.target.value);
+  };
+
   const handleChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+    updateErrored(false);
     changePassword(e.target.value);
   };
 
   const handleChangeVerifyPassword = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
+    updateErrored(false);
     changeVerifyPassword(e.target.value);
   };
 
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
-    clicked(true);
+    if (password != verifyPassword) {
+      updateErrored(true);
+      updateErrorMsg("Passwords don't match.");
+      return;
+    }
+
+    if (username === "") {
+      updateErrored(true);
+      updateErrorMsg("Invalid Username.");
+      return;
+    }
+
+    changeSigningUp(true);
     let data = {
       requestedAPI: "signup",
       email: email,
+      username: username,
       password: password,
     };
     fetch("/api/endpoint", {
@@ -45,7 +69,17 @@ export default function SignUp() {
       body: JSON.stringify(data),
     })
       .then((res) => {
-        router.push("/landing");
+        if (res.status === 200) {
+          updateErrored(false);
+          router.push("/landing");
+        }
+        if (res.status === 403) {
+          res.json().then((resJson) => {
+            updateErrored(true);
+            updateErrorMsg(resJson.errorMsg);
+            changeSigningUp(false);
+          })
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -80,7 +114,17 @@ export default function SignUp() {
             <div className={loginStyles.FormWrapper}>
               <div className={loginStyles.InputBox}>
                 <label>Email</label>
-                <input id="email" value={email} onChange={handleChangeEmail} />
+                <input 
+                  id="email" 
+                  value={email} 
+                  onChange={handleChangeEmail} />
+              </div>
+              <div className={loginStyles.InputBox}>
+                <label>Username</label>
+                <input 
+                  id="username" 
+                  value={username} 
+                  onChange={handleChangeUsername} />
               </div>
               <div className={loginStyles.InputBox}>
                 <label>Password</label>
@@ -98,10 +142,14 @@ export default function SignUp() {
                   id="verify-password"
                 ></input>
               </div>
+              {!errored ? (
+                <div></div>
+              ) : (
+                <p className={loginStyles.ErrorMessage}>{errorMsg}</p>
+              )}
               <button className={loginStyles.LoginButton} onClick={handleClick}>
-                Sign Up
+                {signingUp ? "Signing Up..." : "Signup"}
               </button>
-              {signup && (<div><br/>Email Verification Sent. Welcome to Leaf! 🍃</div>)}
             </div>
           </div>
         </div>
