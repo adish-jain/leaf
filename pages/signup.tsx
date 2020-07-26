@@ -16,7 +16,7 @@ export default function SignUp() {
   const [password, changePassword] = useState("");
   const [verifyPassword, changeVerifyPassword] = useState("");
   const [errorMsg, updateErrorMsg] = useState("");
-  const [errored, updateErrored] = useState(true);
+  const [errored, updateErrored] = useState(false);
   const [signingUp, changeSigningUp] = useState(false);
 
   const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,6 +45,12 @@ export default function SignUp() {
     if (password != verifyPassword) {
       updateErrored(true);
       updateErrorMsg("Passwords don't match.");
+      return;
+    }
+
+    if (username === "") {
+      updateErrored(true);
+      updateErrorMsg("Invalid Username.");
       return;
     }
 
