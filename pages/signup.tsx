@@ -90,21 +90,36 @@ export default function SignUp() {
       credentials: "same-origin",
       body: JSON.stringify(data),
     })
-      .then(async (res: any) => {
-        let resJson = await res.json();
-        let msg = resJson.msg;
-        // console.log(msg);
-        if (msg === "") {
+      .then(res => {
+        if (res.status === 200) {
           errored(false);
           router.push("/landing");
-        } else {
-          // errored(true);
-          updateMsg(msg);
         }
+        if (res.status === 403) {
+          res.json().then((resJson) => {
+            updateMsg(resJson.msg);
+          })
+        }
+        // console.log(msg);
       })
       .catch((error) => {
         console.log(error);
       });
+      // .then(async (res: any) => {
+      //   let resJson = await res.json();
+      //   let msg = resJson.msg;
+      //   // console.log(msg);
+      //   if (msg === "") {
+      //     errored(false);
+      //     router.push("/landing");
+      //   } else {
+      //     // errored(true);
+      //     updateMsg(msg);
+      //   }
+      // })
+      // .catch((error) => {
+      //   console.log(error);
+      // });
   };
 
   return (

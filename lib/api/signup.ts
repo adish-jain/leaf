@@ -22,7 +22,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   // check if username exists
   let unUnique = await checkUsernameDNE(username);
   if (!unUnique) {
-    res.json({
+    res.status(403).send({
       msg: "Username already exists",
     });
     return;
@@ -36,7 +36,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       // console.log("hello world");
       var errorMsg = error.message;
       // console.log(errorMsg);
-      res.json({
+      res.status(403).send({
         msg: errorMsg,
       });
       errored = true;
