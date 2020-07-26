@@ -55,11 +55,10 @@ export default class PublishedCodeMirror extends Component<
 
   componentDidUpdate(prevProps: CodeMirrorProps) {
     let { currentStep } = this.props;
-
+    for (let i = 0; i < markers.length; i++) {
+      markers[i].clear();
+    }
     if (currentStep.lines !== null && currentStep.lines !== undefined) {
-      for (let i = 0; i < markers.length; i++) {
-        markers[i].clear();
-      }
       let newMarker = this.instance?.markText(
         { line: currentStep.lines.start, ch: 0 },
         { line: currentStep.lines.end, ch: 5 },
@@ -68,7 +67,10 @@ export default class PublishedCodeMirror extends Component<
         }
       );
       markers.push(newMarker!);
-      this.instance?.scrollIntoView({ line: currentStep.lines.end, ch: 0 }, 300);
+      this.instance?.scrollIntoView(
+        { line: currentStep.lines.end, ch: 0 },
+        300
+      );
     }
   }
 

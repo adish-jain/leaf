@@ -37,7 +37,15 @@ const FinishedPost = (props: FinishedPostProps) => {
         AND is inside the viewport becomes the selected step */
     for (let step in stepsInView) {
       if (stepsInView[step]) {
-        updateStep(Number(step));
+        let stepIndex = Number(step);
+        let newFileName = props.steps[stepIndex].fileName;
+        for (let i = 0; i < props.files.length; i++) {
+          if (props.files[i].name === newFileName) {
+            updateFile(i);
+          }
+        }
+        updateStep(stepIndex);
+        // this is the first step in view, so we break
         break;
       }
     }

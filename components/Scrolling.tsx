@@ -25,6 +25,7 @@ export default class Scrolling extends Component<
 > {
   constructor(props: any) {
     super(props);
+    this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
 
     this.state = {
       height: 0,
@@ -47,7 +48,7 @@ export default class Scrolling extends Component<
   }
 
   render() {
-    let { steps, currentStepIndex, title} = this.props;
+    let { steps, currentStepIndex, title } = this.props;
     let { height } = this.state;
     return (
       <div className={scrollingStyles["scrolling"]}>

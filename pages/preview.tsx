@@ -16,7 +16,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
     for (let i = 0; i < steps.length; i++) {
       if (steps[i].lines === undefined || steps[i].lines === null) {
         steps[i].lines = null;
-        console.log("setting ", i, " to null");
         steps[i].fileName = null;
       }
     }
@@ -42,7 +41,10 @@ export const getStaticProps: GetStaticProps = async (context) => {
 type StepType = {
   text: string;
   id: string;
+  fileName: string;
+  lines: { start: number; end: number };
 };
+
 
 type File = {
   id: string;

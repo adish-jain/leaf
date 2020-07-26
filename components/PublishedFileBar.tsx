@@ -13,6 +13,7 @@ type File = {
 type PublishedFileBarProps = {
   files: File[];
   updateFile: (fileIndex: number) => void;
+  currentFile: File;
 };
 
 export default function PublishedFileBar(props: PublishedFileBarProps) {
@@ -24,6 +25,7 @@ export default function PublishedFileBar(props: PublishedFileBarProps) {
           index={index}
           name={file.name}
           updateFile={props.updateFile}
+          selected={file.name === props.currentFile.name}
         />
       ))}
     </div>
@@ -33,12 +35,17 @@ export default function PublishedFileBar(props: PublishedFileBarProps) {
 function File(props: {
   name: string;
   index: number;
+  selected: boolean;
   updateFile: (fileIndex: number) => void;
 }) {
+  let className = "published-file";
+  if (props.selected) {
+    className = "published-file-selected";
+  }
   return (
     <div
       onClick={(e) => props.updateFile(props.index)}
-      className={fileBarStyles["published-file"]}
+      className={fileBarStyles[className]}
     >
       {props.name}
     </div>

@@ -56,7 +56,11 @@ export default class PublishedCodeEditor extends Component<
     let { files, currentFile, currentStep, updateFile } = this.props;
     return (
       <div className={PublishedCodeEditorStyles["editor-wrapper"]}>
-        <PublishedFileBar updateFile={updateFile} files={files} />
+        <PublishedFileBar
+          updateFile={updateFile}
+          files={files}
+          currentFile={currentFile}
+        />
         {
           <PublishedCodeMirror
             //@ts-ignore
