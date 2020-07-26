@@ -12,8 +12,8 @@ export default async function setIdHandler(
   res: NextApiResponse
 ) {
   let username = req.body.username;
-
-  if (!checkUsernameDNE(username)) {
+  let unUnique = await checkUsernameDNE(username);
+  if (!unUnique) {
     res.statusCode == 200;
     res.send({
       usernameUpdated: false,

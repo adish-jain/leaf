@@ -15,10 +15,9 @@ export default function SignUp() {
   const [username, changeUsername] = useState("");
   const [password, changePassword] = useState("");
   const [verifyPassword, changeVerifyPassword] = useState("");
-  const [signingUp, changeSigningUp] = useState(false);
   const [errorMsg, updateErrorMsg] = useState("");
   const [errored, updateErrored] = useState(true);
-
+  const [signingUp, changeSigningUp] = useState(false);
 
   const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateErrored(false);
