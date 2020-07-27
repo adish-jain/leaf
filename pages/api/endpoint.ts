@@ -41,6 +41,9 @@ import handleGetFiles from '../../lib/api/getFiles';
 import handleSaveFileCode from "../../lib/api/saveFileCode";
 import handleSaveFileName from "../../lib/api/saveFileName";
 
+// email
+import handlePasswordReset from "../../lib/api/passwordReset";
+
 const firebase = require("firebase/app");
 initFirebase();
 
@@ -184,6 +187,12 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
 
     case "save_file_name": {
       return handleSaveFileName(req, res);
+    }
+
+    // email
+    case "passwordReset": {
+      
+      return handlePasswordReset(req, res);
     }
 
     default: {
