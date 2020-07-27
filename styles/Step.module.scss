@@ -53,6 +53,10 @@
   // padding: 24px;
 }
 
+.editing-draft {
+  padding: 16px;
+}
+
 .Close {
   border-radius: 50%;
   background: #ffffff;
@@ -71,6 +75,9 @@
 .Buttons {
   display: flex;
   flex-direction: row-reverse;
+  padding-top: 8px;
+  padding-right: 8px;
+  padding-bottom: 8px;
   // padding-bottom: 24px;
 
   .Up {

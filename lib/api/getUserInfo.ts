@@ -15,6 +15,10 @@ export default async function setIdHandler(
   let userDataReference = await db.collection("users").doc(uid).get();
   let userData = await userDataReference.data();
 
-  res.send(userData);
+  res.send({
+    ...userData,
+    email: userRecord.email,
+    emailVerified: userRecord.emailVerified,
+  });
   return;
 }

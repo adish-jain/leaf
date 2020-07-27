@@ -3,6 +3,7 @@ import { GetStaticProps, GetStaticPaths, GetServerSideProps } from "next";
 import Head from "next/head";
 import { getDraftDataHandler } from "../lib/postUtils";
 import FinishedPost from "../components/FinishedPost";
+import DefaultErrorPage from "next/error";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   if (context.preview) {
@@ -11,19 +12,32 @@ export const getStaticProps: GetStaticProps = async (context) => {
     let draftData = await getDraftDataHandler(uid, draftId);
     let title = draftData.title;
     let steps = draftData.optimisticSteps;
+    let files = draftData.files;
+
+    // replace undefineds with null to prevent nextJS errors
+    for (let i = 0; i < steps.length; i++) {
+      if (steps[i].lines === undefined || steps[i].lines === null) {
+        steps[i].lines = null;
+        steps[i].fileName = null;
+      }
+    }
 
     return {
       unstable_revalidate: 1,
       props: {
         title,
         steps,
+        files,
+        errored: false,
       },
     };
   } else {
     return {
       props: {
-        title: "Untitled",
+        title: "",
         steps: [],
+        files: [],
+        errored: true,
       },
     };
   }
@@ -32,14 +46,23 @@ export const getStaticProps: GetStaticProps = async (context) => {
 type StepType = {
   text: string;
   id: string;
+  fileName: string;
+  lines: { start: number; end: number };
+};
+
+type File = {
+  id: string;
+  language: string;
+  code: string;
+  name: string;
 };
 
 type DraftPreviewProps = {
   steps: StepType[];
   title: string;
+  files: File[];
+  errored: boolean;
 };
-
-const stepsInView: { [stepIndex: number]: boolean } = {};
 
 const DraftPreview = (props: DraftPreviewProps) => {
   return (
@@ -63,7 +86,15 @@ const DraftPreview = (props: DraftPreviewProps) => {
         />
       </Head>
       <main>
-        <FinishedPost steps={props.steps} title={props.title} />
+        {props.errored ? (
+          <DefaultErrorPage statusCode={404} />
+        ) : (
+          <FinishedPost
+            steps={props.steps}
+            title={props.title}
+            files={props.files}
+          />
+        )}
       </main>
     </div>
   );
