@@ -29,13 +29,23 @@ export const getStaticProps: GetStaticProps = async (context) => {
   let postId = context.params.postId as string;
   let postData = await getPostData(username, postId);
   let steps = postData.steps;
+  let files = postData.files;
   let title = postData.title;
   let errored = postData.errored;
+
+  for (let i = 0; i < steps.length; i++) {
+    if (steps[i].lines === undefined || steps[i].lines === null) {
+      steps[i].lines = null;
+      steps[i].fileName = null;
+    }
+  }
+
   return {
     unstable_revalidate: 1,
     props: {
       steps,
       title,
+      files,
       errored,
     },
   };
@@ -44,12 +54,22 @@ export const getStaticProps: GetStaticProps = async (context) => {
 type StepType = {
   text: string;
   id: string;
+  fileName: string;
+  lines: { start: number; end: number };
+};
+
+type File = {
+  id: string;
+  language: string;
+  code: string;
+  name: string;
 };
 
 type UserPageProps = {
   steps: StepType[];
   title: string;
   errored: boolean;
+  files: File[];
 };
 
 const Post = (props: UserPageProps) => {
@@ -69,7 +89,11 @@ const Post = (props: UserPageProps) => {
         {props.errored ? (
           <DefaultErrorPage statusCode={404} />
         ) : (
-          <FinishedPost steps={props.steps} title={props.title} />
+          <FinishedPost
+            steps={props.steps}
+            files={props.files}
+            title={props.title}
+          />
         )}
       </main>
     </div>

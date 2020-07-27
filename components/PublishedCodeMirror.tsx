@@ -1,20 +1,30 @@
 import React, { Component } from "react";
 import { Controlled as CodeMirror2 } from "react-codemirror2";
-import { filenames, Language, reactString, jsxString } from "./code_string";
+import { Editor } from "draft-js";
 
 // require('codemirror/mode/xml/xml');
 // require('codemirror/mode/javascript/javascript');
 require("codemirror/mode/jsx/jsx");
 
-// const codeEditorStyles = require("../styles/CodeEditor.module.scss");
-// import "../styles/CodeEditor.module.scss";
-
 type CodeMirrorProps = {
-  currentStep: number;
+  currentStep: StepType;
+  currentFile: File;
 };
 
-type CodeMirrorState = {
-  value: string;
+type StepType = {
+  text: string;
+  id: string;
+  fileName: string;
+  lines: { start: number; end: number };
+};
+
+type CodeMirrorState = {};
+
+type File = {
+  id: string;
+  language: string;
+  code: string;
+  name: string;
 };
 
 const ranges = [
@@ -29,84 +39,70 @@ const ranges = [
 ];
 
 const rangetest = {};
+var markers: CodeMirror.TextMarker[] = [];
 
 export default class PublishedCodeMirror extends Component<
   CodeMirrorProps,
   CodeMirrorState
 > {
-  instance: any;
+  instance: CodeMirror.Editor | undefined;
 
   constructor(props: CodeMirrorProps) {
     super(props);
 
-    this.instance = null;
-
-    this.state = {
-      value: jsxString,
-    };
+    this.instance = undefined;
   }
 
   componentDidUpdate(prevProps: CodeMirrorProps) {
     let { currentStep } = this.props;
-
-    // console.log("step was", prevProps.currentStep, "step now is", currentStep);
-
-    this.instance.markText(
-      { line: currentStep, ch: 0 },
-      { line: currentStep, ch: 5 },
-      {
-        className: "MarkText",
-      }
-    );
+    for (let i = 0; i < markers.length; i++) {
+      markers[i].clear();
+    }
+    if (currentStep.lines !== null && currentStep.lines !== undefined) {
+      let newMarker = this.instance?.markText(
+        { line: currentStep.lines.start, ch: 0 },
+        { line: currentStep.lines.end, ch: 5 },
+        {
+          className: "MarkText",
+        }
+      );
+      markers.push(newMarker!);
+      this.instance?.scrollIntoView(
+        { line: currentStep.lines.end, ch: 0 },
+        300
+      );
+    }
   }
 
   render() {
     return (
       <div>
+        <style jsx>{`
+          flex-grow: 100;
+          overflow-y: scroll;
+          position: relative;
+          background-color: #263238;
+          font-size: 12px;
+          height: auto;
+        `}</style>
         <CodeMirror2
           className={"CodeEditor"}
-          value={this.state.value}
+          value={this.props.currentFile.code}
           options={{
             lineNumbers: true,
             mode: "jsx",
-            theme: "vscode-dark",
-            // theme: 'oceanic-next',
+            theme: "monokai-sublime",
             lineWrapping: true,
-            // configureMouse: (editor: any, e: any) => {
-            //   editor.setSelections(ranges, 0, {
-            //     scroll: false,
-            //   });
-            //   return {
-            //     addNew: true,
-            //   };
-            // },
           }}
-          onSelection={(editor, data) => {
-          }}
+          onSelection={(editor, data) => {}}
           editorDidMount={(editor) => {
             this.instance = editor;
-            editor.markText(
-              { line: 0, ch: 0 },
-              { line: 1, ch: 0 },
-              {
-                className: "MarkText",
-              }
-            );
-            // editor.setSize(608, 531);
-            editor.setSize("48vw", "90vh");
-            // editor.setSize(608, "96%");
+            editor.setSize("100%", "100%");
           }}
           scroll={{
             y: 0,
           }}
           onBeforeChange={(editor, data, value) => {
-            editor.markText(
-              { line: 0, ch: 0 },
-              { line: this.props.currentStep, ch: 0 },
-              {
-                className: "MarkText",
-              }
-            );
             this.setState({
               value,
             });

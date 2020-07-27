@@ -6,3 +6,25 @@
   flex-direction: row;
   display: flex;
 }
+
+.published-filebar {
+  display: flex;
+  flex-direction: row;
+  // overflow-x: scroll;
+}
+
+.published-file {
+  padding: 4px;
+  margin-right: 4px;
+  cursor: pointer;
+  border-style: solid;
+  border-color: white;
+}
+
+.published-file-selected {
+  padding: 4px;
+  margin-right: 4px;
+  cursor: pointer;
+  border-style: solid;
+  border-color: red;
+}

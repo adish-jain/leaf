@@ -88,14 +88,17 @@ export async function getPostData(username: string, postId: string) {
   try {
     let uid = await getUidFromUsername(username);
     let steps = await getStepsFromPost(uid, postId);
+    let files = await getFilesFromPost(uid, postId);
     let title = await getPostTitle(uid, postId);
     return {
+      files,
       steps,
       title,
       errored: false,
     };
   } catch (error) {
     return {
+      files: [],
       steps: [],
       title: "",
       errored: true,
@@ -145,9 +148,44 @@ export async function getStepsFromPost(uid: string, postId: string) {
         results.push({
           text: resultsJSON.text,
           id: resultsJSON.id,
+          fileName: resultsJSON.fileName,
+          lines: resultsJSON.lines,
         });
       });
       return results;
     });
   return steps;
+}
+
+type File = {
+  id: string;
+  language: string;
+  code: string;
+  name: string;
+};
+
+export async function getFilesFromPost(uid: string, postId: string) {
+  // Get desired post
+  let myPostRef = await getPostRef(uid, postId);
+
+  // Get steps from post
+  let files: File[] = await myPostRef
+    .collection("files")
+    .orderBy("createdAt")
+    .get()
+    .then(function (filesCollection: any) {
+      let results: File[] = [];
+      filesCollection.forEach(function (result: any) {
+        let resultsJSON = result.data();
+        resultsJSON.id = result.id;
+        results.push({
+          language: resultsJSON.language,
+          id: resultsJSON.id,
+          code: resultsJSON.code,
+          name: resultsJSON.name,
+        });
+      });
+      return results;
+    });
+  return files;
 }

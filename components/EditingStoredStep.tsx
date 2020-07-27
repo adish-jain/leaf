@@ -97,7 +97,7 @@ export default class Step extends Component<
     return (
       <div>
         <div className={StepStyles.Step}>
-          <div className={StepStyles.Draft}>
+          <div className={StepStyles["editing-draft"]}>
             {
               <DynamicEditor
                 // @ts-ignore
