@@ -7,13 +7,16 @@ let db = admin.firestore();
 initFirebaseAdmin();
 initFirebase();
 
-export default async function setIdHandler(
+export default async function getUserInfoHandler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   let { uid, userRecord } = await getUser(req, res);
   let userDataReference = await db.collection("users").doc(uid).get();
   let userData = await userDataReference.data();
+
+  // console.log(userData);
+  // console.log(userRecord);
 
   res.send({
     ...userData,

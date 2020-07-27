@@ -1,6 +1,7 @@
 import { useState } from "react";
 import useSWR, { SWRConfig } from "swr";
 import Router from "next/router";
+import { send } from "process";
 
 const myRequest = (requestedAPI: string) => {
   return {
@@ -20,8 +21,10 @@ const userInfoFetcher = () =>
 export function useUserInfo(authenticated: boolean) {
   const initialUserInfo: any = { username: "" };
   const [newUsername, changeNewUsername] = useState("");
+  const [newEmail, changeNewEmail] = useState("");
   const [changeUsernameLoading, updateChangeUsernameLoading] = useState(false);
   const [usernameTaken, updateUsernameTaken] = useState(false);
+  const [emailTaken, updateEmailTaken] = useState(false);
   let { data: userInfo, mutate } = useSWR(
     authenticated ? "getUserInfo" : null,
     userInfoFetcher,
@@ -56,6 +59,28 @@ export function useUserInfo(authenticated: boolean) {
     }
   }
 
+  async function saveNewEmail() {
+    const changeEmailRequest = {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify({
+        requestedAPI: "set_userEmail",
+        email: newEmail,
+      }),
+    };
+    let updateEmailResponse = await fetch(
+      "api/endpoint",
+      changeEmailRequest
+    ).then((res: any) => res.json());
+    if (!updateEmailResponse.emailUpdated) {
+      updateEmailTaken(true);
+    } else {
+      mutate({ email: newEmail }, true);
+      updateEmailTaken(false);
+      sendEmailVerification();
+    }
+  }
+
   async function sendEmailVerification() {
     const sendEmailVerificationRequest = {
       method: "POST",
@@ -74,10 +99,14 @@ export function useUserInfo(authenticated: boolean) {
   return {
     username,
     saveNewUsername,
+    saveNewEmail,
     newUsername,
+    newEmail,
     changeNewUsername,
+    changeNewEmail,
     changeUsernameLoading,
     usernameTaken,
+    emailTaken,
     email,
     emailVerified,
     sendEmailVerification,

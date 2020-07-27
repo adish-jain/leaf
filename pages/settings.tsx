@@ -11,10 +11,14 @@ export default function SignUp() {
   const {
     username,
     saveNewUsername,
+    saveNewEmail,
     newUsername,
+    newEmail,
     changeNewUsername,
+    changeNewEmail,
     changeUsernameLoading,
     usernameTaken,
+    emailTaken,
     email,
     emailVerified,
     sendEmailVerification,
@@ -50,6 +54,17 @@ export default function SignUp() {
           <button onClick={saveNewUsername}>Change username</button>
         </div>
         <UsernameTaken usernameTaken={usernameTaken} />
+
+        <div>
+          <p>Your email is {email}</p>
+          <input
+            value={newEmail}
+            onChange={(e) => changeNewEmail(e.target.value)}
+          ></input>
+          <button onClick={saveNewEmail}>Change email</button>
+        </div>
+        <EmailTaken emailTaken={emailTaken} />
+        
         <div>
           <h2>Email Settings</h2>
           <p>Your email is {email}</p>
@@ -67,6 +82,14 @@ function UsernameTaken(props: { usernameTaken: boolean }) {
   return (
     <div>
       {props.usernameTaken ? <p>Username is already taken</p> : <div></div>}
+    </div>
+  );
+}
+
+function EmailTaken(props: { emailTaken: boolean }) {
+  return (
+    <div>
+      {props.emailTaken ? <p>Email is already taken</p> : <div></div>}
     </div>
   );
 }
