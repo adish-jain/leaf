@@ -15,17 +15,14 @@ export default async function publishPost(
   res: NextApiResponse
 ) {
   let draftId = req.body.draftId;
-  let { uid } = await getUser(req, res);
+  let { uid, userRecord } = await getUser(req, res);
   if (uid === "") {
     res.statusCode = 403;
     res.end();
     return;
   }
    
-  // check to see user email is verified
-  let currentUser = await firebase.auth().currentUser;
-  await currentUser.reload();
-  if (currentUser.emailVerified != true) {
+  if (userRecord.emailVerified != true) {
     res.json({
       newURL: "unverified",
     });
