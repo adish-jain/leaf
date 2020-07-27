@@ -26,7 +26,6 @@ type FinishedPostProps = {
 const stepsInView: { [stepIndex: number]: boolean } = {};
 
 const FinishedPost = (props: FinishedPostProps) => {
-  console.log(props.files);
   const [currentStepIndex, updateStep] = useState(0);
   const [currentFile, updateFile] = useState(0);
 

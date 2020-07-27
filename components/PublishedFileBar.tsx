@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import { Controlled as CodeMirror2 } from "react-codemirror2";
-import { filenames, Language, reactString, jsxString } from "./code_string";
 const fileBarStyles = require("../styles/FileBar.module.scss");
 
 type File = {

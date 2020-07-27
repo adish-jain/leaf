@@ -21,7 +21,7 @@ export function useUserInfo(authenticated: boolean) {
   const initialUserInfo: any = { username: "" };
   const [newUsername, changeNewUsername] = useState("");
   const [changeUsernameLoading, updateChangeUsernameLoading] = useState(false);
-  const [usernameTaken, updateuserNameTaken] = useState(false);
+  const [usernameTaken, updateUsernameTaken] = useState(false);
   let { data: userInfo, mutate } = useSWR(
     authenticated ? "getUserInfo" : null,
     userInfoFetcher,
@@ -49,10 +49,10 @@ export function useUserInfo(authenticated: boolean) {
       changeUsernameRequest
     ).then((res: any) => res.json());
     if (!updateUsernameResponse.usernameUpdated) {
-      updateuserNameTaken(true);
+      updateUsernameTaken(true);
     } else {
       mutate({ username: newUsername }, true);
-      updateuserNameTaken(false);
+      updateUsernameTaken(false);
     }
   }
 

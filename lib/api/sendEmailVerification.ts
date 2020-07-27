@@ -13,7 +13,6 @@ export default async function sendEmailVerification(
   res: NextApiResponse
 ) {
   let { uid, userRecord } = await getUser(req, res);
-  console.log("requested");
   let userToken = req.cookies.userToken;
   console.log(userToken);
   let customToken = await admin
