@@ -30,7 +30,6 @@ export function useUserInfo(authenticated: boolean) {
       revalidateOnMount: true,
     }
   );
-  console.log(userInfo);
   const username = userInfo.username;
   const email = userInfo.email;
   const emailVerified = userInfo.emailVerified;
@@ -49,7 +48,6 @@ export function useUserInfo(authenticated: boolean) {
       "api/endpoint",
       changeUsernameRequest
     ).then((res: any) => res.json());
-    console.log(updateUsernameResponse);
     if (!updateUsernameResponse.usernameUpdated) {
       updateuserNameTaken(true);
     } else {
@@ -59,7 +57,6 @@ export function useUserInfo(authenticated: boolean) {
   }
 
   async function sendEmailVerification() {
-    console.log("sending");
     const sendEmailVerificationRequest = {
       method: "POST",
       headers: new Headers({ "Content-Type": "application/json" }),
