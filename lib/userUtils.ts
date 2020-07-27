@@ -195,6 +195,9 @@ export async function checkUsernameDNE(username: string) {
   }
 }
 
+/*
+Not used but keeping in case needed later.
+*/
 export async function checkEmailDNE(email: string) {
   let size;
 

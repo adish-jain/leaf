@@ -10,16 +10,21 @@ export default function SignUp() {
   const { authenticated, error } = useLoggedIn();
   const {
     username,
+    email,
+    password,
     saveNewUsername,
     saveNewEmail,
+    saveNewPassword,
     newUsername,
     newEmail,
+    newPassword,
     changeNewUsername,
     changeNewEmail,
+    changeNewPassword,
     changeUsernameLoading,
     usernameTaken,
     emailError,
-    email,
+    passwordError,
     emailVerified,
     sendEmailVerification,
   } = useUserInfo(authenticated);
@@ -46,6 +51,7 @@ export default function SignUp() {
       <main>
         <div>
           <h1>Settings</h1>
+          <h2>Username</h2>
           <p>Your username is {username}</p>
           <input
             value={newUsername}
@@ -56,18 +62,25 @@ export default function SignUp() {
         <UsernameTaken usernameTaken={usernameTaken} />
 
         <div>
+          <h2>Password</h2>
+          <p>Your password is {password}</p>
+          <input
+            value={newPassword}
+            onChange={(e) => changeNewPassword(e.target.value)}
+          ></input>
+          <button onClick={saveNewPassword}>Change password</button>
+        </div>
+        <PasswordError passwordError={passwordError} />
+        
+        <div>
+          <h2>Email</h2>
           <p>Your email is {email}</p>
           <input
             value={newEmail}
             onChange={(e) => changeNewEmail(e.target.value)}
           ></input>
           <button onClick={saveNewEmail}>Change email</button>
-        </div>
-        <EmailError emailError={emailError} />
-        
-        <div>
-          <h2>Email Settings</h2>
-          <p>Your email is {email}</p>
+          <EmailError emailError={emailError} />
           <p>Your email is {emailVerified ? "verified" : "unverified"}</p>
           <button onClick={(e) => sendEmailVerification()}>
             Send email verification
@@ -90,6 +103,14 @@ function EmailError(props: { emailError: string }) {
   return (
     <div>
       {props.emailError === "" ? <div></div> : <p>{props.emailError}</p> }
+    </div>
+  );
+}
+
+function PasswordError(props: { passwordError: string }) {
+  return (
+    <div>
+      {props.passwordError === "" ? <div></div> : <p>{props.passwordError}</p> }
     </div>
   );
 }

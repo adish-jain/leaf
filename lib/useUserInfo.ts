@@ -22,9 +22,11 @@ export function useUserInfo(authenticated: boolean) {
   const initialUserInfo: any = { username: "" };
   const [newUsername, changeNewUsername] = useState("");
   const [newEmail, changeNewEmail] = useState("");
+  const [newPassword, changeNewPassword] = useState("");
   const [changeUsernameLoading, updateChangeUsernameLoading] = useState(false);
   const [usernameTaken, updateUsernameTaken] = useState(false);
   const [emailError, updateEmailError] = useState("");
+  const [passwordError, updatePasswordError] = useState("");
   let { data: userInfo, mutate } = useSWR(
     authenticated ? "getUserInfo" : null,
     userInfoFetcher,
@@ -35,6 +37,7 @@ export function useUserInfo(authenticated: boolean) {
   );
   const username = userInfo.username;
   const email = userInfo.email;
+  const password = "hello";
   const emailVerified = userInfo.emailVerified;
 
   async function saveNewUsername() {
@@ -102,6 +105,37 @@ export function useUserInfo(authenticated: boolean) {
     //   }
   }
 
+  async function saveNewPassword() {
+    const changePasswordRequest = {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify({
+        requestedAPI: "set_userPassword",
+        password: newPassword,
+      }),
+    };
+    
+    await fetch(
+      "/api/endpoint",
+      changePasswordRequest
+    )
+    .then((res) => {
+      if (res.status === 200) {
+        mutate({ password: newPassword }, true);
+        updatePasswordError("");
+      } 
+      if (res.status === 403) {
+        res.json().then((resJson) => {
+          console.log(resJson.error);
+          updatePasswordError(resJson.error);
+        });
+      }
+    })
+    .catch(function (error: any) {
+      console.log(error);
+    });
+  }
+
   async function sendEmailVerification() {
     const sendEmailVerificationRequest = {
       method: "POST",
@@ -119,16 +153,21 @@ export function useUserInfo(authenticated: boolean) {
 
   return {
     username,
+    email,
+    password,
     saveNewUsername,
     saveNewEmail,
+    saveNewPassword,
     newUsername,
     newEmail,
+    newPassword,
     changeNewUsername,
     changeNewEmail,
+    changeNewPassword,
     changeUsernameLoading,
     usernameTaken,
     emailError,
-    email,
+    passwordError,
     emailVerified,
     sendEmailVerification,
   };

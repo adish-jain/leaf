@@ -12,6 +12,8 @@ export default async function getUserInfoHandler(
   res: NextApiResponse
 ) {
   let { uid, userRecord } = await getUser(req, res);
+  console.log(userRecord);
+
   let userDataReference = await db.collection("users").doc(uid).get();
   let userData = await userDataReference.data();
 
@@ -22,6 +24,7 @@ export default async function getUserInfoHandler(
     ...userData,
     email: userRecord.email,
     emailVerified: userRecord.emailVerified,
+    // password: userRecord.password
   });
   return;
 }
