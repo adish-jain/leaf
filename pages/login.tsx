@@ -77,8 +77,6 @@ export default function Login() {
   };
 
   const handleResetClick = (e: React.MouseEvent<HTMLElement>) => {
-    // checks to make sure email is well-formed
-    // API call to send email reset 
     changeResetting(true);
 
     let data = {

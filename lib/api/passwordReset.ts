@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebase } from "../../lib/initFirebase";
-import { handleLoginCookies,  } from "../../lib/userUtils";
 
 const firebase = require("firebase/app");
 initFirebase();
@@ -8,7 +7,6 @@ initFirebase();
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   let body = req.body;
   let email = body.email;
-  let userToken: string;
 
   await firebase
     .auth()
