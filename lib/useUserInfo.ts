@@ -22,6 +22,7 @@ export function useUserInfo(authenticated: boolean) {
   const initialUserInfo: any = { username: "" };
   const [newUsername, changeNewUsername] = useState("");
   const [newEmail, changeNewEmail] = useState("");
+  const [password, updatePassword] = useState("*******");
   const [newPassword, changeNewPassword] = useState("");
   const [changeUsernameLoading, updateChangeUsernameLoading] = useState(false);
   const [usernameTaken, updateUsernameTaken] = useState(false);
@@ -37,7 +38,6 @@ export function useUserInfo(authenticated: boolean) {
   );
   const username = userInfo.username;
   const email = userInfo.email;
-  const password = "hello";
   const emailVerified = userInfo.emailVerified;
 
   async function saveNewUsername() {
@@ -121,7 +121,9 @@ export function useUserInfo(authenticated: boolean) {
     )
     .then((res) => {
       if (res.status === 200) {
-        mutate({ password: newPassword }, true);
+        // mutate({ password: newPassword }, true);
+        console.log(newPassword);
+        updatePassword(newPassword);
         updatePasswordError("");
       } 
       if (res.status === 403) {
