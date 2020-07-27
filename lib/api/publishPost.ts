@@ -10,6 +10,13 @@ let db = admin.firestore();
 initFirebaseAdmin();
 initFirebase();
 
+type File = {
+  id: string;
+  language: string;
+  code: string;
+  name: string;
+};
+
 export default async function publishPost(
   req: NextApiRequest,
   res: NextApiResponse
@@ -21,7 +28,8 @@ export default async function publishPost(
     res.end();
     return;
   }
-   
+
+  // if not verified, prevent from publishing
   if (userRecord.emailVerified != true) {
     res.json({
       newURL: "unverified",
@@ -35,6 +43,7 @@ export default async function publishPost(
     .collection("drafts")
     .doc(draftId);
 
+  // get draft title
   let draftTitle = await draftsRef.get().then(function (draftSnapshot: any) {
     let draftData = draftSnapshot.data();
     return draftData.title;
@@ -47,8 +56,17 @@ export default async function publishPost(
     .doc(draftId)
     .collection("steps");
 
-  let steps: any[] = [];
+  let filesRef = db
+    .collection("users")
+    .doc(uid)
+    .collection("drafts")
+    .doc(draftId)
+    .collection("files");
 
+  let steps: any[] = [];
+  let files: File[] = [];
+
+  // gather steps data
   await stepsRef
     .get()
     .then(function (stepsCollection: any) {
@@ -61,6 +79,15 @@ export default async function publishPost(
       // console.log(error);
     });
 
+  // gather files data
+  await filesRef.get().then(function (filesCollection: any) {
+    filesCollection.forEach(function (file: any) {
+      let fileJSON = file.data();
+      files.push(fileJSON);
+    });
+  });
+
+  // create unique url for new post
   let titleWithDashes = draftTitle
     .replace(/\s+/g, "-")
     .toLowerCase()
@@ -74,7 +101,7 @@ export default async function publishPost(
     uid: uid,
   };
 
-  // add new post and steps from draft
+  // add new post and steps from draft into new post
   db.collection("posts")
     .add(newPost)
     .then(function (postRef: any) {
@@ -84,6 +111,13 @@ export default async function publishPost(
           .collection("steps")
           .doc(shortId.generate())
           .set(steps[i]);
+      }
+      for (let i = 0; i < files.length; i++) {
+        db.collection("posts")
+          .doc(postRef.id)
+          .collection("files")
+          .doc(shortId.generate())
+          .set(files[i]);
       }
     })
     .catch(function (error: any) {

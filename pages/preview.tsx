@@ -14,6 +14,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     let steps = draftData.optimisticSteps;
     let files = draftData.files;
 
+    // replace undefineds with null to prevent nextJS errors
     for (let i = 0; i < steps.length; i++) {
       if (steps[i].lines === undefined || steps[i].lines === null) {
         steps[i].lines = null;
