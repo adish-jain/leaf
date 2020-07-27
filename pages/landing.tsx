@@ -61,7 +61,7 @@ export default function Landing() {
     toggleDraftsEdit,
   } = useDrafts(authenticated);
   // Fetch user ifno
-  const { userInfo } = useUserInfo(authenticated);
+  const { username } = useUserInfo(authenticated);
   // Fetch data for posts
   const {
     posts,
@@ -92,7 +92,7 @@ export default function Landing() {
         />
       </Head>
       <main>
-        <LandingHeader userInfo={userInfo} />
+        <LandingHeader userInfo={{ username: username }} />
         <div className={landingStyles.landing}>
           <YourDrafts
             deleteDraft={deleteDraft}

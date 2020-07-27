@@ -3,6 +3,7 @@ import { GetStaticProps, GetStaticPaths, GetServerSideProps } from "next";
 import Head from "next/head";
 import { getDraftDataHandler } from "../lib/postUtils";
 import FinishedPost from "../components/FinishedPost";
+import DefaultErrorPage from "next/error";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   if (context.preview) {
@@ -26,13 +27,16 @@ export const getStaticProps: GetStaticProps = async (context) => {
         title,
         steps,
         files,
+        errored: false,
       },
     };
   } else {
     return {
       props: {
-        title: "Untitled",
+        title: "",
         steps: [],
+        files: [],
+        errored: true,
       },
     };
   }
@@ -45,7 +49,6 @@ type StepType = {
   lines: { start: number; end: number };
 };
 
-
 type File = {
   id: string;
   language: string;
@@ -57,6 +60,7 @@ type DraftPreviewProps = {
   steps: StepType[];
   title: string;
   files: File[];
+  errored: boolean;
 };
 
 const DraftPreview = (props: DraftPreviewProps) => {
@@ -81,11 +85,15 @@ const DraftPreview = (props: DraftPreviewProps) => {
         />
       </Head>
       <main>
-        <FinishedPost
-          steps={props.steps}
-          title={props.title}
-          files={props.files}
-        />
+        {props.errored ? (
+          <DefaultErrorPage statusCode={404} />
+        ) : (
+          <FinishedPost
+            steps={props.steps}
+            title={props.title}
+            files={props.files}
+          />
+        )}
       </main>
     </div>
   );

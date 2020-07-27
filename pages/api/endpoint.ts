@@ -19,6 +19,9 @@ import handlecheckId from "../../lib/api/checkId";
 // user info
 import handleGetUserInfo from "../../lib/api/getUserInfo";
 
+// emails
+import handleSendEmailVerification from "../../lib/api/sendEmailVerification";
+
 // handle publishing
 import handlePublishPost from "../../lib/api/publishPost";
 import handleGetPosts from "../../lib/api/getPosts";
@@ -33,11 +36,11 @@ import handleUpdateStep from "../../lib/api/updateStep";
 import handleUpdateStepLines from "../../lib/api/updateStepLines";
 import handleChangeStepOrder from "../../lib/api/changeStepOrder";
 import handleSaveTitle from "../../lib/api/saveTitle";
-import handleGetTitle from '../../lib/api/getTitle';
+import handleGetTitle from "../../lib/api/getTitle";
 import handleSaveFile from "../../lib/api/saveFile";
 import handleDeleteFile from "../../lib/api/deleteFile";
 import handleChangeFileLanguage from "../../lib/api/changeFileLanguage";
-import handleGetFiles from '../../lib/api/getFiles';
+import handleGetFiles from "../../lib/api/getFiles";
 import handleSaveFileCode from "../../lib/api/saveFileCode";
 import handleSaveFileName from "../../lib/api/saveFileName";
 
@@ -80,6 +83,10 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
       return handleGetUserInfo(req, res);
     }
 
+    case "sendEmailVerification": {
+      return handleSendEmailVerification(req, res);
+    }
+
     /* 
     ------ Drafts ------
     */
@@ -102,7 +109,6 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
       return handleDeleteDraft(req, res);
     }
 
-    // POST
     case "get_draft_data": {
       return handleGetDraftData(req, res);
     }
@@ -143,12 +149,10 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
       return handleDeletePost(req, res);
     }
 
-    // POST
     case "change_step_order": {
       return handleChangeStepOrder(req, res);
     }
 
-    // POST
     case "save_title": {
       return handleSaveTitle(req, res);
     }

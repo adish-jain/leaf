@@ -15,6 +15,9 @@ export default function SignUp() {
     changeNewUsername,
     changeUsernameLoading,
     usernameTaken,
+    email,
+    emailVerified,
+    sendEmailVerification,
   } = useUserInfo(authenticated);
   return (
     <div className="container">
@@ -44,10 +47,26 @@ export default function SignUp() {
             value={newUsername}
             onChange={(e) => changeNewUsername(e.target.value)}
           ></input>
-          <button onClick={saveNewUsername}>Choose ID</button>
-          {usernameTaken ? <p>Username is already taken</p> : <div></div>}
+          <button onClick={saveNewUsername}>Change username</button>
+        </div>
+        <UsernameTaken usernameTaken={usernameTaken} />
+        <div>
+          <h2>Email Settings</h2>
+          <p>Your email is {email}</p>
+          <p>Your email is {emailVerified ? "verified" : "unverified"}</p>
+          <button onClick={(e) => sendEmailVerification()}>
+            Send email verification
+          </button>
         </div>
       </main>
+    </div>
+  );
+}
+
+function UsernameTaken(props: { usernameTaken: boolean }) {
+  return (
+    <div>
+      {props.usernameTaken ? <p>Username is already taken</p> : <div></div>}
     </div>
   );
 }
