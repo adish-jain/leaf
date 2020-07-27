@@ -24,7 +24,7 @@ export function useUserInfo(authenticated: boolean) {
   const [newEmail, changeNewEmail] = useState("");
   const [changeUsernameLoading, updateChangeUsernameLoading] = useState(false);
   const [usernameTaken, updateUsernameTaken] = useState(false);
-  const [emailTaken, updateEmailTaken] = useState(false);
+  const [emailError, updateEmailError] = useState("");
   let { data: userInfo, mutate } = useSWR(
     authenticated ? "getUserInfo" : null,
     userInfoFetcher,
@@ -68,17 +68,38 @@ export function useUserInfo(authenticated: boolean) {
         email: newEmail,
       }),
     };
-    let updateEmailResponse = await fetch(
-      "api/endpoint",
+    
+    await fetch(
+      "/api/endpoint",
       changeEmailRequest
-    ).then((res: any) => res.json());
-    if (!updateEmailResponse.emailUpdated) {
-      updateEmailTaken(true);
-    } else {
-      mutate({ email: newEmail }, true);
-      updateEmailTaken(false);
-      sendEmailVerification();
-    }
+    )
+    .then((res) => {
+      if (res.status === 200) {
+        mutate({ email: newEmail }, true);
+        updateEmailError("");
+        sendEmailVerification();
+      } 
+      if (res.status === 403) {
+        res.json().then((resJson) => {
+          console.log(resJson.error);
+          updateEmailError(resJson.error);
+        });
+      }
+    })
+    .catch(function (error: any) {
+      console.log(error);
+    });
+    // let updateEmailResponse = await fetch(
+    //   "api/endpoint",
+    //   changeEmailRequest
+    // ).then((res: any) => res.json());
+    //   if (!updateEmailResponse.emailUpdated) {
+    //     updateEmailTaken(true);
+    //   } else {
+    //     mutate({ email: newEmail }, true);
+    //     updateEmailTaken(false);
+    //     sendEmailVerification();
+    //   }
   }
 
   async function sendEmailVerification() {
@@ -106,7 +127,7 @@ export function useUserInfo(authenticated: boolean) {
     changeNewEmail,
     changeUsernameLoading,
     usernameTaken,
-    emailTaken,
+    emailError,
     email,
     emailVerified,
     sendEmailVerification,

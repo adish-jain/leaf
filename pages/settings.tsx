@@ -18,7 +18,7 @@ export default function SignUp() {
     changeNewEmail,
     changeUsernameLoading,
     usernameTaken,
-    emailTaken,
+    emailError,
     email,
     emailVerified,
     sendEmailVerification,
@@ -63,7 +63,7 @@ export default function SignUp() {
           ></input>
           <button onClick={saveNewEmail}>Change email</button>
         </div>
-        <EmailTaken emailTaken={emailTaken} />
+        <EmailError emailError={emailError} />
         
         <div>
           <h2>Email Settings</h2>
@@ -86,10 +86,10 @@ function UsernameTaken(props: { usernameTaken: boolean }) {
   );
 }
 
-function EmailTaken(props: { emailTaken: boolean }) {
+function EmailError(props: { emailError: string }) {
   return (
     <div>
-      {props.emailTaken ? <p>Email is already taken</p> : <div></div>}
+      {props.emailError === "" ? <div></div> : <p>{props.emailError}</p> }
     </div>
   );
 }

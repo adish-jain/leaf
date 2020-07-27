@@ -13,14 +13,15 @@ export default async function setEmailHandler(
   res: NextApiResponse
 ) {
   let email = req.body.email;
-  let emailUnique = await checkEmailDNE(email);
-  if (!emailUnique) {
-    res.statusCode == 200;
-    res.send({
-      emailUpdated: false,
-    });
-    return;
-  }
+  let errored = false;
+//   let emailUnique = await checkEmailDNE(email);
+//   if (!emailUnique) {
+//     res.statusCode == 200;
+//     res.send({
+//       emailUpdated: false,
+//     });
+//     return;
+//   }
 
   let { uid, userRecord } = await getUser(req, res);
 
@@ -40,11 +41,41 @@ export default async function setEmailHandler(
 //     // An error happened.
 //   });
 
-  await admin.auth().updateUser(uid, {
+  await admin
+    .auth()
+    .updateUser(uid, {
       email: email,
       emailVerified: false
-  });
+    })
+    .then()
+    .catch(function(error: any) {
+      switch (error.code) {
+        case "auth/invalid-email":
+          res.status(403).send({
+            error:
+              "Email address is poorly formatted.",
+          });
+          errored = true;
+          return;
+        case "auth/email-already-exists":
+          res.status(403).send({
+            error: "Email already in use by another account.",
+          });
+          errored = true;
+          return;
+        default:
+          console.log(error);
+          res.status(403).send({
+            error: "Email reset failed",
+          });
+          errored = true;
+      }
+    });
 
+  if (errored) {
+      return;
+  }
+  
   await db.collection("users").doc(uid).set(
     {
       email: email,
@@ -52,11 +83,12 @@ export default async function setEmailHandler(
     { merge: true }
   );
 
-  console.log("user record is", userRecord);
+//   console.log("user record is", userRecord);
 
-  res.statusCode = 200;
-  res.send({
-    emailUpdated: true,
-  });
+//   res.send({
+//     emailUpdated: true,
+//   });
+
+  res.status(200).end();  
   return;
 }
