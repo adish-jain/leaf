@@ -22,12 +22,12 @@ export function useUserInfo(authenticated: boolean) {
   const initialUserInfo: any = { username: "" };
   const [newUsername, changeNewUsername] = useState("");
   const [newEmail, changeNewEmail] = useState("");
-  const [password, updatePassword] = useState("*******");
   const [newPassword, changeNewPassword] = useState("");
+  const [password, updatePassword] = useState("");
   const [changeUsernameLoading, updateChangeUsernameLoading] = useState(false);
   const [usernameTaken, updateUsernameTaken] = useState(false);
   const [emailError, updateEmailError] = useState("");
-  const [passwordError, updatePasswordError] = useState("");
+  const [passwordStatus, updatePasswordStatus] = useState("");
   let { data: userInfo, mutate } = useSWR(
     authenticated ? "getUserInfo" : null,
     userInfoFetcher,
@@ -84,7 +84,6 @@ export function useUserInfo(authenticated: boolean) {
       } 
       if (res.status === 403) {
         res.json().then((resJson) => {
-          console.log(resJson.error);
           updateEmailError(resJson.error);
         });
       }
@@ -111,7 +110,8 @@ export function useUserInfo(authenticated: boolean) {
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify({
         requestedAPI: "set_userPassword",
-        password: newPassword,
+        password: password,
+        newPassword: newPassword,
       }),
     };
     
@@ -121,15 +121,11 @@ export function useUserInfo(authenticated: boolean) {
     )
     .then((res) => {
       if (res.status === 200) {
-        // mutate({ password: newPassword }, true);
-        console.log(newPassword);
-        updatePassword(newPassword);
-        updatePasswordError("");
+        updatePasswordStatus("Password was successfully reset");
       } 
       if (res.status === 403) {
         res.json().then((resJson) => {
-          console.log(resJson.error);
-          updatePasswordError(resJson.error);
+          updatePasswordStatus(resJson.error);
         });
       }
     })
@@ -157,6 +153,7 @@ export function useUserInfo(authenticated: boolean) {
     username,
     email,
     password,
+    updatePassword,
     saveNewUsername,
     saveNewEmail,
     saveNewPassword,
@@ -169,7 +166,7 @@ export function useUserInfo(authenticated: boolean) {
     changeUsernameLoading,
     usernameTaken,
     emailError,
-    passwordError,
+    passwordStatus,
     emailVerified,
     sendEmailVerification,
   };

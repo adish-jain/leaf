@@ -12,6 +12,7 @@ export default function SignUp() {
     username,
     email,
     password,
+    updatePassword,
     saveNewUsername,
     saveNewEmail,
     saveNewPassword,
@@ -24,7 +25,7 @@ export default function SignUp() {
     changeUsernameLoading,
     usernameTaken,
     emailError,
-    passwordError,
+    passwordStatus,
     emailVerified,
     sendEmailVerification,
   } = useUserInfo(authenticated);
@@ -63,14 +64,19 @@ export default function SignUp() {
 
         <div>
           <h2>Password</h2>
-          <p>Your password is {password}</p>
+          <input
+            value={password}
+            placeholder={"current password"}
+            onChange={(e) => updatePassword(e.target.value)}
+          ></input>
           <input
             value={newPassword}
+            placeholder={"new password"}
             onChange={(e) => changeNewPassword(e.target.value)}
           ></input>
           <button onClick={saveNewPassword}>Change password</button>
         </div>
-        <PasswordError passwordError={passwordError} />
+        <PasswordStatus passwordStatus={passwordStatus} />
         
         <div>
           <h2>Email</h2>
@@ -107,10 +113,10 @@ function EmailError(props: { emailError: string }) {
   );
 }
 
-function PasswordError(props: { passwordError: string }) {
+function PasswordStatus(props: { passwordStatus: string }) {
   return (
     <div>
-      {props.passwordError === "" ? <div></div> : <p>{props.passwordError}</p> }
+      {props.passwordStatus === "" ? <div></div> : <p>{props.passwordStatus}</p> }
     </div>
   );
 }

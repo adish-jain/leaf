@@ -14,14 +14,6 @@ export default async function setEmailHandler(
 ) {
   let email = req.body.email;
   let errored = false;
-//   let emailUnique = await checkEmailDNE(email);
-//   if (!emailUnique) {
-//     res.statusCode == 200;
-//     res.send({
-//       emailUpdated: false,
-//     });
-//     return;
-//   }
 
   let { uid, userRecord } = await getUser(req, res);
 
@@ -30,16 +22,6 @@ export default async function setEmailHandler(
     res.end();
     return;
   }
-
-//   var user = await firebase.auth().currentUser;
-//   console.log("user is", user);
-//   await user.updateEmail(email).then(function() {
-//       console.log("email updated");
-//     // Update successful.
-//   }).catch(function(error: any) {
-//       console.log("email update failed");
-//     // An error happened.
-//   });
 
   await admin
     .auth()
@@ -82,12 +64,6 @@ export default async function setEmailHandler(
     },
     { merge: true }
   );
-
-//   console.log("user record is", userRecord);
-
-//   res.send({
-//     emailUpdated: true,
-//   });
 
   res.status(200).end();  
   return;

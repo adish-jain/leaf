@@ -13,7 +13,7 @@ export default async function setPasswordHandler(
   res: NextApiResponse
 ) {
   let password = req.body.password;
-  let errored = false;
+  let newPassword = req.body.newPassword;
 
   let { uid, userRecord } = await getUser(req, res);
 
@@ -23,33 +23,68 @@ export default async function setPasswordHandler(
     return;
   }
 
-  await admin
+  let customToken = await admin
     .auth()
-    .updateUser(uid, {
-      password: password
+    .createCustomToken(uid)
+    .then(function (customToken: any) {
+      return customToken;
     })
-    .then()
-    .catch(function(error: any) {
-      switch (error.code) {
-        case "auth/invalid-password":
-          res.status(403).send({
-              error: "Password should be longer than 6 characters.",
-          });
-          errored = true;
-          return;
-        default:
-          console.log(error);
-          res.status(403).send({
-            error: "Password reset failed",
-          });
-          errored = true;
-      }
+    .catch(function (error: any) {
+      console.log("Error creating custom token:", error);
+      return "";
     });
 
-  if (errored) {
+  await firebase
+  .auth()
+  .signInWithCustomToken(customToken)
+  .then(function (firebaseUser: any) {
+    let user = firebaseUser.user;
+    let cred = firebase.auth.EmailAuthProvider.credential(user.email, password);
+    user
+    .reauthenticateWithCredential(cred)
+    .then(function(){
+      admin
+        .auth()
+        .updateUser(uid, {
+          password: newPassword
+        })
+        .then(function(){
+          res.status(200).end();  
+          return;
+        })
+        .catch(function(error: any) {
+          switch (error.code) {
+            case "auth/invalid-password":
+              res.status(403).send({
+                  error: "Password should be longer than 6 characters.",
+              });
+              return;
+            default:
+              console.log(error);
+              res.status(403).send({
+                error: "Password reset failed",
+              });
+          }
+        });
+    })
+    .catch(function(error: any) {
+      console.log("incorrect PW");
+      res.status(403).send({
+        error: "Incorrect current password",
+      })
       return;
-  }
+    }); 
 
-  res.status(200).end();  
+    firebase
+      .auth()
+      .signOut()
+      .then(function () {
+        // Sign-out successful.
+        console.log("signed out success");
+      })
+      .catch(function(error: any) {
+      });
+  });
+
   return;
 }

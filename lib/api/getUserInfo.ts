@@ -12,7 +12,7 @@ export default async function getUserInfoHandler(
   res: NextApiResponse
 ) {
   let { uid, userRecord } = await getUser(req, res);
-  console.log(userRecord);
+  // console.log(userRecord);
 
   let userDataReference = await db.collection("users").doc(uid).get();
   let userData = await userDataReference.data();
