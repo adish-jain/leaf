@@ -18,7 +18,7 @@ export async function getStaticPaths() {
 export const getStaticProps: GetStaticProps = async (context) => {
   if (context === undefined || context.params === undefined) {
     return {
-      unstable_revalidate: 1,
+      revalidate: 1,
       props: {
         steps: [],
       },
@@ -41,7 +41,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   }
 
   return {
-    unstable_revalidate: 1,
+    revalidate: 1,
     props: {
       steps,
       title,
