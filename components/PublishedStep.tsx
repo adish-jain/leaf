@@ -47,6 +47,7 @@ class PublishedStep extends Component<PublishedStepProps, PublishedStepState> {
   }
 
   scrollIntoView() {
+    console.log("scrollintoview fired");
     this.myRef.current?.scrollIntoView({
       behavior: "smooth",
       block: "start",
