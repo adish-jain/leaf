@@ -164,6 +164,7 @@ export function useSteps(draftId: string, authenticated: boolean) {
       optimisticSteps[idx] = {
         ...optimisticSteps[idx],
         lines: linesData,
+        fileName: fileName,
       };
     }
     mutate(optimisticSteps, false);
