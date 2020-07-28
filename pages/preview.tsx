@@ -23,7 +23,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     }
 
     return {
-      unstable_revalidate: 1,
+      revalidate: 1,
       props: {
         title,
         steps,
