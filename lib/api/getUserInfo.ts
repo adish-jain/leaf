@@ -24,7 +24,6 @@ export default async function getUserInfoHandler(
     ...userData,
     email: userRecord.email,
     emailVerified: userRecord.emailVerified,
-    // password: userRecord.password
   });
   return;
 }
