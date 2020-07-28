@@ -1,7 +1,5 @@
 import { useState } from "react";
 import useSWR, { SWRConfig } from "swr";
-import Router from "next/router";
-import { send } from "process";
 
 const myRequest = (requestedAPI: string) => {
   return {
@@ -91,17 +89,6 @@ export function useUserInfo(authenticated: boolean) {
     .catch(function (error: any) {
       console.log(error);
     });
-    // let updateEmailResponse = await fetch(
-    //   "api/endpoint",
-    //   changeEmailRequest
-    // ).then((res: any) => res.json());
-    //   if (!updateEmailResponse.emailUpdated) {
-    //     updateEmailTaken(true);
-    //   } else {
-    //     mutate({ email: newEmail }, true);
-    //     updateEmailTaken(false);
-    //     sendEmailVerification();
-    //   }
   }
 
   async function saveNewPassword() {
