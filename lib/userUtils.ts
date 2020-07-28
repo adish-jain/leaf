@@ -136,6 +136,15 @@ export async function getUidFromUsername(username: string) {
   return uid;
 }
 
+export async function getUidFromEmail(email: string) {
+  let userRef = db.collection("users").where("email", "==", email);
+  let uid = await userRef.get().then(function (userSnapshot: any) {
+    let user = userSnapshot.docs[0];
+    return user.id;
+  });
+  return uid;
+}
+
 export async function getArticlesFromUsername(username: string) {
   let uid = await getUidFromUsername(username);
   let postsRef = await db.collection("posts").where("uid", "==", uid);
