@@ -67,10 +67,14 @@ export default class PublishedCodeMirror extends Component<
         }
       );
       markers.push(newMarker!);
-      this.instance?.scrollIntoView(
-        { line: currentStep.lines.end, ch: 0 },
-        300
-      );
+
+      // get top position of selected line and scroll to it
+      let t = this.instance!.charCoords(
+        { line: currentStep.lines.start, ch: 0 },
+        "local"
+      ).top;
+      let middleHeight = this.instance!.getScrollerElement().offsetHeight / 2;
+      this.instance?.scrollTo(null, t - middleHeight - 5);
     }
   }
 

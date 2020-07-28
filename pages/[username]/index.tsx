@@ -18,7 +18,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   let params = context.params;
   if (params === undefined || params.username === undefined) {
     return {
-      unstable_revalidate: 1,
+      revalidate: 1,
       props: {
         publishedPosts: [],
       },
@@ -28,7 +28,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   let posts = await getArticlesFromUsername(username);
   return {
     props: {
-      unstable_revalidate: 1,
+      revalidate: 1,
       publishedPosts: posts,
       username: username,
     },
