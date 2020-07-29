@@ -12,14 +12,16 @@ import handleAddDraft from "../../lib/api/createDraft";
 import handleGetDrafts from "../../lib/api/getDrafts";
 import handleDeleteDraft from "../../lib/api/deleteDraft";
 
-// handle username
+// handle username & PW
 import handleSetId from "../../lib/api/setId";
 import handlecheckId from "../../lib/api/checkId";
+import handleSetPassword from "../../lib/api/setPassword"
 
 // user info
 import handleGetUserInfo from "../../lib/api/getUserInfo";
 
 // emails
+import handleSetEmail from "../../lib/api/setEmail";
 import handleSendEmailVerification from "../../lib/api/sendEmailVerification";
 
 // handle publishing
@@ -80,6 +82,14 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
 
     case "set_userId": {
       return handleSetId(req, res);
+    }
+
+    case "set_userEmail": {
+      return handleSetEmail(req, res);
+    }
+
+    case "set_userPassword": {
+      return handleSetPassword(req, res);
     }
 
     case "get_userInfo": {

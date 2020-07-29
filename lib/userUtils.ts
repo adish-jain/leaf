@@ -186,13 +186,33 @@ export async function getUsernameFromUid(uid: string) {
   return username;
 }
 
-
 export async function checkUsernameDNE(username: string) {
   let size;
 
   await db
   .collection("users")
   .where("username", "==", username)
+  .get()
+  .then(function (snapshot: any) {
+    size = snapshot.size;
+  });
+
+  if (size === 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+/*
+Not used but keeping in case needed later.
+*/
+export async function checkEmailDNE(email: string) {
+  let size;
+
+  await db
+  .collection("users")
+  .where("email", "==", email)
   .get()
   .then(function (snapshot: any) {
     size = snapshot.size;
