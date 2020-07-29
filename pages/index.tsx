@@ -50,9 +50,8 @@ function Header() {
   return (
     <div className={indexStyles.Header}>
       <Logo />
-      <Login />
       <HeaderText />
-      <GetStarted />
+      <Login />
     </div>
   );
 }
@@ -77,23 +76,26 @@ function Login() {
 
 function HeaderText() {
   return (
-    <div className={indexStyles.HeaderText}>
-        Coding Tutorials to the Next Level.
+    <div>
+      <div className={indexStyles.HeaderText}>
+          Coding Tutorials to the Next Level.
+      </div>
+      <GetStarted />
     </div>
   );
 }
 
 function GetStarted() {
   return (
-    <div>
-       <Link href="/signup">
-         <div className={indexStyles.GetStarted}>
-           <div className={indexStyles.button}>
-             Get Started
-           </div>
-         </div>
-       </Link>
-    </div>
+      <Link href="/signup">
+        <div>
+        <div className={indexStyles.GetStarted}>
+          <div className={indexStyles.button}>
+            Get Started
+          </div>
+        </div>
+        </div>
+      </Link>
   );
 }
 
@@ -102,9 +104,9 @@ Body Components
 */
 function Body() {
   return (
-    <div className={indexStyles.Body}>
-      <BodyText />
+    <div className={indexStyles.Body}> 
       <BodyBox />
+      <BodyText />
     </div>
   );
 }
@@ -112,7 +114,9 @@ function Body() {
 function BodyText() {
   return (
     <div className={indexStyles.BodyText}>
-      No more publishing code <br></br> snippets on Medium.
+      <div>
+        No more publishing code <br></br> snippets on Medium.
+      </div>
     </div>
   );
 }

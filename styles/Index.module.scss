@@ -1,83 +1,95 @@
 .Header {
-    position: absolute;
+    display: flex;
+    flex-direction: row;
+    // flex-basis: 100px;
+    // flex-wrap: wrap;
     width: 100%;
     height: 320px;
     left: 0px;
     top: 0px;
-
+    justify-content: center;
+    align-items: center;
     background: #000000;
 
     .Logo {
-        position: absolute;
+        display: flex;
         width: 103px;
         height: 57px;
-        left: 44px;
-        top: 32px;
+        flex-basis: 200px;
+        // left: 44px;
+        // top: 32px;
 
         font-family: Arial;
         font-style: normal;
         font-weight: bold;
         font-size: 50px;
         line-height: 57px;
-        display: flex;
-        align-items: center;
-        text-align: center;
+        align-self: flex-start;
 
-        color: #FFFFFF;
+        color: #68B2A0;
     }
 
     .Login{
-        position: absolute;
+        display: flex;
         width: 92px;
         height: 34px;
         left: 1297px;
         top: 32px;
+        flex-basis: 100px;
 
         font-family: Arial;
         font-style: normal;
         font-weight: normal;
-        font-size: 30px;
+        font-size: 25px;
         line-height: 34px;
-        display: flex;
-        align-items: center;
-        text-align: center;
+        align-self: stretch;
 
-        color: white;
+        a:link {
+            color:  #FFFFFF;
+            text-decoration: none;
+        }
+
+        a:visited {
+            color: #FFFFFF;
+        }
+
+        a:hover {
+            color: #68B2A0;
+        }
+
     }
 
     .HeaderText {
-        position: relative;
+        display: flex;
         width: 1027px;
         height: 75px;
-        left: 210px;
-        top: 100px;
-
+        // left: 210px;
+        // top: 100px;
+        padding-top: 80px;
         font-family: Arial;
         font-style: normal;
         font-weight: bold;
         font-size: 60px;
         line-height: 75px;
         /* identical to box height */
-
-        display: flex;
-        align-items: center;
-        text-align: center;
+        align-self: center;
 
         color: #FFFFFF;
     }
 
     .GetStarted {
         position: relative;
+        display: flex;
         width: 211px;
         height: 62px;
-        left: 610px;
-        top: 150px;
-    
+        left: 380px;
+        top: 20px;
         background: #FFFFFF;
         border: 1px solid #000000;
         box-sizing: border-box;
         box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
         border-radius: 40px;
+        cursor: pointer;
     
         .button {
             position: relative;
@@ -93,61 +105,72 @@
             font-weight: bold;
             font-size: 30px;
             line-height: 34px;
-            display: flex;
-            align-items: center;
+            // display: flex;
+            // align-items: center;
     
             color: #000000;
         }
     }
+
+    .GetStarted:hover {
+        background: #68B2A0;
+    }
 }
 
 .Body {
+    display: flex;
+    flex-direction: row;
+    padding-left: 140px;
+    padding-top: 40px;
     .BodyText {
+        // display: flex;
         position: relative;
         width: 591px;
         height: 41px;
-        left: 755px;
-        top: 519px;
+        // left: 755px;
+        // top: 519px;
         
         font-family: Arial;
         font-style: normal;
-        font-weight: bold;
+        font-weight: lighter;
         font-size: 30px;
         line-height: 46px;
-        display: flex;
-        align-items: center;
         text-align: center;
+        padding-top: 150px;
         
         color: #000000;
     }
 
     .BodyBox {
-        position: relative;
+        display: flex;
         width: 527px;
         height: 436px;
         left: 96px;
         top: 350px;
+        justify-content: space-around;
+        align-items: center;
 
         background: #C4C4C4;
 
         .BodyBoxLeftColumn {
-            position: flex;
             width: 202px;
             height: 382px;
-            left: 40px;
-            top: 30px;
+            // left: 40px;
+            // top: 30px;
             float: left;
-            
+            // flex-direction: row;
+            // justify-content: flex-end;
             background: #F3F3F3;
         }
 
         .BodyBoxRightColumn {
-            position: flex;
             width: 202px;
             height: 382px;
-            left: 290px;
+            // left: 290px;
             float: right;
-            top: 30px;
+            // top: 30px;
+            // flex-direction: row;
+            // justify-content: center;
 
             background: #F3F3F3;
         }
