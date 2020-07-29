@@ -84,6 +84,7 @@ const DraftView = () => {
     lines,
     changeLines,
     saveLines,
+    removeLines,
   } = useSteps(draftId as string, authenticated);
 
   let {
@@ -97,6 +98,16 @@ const DraftView = () => {
     saveFileName,
     saveFileCode,
   } = useFiles(draftId, draftFiles, draftTitle, realSteps, mutate);
+
+  function deleteStepAndFile(toDeleteIndex: number) {
+    let fileName: string = draftFiles[toDeleteIndex].name;
+    for (let i = 0; i < realSteps!.length; i++) {
+      if (realSteps![i].fileName === fileName) {
+        removeLines(i);
+      }
+    }
+    removeFile(toDeleteIndex);
+  }
 
   return (
     <div className="container">
@@ -150,7 +161,7 @@ const DraftView = () => {
               draftCode={codeFiles[selectedFileIndex].code}
               files={draftFiles}
               addFile={addFile}
-              removeFile={removeFile}
+              removeFile={deleteStepAndFile}
               selectedFileIndex={selectedFileIndex}
               changeCode={changeCode}
               changeSelectedFile={changeSelectedFileIndex}
