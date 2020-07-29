@@ -23,4 +23,7 @@
 
 .InnerHTML {
   word-break: break-all;
+  p {
+    white-space: pre;
+  }
 }

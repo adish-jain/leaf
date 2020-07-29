@@ -126,6 +126,38 @@ export function useSteps(draftId: string, authenticated: boolean) {
     });
   }
 
+  function removeLines(stepIndex: number) {
+    let stepId = storedSteps![stepIndex].id;
+    // optimistic mutate
+    let optimisticSteps = storedSteps!.slice();
+    let idx = findIdx(stepId);
+
+    let data = {
+      requestedAPI: "updateStepLines",
+      draftId: draftId,
+      stepId: stepId,
+      lines: undefined,
+      fileName: undefined,
+    };
+
+    optimisticSteps[idx] = {
+      ...optimisticSteps[idx],
+      lines: undefined,
+      fileName: undefined,
+    };
+
+    mutate(optimisticSteps, false);
+
+    fetch("/api/endpoint", {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify(data),
+    }).then(async (res: any) => {
+      let updatedSteps = await res.json();
+      mutate(updatedSteps, true);
+    });
+  }
+
   /* 
   Attach lines selected in the code editor to the current editing step.
   if remove is true, fileName and lines are cleared from the step
@@ -174,7 +206,8 @@ export function useSteps(draftId: string, authenticated: boolean) {
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify(data),
     }).then(async (res: any) => {
-      console.log(res);
+      let updatedSteps = await res.json();
+      mutate(updatedSteps, false);
     });
   }
 
@@ -290,5 +323,6 @@ export function useSteps(draftId: string, authenticated: boolean) {
     lines,
     changeLines,
     saveLines,
+    removeLines,
   };
 }
