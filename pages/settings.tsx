@@ -50,52 +50,124 @@ export default function SignUp() {
         />
       </Head>
       <main>
-        <div>
-          <h1>Settings</h1>
-          <h2>Username</h2>
-          <p>Your username is {username}</p>
-          <input
-            value={newUsername}
-            onChange={(e) => changeNewUsername(e.target.value)}
-          ></input>
-          <button onClick={saveNewUsername}>Change username</button>
-        </div>
-        <UsernameTaken usernameTaken={usernameTaken} />
-
-        <div>
-          <h2>Password</h2>
-          <input
-            value={password}
-            placeholder={"current password"}
-            onChange={(e) => updatePassword(e.target.value)}
-          ></input>
-          <input
-            value={newPassword}
-            placeholder={"new password"}
-            onChange={(e) => changeNewPassword(e.target.value)}
-          ></input>
-          <button onClick={saveNewPassword}>Change password</button>
-        </div>
-        <PasswordStatus passwordStatus={passwordStatus} />
         
-        <div>
-          <h2>Email</h2>
-          <p>Your email is {email}</p>
-          <input
-            value={newEmail}
-            onChange={(e) => changeNewEmail(e.target.value)}
-          ></input>
-          <button onClick={saveNewEmail}>Change email</button>
-          <EmailError emailError={emailError} />
-          <p>Your email is {emailVerified ? "verified" : "unverified"}</p>
-          <button onClick={(e) => sendEmailVerification()}>
-            Send email verification
-          </button>
-        </div>
+        <h1>Settings</h1>
+
+        <Username 
+          changeNewUsername={changeNewUsername}
+          username={username}
+          newUsername={newUsername}
+          saveNewUsername={saveNewUsername}
+          usernameTaken={usernameTaken}/>
+
+        <Password 
+          password={password}
+          updatePassword={updatePassword}
+          newPassword={newPassword}
+          saveNewPassword={saveNewPassword}
+          changeNewPassword={changeNewPassword}
+          passwordStatus={passwordStatus}
+        />
+
+        <Email 
+          email={email}
+          newEmail={newEmail}
+          changeNewEmail={changeNewEmail}
+          saveNewEmail={saveNewEmail}
+          emailError={emailError}
+          emailVerified={emailVerified}
+          sendEmailVerification={sendEmailVerification}
+        />
+      
       </main>
     </div>
   );
 }
+
+function Username(
+  props: {
+    changeNewUsername: any,
+    username: string,
+    newUsername: string,
+    saveNewUsername: any,
+    usernameTaken: boolean
+  }) {
+    return (
+      <div>
+        <div>
+          <h2>Username</h2>
+            <p>Your username is {props.username}</p>
+            <input
+              value={props.newUsername}
+              onChange={(e) => props.changeNewUsername(e.target.value)}
+            ></input>
+            <button onClick={props.saveNewUsername}>Change username</button>
+        </div>
+        <UsernameTaken usernameTaken={props.usernameTaken} />
+    </div>
+    );
+}
+
+function Password(
+  props: {
+    password: string,
+    updatePassword: any,
+    newPassword: string,
+    saveNewPassword: any,
+    changeNewPassword: any,
+    passwordStatus: string
+  }) {
+    return (
+      <div>
+        <div>
+          <h2>Password</h2>
+          <input
+            value={props.password}
+            placeholder={"current password"}
+            onChange={(e) => props.updatePassword(e.target.value)}
+          ></input>
+          <input
+            value={props.newPassword}
+            placeholder={"new password"}
+            onChange={(e) => props.changeNewPassword(e.target.value)}
+          ></input>
+          <button onClick={props.saveNewPassword}>Change password</button>
+        </div>
+        <PasswordStatus passwordStatus={props.passwordStatus} />
+      </div>
+    );
+}
+
+function Email(
+  props: {
+    email: string,
+    newEmail: string,
+    changeNewEmail: any,
+    saveNewEmail: any,
+    emailError: string,
+    emailVerified: boolean,
+    sendEmailVerification: any
+  }) {
+    return (
+      <div>
+        <div>
+          <h2>Email</h2>
+          <p>Your email is {props.email}</p>
+          <input
+            value={props.newEmail}
+            onChange={(e) => props.changeNewEmail(e.target.value)}
+          ></input>
+          <button onClick={props.saveNewEmail}>Change email</button>
+          <EmailError emailError={props.emailError} />
+          <p>Your email is {props.emailVerified ? "verified" : "unverified"}</p>
+          <button onClick={(e) => props.sendEmailVerification()}>
+            Send email verification
+          </button>
+        </div>
+      </div>
+    );
+}
+
 
 function UsernameTaken(props: { usernameTaken: boolean }) {
   return (
