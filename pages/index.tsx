@@ -156,45 +156,101 @@ function BodyBox() {
   return (
     <div>
       <div className={indexStyles.BodyBoxDiagram}>
-        <div className={indexStyles.BodyBoxLeft}>
-          <div className={indexStyles.BodyBoxUnfocusedBox}>
-            <div className={indexStyles.Description1}>
-            </div>
-            <div className={indexStyles.Description2}>
-            </div>
-            <div className={indexStyles.Description3}>
-            </div>
-          </div>
-          <div className={indexStyles.BodyBoxFocusedBox}>
-            <div className={indexStyles.Description1}>
-            </div>
-            <div className={indexStyles.Description2}>
-            </div>
-            <div className={indexStyles.Description3}>
-            </div>
-          </div>
-          <div className={indexStyles.BodyBoxUnfocusedBox}>
-            <div className={indexStyles.Description1}>
-            </div>
-            <div className={indexStyles.Description2}>
-            </div>
-            <div className={indexStyles.Description3}>
-            </div>
-          </div>
-        </div>
-        <div className={indexStyles.BodyBoxRight}>
-          <div className={indexStyles.File}>
-          </div>
-          <div className={indexStyles.FileBar}>
-          </div>
-          <div className={indexStyles.LanguageBar}>
-          </div>
-          <div className={indexStyles.Language}>
-            JSX
-          </div>
-        </div>
+        <BodyBoxSteps />
+        <BodyBoxCode />
       </div>
-     
+    </div>
+  );
+}
+
+function BodyBoxSteps () {
+  return (
+    <div className={indexStyles.BodyBoxLeft}>
+      <UnfocusedStep />
+      <FocusedStep />
+      <UnfocusedStep />
+    </div>
+  );
+}
+
+function UnfocusedStep () {
+  return (
+    <div className={indexStyles.BodyBoxUnfocusedBox}>
+      <div className={indexStyles.Description1}></div>
+      <div className={indexStyles.Description2}></div>
+      <div className={indexStyles.Description3}></div>
+    </div>
+  );
+}
+
+function FocusedStep () {
+  return (
+    <div className={indexStyles.BodyBoxFocusedBox}>
+      <div className={indexStyles.Description1}></div>
+      <div className={indexStyles.Description2}></div>
+      <div className={indexStyles.Description3}></div>
+    </div>
+  );
+}
+
+function BodyBoxCode() {
+  return (
+    <div className={indexStyles.BodyBoxRight}>
+      <FileHeader />
+      <UnfocusedFunction />
+      <FocusedFunction />
+      <UnfocusedFunction />
+      <LanguageFooter />
+    </div>
+  );
+}
+
+function FileHeader () {
+  return (
+    <div>
+      <div className={indexStyles.File}>
+        </div>
+        <div className={indexStyles.FileBar}>
+      </div>
+    </div>
+  );
+}
+
+function LanguageFooter () {
+  return (
+    <div>
+      <div className={indexStyles.LanguageBar}></div>
+      <div className={indexStyles.Language}>
+        JSX
+      </div>
+    </div>
+  )
+}
+ 
+function UnfocusedFunction () {
+  return (
+    <div>
+      <div className={indexStyles.functionSignatureUnfocused}></div>
+      <div className={indexStyles.firstLineUnfocused}></div>
+      <div className={indexStyles.firstLineUnfocused}></div>
+      <div className={indexStyles.ifUnfocused}></div>
+      <div className={indexStyles.ifBlockUnfocused}></div>
+      <div className={indexStyles.ifUnfocused}></div>
+      <div className={indexStyles.ifBlockUnfocused}></div>
+    </div>
+  );
+}
+
+function FocusedFunction () {
+  return (
+    <div>
+      <div className={indexStyles.functionSignatureFocused}></div>
+      <div className={indexStyles.firstLineFocused}></div>
+      <div className={indexStyles.firstLineFocused}></div>
+      <div className={indexStyles.ifFocused}></div>
+      <div className={indexStyles.ifBlockFocused}></div>
+      <div className={indexStyles.elseFocused}></div>
+      <div className={indexStyles.elseBlockFocused}></div>
     </div>
   );
 }

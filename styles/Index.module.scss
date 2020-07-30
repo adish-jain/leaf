@@ -170,7 +170,7 @@
     .Preview {
         position: relative;
         width: 469px;
-        height: 67px;
+        height: 180px;
         left: 155px;
         top: 150px;
         border-radius: 8px;
@@ -202,7 +202,7 @@
         justify-content: space-evenly;
         align-items: center;
 
-        background: #C4C4C4;
+        background: #d3d1d1;
 
         .BodyBoxLeft {
             // display: flex;
@@ -224,38 +224,38 @@
                 opacity: 0.6;
                 border-radius: 10px;
     
-                // .Description1 {
-                //     position: relative;
-                //     width: 258px;
-                //     height: 14px;
-                //     top: 17px;
-                //     left: 19px;
+                .Description1 {
+                    position: relative;
+                    width: 258px;
+                    height: 14px;
+                    top: 17px;
+                    left: 17px;
     
-                //     background: #C4C4C4;
-                //     border-radius: 10px;
-                // }
+                    background: #C4C4C4;
+                    border-radius: 10px;
+                }
     
-                // .Description2 {
-                //     position: relative;
-                //     width: 258px;
-                //     height: 14px;
-                //     top: 34px;
-                //     left: 14px;
+                .Description2 {
+                    position: relative;
+                    width: 258px;
+                    height: 14px;
+                    top: 34px;
+                    left: 17px;
     
-                //     background: #C4C4C4;
-                //     border-radius: 10px;
-                // }
+                    background: #C4C4C4;
+                    border-radius: 10px;
+                }
     
-                // .Description3 {
-                //     position: relative;
-                //     width: 258px;
-                //     height: 14px;
-                //     top: 51px;
-                //     left: 14px;
+                .Description3 {
+                    position: relative;
+                    width: 258px;
+                    height: 14px;
+                    top: 51px;
+                    left: 17px;
     
-                //     background: #C4C4C4;
-                //     border-radius: 10px;
-                // }
+                    background: #C4C4C4;
+                    border-radius: 10px;
+                }
     
             }
     
@@ -273,6 +273,40 @@
                 box-sizing: border-box;
                 box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
                 border-radius: 10px;
+
+
+                .Description1 {
+                    position: relative;
+                    width: 258px;
+                    height: 14px;
+                    top: 17px;
+                    left: 17px;
+    
+                    background: #C4C4C4;
+                    border-radius: 10px;
+                }
+    
+                .Description2 {
+                    position: relative;
+                    width: 258px;
+                    height: 14px;
+                    top: 34px;
+                    left: 17px;
+    
+                    background: #C4C4C4;
+                    border-radius: 10px;
+                }
+    
+                .Description3 {
+                    position: relative;
+                    width: 258px;
+                    height: 14px;
+                    top: 51px;
+                    left: 17px;
+    
+                    background: #C4C4C4;
+                    border-radius: 10px;
+                }
             }
         }
     
@@ -286,11 +320,12 @@
     
             // background: #C4C4C4;
             // position: absolute;
+            flex-direction: column;
             width: 327px;
             height: 506px;
             
             // left: 290px;
-            float: right;
+            // float: right;
             // top: 30px;
             // flex-direction: row;
             // justify-content: center;
@@ -307,12 +342,12 @@
             .FileBar {
                 width: 327px;
                 height: 0px;
-
-                // border: 1px solid rgba(196, 196, 196, 0.52);
+                border: 1px solid rgba(196, 196, 196, 0.52);
             }
 
             .LanguageBar {
-                padding-top: 450px;
+                // padding-top: 80px;
+                margin-top: 40px;
                 width: 327px;
                 height: 0px;
 
@@ -322,7 +357,7 @@
             .Language {
                 // padding-top: 400px;
                 padding-left: 287px;
-                padding-top: 3px;
+                padding-top: 2px;
                 width: 89px;
                 height: 16px;
                 
@@ -337,6 +372,130 @@
                 letter-spacing: 1px;
                 
                 color: #D0D0D0;
+            }
+
+            .functionSignatureUnfocused {
+                position: relative;
+                left: 20px;
+                // top: 30px;
+
+                margin-top: 40px;
+
+                width: 71px;
+                height: 8px;
+                
+                background: rgba(196, 196, 196, 0.5);
+                border-radius: 10px;
+            }
+
+            .firstLineUnfocused {
+                position: relative;
+                left: 40px;
+
+                margin-top: 7px;
+
+                width: 261px;
+                height: 8px;
+
+                background: rgba(196, 196, 196, 0.5);
+                border-radius: 10px;
+            }
+
+            .ifUnfocused {
+                position: relative;
+                left: 40px;
+
+                margin-top: 7px;
+                width: 73px;
+                height: 8px;
+                
+                background: rgba(196, 196, 196, 0.5);
+                border-radius: 10px;
+            }
+
+            .ifBlockUnfocused {
+                position: relative;
+                left: 60px;
+
+                margin-top: 7px;
+                width: 240px;
+                height: 8px;
+                
+                background: rgba(196, 196, 196, 0.5);
+                border-radius: 10px;
+            }
+
+            .functionSignatureFocused {
+                position: relative;
+                left: 20px;
+                margin-top: 40px;
+
+                width: 71px;
+                height: 8px;
+                
+                background: #868686;
+                border-radius: 10px;
+            }
+
+            .firstLineFocused {
+                position: relative;
+                left: 40px;
+
+                margin-top: 7px;
+
+                width: 261px;
+                height: 8px;
+
+                background: #8ABCD8;
+                border-radius: 10px;
+            }
+
+            .ifFocused {
+                position: relative;
+                left: 40px;
+
+                margin-top: 7px;
+                width: 73px;
+                height: 8px;
+                
+                background: #85C883;
+                border-radius: 10px;
+            }
+
+            .ifBlockFocused {
+                position: relative;
+                left: 60px;
+
+                margin-top: 7px;
+                width: 240px;
+                height: 8px;
+                
+                background: #85C883;
+                border-radius: 10px;
+            }
+
+            .elseFocused {
+                position: relative;
+                left: 40px;
+
+                margin-top: 7px;
+                width: 73px;
+                height: 8px;
+                
+                background: #F57A6E;
+                border-radius: 10px;
+            }
+
+            .elseBlockFocused {
+                position: relative;
+                left: 60px;
+
+                margin-top: 7px;
+                width: 240px;
+                height: 8px;
+                
+                background: #F57A6E;
+                border-radius: 10px;
             }
         }
     }
