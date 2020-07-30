@@ -15,8 +15,6 @@ export default function Pages() {
 
   const { authenticated, error, loading } = useLoggedIn();
 
-  // should redirect to example tutorials or an introductionary explanation of 
-  // how Leaf works 
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     router.push("/login");
