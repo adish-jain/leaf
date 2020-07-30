@@ -154,11 +154,47 @@ function BodyText(props: {handleClick: any}) {
 
 function BodyBox() {
   return (
-    <div className={indexStyles.BodyBox}>
-      <div className={indexStyles.BodyBoxLeftColumn}>
+    <div>
+      <div className={indexStyles.BodyBoxDiagram}>
+        <div className={indexStyles.BodyBoxLeft}>
+          <div className={indexStyles.BodyBoxUnfocusedBox}>
+            <div className={indexStyles.Description1}>
+            </div>
+            <div className={indexStyles.Description2}>
+            </div>
+            <div className={indexStyles.Description3}>
+            </div>
+          </div>
+          <div className={indexStyles.BodyBoxFocusedBox}>
+            <div className={indexStyles.Description1}>
+            </div>
+            <div className={indexStyles.Description2}>
+            </div>
+            <div className={indexStyles.Description3}>
+            </div>
+          </div>
+          <div className={indexStyles.BodyBoxUnfocusedBox}>
+            <div className={indexStyles.Description1}>
+            </div>
+            <div className={indexStyles.Description2}>
+            </div>
+            <div className={indexStyles.Description3}>
+            </div>
+          </div>
+        </div>
+        <div className={indexStyles.BodyBoxRight}>
+          <div className={indexStyles.File}>
+          </div>
+          <div className={indexStyles.FileBar}>
+          </div>
+          <div className={indexStyles.LanguageBar}>
+          </div>
+          <div className={indexStyles.Language}>
+            JSX
+          </div>
+        </div>
       </div>
-      <div className={indexStyles.BodyBoxRightColumn}>
-      </div>
+     
     </div>
   );
 }

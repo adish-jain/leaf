@@ -188,45 +188,158 @@
         background: #FFFFFF;
     }
       
-      .Preview:hover {
-        box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.4);
-        transition: box-shadow ease-in-out 0.2s;
-      }
+    .Preview:hover {
+    box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.4);
+    transition: box-shadow ease-in-out 0.2s;
+    }
 
-    .BodyBox {
+    .BodyBoxDiagram {
         display: flex;
-        width: 527px;
-        height: 436px;
+        width: 752px;
+        height: 595px;
         left: 96px;
         top: 350px;
-        justify-content: space-around;
+        justify-content: space-evenly;
         align-items: center;
 
         background: #C4C4C4;
 
-        .BodyBoxLeftColumn {
-            width: 202px;
-            height: 382px;
-            // left: 40px;
-            // top: 30px;
-            float: left;
-            // flex-direction: row;
-            // justify-content: flex-end;
-            background: #F3F3F3;
+        .BodyBoxLeft {
+            // display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding-top: 40px;
+            // align-items: center;
+            
+            .BodyBoxUnfocusedBox {
+                // position: relative;
+                // float: left;
+                // display: flex;
+                width: 291px;
+                height: 112px;
+                margin-top: 20px;
+                margin-bottom: 20px;
+    
+                background: #F3F3F3;
+                opacity: 0.6;
+                border-radius: 10px;
+    
+                // .Description1 {
+                //     position: relative;
+                //     width: 258px;
+                //     height: 14px;
+                //     top: 17px;
+                //     left: 19px;
+    
+                //     background: #C4C4C4;
+                //     border-radius: 10px;
+                // }
+    
+                // .Description2 {
+                //     position: relative;
+                //     width: 258px;
+                //     height: 14px;
+                //     top: 34px;
+                //     left: 14px;
+    
+                //     background: #C4C4C4;
+                //     border-radius: 10px;
+                // }
+    
+                // .Description3 {
+                //     position: relative;
+                //     width: 258px;
+                //     height: 14px;
+                //     top: 51px;
+                //     left: 14px;
+    
+                //     background: #C4C4C4;
+                //     border-radius: 10px;
+                // }
+    
+            }
+    
+            .BodyBoxFocusedBox {
+                // position: relative;
+                // padding-left: 100px;
+                width: 291px;
+                height: 112px;
+                margin-top: 20px;
+                margin-bottom: 20px;
+                // float: left;
+    
+                background: #F3F3F3;
+                border: 1px solid #000000;
+                box-sizing: border-box;
+                box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+                border-radius: 10px;
+            }
         }
-
-        .BodyBoxRightColumn {
-            width: 202px;
-            height: 382px;
+    
+        .BodyBoxRight {
+            // width: 527px;
+            // height: 436px;
+            // left: 96px;
+            // top: 350px;
+            // // justify-content: space-evenly;
+            // // align-items: center;
+    
+            // background: #C4C4C4;
+            // position: absolute;
+            width: 327px;
+            height: 506px;
+            
             // left: 290px;
             float: right;
             // top: 30px;
             // flex-direction: row;
             // justify-content: center;
-
+    
             background: #F3F3F3;
+
+            .File {
+                width: 109px;
+                height: 28px;
+
+                background: rgba(124, 121, 104, 0.7);
+            }
+
+            .FileBar {
+                width: 327px;
+                height: 0px;
+
+                // border: 1px solid rgba(196, 196, 196, 0.52);
+            }
+
+            .LanguageBar {
+                padding-top: 450px;
+                width: 327px;
+                height: 0px;
+
+                border: 1px solid rgba(196, 196, 196, 0.62);
+            }
+
+            .Language {
+                // padding-top: 400px;
+                padding-left: 287px;
+                padding-top: 3px;
+                width: 89px;
+                height: 16px;
+                
+                font-family: Arial Rounded MT Bold;
+                font-style: normal;
+                font-weight: normal;
+                font-size: 14px;
+                line-height: 16px;
+                display: flex;
+                align-items: center;
+                text-align: center;
+                letter-spacing: 1px;
+                
+                color: #D0D0D0;
+            }
         }
-        
     }
+    
 }
 
