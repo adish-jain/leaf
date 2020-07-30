@@ -16,6 +16,8 @@
         width: 103px;
         height: 57px;
         flex-basis: 200px;
+        padding-left: 20px;
+        padding-top: 20px;
         // left: 44px;
         // top: 32px;
 
@@ -33,14 +35,14 @@
         display: flex;
         width: 92px;
         height: 34px;
-        left: 1297px;
-        top: 32px;
+        padding-top: 20px;
+
         flex-basis: 100px;
 
         font-family: Arial;
         font-style: normal;
         font-weight: normal;
-        font-size: 25px;
+        font-size: 20px;
         line-height: 34px;
         align-self: stretch;
 
@@ -122,24 +124,71 @@
     flex-direction: row;
     padding-left: 140px;
     padding-top: 40px;
-    .BodyText {
+    .BodyTextH1 {
         // display: flex;
         position: relative;
         width: 591px;
         height: 41px;
+        padding-left: 150px;
         // left: 755px;
         // top: 519px;
         
         font-family: Arial;
         font-style: normal;
-        font-weight: lighter;
-        font-size: 30px;
+        font-weight: bold;
+        font-size: 60px;
         line-height: 46px;
-        text-align: center;
-        padding-top: 150px;
+        text-align: left;
+        padding-top: 20px;
         
         color: #000000;
     }
+
+    .BodyTextH2 {
+        // display: flex;
+        position: relative;
+        width: 591px;
+        height: 41px;
+        padding-left: 150px;
+        // left: 755px;
+        // top: 519px;
+        
+        font-family: Arial;
+        font-style: normal;
+        font-weight: light;
+        font-size: 50px;
+        line-height: 46px;
+        text-align: left;
+        padding-top: 80px;
+        
+        color: #000000;
+    }
+
+    .Preview {
+        position: relative;
+        width: 469px;
+        height: 67px;
+        left: 155px;
+        top: 150px;
+        border-radius: 8px;
+        border-width: 1px;
+        border-style: solid;
+        box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.25);
+        border-color: #fdfdfd;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+
+        transition: box-shadow ease-in-out 0.2s;
+
+        background: #FFFFFF;
+    }
+      
+      .Preview:hover {
+        box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.4);
+        transition: box-shadow ease-in-out 0.2s;
+      }
 
     .BodyBox {
         display: flex;

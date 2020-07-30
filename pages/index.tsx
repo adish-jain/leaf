@@ -15,9 +15,11 @@ export default function Pages() {
 
   const { authenticated, error, loading } = useLoggedIn();
 
+  // should redirect to example tutorials or an introductionary explanation of 
+  // how Leaf works 
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
-    router.push("/article");
+    router.push("/login");
   };
 
   return (
@@ -37,7 +39,7 @@ export default function Pages() {
       </Head>
       <main>
         <Header />
-        <Body />
+        <Body handleClick={handleClick}/>
       </main>
     </div>
   );
@@ -51,7 +53,9 @@ function Header() {
     <div className={indexStyles.Header}>
       <Logo />
       <HeaderText />
+      {/* <FAQ /> */}
       <Login />
+      <Signup />
     </div>
   );
 }
@@ -69,6 +73,26 @@ function Login() {
     <div className={indexStyles.Login}>
       <Link href="/login">
         <a>Login</a>
+      </Link>
+    </div>
+  );
+}
+
+function Signup() {
+  return (
+    <div className={indexStyles.Login}>
+      <Link href="/signup">
+        <a>Signup</a>
+      </Link>
+    </div>
+  );
+}
+
+function FAQ() {
+  return (
+    <div className={indexStyles.Login}>
+      <Link href="">
+        <a>FAQ</a>
       </Link>
     </div>
   );
@@ -102,22 +126,28 @@ function GetStarted() {
 /*
 Body Components
 */
-function Body() {
+function Body(props: {handleClick: any}) {
   return (
     <div className={indexStyles.Body}> 
       <BodyBox />
-      <BodyText />
+      <BodyText handleClick={props.handleClick}/>
     </div>
   );
 }
 
-function BodyText() {
+function BodyText(props: {handleClick: any}) {
   return (
-    <div className={indexStyles.BodyText}>
       <div>
-        No more publishing code <br></br> snippets on Medium.
+        <div className={indexStyles.BodyTextH1}>
+          A new way <br></br> to convey
+        </div>
+        <div className={indexStyles.BodyTextH2}>
+          No more <br></br> publishing  <br></br> code snippets <br></br> on Medium
+        </div>
+        <div onClick={props.handleClick} className={indexStyles.Preview}>
+          <h3>Examples</h3>
+        </div>
       </div>
-    </div>
   );
 }
 
