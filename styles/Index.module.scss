@@ -1,12 +1,8 @@
 .Header {
     display: flex;
     flex-direction: row;
-    // flex-basis: 100px;
-    // flex-wrap: wrap;
     width: 100%;
     height: 320px;
-    left: 0px;
-    top: 0px;
     justify-content: center;
     align-items: center;
     background: #000000;
@@ -17,14 +13,12 @@
         height: 57px;
         flex-basis: 200px;
         padding-left: 30px;
-        padding-top: 20px;
-        // left: 44px;
-        // top: 32px;
+        padding-top: 30px;
 
         font-family: Arial;
         font-style: normal;
         font-weight: bold;
-        font-size: 50px;
+        font-size: 60px;
         line-height: 57px;
         align-self: flex-start;
 
@@ -60,31 +54,24 @@
         a:hover {
             color: #68B2A0;
         }
-
     }
 
     .HeaderText {
         display: flex;
         width: 1027px;
         height: 75px;
-        // left: 210px;
-        // top: 100px;
-        // padding-left: 150px;
         padding-top: 80px;
         font-family: Arial;
         font-style: normal;
         font-weight: bold;
-        font-size: 60px;
+        font-size: 75px;
         line-height: 75px;
-        /* identical to box height */
         align-self: center;
-
         color: #FFFFFF;
     }
 
     .GetStarted {
         position: relative;
-        // display: flex;
         width: 211px;
         height: 62px;
         left: 0px;
@@ -102,16 +89,12 @@
             height: 34px;
             left: 24px;
             top: 10px;
-            // left: 670px;
-            // top: 223px;
     
             font-family: Arial;
             font-style: normal;
             font-weight: bold;
             font-size: 30px;
             line-height: 34px;
-            // display: flex;
-            // align-items: center;
     
             color: #000000;
         }
@@ -127,40 +110,39 @@
     flex-direction: row;
     padding-left: 140px;
     padding-top: 40px;
+    justify-content: center;
+    align-items: center;
+    // background-color: #68B2A0;
+    // background-color: #CDE0C9;
     .BodyTextH1 {
-        // display: flex;
         position: relative;
         width: 591px;
         height: 41px;
+        bottom: 40px;
         padding-left: 150px;
-        // left: 755px;
-        // top: 519px;
         
         font-family: Arial;
         font-style: normal;
         font-weight: bold;
         font-size: 60px;
-        line-height: 46px;
+        line-height: 60px;
         text-align: left;
-        padding-top: 20px;
         
         color: #000000;
     }
 
     .BodyTextH2 {
-        // display: flex;
         position: relative;
         width: 591px;
         height: 41px;
         padding-left: 150px;
-        // left: 755px;
-        // top: 519px;
+        bottom: 30px;
         
         font-family: Arial;
         font-style: normal;
         font-weight: light;
         font-size: 50px;
-        line-height: 46px;
+        line-height: 50px;
         text-align: left;
         padding-top: 80px;
         
@@ -170,9 +152,9 @@
     .Preview {
         position: relative;
         width: 469px;
-        height: 180px;
+        height: 200px;
         left: 155px;
-        top: 150px;
+        top: 110px;
         border-radius: 8px;
         border-width: 1px;
         border-style: solid;
@@ -181,16 +163,16 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        cursor: pointer;
 
         transition: box-shadow ease-in-out 0.2s;
-
         background: #FFFFFF;
+
+        cursor: pointer;
     }
       
     .Preview:hover {
-    box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.4);
-    transition: box-shadow ease-in-out 0.2s;
+        box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.4);
+        transition: box-shadow ease-in-out 0.2s;
     }
 
     .BodyBoxDiagram {
@@ -201,20 +183,16 @@
         top: 350px;
         justify-content: space-evenly;
         align-items: center;
-
-        background: #d3d1d1;
+        border: 4px solid #68B2A0;
+        border-radius: 20px 90px;
+        // background: #E0ECDE;
 
         .BodyBoxLeft {
-            // display: flex;
             flex-direction: column;
             justify-content: space-between;
             padding-top: 40px;
-            // align-items: center;
             
             .BodyBoxUnfocusedBox {
-                // position: relative;
-                // float: left;
-                // display: flex;
                 width: 291px;
                 height: 112px;
                 margin-top: 20px;
@@ -256,24 +234,19 @@
                     background: #C4C4C4;
                     border-radius: 10px;
                 }
-    
             }
     
             .BodyBoxFocusedBox {
-                // position: relative;
-                // padding-left: 100px;
                 width: 291px;
                 height: 112px;
                 margin-top: 20px;
                 margin-bottom: 20px;
-                // float: left;
     
                 background: #F3F3F3;
                 border: 1px solid #000000;
                 box-sizing: border-box;
                 box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
                 border-radius: 10px;
-
 
                 .Description1 {
                     position: relative;
@@ -311,51 +284,31 @@
         }
     
         .BodyBoxRight {
-            // width: 527px;
-            // height: 436px;
-            // left: 96px;
-            // top: 350px;
-            // // justify-content: space-evenly;
-            // // align-items: center;
-    
-            // background: #C4C4C4;
-            // position: absolute;
             flex-direction: column;
             width: 327px;
             height: 506px;
-            
-            // left: 290px;
-            // float: right;
-            // top: 30px;
-            // flex-direction: row;
-            // justify-content: center;
-    
             background: #F3F3F3;
 
             .File {
                 width: 109px;
                 height: 28px;
-
                 background: rgba(124, 121, 104, 0.7);
             }
 
             .FileBar {
-                width: 327px;
+                width: 325px;
                 height: 0px;
                 border: 1px solid rgba(196, 196, 196, 0.52);
             }
 
             .LanguageBar {
-                // padding-top: 80px;
                 margin-top: 40px;
-                width: 327px;
+                width: 325px;
                 height: 0px;
-
                 border: 1px solid rgba(196, 196, 196, 0.62);
             }
 
             .Language {
-                // padding-top: 400px;
                 padding-left: 287px;
                 padding-top: 2px;
                 width: 89px;
@@ -377,10 +330,8 @@
             .functionSignatureUnfocused {
                 position: relative;
                 left: 20px;
-                // top: 30px;
 
                 margin-top: 40px;
-
                 width: 71px;
                 height: 8px;
                 
@@ -393,7 +344,6 @@
                 left: 40px;
 
                 margin-top: 7px;
-
                 width: 261px;
                 height: 8px;
 
@@ -428,8 +378,8 @@
             .functionSignatureFocused {
                 position: relative;
                 left: 20px;
-                margin-top: 40px;
 
+                margin-top: 40px;
                 width: 71px;
                 height: 8px;
                 
@@ -442,7 +392,6 @@
                 left: 40px;
 
                 margin-top: 7px;
-
                 width: 261px;
                 height: 8px;
 
@@ -499,6 +448,4 @@
             }
         }
     }
-    
 }
-
