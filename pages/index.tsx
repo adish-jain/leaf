@@ -143,10 +143,10 @@ function BodyText(props: {handleClick: any}) {
           Coding tutorials <br></br> to the next level<br></br> 
         </div>
         <div className={indexStyles.BodyTextH2}>
-          No more publishing  <br></br> code snippets on<br></br> Medium
+           Steps & code editor <br></br> side-by-side for a <br></br> seamless experience
         </div>
         <div onClick={props.handleClick} className={indexStyles.Preview}>
-          <h3>Examples</h3>
+          <h2>Example</h2>
         </div>
       </div>
   );
@@ -209,8 +209,9 @@ function FileHeader () {
   return (
     <div>
       <div className={indexStyles.File}>
-        </div>
-        <div className={indexStyles.FileBar}>
+        test.jsx
+      </div>
+      <div className={indexStyles.FileBar}>
       </div>
     </div>
   );

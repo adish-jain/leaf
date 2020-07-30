@@ -11,8 +11,7 @@
         display: flex;
         width: 103px;
         height: 57px;
-        flex-basis: 200px;
-        padding-left: 30px;
+        padding-left: 40px; 
         padding-top: 30px;
 
         font-family: Arial;
@@ -60,7 +59,8 @@
         display: flex;
         width: 1027px;
         height: 75px;
-        padding-top: 80px;
+        padding-top: 50px;
+        padding-left: 365px; 
         font-family: Arial;
         font-style: normal;
         font-weight: bold;
@@ -74,8 +74,8 @@
         position: relative;
         width: 211px;
         height: 62px;
-        left: 0px;
-        top: 20px;
+        left: 645px;
+        top: 30px;
         background: #FFFFFF;
         border: 1px solid #000000;
         box-sizing: border-box;
@@ -155,11 +155,11 @@
         height: 200px;
         left: 155px;
         top: 110px;
-        border-radius: 8px;
-        border-width: 1px;
+        border-radius: 20px;
+        border-width: 0px;
         border-style: solid;
         box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.25);
-        border-color: #fdfdfd;
+        border-color: #dbe6e4;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -186,6 +186,7 @@
         border: 4px solid #68B2A0;
         border-radius: 20px 90px;
         // background: #E0ECDE;
+        background: #68B2A0;
 
         .BodyBoxLeft {
             flex-direction: column;
@@ -293,6 +294,17 @@
                 width: 109px;
                 height: 28px;
                 background: rgba(124, 121, 104, 0.7);
+
+                font-family: Arial Rounded MT Bold;
+                font-style: normal;
+                font-weight: normal;
+                font-size: 14px;
+                line-height: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                letter-spacing: 1px;
+                color: #D0D0D0;
             }
 
             .FileBar {
@@ -324,7 +336,7 @@
                 text-align: center;
                 letter-spacing: 1px;
                 
-                color: #D0D0D0;
+                color: #bab6b6;
             }
 
             .functionSignatureUnfocused {
