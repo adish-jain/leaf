@@ -16,7 +16,7 @@
         width: 103px;
         height: 57px;
         flex-basis: 200px;
-        padding-left: 20px;
+        padding-left: 30px;
         padding-top: 20px;
         // left: 44px;
         // top: 32px;
@@ -31,11 +31,13 @@
         color: #68B2A0;
     }
 
-    .Login{
+    .Login {
         display: flex;
         width: 92px;
         height: 34px;
         padding-top: 20px;
+        padding-right: 20px;
+        justify-content: space-evenly;
 
         flex-basis: 100px;
 
@@ -67,6 +69,7 @@
         height: 75px;
         // left: 210px;
         // top: 100px;
+        // padding-left: 150px;
         padding-top: 80px;
         font-family: Arial;
         font-style: normal;
@@ -81,10 +84,10 @@
 
     .GetStarted {
         position: relative;
-        display: flex;
+        // display: flex;
         width: 211px;
         height: 62px;
-        left: 380px;
+        left: 0px;
         top: 20px;
         background: #FFFFFF;
         border: 1px solid #000000;

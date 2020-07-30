@@ -53,9 +53,10 @@ function Header() {
     <div className={indexStyles.Header}>
       <Logo />
       <HeaderText />
-      {/* <FAQ /> */}
       <Login />
       <Signup />
+      <About />
+
     </div>
   );
 }
@@ -88,11 +89,11 @@ function Signup() {
   );
 }
 
-function FAQ() {
+function About() {
   return (
     <div className={indexStyles.Login}>
       <Link href="">
-        <a>FAQ</a>
+        <a>About</a>
       </Link>
     </div>
   );
@@ -102,7 +103,7 @@ function HeaderText() {
   return (
     <div>
       <div className={indexStyles.HeaderText}>
-          Coding Tutorials to the Next Level.
+          A New Way to Convey.
       </div>
       <GetStarted />
     </div>
@@ -139,10 +140,10 @@ function BodyText(props: {handleClick: any}) {
   return (
       <div>
         <div className={indexStyles.BodyTextH1}>
-          A new way <br></br> to convey
+          Coding tutorials <br></br> to the next level<br></br> 
         </div>
         <div className={indexStyles.BodyTextH2}>
-          No more <br></br> publishing  <br></br> code snippets <br></br> on Medium
+          No more publishing  <br></br> code snippets on<br></br> Medium
         </div>
         <div onClick={props.handleClick} className={indexStyles.Preview}>
           <h3>Examples</h3>
