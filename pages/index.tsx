@@ -92,7 +92,7 @@ function Signup() {
 function About() {
   return (
     <div className={indexStyles.Login}>
-      <Link href="">
+      <Link href="/login">
         <a>About</a>
       </Link>
     </div>
