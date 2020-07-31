@@ -1,0 +1,464 @@
+.Header {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 320px;
+    justify-content: center;
+    align-items: center;
+    background: #000000;
+
+    .Logo {
+        display: flex;
+        width: 103px;
+        height: 57px;
+        padding-left: 40px; 
+        padding-top: 30px;
+
+        font-family: Arial rounded MT bold;
+        font-style: normal;
+        font-weight: bold;
+        font-size: 60px;
+        line-height: 57px;
+        align-self: flex-start;
+
+        color: #68B2A0;
+    }
+
+    .Login {
+        display: flex;
+        width: 92px;
+        height: 34px;
+        padding-top: 20px;
+        padding-right: 20px;
+        justify-content: space-evenly;
+
+        flex-basis: 100px;
+
+        font-family: Arial;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 20px;
+        line-height: 34px;
+        align-self: stretch;
+
+        a:link {
+            color:  #FFFFFF;
+            text-decoration: none;
+        }
+
+        a:visited {
+            color: #FFFFFF;
+        }
+
+        a:hover {
+            color: #68B2A0;
+        }
+    }
+
+    .HeaderText {
+        display: flex;
+        width: 1027px;
+        height: 75px;
+        padding-top: 50px;
+        padding-left: 370px; 
+        font-family: Arial rounded MT bold;
+        font-style: normal;
+        font-weight: bold;
+        font-size: 75px;
+        line-height: 75px;
+        align-self: center;
+        color: #FFFFFF;
+    }
+
+    .GetStarted {
+        position: relative;
+        width: 211px;
+        height: 62px;
+        left: 645px;
+        top: 30px;
+        background: #FFFFFF;
+        border: 1px solid #000000;
+        box-sizing: border-box;
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        border-radius: 40px;
+        cursor: pointer;
+    
+        .button {
+            position: relative;
+            width: 162px;
+            height: 34px;
+            left: 24px;
+            top: 10px;
+    
+            font-family: Arial rounded MT bold;
+            font-style: normal;
+            font-weight: bold;
+            font-size: 28px;
+            line-height: 34px;
+    
+            color: #000000;
+        }
+    }
+
+    .GetStarted:hover {
+        background: #68B2A0;
+    }
+}
+
+.Body {
+    display: flex;
+    flex-direction: row;
+    padding-left: 140px;
+    padding-top: 40px;
+    justify-content: center;
+    align-items: center;
+    // background-color: #68B2A0;
+    // background-color: #CDE0C9;
+    .BodyTextH1 {
+        position: relative;
+        width: 591px;
+        height: 41px;
+        bottom: 40px;
+        padding-left: 150px;
+        
+        font-family: Arial Rounded MT Bold;
+        font-style: normal;
+        font-weight: bold;
+        font-size: 60px;
+        line-height: 60px;
+        text-align: left;
+        
+        color: #000000;
+    }
+
+    .BodyTextH2 {
+        position: relative;
+        width: 591px;
+        height: 41px;
+        padding-left: 150px;
+        bottom: 30px;
+        
+        font-family: Arial;
+        font-style: normal;
+        font-weight: light;
+        font-size: 50px;
+        line-height: 50px;
+        text-align: left;
+        padding-top: 80px;
+        
+        color: #000000;
+    }
+
+    .Preview {
+        position: relative;
+        width: 469px;
+        height: 200px;
+        left: 155px;
+        top: 110px;
+        border-radius: 20px;
+        border-width: 0px;
+        border-style: solid;
+        box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.25);
+        border-color: #dbe6e4;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: Arial rounded MT bold;
+
+        transition: box-shadow ease-in-out 0.2s;
+        background: #FFFFFF;
+
+        cursor: pointer;
+    }
+      
+    .Preview:hover {
+        box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.4);
+        transition: box-shadow ease-in-out 0.2s;
+    }
+
+    .BodyBoxDiagram {
+        display: flex;
+        width: 752px;
+        height: 595px;
+        left: 96px;
+        top: 350px;
+        justify-content: space-evenly;
+        align-items: center;
+        border: 4px solid #68B2A0;
+        border-radius: 20px 90px;
+        // background: #E0ECDE;
+        background: #68B2A0;
+
+        .BodyBoxLeft {
+            flex-direction: column;
+            justify-content: space-between;
+            padding-top: 40px;
+            
+            .BodyBoxUnfocusedBox {
+                width: 291px;
+                height: 112px;
+                margin-top: 20px;
+                margin-bottom: 20px;
+    
+                background: #F3F3F3;
+                opacity: 0.6;
+                border-radius: 10px;
+    
+                .Description1 {
+                    position: relative;
+                    width: 258px;
+                    height: 14px;
+                    top: 17px;
+                    left: 17px;
+    
+                    background: #C4C4C4;
+                    border-radius: 10px;
+                }
+    
+                .Description2 {
+                    position: relative;
+                    width: 258px;
+                    height: 14px;
+                    top: 34px;
+                    left: 17px;
+    
+                    background: #C4C4C4;
+                    border-radius: 10px;
+                }
+    
+                .Description3 {
+                    position: relative;
+                    width: 258px;
+                    height: 14px;
+                    top: 51px;
+                    left: 17px;
+    
+                    background: #C4C4C4;
+                    border-radius: 10px;
+                }
+            }
+    
+            .BodyBoxFocusedBox {
+                width: 291px;
+                height: 112px;
+                margin-top: 20px;
+                margin-bottom: 20px;
+    
+                background: #F3F3F3;
+                border: 1px solid #000000;
+                box-sizing: border-box;
+                box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+                border-radius: 10px;
+
+                .Description1 {
+                    position: relative;
+                    width: 258px;
+                    height: 14px;
+                    top: 17px;
+                    left: 17px;
+    
+                    background: #C4C4C4;
+                    border-radius: 10px;
+                }
+    
+                .Description2 {
+                    position: relative;
+                    width: 258px;
+                    height: 14px;
+                    top: 34px;
+                    left: 17px;
+    
+                    background: #C4C4C4;
+                    border-radius: 10px;
+                }
+    
+                .Description3 {
+                    position: relative;
+                    width: 258px;
+                    height: 14px;
+                    top: 51px;
+                    left: 17px;
+    
+                    background: #C4C4C4;
+                    border-radius: 10px;
+                }
+            }
+        }
+    
+        .BodyBoxRight {
+            flex-direction: column;
+            width: 327px;
+            height: 506px;
+            background: #F3F3F3;
+
+            .File {
+                width: 109px;
+                height: 28px;
+                background: rgba(124, 121, 104, 0.7);
+
+                font-family: Arial Rounded MT Bold;
+                font-style: normal;
+                font-weight: normal;
+                font-size: 14px;
+                line-height: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                letter-spacing: 1px;
+                color: #D0D0D0;
+            }
+
+            .FileBar {
+                width: 325px;
+                height: 0px;
+                border: 1px solid rgba(196, 196, 196, 0.52);
+            }
+
+            .LanguageBar {
+                margin-top: 40px;
+                width: 325px;
+                height: 0px;
+                border: 1px solid rgba(196, 196, 196, 0.62);
+            }
+
+            .Language {
+                padding-left: 287px;
+                padding-top: 2px;
+                width: 89px;
+                height: 16px;
+                
+                font-family: Arial Rounded MT Bold;
+                font-style: normal;
+                font-weight: normal;
+                font-size: 14px;
+                line-height: 16px;
+                display: flex;
+                align-items: center;
+                text-align: center;
+                letter-spacing: 1px;
+                
+                color: #bab6b6;
+            }
+
+            .functionSignatureUnfocused {
+                position: relative;
+                left: 20px;
+
+                margin-top: 40px;
+                width: 71px;
+                height: 8px;
+                
+                background: rgba(196, 196, 196, 0.5);
+                border-radius: 10px;
+            }
+
+            .firstLineUnfocused {
+                position: relative;
+                left: 40px;
+
+                margin-top: 7px;
+                width: 261px;
+                height: 8px;
+
+                background: rgba(196, 196, 196, 0.5);
+                border-radius: 10px;
+            }
+
+            .ifUnfocused {
+                position: relative;
+                left: 40px;
+
+                margin-top: 7px;
+                width: 73px;
+                height: 8px;
+                
+                background: rgba(196, 196, 196, 0.5);
+                border-radius: 10px;
+            }
+
+            .ifBlockUnfocused {
+                position: relative;
+                left: 60px;
+
+                margin-top: 7px;
+                width: 240px;
+                height: 8px;
+                
+                background: rgba(196, 196, 196, 0.5);
+                border-radius: 10px;
+            }
+
+            .functionSignatureFocused {
+                position: relative;
+                left: 20px;
+
+                margin-top: 40px;
+                width: 71px;
+                height: 8px;
+                
+                background: #868686;
+                border-radius: 10px;
+            }
+
+            .firstLineFocused {
+                position: relative;
+                left: 40px;
+
+                margin-top: 7px;
+                width: 261px;
+                height: 8px;
+
+                background: #8ABCD8;
+                border-radius: 10px;
+            }
+
+            .ifFocused {
+                position: relative;
+                left: 40px;
+
+                margin-top: 7px;
+                width: 73px;
+                height: 8px;
+                
+                background: #85C883;
+                border-radius: 10px;
+            }
+
+            .ifBlockFocused {
+                position: relative;
+                left: 60px;
+
+                margin-top: 7px;
+                width: 240px;
+                height: 8px;
+                
+                background: #85C883;
+                border-radius: 10px;
+            }
+
+            .elseFocused {
+                position: relative;
+                left: 40px;
+
+                margin-top: 7px;
+                width: 73px;
+                height: 8px;
+                
+                background: #F57A6E;
+                border-radius: 10px;
+            }
+
+            .elseBlockFocused {
+                position: relative;
+                left: 60px;
+
+                margin-top: 7px;
+                width: 240px;
+                height: 8px;
+                
+                background: #F57A6E;
+                border-radius: 10px;
+            }
+        }
+    }
+}
