@@ -14,7 +14,7 @@
         padding-left: 40px; 
         padding-top: 30px;
 
-        font-family: Arial;
+        font-family: Arial rounded MT bold;
         font-style: normal;
         font-weight: bold;
         font-size: 60px;
@@ -60,8 +60,8 @@
         width: 1027px;
         height: 75px;
         padding-top: 50px;
-        padding-left: 365px; 
-        font-family: Arial;
+        padding-left: 370px; 
+        font-family: Arial rounded MT bold;
         font-style: normal;
         font-weight: bold;
         font-size: 75px;
@@ -90,10 +90,10 @@
             left: 24px;
             top: 10px;
     
-            font-family: Arial;
+            font-family: Arial rounded MT bold;
             font-style: normal;
             font-weight: bold;
-            font-size: 30px;
+            font-size: 28px;
             line-height: 34px;
     
             color: #000000;
@@ -121,7 +121,7 @@
         bottom: 40px;
         padding-left: 150px;
         
-        font-family: Arial;
+        font-family: Arial Rounded MT Bold;
         font-style: normal;
         font-weight: bold;
         font-size: 60px;
@@ -163,6 +163,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        font-family: Arial rounded MT bold;
 
         transition: box-shadow ease-in-out 0.2s;
         background: #FFFFFF;

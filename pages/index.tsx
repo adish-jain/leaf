@@ -62,7 +62,7 @@ function Header() {
 function Logo() {
   return (
     <div className={indexStyles.Logo}> 
-      Leaf
+      Leaf.
     </div>  
   );
 }
@@ -101,7 +101,7 @@ function HeaderText() {
   return (
     <div>
       <div className={indexStyles.HeaderText}>
-          A New Way to Convey.
+          A New Way to Convey
       </div>
       <GetStarted />
     </div>
