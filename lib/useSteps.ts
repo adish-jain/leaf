@@ -53,7 +53,7 @@ export function useSteps(draftId: string, authenticated: boolean) {
   /*
   Helper function to find the step with the associated stepId in `storedSteps`
   */
-  function findIdx(stepId: any) {
+  function findIdx(stepId: string): number {
     let idx = 0;
     let counter = 0;
 
@@ -161,6 +161,7 @@ export function useSteps(draftId: string, authenticated: boolean) {
   /* 
   Attach lines selected in the code editor to the current editing step.
   if remove is true, fileName and lines are cleared from the step
+  if renameFile is true, only the fileName is updated (lines are untouched)
   */
   function saveLines(fileName: string, remove: boolean) {
     let stepId = storedSteps![editingStep].id;
@@ -199,6 +200,35 @@ export function useSteps(draftId: string, authenticated: boolean) {
         fileName: fileName,
       };
     }
+    mutate(optimisticSteps, false);
+
+    fetch("/api/endpoint", {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify(data),
+    }).then(async (res: any) => {
+      let updatedSteps = await res.json();
+      mutate(updatedSteps, false);
+    });
+  }
+
+  function renameStepFileName(stepIndex: number, newFileName: string) {
+    let stepId = storedSteps![stepIndex].id;
+
+    // optimistic mutate
+    let optimisticSteps = storedSteps!.slice();
+
+    let data = {
+      requestedAPI: "renameStepFileName",
+      draftId: draftId,
+      stepId: stepId,
+      newFileName: newFileName,
+    };
+
+    optimisticSteps[stepIndex] = {
+      ...optimisticSteps[stepIndex],
+      fileName: newFileName,
+    };
     mutate(optimisticSteps, false);
 
     fetch("/api/endpoint", {
@@ -324,5 +354,6 @@ export function useSteps(draftId: string, authenticated: boolean) {
     changeLines,
     saveLines,
     removeLines,
+    renameStepFileName,
   };
 }

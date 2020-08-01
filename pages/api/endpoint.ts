@@ -15,7 +15,7 @@ import handleDeleteDraft from "../../lib/api/deleteDraft";
 // handle username & PW
 import handleSetId from "../../lib/api/setId";
 import handlecheckId from "../../lib/api/checkId";
-import handleSetPassword from "../../lib/api/setPassword"
+import handleSetPassword from "../../lib/api/setPassword";
 
 // user info
 import handleGetUserInfo from "../../lib/api/getUserInfo";
@@ -29,7 +29,11 @@ import handlePublishPost from "../../lib/api/publishPost";
 import handleGetPosts from "../../lib/api/getPosts";
 import handleDeletePost from "../../lib/api/deletePost";
 
-// editing drafts
+// editing drafts title
+import handleSaveTitle from "../../lib/api/saveTitle";
+import handleGetTitle from "../../lib/api/getTitle";
+
+// editing drafts steps
 import handleGetSteps from "../../lib/api/getDraftSteps";
 import handleGetDraftData from "../../lib/api/getDraftData";
 import handleSaveStep from "../../lib/api/saveStep";
@@ -37,8 +41,9 @@ import handleDeleteStep from "../../lib/api/deleteStep";
 import handleUpdateStep from "../../lib/api/updateStep";
 import handleUpdateStepLines from "../../lib/api/updateStepLines";
 import handleChangeStepOrder from "../../lib/api/changeStepOrder";
-import handleSaveTitle from "../../lib/api/saveTitle";
-import handleGetTitle from "../../lib/api/getTitle";
+import handleRenameStepFileName from "../../lib/api/renameStepFileName";
+
+// editing drafts files
 import handleSaveFile from "../../lib/api/saveFile";
 import handleDeleteFile from "../../lib/api/deleteFile";
 import handleChangeFileLanguage from "../../lib/api/changeFileLanguage";
@@ -146,6 +151,10 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
       return handleUpdateStepLines(req, res);
     }
 
+    case "renameStepFileName": {
+      return handleRenameStepFileName(req, res);
+    }
+
     /* 
     ------ Posts ------
     */
@@ -205,7 +214,6 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
 
     // email
     case "passwordReset": {
-      
       return handlePasswordReset(req, res);
     }
 

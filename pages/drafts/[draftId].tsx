@@ -85,6 +85,7 @@ const DraftView = () => {
     changeLines,
     saveLines,
     removeLines,
+    renameStepFileName,
   } = useSteps(draftId as string, authenticated);
 
   let {
@@ -99,7 +100,6 @@ const DraftView = () => {
     saveFileCode,
   } = useFiles(draftId, draftFiles, draftTitle, realSteps, mutate);
 
-
   // wrapper function for deleting a file.
   // when a file is deleted, make sure all associated steps remove that file
   function deleteStepAndFile(toDeleteIndex: number) {
@@ -110,6 +110,18 @@ const DraftView = () => {
       }
     }
     removeFile(toDeleteIndex);
+  }
+
+  function renameStepAndFile(value: string, external: boolean) {
+    // rename file
+    let oldFileName = codeFiles[selectedFileIndex].name;
+    saveFileName(value, external);
+
+    for (let i = 0; i < realSteps!.length; i++) {
+      if (realSteps![i].fileName === oldFileName) {
+        renameStepFileName(i, value);
+      }
+    }
   }
 
   return (
@@ -169,7 +181,7 @@ const DraftView = () => {
               changeCode={changeCode}
               changeSelectedFile={changeSelectedFileIndex}
               changeFileLanguage={changeFileLanguage}
-              saveFileName={saveFileName}
+              saveFileName={renameStepAndFile}
               language={draftFiles[selectedFileIndex].language}
               changeLines={changeLines}
               saveLines={saveLines}
