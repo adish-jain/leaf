@@ -54,8 +54,7 @@ type PublishingComponent = {
 };
 
 enum PublishingComponentType {
-  description = "description",
-  step = "step",
+  step = "step"
 }
 
 export default class Publishing extends Component<

@@ -22,8 +22,7 @@ export default class NewStep extends Component<NewStepProps, NewStepState> {
         <div className={newStepStyles.Line}></div>
     
         <div className={newStepStyles.Buttons}>
-          <button onClick={this.props.addStep}>Description</button>
-          <button>Step</button>
+          <button onClick={this.props.addStep}>Step</button>
         </div>
       </div>
     );
