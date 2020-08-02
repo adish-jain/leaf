@@ -66,6 +66,11 @@ const UserPage = (props: UserPageProps) => {
       <main>
         <div className={profileStyles["Content"]}>
           <h1 className={profileStyles["Header"]}>{props.username}</h1>
+          {posts.length === 0 ? (
+            <p>This user has not published anything yet.</p>
+          ) : (
+            <div></div>
+          )}
           {posts.map((post) => (
             <Post
               title={post.title}
