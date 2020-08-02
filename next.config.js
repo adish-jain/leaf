@@ -1,9 +1,9 @@
 // Use the hidden-source-map option when you don't want the source maps to be
 // publicly available on the servers, only to the error reporting
-const withSourceMaps = require('@zeit/next-source-maps')()
+const withSourceMaps = require("@zeit/next-source-maps")();
 
 // Use the SentryWebpack plugin to upload the source maps during build step
-const SentryWebpackPlugin = require('@sentry/webpack-plugin')
+const SentryWebpackPlugin = require("@sentry/webpack-plugin");
 const {
   NEXT_PUBLIC_SENTRY_DSN: SENTRY_DSN,
   SENTRY_ORG,
@@ -13,14 +13,14 @@ const {
   VERCEL_GITHUB_COMMIT_SHA,
   VERCEL_GITLAB_COMMIT_SHA,
   VERCEL_BITBUCKET_COMMIT_SHA,
-} = process.env
+} = process.env;
 
 const COMMIT_SHA =
   VERCEL_GITHUB_COMMIT_SHA ||
   VERCEL_GITLAB_COMMIT_SHA ||
-  VERCEL_BITBUCKET_COMMIT_SHA
+  VERCEL_BITBUCKET_COMMIT_SHA;
 
-process.env.SENTRY_DSN = SENTRY_DSN
+process.env.SENTRY_DSN = SENTRY_DSN;
 
 module.exports = withSourceMaps({
   webpack: (config, options) => {
@@ -39,7 +39,7 @@ module.exports = withSourceMaps({
     // So ask Webpack to replace @sentry/node imports with @sentry/browser when
     // building the browser's bundle
     if (!options.isServer) {
-      config.resolve.alias['@sentry/node'] = '@sentry/browser'
+      config.resolve.alias["@sentry/node"] = "@sentry/browser";
     }
 
     // When all the Sentry configuration env variables are available/configured
@@ -53,18 +53,18 @@ module.exports = withSourceMaps({
       SENTRY_PROJECT &&
       SENTRY_AUTH_TOKEN &&
       COMMIT_SHA &&
-      NODE_ENV === 'production'
+      NODE_ENV === "production"
     ) {
       config.plugins.push(
         new SentryWebpackPlugin({
-          include: '.next',
-          ignore: ['node_modules'],
-          urlPrefix: '~/_next',
+          include: ".next",
+          ignore: ["node_modules"],
+          urlPrefix: "~/_next",
           release: COMMIT_SHA,
         })
-      )
+      );
     }
 
-    return config
+    return config;
   },
-})
+});
