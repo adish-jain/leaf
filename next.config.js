@@ -48,12 +48,12 @@ module.exports = withSourceMaps({
     // This is an alternative to manually uploading the source maps
     // Note: This is disabled in development mode.
     if (
-      SENTRY_DSN &&
+      (SENTRY_DSN &&
       SENTRY_ORG &&
       SENTRY_PROJECT &&
       SENTRY_AUTH_TOKEN &&
       COMMIT_SHA &&
-      NODE_ENV === "production"
+      NODE_ENV === "production") || NODE_ENV === "preview"
     ) {
       config.plugins.push(
         new SentryWebpackPlugin({
