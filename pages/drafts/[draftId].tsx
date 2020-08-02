@@ -10,6 +10,10 @@ import CodeEditor from "../../components/CodeEditor";
 import DefaultErrorPage from "next/error";
 import Head from "next/head";
 const fetch = require("node-fetch");
+import * as Sentry from "@sentry/react";
+Sentry.init({
+  dsn: process.env.SENTRY_URL,
+});
 
 global.Headers = fetch.Headers;
 
