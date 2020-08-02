@@ -2,6 +2,7 @@ import useSWR from "swr";
 import Router from "next/router";
 import { useEffect } from "react";
 import { useState } from "react";
+import { composeDecorators } from "draft-js-plugins-editor";
 var shortId = require("shortid");
 const fetch = require("node-fetch");
 
@@ -43,7 +44,7 @@ export function useFiles(
     }
 
     // Need to fix this to be maxNum of files so far to avoid duplicate keys  
-    let numOfUntitleds = files.length; 
+    // let numOfUntitleds = files.length; 
 
     /* 
     Manages which file is selected in the filebar.
@@ -110,19 +111,63 @@ export function useFiles(
     }
 
     /*
+    Gets a list of currently existing file names
+    */
+    function getFileNames() {
+      let names: string[] = [];
+      files.forEach(file => {
+        names.push(file.name);
+      })
+      return names;
+    }
+
+    /*
+    Checks to see if the fileName already exists in our list of files by
+    checking every index except the selectedFileIndex.
+    */
+    function fileNameExists(name: string) {
+      let fileNames = getFileNames();
+      fileNames.splice(selectedFileIndex, 1);
+      if (fileNames.includes(name)) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    /*
+    When a files name is changed, we update the name field.
+    Triggered from `FileName.tsx`.
+    */
+    function onNameChange(name: string) {
+      let duplicateFiles = [...files];
+      duplicateFiles[selectedFileIndex].name = name;
+      updateFiles(duplicateFiles);
+    }
+   
+    /*
     Saves the file name to Firebase. Triggered from `FileName.tsx`. 
     Also updates the language selection for the file to match the new file name.
+    If the file name is already taken, default to "untitled" & throw alert.
     If no extension is given, file defaults to a text file. 
       `value` is the file name as a string.
       `external` is true when triggered from `FileName.tsx` & false otherwise.
     */
     function saveFileName(value: string, external: boolean) {
       let duplicateFiles = [...files];
-      duplicateFiles[selectedFileIndex].name = value;
+      value = value.trim();
+
+      if (value != "untitled" && fileNameExists(value)) {
+        alert("This file name already exists. Please try another name.");
+        duplicateFiles[selectedFileIndex].name = "untitled";
+      } else {
+        duplicateFiles[selectedFileIndex].name = value;
+      }
+
       files = duplicateFiles;
       updateFiles(duplicateFiles);
       if (external) {
-        setLangFromName(value);
+        setLangFromName(files[selectedFileIndex].name);
       }
       
       let title = draftTitle;
@@ -135,7 +180,7 @@ export function useFiles(
         requestedAPI: "save_file_name",
         draftId: draftId,
         fileId: files[selectedFileIndex].id,
-        fileName: value,
+        fileName: files[selectedFileIndex].name,
       }
 
       fetch("/api/endpoint", {
@@ -241,8 +286,7 @@ export function useFiles(
     */
     function addFile() {
       // make sure file is untitled2, untitled3, etc.
-      numOfUntitleds++;
-      let newFileName = `untitled${numOfUntitleds}`;
+      let newFileName = "untitled";
       let newFileCode = "// Write some code here ...";
       let newFileLang = "textile";
       let newFileId = shortId.generate();
@@ -322,6 +366,8 @@ export function useFiles(
       files = cloneFiles;
       codeFiles = cloneFiles;
 
+      console.log(files);
+
       let title = draftTitle;
       let optimisticSteps = storedSteps;
       
@@ -388,6 +434,7 @@ export function useFiles(
         changeSelectedFileIndex, 
         changeFileLanguage,
         saveFileName,
+        onNameChange,
         saveFileCode,
     }
 }

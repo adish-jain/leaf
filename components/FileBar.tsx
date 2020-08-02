@@ -15,6 +15,7 @@ type FileBarProps = {
   files: File[];
   changeSelectedFile: (fileIndex: number) => void;
   saveFileName: (value: string, external: boolean) => void;
+  onNameChange: (name: string) => void;
   addFile: () => void;
   removeFile: (toDeleteIndex: number) => void;
   selectedFileIndex: number;
@@ -32,6 +33,7 @@ export default class FileBar extends Component<FileBarProps> {
       files,
       changeSelectedFile,
       saveFileName,
+      onNameChange,
       addFile,
       removeFile,
       selectedFileIndex,
@@ -42,9 +44,10 @@ export default class FileBar extends Component<FileBarProps> {
         {files.map((file, index) => (
           <FileName
             name={file.name}
-            key={file.name}
+            key={file.id}
             changeSelectedFile={changeSelectedFile}
             saveFileName={saveFileName}
+            onNameChange={onNameChange}
             selected={selectedFileIndex === index}
             removeFile={removeFile}
             index={index}
