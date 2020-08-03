@@ -32,6 +32,7 @@ type CodeEditorProps = {
   editingStep: number;
   changeFileLanguage: (language: string, external: boolean) => void;
   saveFileName: (value: string, external: boolean) => void;
+  onNameChange: (name: string) => void;
   draftCode: string;
   changeLines: (lines: { start: Line; end: Line }) => void;
   saveLines: (fileName: string, remove: boolean) => void;
@@ -69,6 +70,7 @@ export default class CodeEditor extends Component<
       changeSelectedFile,
       changeFileLanguage,
       saveFileName,
+      onNameChange,
       language,
       editingStep,
       changeLines,
@@ -98,6 +100,7 @@ export default class CodeEditor extends Component<
           selectedFileIndex={selectedFileIndex}
           changeSelectedFile={changeSelectedFile}
           saveFileName={saveFileName}
+          onNameChange={onNameChange}
         />
         <DynamicCodeEditor
           // @ts-ignore

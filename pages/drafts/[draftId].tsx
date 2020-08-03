@@ -97,6 +97,7 @@ const DraftView = () => {
     changeSelectedFileIndex,
     changeFileLanguage,
     saveFileName,
+    onNameChange,
     saveFileCode,
   } = useFiles(draftId, draftFiles, draftTitle, realSteps, mutate);
 
@@ -182,6 +183,7 @@ const DraftView = () => {
               changeSelectedFile={changeSelectedFileIndex}
               changeFileLanguage={changeFileLanguage}
               saveFileName={renameStepAndFile}
+              onNameChange={onNameChange}
               language={draftFiles[selectedFileIndex].language}
               changeLines={changeLines}
               saveLines={saveLines}

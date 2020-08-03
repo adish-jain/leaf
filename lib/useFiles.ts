@@ -1,6 +1,3 @@
-import useSWR from "swr";
-import Router from "next/router";
-import { useEffect } from "react";
 import { useState } from "react";
 var shortId = require("shortid");
 const fetch = require("node-fetch");
@@ -110,19 +107,86 @@ export function useFiles(
     }
 
     /*
+    Gets a list of currently existing file names.
+    Unused, but leaving in case useful for later.
+    */
+    function getFileNames() {
+      let names: string[] = [];
+      files.forEach(file => {
+        names.push(file.name);
+      })
+      return names;
+    }
+
+    /*
+    Checks to see if the fileName already exists in our list of files.
+    */
+    function fileNameExistsFullSearch(name: string): boolean {
+      let exists = false;
+      files.forEach((file) => {
+        if (file.name == name) {
+          exists = true;
+        }
+      });
+      return exists;
+    }
+
+    /*
+    Checks to see if the fileName already exists in our list of files by
+    checking every index except the selectedFileIndex.
+    */
+    function fileNameExistsPartialSearch(name: string): boolean {
+      let exists = false;
+      files.forEach((file, index) => {
+        if (file.name === name && index != selectedFileIndex) {
+          exists = true;
+        }
+      });
+      return exists;
+    }
+
+    function getNewFileName() {
+      let newFileName = `untitled${numOfUntitleds}`;
+      while (fileNameExistsFullSearch(newFileName)) {
+        numOfUntitleds++;
+        newFileName = `untitled${numOfUntitleds}`;
+      }
+      return newFileName;
+    }
+
+    /*
+    When a files name is changed, we update the name field.
+    Triggered from `FileName.tsx`.
+    */
+    function onNameChange(name: string) {
+      let duplicateFiles = [...files];
+      duplicateFiles[selectedFileIndex].name = name;
+      updateFiles(duplicateFiles);
+    }
+   
+    /*
     Saves the file name to Firebase. Triggered from `FileName.tsx`. 
     Also updates the language selection for the file to match the new file name.
+    If the file name is already taken, use `getNewFileName` to name file & throw alert.
     If no extension is given, file defaults to a text file. 
       `value` is the file name as a string.
       `external` is true when triggered from `FileName.tsx` & false otherwise.
     */
     function saveFileName(value: string, external: boolean) {
       let duplicateFiles = [...files];
-      duplicateFiles[selectedFileIndex].name = value;
+      value = value.trim();
+
+      if (fileNameExistsPartialSearch(value)) {
+        alert("This file name already exists. Please try another name.");
+        duplicateFiles[selectedFileIndex].name = getNewFileName();
+      } else {
+        duplicateFiles[selectedFileIndex].name = value;
+      }
+
       files = duplicateFiles;
       updateFiles(duplicateFiles);
       if (external) {
-        setLangFromName(value);
+        setLangFromName(files[selectedFileIndex].name);
       }
       
       let title = draftTitle;
@@ -135,7 +199,7 @@ export function useFiles(
         requestedAPI: "save_file_name",
         draftId: draftId,
         fileId: files[selectedFileIndex].id,
-        fileName: value,
+        fileName: files[selectedFileIndex].name,
       }
 
       fetch("/api/endpoint", {
@@ -242,7 +306,7 @@ export function useFiles(
     function addFile() {
       // make sure file is untitled2, untitled3, etc.
       numOfUntitleds++;
-      let newFileName = `untitled${numOfUntitleds}`;
+      let newFileName = getNewFileName();
       let newFileCode = "// Write some code here ...";
       let newFileLang = "textile";
       let newFileId = shortId.generate();
@@ -388,6 +452,7 @@ export function useFiles(
         changeSelectedFileIndex, 
         changeFileLanguage,
         saveFileName,
+        onNameChange,
         saveFileCode,
     }
 }

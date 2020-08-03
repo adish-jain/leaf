@@ -5,6 +5,7 @@ type FileNameProps = {
   selected: boolean;
   changeSelectedFile: (fileIndex: number) => void;
   saveFileName: (value: string, external: boolean) => void;
+  onNameChange: (name: string) => void;
   name: string;
   removeFile: (toDeleteIndex: number) => void;
   index: number;
@@ -14,7 +15,6 @@ type FileNameProps = {
 export default function FileName(props: FileNameProps) {
   let [hovered, toggleHover] = useState(false);
   let [editing, dblClick] = useState(false);
-  let [name, newName] = useState(props.name);
 
   let style = {
     color: "white",
@@ -38,12 +38,8 @@ export default function FileName(props: FileNameProps) {
     }
   }
 
-  function onNameChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    newName(e.target.value);
-  }
-
   function saveFileName() {
-    props.saveFileName(name, true);
+    props.saveFileName(props.name, true);
     dblClick(false);
   }
 
@@ -68,12 +64,12 @@ export default function FileName(props: FileNameProps) {
         {editing ? 
           (<textarea
             className={fileNamesStyle["filenames"]}
-            defaultValue={name}
-            onChange={onNameChange}
+            defaultValue={props.name}
+            onChange={(e) => props.onNameChange(e.target.value)}
             onBlur={saveFileName}
             name="fileName"
           />) 
-          : name
+          : props.name
         }        
       </div>
       </div>
