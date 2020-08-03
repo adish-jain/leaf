@@ -52,7 +52,7 @@ export default class Scrolling extends Component<
     let { height } = this.state;
     return (
       <div className={scrollingStyles["scrolling"]}>
-        <h1>{title}</h1>
+        <h1 className={scrollingStyles['post-title']}>{title}</h1>
         {steps ? (
           steps.map((step, index) => (
             <PublishedStep

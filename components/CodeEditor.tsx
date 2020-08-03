@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import dynamic from "next/dynamic";
 import LanguageBar from "./LanguageBar";
 import FileBar from "./FileBar";
+import CodeEditorStyles from "../styles/CodeEditor.module.scss";
 
 // import CodeMirror from './DynamicComponent';
 // const {CodeMirror} = require('./DynamicComponent');
@@ -78,20 +79,7 @@ export default class CodeEditor extends Component<
       lines,
     } = this.props;
     return (
-      <div>
-        <style jsx>{`
-          box-shadow: 0px 4px 16px #edece9;
-          border-radius: 8px;
-          width: 100%;
-          height: 96vh;
-          position: sticky;
-          top: 2vh;
-          max-width: 664px;
-          min-width: 332px;
-          display: flex;
-          flex-direction: column;
-          margin-top: 2vh;
-        `}</style>
+      <div className={CodeEditorStyles["CodeEditor"]}>
         <FileBar
           draftId={draftId}
           files={files}

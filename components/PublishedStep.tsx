@@ -79,7 +79,6 @@ class PublishedStep extends Component<PublishedStepProps, PublishedStepState> {
         >
           {({ inView, ref, entry }) => (
             <div ref={ref} className={StepStyles[stepStyle]}>
-              <h1>{index}</h1>
               <div
                 className={StepStyles["InnerHTML"]}
                 dangerouslySetInnerHTML={this.renderDraftJS()}

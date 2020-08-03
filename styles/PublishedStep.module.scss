@@ -22,8 +22,10 @@
 }
 
 .InnerHTML {
-  word-break: break-all;
+  word-break: break-word;
   p {
-    white-space: pre;
+    // white-space: pre;
+    // word-break: break-all;
+
   }
 }

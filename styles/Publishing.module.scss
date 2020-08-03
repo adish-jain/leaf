@@ -99,7 +99,12 @@
       color: #898984;
     }
 
-    textArea {
+    form {
+      width: 100%;
+      height: auto;
+    }
+
+    textarea {
       transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
       outline: 0;
       box-shadow: none;
@@ -109,9 +114,10 @@
       background-color: transparent;
       font-family: Arial, Helvetica, sans-serif;
       font-size: 40px;
-      width: 605px;
-      height: 45px;
-      padding: 1.5rem 0;
+      width: 100%;
+      // line-height: 48px;
+      min-height: 50px;
+      height: auto; // padding: 1.5rem 0;
       resize: none;
     }
 
