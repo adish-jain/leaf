@@ -201,7 +201,7 @@ export default class Publishing extends Component<
               onChange={this.onTitleChange}
               onBlur={this.saveTitle}
               name="title"
-            />
+            ></textarea>
           </form>
         </div>
         {storedSteps.map((storedStep, index) => {
