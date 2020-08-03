@@ -1,8 +1,4 @@
-import useSWR from "swr";
-import Router from "next/router";
-import { useEffect } from "react";
 import { useState } from "react";
-import { exists } from "fs";
 var shortId = require("shortid");
 const fetch = require("node-fetch");
 
@@ -171,7 +167,7 @@ export function useFiles(
     /*
     Saves the file name to Firebase. Triggered from `FileName.tsx`. 
     Also updates the language selection for the file to match the new file name.
-    If the file name is already taken, default to "untitled" & throw alert.
+    If the file name is already taken, use `getNewFileName` to name file & throw alert.
     If no extension is given, file defaults to a text file. 
       `value` is the file name as a string.
       `external` is true when triggered from `FileName.tsx` & false otherwise.
