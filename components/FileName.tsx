@@ -38,10 +38,6 @@ export default function FileName(props: FileNameProps) {
     }
   }
 
-  function onNameChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    props.onNameChange(e.target.value);
-  }
-
   function saveFileName() {
     props.saveFileName(props.name, true);
     dblClick(false);
@@ -69,7 +65,7 @@ export default function FileName(props: FileNameProps) {
           (<textarea
             className={fileNamesStyle["filenames"]}
             defaultValue={props.name}
-            onChange={onNameChange}
+            onChange={(e) => props.onNameChange(e.target.value)}
             onBlur={saveFileName}
             name="fileName"
           />) 

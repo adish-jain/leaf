@@ -2,7 +2,7 @@ import useSWR from "swr";
 import Router from "next/router";
 import { useEffect } from "react";
 import { useState } from "react";
-import { composeDecorators } from "draft-js-plugins-editor";
+import { exists } from "fs";
 var shortId = require("shortid");
 const fetch = require("node-fetch");
 
@@ -44,7 +44,7 @@ export function useFiles(
     }
 
     // Need to fix this to be maxNum of files so far to avoid duplicate keys  
-    // let numOfUntitleds = files.length; 
+    let numOfUntitleds = files.length; 
 
     /* 
     Manages which file is selected in the filebar.
@@ -111,7 +111,8 @@ export function useFiles(
     }
 
     /*
-    Gets a list of currently existing file names
+    Gets a list of currently existing file names.
+    Unused, but leaving in case useful for later.
     */
     function getFileNames() {
       let names: string[] = [];
@@ -122,17 +123,39 @@ export function useFiles(
     }
 
     /*
+    Checks to see if the fileName already exists in our list of files.
+    */
+    function fileNameExistsFullSearch(name: string): boolean {
+      let exists = false;
+      files.forEach((file) => {
+        if (file.name == name) {
+          exists = true;
+        }
+      });
+      return exists;
+    }
+
+    /*
     Checks to see if the fileName already exists in our list of files by
     checking every index except the selectedFileIndex.
     */
-    function fileNameExists(name: string) {
-      let fileNames = getFileNames();
-      fileNames.splice(selectedFileIndex, 1);
-      if (fileNames.includes(name)) {
-        return true;
-      } else {
-        return false;
+    function fileNameExistsPartialSearch(name: string): boolean {
+      let exists = false;
+      files.forEach((file, index) => {
+        if (file.name === name && index != selectedFileIndex) {
+          exists = true;
+        }
+      });
+      return exists;
+    }
+
+    function getNewFileName() {
+      let newFileName = `untitled${numOfUntitleds}`;
+      while (fileNameExistsFullSearch(newFileName)) {
+        numOfUntitleds++;
+        newFileName = `untitled${numOfUntitleds}`;
       }
+      return newFileName;
     }
 
     /*
@@ -157,9 +180,9 @@ export function useFiles(
       let duplicateFiles = [...files];
       value = value.trim();
 
-      if (value != "untitled" && fileNameExists(value)) {
+      if (fileNameExistsPartialSearch(value)) {
         alert("This file name already exists. Please try another name.");
-        duplicateFiles[selectedFileIndex].name = "untitled";
+        duplicateFiles[selectedFileIndex].name = getNewFileName();
       } else {
         duplicateFiles[selectedFileIndex].name = value;
       }
@@ -286,7 +309,8 @@ export function useFiles(
     */
     function addFile() {
       // make sure file is untitled2, untitled3, etc.
-      let newFileName = "untitled";
+      numOfUntitleds++;
+      let newFileName = getNewFileName();
       let newFileCode = "// Write some code here ...";
       let newFileLang = "textile";
       let newFileId = shortId.generate();
@@ -365,8 +389,6 @@ export function useFiles(
       cloneFiles.splice(toDeleteIndex, 1);
       files = cloneFiles;
       codeFiles = cloneFiles;
-
-      console.log(files);
 
       let title = draftTitle;
       let optimisticSteps = storedSteps;
