@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import TextareaAutosize from "react-autosize-textarea";
 import NewStep from "./NewStep";
 import StoredStep from "./StoredStep";
 const fetch = require("node-fetch");
@@ -54,7 +55,7 @@ type PublishingComponent = {
 };
 
 enum PublishingComponentType {
-  step = "step"
+  step = "step",
 }
 
 export default class Publishing extends Component<
@@ -193,16 +194,13 @@ export default class Publishing extends Component<
           </div>
         </div>
         <div className={publishingStyles.header}>
-          <form>
-            <textarea
-              className={publishingStyles.textArea}
-              placeholder={"Untitled"}
-              defaultValue={this.props.title}
-              onChange={this.onTitleChange}
-              onBlur={this.saveTitle}
-              name="title"
-            ></textarea>
-          </form>
+          <TextareaAutosize
+            placeholder={"Untitled"}
+            defaultValue={this.props.title}
+            onChange={this.onTitleChange}
+            onBlur={this.saveTitle}
+            name="title"
+          />
         </div>
         {storedSteps.map((storedStep, index) => {
           return (
