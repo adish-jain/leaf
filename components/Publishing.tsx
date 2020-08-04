@@ -175,8 +175,9 @@ export default class Publishing extends Component<
       selectedFile,
       saveLines,
     } = this.props;
-    return (
-      <div className={publishingStyles.publishing}>
+
+    const PublishingButtons = () => {
+      return (
         <div className={publishingStyles.PublishingButtonsWrapper}>
           <div className={publishingStyles.publishingButtons}>
             <button
@@ -193,6 +194,11 @@ export default class Publishing extends Component<
             </button>
           </div>
         </div>
+      );
+    };
+
+    const PublishingHeader = () => {
+      return (
         <div className={publishingStyles.header}>
           <TextareaAutosize
             placeholder={"Untitled"}
@@ -202,6 +208,17 @@ export default class Publishing extends Component<
             name="title"
           />
         </div>
+      );
+    };
+
+    function StoredSteps () {
+      return <div></div>
+    }
+
+    return (
+      <div className={publishingStyles.publishing}>
+        <PublishingButtons />
+        <PublishingHeader />
         {storedSteps.map((storedStep, index) => {
           return (
             <StoredStep
