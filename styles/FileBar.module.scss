@@ -6,6 +6,11 @@
   flex-direction: row;
   display: flex;
   overflow-x: scroll;
+  overflow-y: hidden;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  // padding-right: 16px;
+  align-items: center;
   // padding: 8px;
 }
 
@@ -17,16 +22,22 @@
 
 .published-filebar {
   display: flex;
+  height: 3vh;
   flex-direction: row;
   background: #3f4447;
   border-radius: 8px 8px 0px 0px;
-  // overflow-x: scroll;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-right: 16px;
+  align-items: center;
 }
 
 .published-file {
-  padding: 12px;
   // margin-right: 16px;
   cursor: pointer;
+  padding: 8px;
 
   border-right-style: solid;
   border-right-color: #4c5153;
@@ -38,7 +49,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 12px;
+  padding: 8px;
 
   // padding: 4px;
   // margin-right: 4px;

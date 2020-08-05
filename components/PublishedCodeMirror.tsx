@@ -100,7 +100,7 @@ export default class PublishedCodeMirror extends Component<
           position: relative;
           background-color: #263238;
           font-size: 12px;
-          height: auto;
+          height: 0px;
         `}</style>
         <CodeMirror2
           className={"CodeEditor"}
