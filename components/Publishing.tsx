@@ -39,9 +39,10 @@ type PublishingProps = {
   moveStepUp: (stepId: any) => void;
   moveStepDown: (stepId: any) => void;
   saveTitle: (title: string) => void;
-  selectedFile: File;
+  selectedFileIndex: number;
   lines: { start: Line; end: Line };
   saveLines: (fileName: string, remove: boolean) => void;
+  files: File[];
 };
 
 type PublishingState = {
@@ -172,7 +173,8 @@ export default class Publishing extends Component<
       storedSteps,
       editingStep,
       changeEditingStep,
-      selectedFile,
+      selectedFileIndex,
+      files,
       saveLines,
     } = this.props;
 
@@ -211,8 +213,8 @@ export default class Publishing extends Component<
       );
     };
 
-    function StoredSteps () {
-      return <div></div>
+    function StoredSteps() {
+      return <div></div>;
     }
 
     return (
@@ -234,9 +236,10 @@ export default class Publishing extends Component<
               key={storedStep.id}
               editing={editingStep === index}
               changeEditingStep={changeEditingStep}
-              selectedFile={selectedFile}
+              selectedFileIndex={selectedFileIndex}
+              files={files}
               saveLines={saveLines}
-              attachedFileName={storedStep.fileName}
+              attachedFileId={storedStep.fileId}
             />
           );
         })}

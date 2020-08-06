@@ -26,8 +26,6 @@ async function updateStepLinesHandler(
   let lines = req.body.lines;
   let fileId = req.body.fileId;
   let { uid } = await getUser(req, res);
-  console.log("lines is ", lines);
-  console.log("fileId is ", fileId);
   if (uid === "") {
     res.statusCode = 403;
     res.end();
