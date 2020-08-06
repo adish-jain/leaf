@@ -30,9 +30,10 @@ type StoredStepProps = {
   moveStepUp: (stepId: any) => void;
   moveStepDown: (stepId: any) => void;
   changeEditingStep: (editingStep: number) => void;
-  selectedFile: File;
-  attachedFileName: string;
+  selectedFileIndex: number;
   saveLines: (fileName: string, remove: boolean) => void;
+  files: File[];
+  attachedFileId: string;
 };
 
 type StoredStepState = {
@@ -89,10 +90,18 @@ export default class StoredStep extends Component<
   }
 
   render() {
-    let { saveLines, attachedFileName } = this.props;
+    let { saveLines, files, attachedFileId } = this.props;
     const contentState = convertFromRaw(this.props.text);
     const editorState = EditorState.createWithContent(contentState);
     const editing = this.props.editing;
+
+    let name = ""
+    for (let i = 0; i < files.length; i++) {
+      if (files[i].id === attachedFileId) {
+        name = files[i].name;
+      }
+    }
+
     return (
       <div>
         {editing ? (
@@ -102,7 +111,7 @@ export default class StoredStep extends Component<
             editorState={editorState}
             lines={this.props.lines}
             saveLines={saveLines}
-            attachedFileName={attachedFileName}
+            attachedFileName={name}
           />
         ) : (
           <RenderedStoredStep
@@ -112,7 +121,7 @@ export default class StoredStep extends Component<
             moveStepDown={this.moveStepDown}
             lines={this.props.lines}
             editorState={editorState}
-            attachedFileName={attachedFileName}
+            attachedFileName={name}
           />
         )}
       </div>

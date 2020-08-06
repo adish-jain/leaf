@@ -104,25 +104,13 @@ const DraftView = () => {
   // wrapper function for deleting a file.
   // when a file is deleted, make sure all associated steps remove that file
   function deleteStepAndFile(toDeleteIndex: number) {
-    let fileName: string = draftFiles[toDeleteIndex].name;
+    let fileId: string = draftFiles[toDeleteIndex].id;
     for (let i = 0; i < realSteps!.length; i++) {
-      if (realSteps![i].fileName === fileName) {
+      if (realSteps![i].fileId === fileId) {
         removeLines(i);
       }
     }
     removeFile(toDeleteIndex);
-  }
-
-  function renameStepAndFile(value: string, external: boolean) {
-    // rename file
-    let oldFileName = codeFiles[selectedFileIndex].name;
-    saveFileName(value, external);
-
-    for (let i = 0; i < realSteps!.length; i++) {
-      if (realSteps![i].fileName === oldFileName) {
-        renameStepFileName(i, value);
-      }
-    }
   }
 
   return (
@@ -166,8 +154,9 @@ const DraftView = () => {
               saveTitle={saveTitle}
               editingStep={editingStep}
               changeEditingStep={changeEditingStep}
-              selectedFile={codeFiles[selectedFileIndex]}
+              selectedFileIndex={selectedFileIndex}
               lines={lines}
+              files={draftFiles}
               saveLines={saveLines}
             />
             <CodeEditor
@@ -182,7 +171,7 @@ const DraftView = () => {
               changeCode={changeCode}
               changeSelectedFile={changeSelectedFileIndex}
               changeFileLanguage={changeFileLanguage}
-              saveFileName={renameStepAndFile}
+              saveFileName={saveFileName}
               onNameChange={onNameChange}
               language={draftFiles[selectedFileIndex].language}
               changeLines={changeLines}

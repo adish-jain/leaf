@@ -24,9 +24,10 @@ async function updateStepLinesHandler(
   let stepId = req.body.stepId;
   let draftId = req.body.draftId;
   let lines = req.body.lines;
-  let fileName = req.body.fileName;
+  let fileId = req.body.fileId;
   let { uid } = await getUser(req, res);
-
+  console.log("lines is ", lines);
+  console.log("fileId is ", fileId);
   if (uid === "") {
     res.statusCode = 403;
     res.end();
@@ -44,7 +45,7 @@ async function updateStepLinesHandler(
       .doc(stepId)
       .update({
         lines: admin.firestore.FieldValue.delete(),
-        fileName: admin.firestore.FieldValue.delete(),
+        fileId: admin.firestore.FieldValue.delete(),
       });
   } else {
     await db
@@ -54,7 +55,7 @@ async function updateStepLinesHandler(
       .doc(draftId)
       .collection("steps")
       .doc(stepId)
-      .update({ lines: lines, fileName });
+      .update({ lines: lines, fileId });
   }
 
   res.statusCode = 200;
