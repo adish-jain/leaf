@@ -36,5 +36,25 @@
 }
 
 .published-language-bar {
+  background-color: #3f4447;
+  border: 1px solid #4c5153;
+  min-height: 20px;
+  height: 3vh;
+  border-radius: 0px 0px 8px 8px;
+  display: flex;
+  align-items: center;
+  flex-direction: row-reverse;
+  padding: 8px;
 
+  label {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: auto;
+
+    margin: 0;
+    // padding: 8px;
+    color: #ebebeb;
+  }
 }

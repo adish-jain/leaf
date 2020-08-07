@@ -1,36 +1,21 @@
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
-  .publishing {
-    margin-right: 16px;
-  }
 }
 
 /* Small devices (portrait tablets and large phones, 600px and up) */
 @media only screen and (min-width: 600px) {
-  .publishing {
-    margin-right: 16px;
-  }
 }
 
 /* Medium devices (landscape tablets, 768px and up) */
 @media only screen and (min-width: 768px) {
-  .publishing {
-    margin-right: 24px;
-  }
 }
 
 /* Large devices (laptops/desktops, 992px and up) */
 @media only screen and (min-width: 992px) {
-  .publishing {
-    margin-right: 64px;
-  }
 }
 
 /* Extra large devices (large laptops and desktops, 1200px and up) */
 @media only screen and (min-width: 1200px) {
-  .publishing {
-    margin-right: 64px;
-  }
 }
 
 .PublishingButtonsWrapper {
@@ -68,10 +53,15 @@
 }
 .publishing {
   // min-width: 480px;
-  min-width: 400px;
-  flex-grow: 100;
+  min-width: 300px;
+  width: 40vw;
+  margin-left: 3vw;
+  margin-right: 3vw;
+  flex-grow: 0.8;
   .header {
     display: flex;
+    margin-top: 16px;
+
     font-size: 20px;
     border-bottom-style: solid;
     border-bottom-width: 1px;
@@ -116,8 +106,8 @@
       font-size: 40px;
       width: 100%;
       // line-height: 48px;
-      min-height: 50px;
-      height: auto; // padding: 1.5rem 0;
+      // min-height: 50px;
+      // height: auto; // padding: 1.5rem 0;
       resize: none;
     }
 

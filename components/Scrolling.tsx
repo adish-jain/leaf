@@ -77,7 +77,7 @@ function BufferDiv(props: { height: number }) {
   return (
     <div
       style={{
-        height: props.height - 300,
+        height: props.height,
       }}
     ></div>
   );

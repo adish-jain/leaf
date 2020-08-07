@@ -20,7 +20,7 @@ type File = {
 export default function PublishedLanguageBar(props: PublishedLanguageBarProps) {
   return (
     <div className={languageBarStyles["published-language-bar"]}>
-      {props.language}
+      <label>Language: {props.language}</label>
     </div>
   );
 }

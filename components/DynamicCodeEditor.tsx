@@ -163,7 +163,7 @@ export default class CodeMirror extends Component<
   }
 
   saveLinesWrapper() {
-    this.props.saveLines(this.props.selectedFile.name, false);
+    this.props.saveLines(this.props.selectedFile.id, false);
     this.setState({
       showModal: false,
     });

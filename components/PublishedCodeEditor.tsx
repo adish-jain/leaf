@@ -24,7 +24,7 @@ type File = {
 type StepType = {
   text: string;
   id: string;
-  fileName: string;
+  fileId: string;
   lines: { start: number; end: number };
 };
 

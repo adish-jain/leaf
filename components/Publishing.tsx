@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import TextareaAutosize from "react-autosize-textarea";
 import NewStep from "./NewStep";
 import StoredStep from "./StoredStep";
 const fetch = require("node-fetch");
@@ -38,9 +39,10 @@ type PublishingProps = {
   moveStepUp: (stepId: any) => void;
   moveStepDown: (stepId: any) => void;
   saveTitle: (title: string) => void;
-  selectedFile: File;
+  selectedFileIndex: number;
   lines: { start: Line; end: Line };
   saveLines: (fileName: string, remove: boolean) => void;
+  files: File[];
 };
 
 type PublishingState = {
@@ -54,7 +56,7 @@ type PublishingComponent = {
 };
 
 enum PublishingComponentType {
-  step = "step"
+  step = "step",
 }
 
 export default class Publishing extends Component<
@@ -171,11 +173,13 @@ export default class Publishing extends Component<
       storedSteps,
       editingStep,
       changeEditingStep,
-      selectedFile,
+      selectedFileIndex,
+      files,
       saveLines,
     } = this.props;
-    return (
-      <div className={publishingStyles.publishing}>
+
+    const PublishingButtons = () => {
+      return (
         <div className={publishingStyles.PublishingButtonsWrapper}>
           <div className={publishingStyles.publishingButtons}>
             <button
@@ -192,18 +196,31 @@ export default class Publishing extends Component<
             </button>
           </div>
         </div>
+      );
+    };
+
+    const PublishingHeader = () => {
+      return (
         <div className={publishingStyles.header}>
-          <form>
-            <textarea
-              className={publishingStyles.textArea}
-              placeholder={"Untitled"}
-              defaultValue={this.props.title}
-              onChange={this.onTitleChange}
-              onBlur={this.saveTitle}
-              name="title"
-            ></textarea>
-          </form>
+          <TextareaAutosize
+            placeholder={"Untitled"}
+            defaultValue={this.props.title}
+            onChange={this.onTitleChange}
+            onBlur={this.saveTitle}
+            name="title"
+          />
         </div>
+      );
+    };
+
+    function StoredSteps() {
+      return <div></div>;
+    }
+
+    return (
+      <div className={publishingStyles.publishing}>
+        <PublishingButtons />
+        <PublishingHeader />
         {storedSteps.map((storedStep, index) => {
           return (
             <StoredStep
@@ -219,9 +236,10 @@ export default class Publishing extends Component<
               key={storedStep.id}
               editing={editingStep === index}
               changeEditingStep={changeEditingStep}
-              selectedFile={selectedFile}
+              selectedFileIndex={selectedFileIndex}
+              files={files}
               saveLines={saveLines}
-              attachedFileName={storedStep.fileName}
+              attachedFileId={storedStep.fileId}
             />
           );
         })}

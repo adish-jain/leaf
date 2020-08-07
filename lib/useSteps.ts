@@ -10,7 +10,7 @@ type Step = {
   id: string;
   lines?: { start: number; end: number };
   text: any;
-  fileName?: string;
+  fileId?: string;
 };
 
 export function useSteps(draftId: string, authenticated: boolean) {
@@ -137,13 +137,13 @@ export function useSteps(draftId: string, authenticated: boolean) {
       draftId: draftId,
       stepId: stepId,
       lines: undefined,
-      fileName: undefined,
+      fileId: undefined,
     };
 
     optimisticSteps[idx] = {
       ...optimisticSteps[idx],
       lines: undefined,
-      fileName: undefined,
+      fileId: undefined,
     };
 
     mutate(optimisticSteps, false);
@@ -163,7 +163,7 @@ export function useSteps(draftId: string, authenticated: boolean) {
   if remove is true, fileName and lines are cleared from the step
   if renameFile is true, only the fileName is updated (lines are untouched)
   */
-  function saveLines(fileName: string, remove: boolean) {
+  function saveLines(fileId: string, remove: boolean) {
     let stepId = storedSteps![editingStep].id;
     let linesData = {
       start: lines.start.lineNumber,
@@ -180,10 +180,11 @@ export function useSteps(draftId: string, authenticated: boolean) {
         draftId: draftId,
         stepId: stepId,
         lines: undefined,
-        fileName: undefined,
+        fileId: undefined,
       };
       optimisticSteps[idx] = {
         ...optimisticSteps[idx],
+        fileId: undefined,
         lines: undefined,
       };
     } else {
@@ -192,12 +193,12 @@ export function useSteps(draftId: string, authenticated: boolean) {
         draftId: draftId,
         stepId: stepId,
         lines: linesData,
-        fileName: fileName,
+        fileId: fileId,
       };
       optimisticSteps[idx] = {
         ...optimisticSteps[idx],
         lines: linesData,
-        fileName: fileName,
+        fileId: fileId,
       };
     }
     mutate(optimisticSteps, false);
@@ -212,7 +213,7 @@ export function useSteps(draftId: string, authenticated: boolean) {
     });
   }
 
-  function renameStepFileName(stepIndex: number, newFileName: string) {
+  function renameStepFileName(stepIndex: number, newFileId: string) {
     let stepId = storedSteps![stepIndex].id;
 
     // optimistic mutate
@@ -222,12 +223,12 @@ export function useSteps(draftId: string, authenticated: boolean) {
       requestedAPI: "renameStepFileName",
       draftId: draftId,
       stepId: stepId,
-      newFileName: newFileName,
+      newFileName: newFileId,
     };
 
     optimisticSteps[stepIndex] = {
       ...optimisticSteps[stepIndex],
-      fileName: newFileName,
+      fileId: newFileId,
     };
     mutate(optimisticSteps, false);
 
