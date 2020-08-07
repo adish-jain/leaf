@@ -43,14 +43,13 @@
             height: 34px;
 
             padding-top: 20px;
-            margin: 0.5em;
+            margin-bottom: 30px;
             justify-content: space-evenly;
             align-self: stretch;
 
             font-style: normal;
             font-weight: normal;
             font-size: 20px;
-            line-height: 34px;
 
             a:link {
                 color:  #FFFFFF;
@@ -203,9 +202,13 @@
         flex-direction: column;
     
         .NavBar {
+            justify-content: center;
+            align-items: center;
             .Logo {
+                display: flex;
+                margin-left: 3%;
+                margin-right: 5%;
                 font-size: 40px;
-                margin-right: 40%;
             }
 
             .Login {  
@@ -226,14 +229,14 @@
 
         .BodyTextH1 {
             margin-top: 1em;
-            font-size: 45px;
-            line-height: 50px;
+            font-size: 35px;
+            line-height: 40px;
         }
     
         .BodyTextH2 {
-            font-size: 35px;
-            line-height: 50px;
-            padding-bottom: 1.5em;
+            font-size: 25px;
+            line-height: 30px;
+            padding-bottom: 1em;
         }
     }
   }
