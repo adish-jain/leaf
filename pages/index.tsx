@@ -1,6 +1,4 @@
 import Head from "next/head";
-import fetch from "isomorphic-unfetch";
-import InferGetStaticPropsType from "next";
 import Link from "next/link";
 
 import { useLoggedIn, logOut } from "../lib/UseLoggedIn";
@@ -39,7 +37,7 @@ export default function Pages() {
           }}
         />
       </Head>
-      <main>
+      <main className={indexStyles.MainWrapper}>
         <Header />
         <Body handleClick={handleClick}/>
       </main>
@@ -53,14 +51,21 @@ Header Components
 function Header() {
   return (
     <div className={indexStyles.Header}>
-      <Logo />
+      <NavBar />
       <HeaderText />
+    </div>
+  );
+}
+
+function NavBar() {
+  return (
+    <div className={indexStyles.NavBar}>
+      <Logo />
       <Login />
       <Signup />
       <About />
-
     </div>
-  );
+  )
 }
 
 function Logo() {
@@ -115,12 +120,10 @@ function HeaderText() {
 function GetStarted() {
   return (
       <Link href="/signup">
-        <div>
         <div className={indexStyles.GetStarted}>
           <div className={indexStyles.button}>
             Get Started
           </div>
-        </div>
         </div>
       </Link>
   );
@@ -157,103 +160,8 @@ function BodyText(props: {handleClick: any}) {
 function BodyBox() {
   return (
     <div>
-      <div className={indexStyles.BodyBoxDiagram}>
-        <BodyBoxSteps />
-        <BodyBoxCode />
-      </div>
+      <img alt="tutorial" src='/images/tutorial.svg' />
     </div>
   );
 }
 
-function BodyBoxSteps () {
-  return (
-    <div className={indexStyles.BodyBoxLeft}>
-      <UnfocusedStep />
-      <FocusedStep />
-      <UnfocusedStep />
-    </div>
-  );
-}
-
-function UnfocusedStep () {
-  return (
-    <div className={indexStyles.BodyBoxUnfocusedBox}>
-      <div className={indexStyles.Description1}></div>
-      <div className={indexStyles.Description2}></div>
-      <div className={indexStyles.Description3}></div>
-    </div>
-  );
-}
-
-function FocusedStep () {
-  return (
-    <div className={indexStyles.BodyBoxFocusedBox}>
-      <div className={indexStyles.Description1}></div>
-      <div className={indexStyles.Description2}></div>
-      <div className={indexStyles.Description3}></div>
-    </div>
-  );
-}
-
-function BodyBoxCode() {
-  return (
-    <div className={indexStyles.BodyBoxRight}>
-      <FileHeader />
-      <UnfocusedFunction />
-      <FocusedFunction />
-      <UnfocusedFunction />
-      <LanguageFooter />
-    </div>
-  );
-}
-
-function FileHeader () {
-  return (
-    <div>
-      <div className={indexStyles.File}>
-        test.jsx
-      </div>
-      <div className={indexStyles.FileBar}>
-      </div>
-    </div>
-  );
-}
-
-function LanguageFooter () {
-  return (
-    <div>
-      <div className={indexStyles.LanguageBar}></div>
-      <div className={indexStyles.Language}>
-        JSX
-      </div>
-    </div>
-  )
-}
- 
-function UnfocusedFunction () {
-  return (
-    <div>
-      <div className={indexStyles.functionSignatureUnfocused}></div>
-      <div className={indexStyles.firstLineUnfocused}></div>
-      <div className={indexStyles.firstLineUnfocused}></div>
-      <div className={indexStyles.ifUnfocused}></div>
-      <div className={indexStyles.ifBlockUnfocused}></div>
-      <div className={indexStyles.ifUnfocused}></div>
-      <div className={indexStyles.ifBlockUnfocused}></div>
-    </div>
-  );
-}
-
-function FocusedFunction () {
-  return (
-    <div>
-      <div className={indexStyles.functionSignatureFocused}></div>
-      <div className={indexStyles.firstLineFocused}></div>
-      <div className={indexStyles.firstLineFocused}></div>
-      <div className={indexStyles.ifFocused}></div>
-      <div className={indexStyles.ifBlockFocused}></div>
-      <div className={indexStyles.elseFocused}></div>
-      <div className={indexStyles.elseBlockFocused}></div>
-    </div>
-  );
-}
