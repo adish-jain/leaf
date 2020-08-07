@@ -173,10 +173,6 @@
         align-items: center;
 
         border-radius: 20px;
-        border-width: 0px;
-        border-style: solid;
-        border-color: #dbe6e4;
-
         box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.25);        
         transition: box-shadow ease-in-out 0.2s;
         background: #FFFFFF;
@@ -192,7 +188,8 @@
     img {
         max-width: 100%;
         height: auto;
-        width: auto\9; 
+        width: auto; 
+        border-radius: 20px;
     }
 }
 
@@ -409,10 +406,6 @@
             align-items: center;
 
             border-radius: 20px;
-            border-width: 0px;
-            border-style: solid;
-            border-color: #dbe6e4;
-
             box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.25);
             transition: box-shadow ease-in-out 0.2s;
             background: #FFFFFF;
