@@ -36,6 +36,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
   for (let i = 0; i < steps.length; i++) {
     if (steps[i].lines === undefined || steps[i].lines === null) {
       steps[i].lines = null;
+      steps[i].fileId = null;
+      // to be deprecated
       steps[i].fileName = null;
     }
   }
@@ -55,6 +57,7 @@ type StepType = {
   text: string;
   id: string;
   fileName: string;
+  fileId: string;
   lines: { start: number; end: number };
 };
 

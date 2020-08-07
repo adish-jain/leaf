@@ -6,8 +6,8 @@ const appStyles = require("../styles/App.module.scss");
 type StepType = {
   text: string;
   id: string;
-  fileName: string;
   lines: { start: number; end: number };
+  fileId: string;
 };
 
 type File = {
@@ -38,9 +38,9 @@ const FinishedPost = (props: FinishedPostProps) => {
     for (let step in stepsInView) {
       if (stepsInView[step]) {
         let stepIndex = Number(step);
-        let newFileName = props.steps[stepIndex].fileName;
+        let newFileId = props.steps[stepIndex].fileId;
         for (let i = 0; i < props.files.length; i++) {
-          if (props.files[i].name === newFileName) {
+          if (props.files[i].id === newFileId) {
             updateFile(i);
           }
         }

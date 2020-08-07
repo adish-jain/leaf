@@ -62,12 +62,13 @@ export default function FileName(props: FileNameProps) {
         }}
       >
         {editing ? 
-          (<textarea
+          (<input
             className={fileNamesStyle["filenames"]}
             defaultValue={props.name}
             onChange={(e) => props.onNameChange(e.target.value)}
             onBlur={saveFileName}
             name="fileName"
+            autoFocus={true}
           />) 
           : props.name
         }        

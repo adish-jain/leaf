@@ -15,6 +15,10 @@ export default function Pages() {
 
   const { authenticated, error, loading } = useLoggedIn();
 
+  if (authenticated) {
+    window.location.href = "/landing";
+  }
+
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     router.push("/login");
