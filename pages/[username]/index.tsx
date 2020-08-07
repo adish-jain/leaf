@@ -3,7 +3,7 @@ import { GetStaticProps, GetStaticPaths, GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Scrolling from "../../components/Scrolling";
-import { getArticlesFromUsername } from "../../lib/userUtils";
+import { getUserPosts, getUidFromUsername } from "../../lib/userUtils";
 import getUsernames from "../../lib/api/getUsernames";
 const profileStyles = require("../../styles/Profile.module.scss");
 
@@ -25,11 +25,25 @@ export const getStaticProps: GetStaticProps = async (context) => {
     };
   }
   let username = params.username as string;
-  let posts = await getArticlesFromUsername(username);
+  let uid = await getUidFromUsername(username);
+  let posts = await getUserPosts(uid);
+
+  let publishedPosts = [];
+
+  for (let i = 0; i < posts.length; i++) {
+    let currentPost = posts[i];
+    publishedPosts.push({
+      uid: uid,
+      title: currentPost.title,
+      postId: currentPost.title,
+      id: currentPost.id,
+      published: currentPost.published,
+    });
+  }
   return {
     props: {
       revalidate: 1,
-      publishedPosts: posts,
+      publishedPosts: publishedPosts,
       username: username,
     },
   };
@@ -37,10 +51,12 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 type PostType = {
   createdAt: Date;
+  publishedat: Date;
   uid: string;
   title: string;
   postId: string;
   id: string;
+  published: boolean;
 };
 
 type UserPageProps = {

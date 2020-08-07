@@ -108,6 +108,7 @@ export default function Landing() {
             goToPost={goToPost}
             togglePostsEdit={togglePostsEdit}
             postsEditClicked={postsEditClicked}
+            username={username}
           />
         </div>
       </main>
@@ -121,6 +122,7 @@ function YourPosts(props: {
   deletePost: (postUid: string) => void;
   togglePostsEdit: () => void;
   postsEditClicked: boolean;
+  username: string;
 }) {
   let {
     posts,
@@ -128,40 +130,53 @@ function YourPosts(props: {
     deletePost,
     togglePostsEdit,
     postsEditClicked,
+    username,
   } = props;
 
-  let content;
-  if (posts === undefined || posts === []) {
-    content = <NonePublished />;
-  } else {
-    content = (
-      <div>
-        {posts.map((post: any) => (
-          <Post
-            username={post.username}
-            title={post.title}
-            postId={post.postId}
-            goToPost={goToPost}
-            postUid={post.id}
-            deletePost={deletePost}
-            key={post.id}
-            postsEditClicked={postsEditClicked}
-          />
-        ))}
-      </div>
-    );
-  }
+  const noPosts = posts === undefined || posts.length === 0;
 
-  return (
-    <div className={`${landingStyles.right} ${landingStyles.Section}`}>
-      <h1>Your Published Posts</h1>
-      <hr />
+  const Content = () => {
+    if (noPosts) {
+      return <NonePublished />;
+    } else {
+      return (
+        <div>
+          {posts!.map((post: any) => (
+            <Post
+              title={post.title}
+              postId={post.postId}
+              goToPost={goToPost}
+              postUid={post.id}
+              deletePost={deletePost}
+              key={post.id}
+              postsEditClicked={postsEditClicked}
+              username={username}
+            />
+          ))}
+        </div>
+      );
+    }
+  };
+
+  const EditButton = () => {
+    if (noPosts) {
+      return <div></div>;
+    }
+    return (
       <div className={landingStyles["DraftButtons"]}>
         <button onClick={togglePostsEdit}>
           {postsEditClicked ? "Done" : "Edit"}
         </button>
       </div>
-      {content}
+    );
+  };
+
+  return (
+    <div className={`${landingStyles.right} ${landingStyles.Section}`}>
+      <h1>Your Published Posts</h1>
+      <hr />
+      <EditButton />
+      <Content />
     </div>
   );
 }
@@ -169,11 +184,11 @@ function YourPosts(props: {
 function Post(props: {
   title: string;
   postId: string;
-  username: string;
   postUid: string;
   deletePost: (postUid: string) => void;
   goToPost: (username: string, postId: string) => void;
   postsEditClicked: boolean;
+  username: string;
 }) {
   let { username, postId, deletePost, postUid } = props;
   return (

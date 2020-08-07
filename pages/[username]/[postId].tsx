@@ -4,7 +4,7 @@ import Head from "next/head";
 import FinishedPost from "../../components/FinishedPost";
 import { getAllPosts } from "../../lib/api/publishPost";
 import { getUsernameFromUid } from "../../lib/userUtils";
-import { getPostData } from "../../lib/postUtils";
+import { getDraftDataFromPostId } from "../../lib/postUtils";
 import DefaultErrorPage from "next/error";
 import { useRouter } from "next/router";
 
@@ -27,8 +27,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   let username = context.params.username as string;
   let postId = context.params.postId as string;
-  let postData = await getPostData(username, postId);
-  let steps = postData.steps;
+  let postData = await getDraftDataFromPostId(username, postId);
+  let steps = postData.optimisticSteps;
   let files = postData.files;
   let title = postData.title;
   let errored = postData.errored;

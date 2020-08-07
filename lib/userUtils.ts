@@ -115,8 +115,12 @@ export async function getUserDrafts(uid: string) {
       let results: any[] = [];
       draftsCollection.forEach(function (result: any) {
         let resultsJSON = result.data();
-        resultsJSON.id = result.id;
-        results.push(resultsJSON);
+
+        //published posts have published set to true, so we ignore these
+        if (!resultsJSON.published) {
+          resultsJSON.id = result.id;
+          results.push(resultsJSON);
+        }
       });
       results.reverse();
       return results;
@@ -145,21 +149,33 @@ export async function getUidFromEmail(email: string) {
   return uid;
 }
 
-export async function getArticlesFromUsername(username: string) {
-  let uid = await getUidFromUsername(username);
-  let postsRef = await db.collection("posts").where("uid", "==", uid);
-  let results = await postsRef.get().then(function (postsCollection: any) {
-    let toReturn: any[] = [];
-    postsCollection.forEach(function (result: any) {
-      let resultJSON = result.data();
-      resultJSON.id = result.id;
-      resultJSON.username = username;
-      resultJSON.createdAt = resultJSON.createdAt.toDate().toJSON();
-      toReturn.push(resultJSON);
+export async function getUserPosts(uid: string) {
+  let draftsRef = db
+    .collection("users")
+    .doc(uid)
+    .collection("drafts")
+    .orderBy("createdAt");
+
+  return await draftsRef
+    .get()
+    .then(function (draftsCollection: any) {
+      let results: any[] = [];
+      draftsCollection.forEach(function (result: any) {
+        let resultsJSON = result.data();
+
+        //published posts have published set to true, so we ignore these
+        if (resultsJSON.published) {
+          resultsJSON.id = result.id;
+          results.push(resultsJSON);
+        }
+      });
+      results.reverse();
+      return results;
+    })
+    .catch(function (error: any) {
+      console.log(error);
+      return [];
     });
-    return toReturn;
-  });
-  return results;
 }
 
 export async function getArticlesFromUid(uid: string) {
@@ -190,12 +206,12 @@ export async function checkUsernameDNE(username: string) {
   let size;
 
   await db
-  .collection("users")
-  .where("username", "==", username)
-  .get()
-  .then(function (snapshot: any) {
-    size = snapshot.size;
-  });
+    .collection("users")
+    .where("username", "==", username)
+    .get()
+    .then(function (snapshot: any) {
+      size = snapshot.size;
+    });
 
   if (size === 0) {
     return true;
@@ -211,12 +227,12 @@ export async function checkEmailDNE(email: string) {
   let size;
 
   await db
-  .collection("users")
-  .where("email", "==", email)
-  .get()
-  .then(function (snapshot: any) {
-    size = snapshot.size;
-  });
+    .collection("users")
+    .where("email", "==", email)
+    .get()
+    .then(function (snapshot: any) {
+      size = snapshot.size;
+    });
 
   if (size === 0) {
     return true;

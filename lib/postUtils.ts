@@ -84,77 +84,20 @@ export async function getUserStepsForDraft(uid: string, draftId: string) {
     });
 }
 
-export async function getPostData(username: string, postId: string) {
-  try {
-    let uid = await getUidFromUsername(username);
-    let steps = await getStepsFromPost(uid, postId);
-    let files = await getFilesFromPost(uid, postId);
-    let title = await getPostTitle(uid, postId);
-    return {
-      files,
-      steps,
-      title,
-      errored: false,
-    };
-  } catch (error) {
-    return {
-      files: [],
-      steps: [],
-      title: "",
-      errored: true,
-    };
-  }
-}
-
-export async function getPostTitle(uid: string, postId: string) {
-  let myPostRef = await getPostRef(uid, postId);
-  let title = await myPostRef.get().then(function (postSnapshot: any) {
-    let postData = postSnapshot.data();
-    let title = postData.title;
-    return title;
-  });
-  return title;
-}
-
-export async function getPostRef(uid: string, postId: string) {
-  let myPostRef = await db
-    .collection("posts")
-    .where("uid", "==", uid)
+export async function getDraftDataFromPostId(username: string, postId: string) {
+  let uid = await getUidFromUsername(username);
+  let draftId = await db
+    .collection("users")
+    .doc(uid)
+    .collection("drafts")
     .where("postId", "==", postId)
-    .orderBy("createdAt")
     .get()
     .then(function (postsSnapshot: any) {
       let myPostRef = postsSnapshot.docs[0].ref;
-      return myPostRef;
+      return myPostRef.id;
     });
 
-  return myPostRef;
-}
-
-export async function getStepsFromPost(uid: string, postId: string) {
-  // Get desired post
-  let myPostRef = await getPostRef(uid, postId);
-
-  // Get steps from post
-  let steps = await myPostRef
-    .collection("steps")
-    .orderBy("order")
-    .get()
-    .then(function (stepsCollection: any) {
-      let results: any[] = [];
-      stepsCollection.forEach(function (result: any) {
-        let resultsJSON = result.data();
-        resultsJSON.id = result.id;
-        results.push({
-          text: resultsJSON.text,
-          id: resultsJSON.id,
-          fileName: resultsJSON.fileName,
-          lines: resultsJSON.lines,
-        });
-      });
-      return results;
-    });
-  return steps;
+  return getDraftDataHandler(uid, draftId);
 }
 
 type File = {
@@ -163,29 +106,3 @@ type File = {
   code: string;
   name: string;
 };
-
-export async function getFilesFromPost(uid: string, postId: string) {
-  // Get desired post
-  let myPostRef = await getPostRef(uid, postId);
-
-  // Get steps from post
-  let files: File[] = await myPostRef
-    .collection("files")
-    .orderBy("createdAt")
-    .get()
-    .then(function (filesCollection: any) {
-      let results: File[] = [];
-      filesCollection.forEach(function (result: any) {
-        let resultsJSON = result.data();
-        resultsJSON.id = result.id;
-        results.push({
-          language: resultsJSON.language,
-          id: resultsJSON.id,
-          code: resultsJSON.code,
-          name: resultsJSON.name,
-        });
-      });
-      return results;
-    });
-  return files;
-}
