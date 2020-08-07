@@ -79,7 +79,7 @@
 
         font-style: normal;
         font-weight: bold;
-        font-size: 75px;
+        font-size: 70px;
         line-height: 45px;
 
         color: #FFFFFF;
@@ -215,7 +215,7 @@
         }
     
         .HeaderText {
-            font-size: 50px;
+            font-size: 45px;
         }
     }
 
@@ -262,26 +262,23 @@
 
     .Body {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         padding: 1em;
     
         .BodyTextH1 {
-            padding: 0.5em;
-            font-size: 30px;
-            line-height: 30px;
+            margin-top: 1em;
+            font-size: 45px;
+            line-height: 50px;
         }
     
         .BodyTextH2 {
-            padding: 0.5em;
-            padding-top: 2em;
-            padding-bottom: 2.5em;
-            font-size: 30px;
-            line-height: 30px;
+            font-size: 35px;
+            line-height: 50px;
+            padding-bottom: 1.5em;
         }
     
         .Preview {
-            margin-left:10px;
-            height: 100px;
+            margin-left: 10px;
         }
     }
   }
@@ -304,33 +301,29 @@
         }
     
         .HeaderText {
-            font-size: 50px;
+            font-size: 60px;
         }
     }
 
     .Body {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         padding: 1em;
     
         .BodyTextH1 {
-            padding: 0.5em;
-            font-size: 40px;
-            line-height: 40px;
+            margin-top: 1em;
+            font-size: 45px;
+            line-height: 50px;
         }
     
         .BodyTextH2 {
-            padding: 0.5em;
-            padding-top: 2em;
-            padding-bottom: 2em;
-
             font-size: 35px;
-            line-height: 40px;
+            line-height: 50px;
+            padding-bottom: 1.5em;
         }
     
         .Preview {
             margin-left:10px;
-            height: 100px;
         }
     }
   }
@@ -344,6 +337,7 @@
         .NavBar {
             .Logo {
                 font-size: 50px;
+                margin-left: 5%;
                 margin-right: 65%;
             }
             .Login {  
@@ -354,7 +348,7 @@
         }
     
         .HeaderText {
-            font-size: 50px;
+            font-size: 65px;
         }
     }
 
@@ -372,11 +366,13 @@
             height: 41px;
 
             margin-top: 0em;
+            margin-bottom: 0.5em;
+            padding-left: 0.3em;
             text-align: left;
             
             font-style: normal;
             font-weight: bold;
-            font-size: 60px;
+            font-size: 50px;
             line-height: 60px;
             
             color: #000000;
@@ -388,7 +384,7 @@
             height: 41px;
 
             margin-top: 0.5em;
-            padding: 0.8em;
+            padding-left: 0.3em;
             text-align: left;
             
             font-style: normal;
