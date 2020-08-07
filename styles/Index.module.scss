@@ -18,59 +18,67 @@
     align-items: center;
     background: #000000;
     
-    .NavBar{
+    .NavBar {
         display: flex;
-        flex-direction: row;    
-    }
+        flex-direction: row;   
+        // justify-content: space-between;
+        width: 100%; 
 
-    .Logo {
-        display: flex;
-        // align-items: normal;
-        justify-content: center;
-        margin-bottom: 30px;
-        // width: 103px;
-        // height: 57px;
-        // padding-left: 40px; 
-        // padding-top: 30px;
+        .Logo {
+            display: flex;
+            // float: left;
+            // align-items: normal;
+            // justify-content: center;
+            margin-bottom: 30px;
+            margin-left: 3%;
+            margin-right: 70%;
+            // width: 103px;
+            // height: 57px;
+            // padding-left: 40px; 
+            // padding-top: 30px;
 
-        font-family: Arial rounded MT bold;
-        font-style: normal;
-        font-weight: bold;
-        font-size: 60px;
+            font-family: Arial rounded MT bold;
+            font-style: normal;
+            font-weight: bold;
+            font-size: 60px;
 
-        align-self: flex-start;
+            align-self: flex-start;
 
-        color: #68B2A0;
-    }
-
-    .Login {
-        display: flex;
-        width: 92px;
-        height: 34px;
-        padding-top: 20px;
-        padding-right: 20px;
-        justify-content: space-evenly;
-
-        // flex-basis: 100px;
-
-        font-family: Arial;
-        font-style: normal;
-        font-weight: normal;
-        font-size: 20px;
-        line-height: 34px;
-        align-self: stretch;
-
-        a:link {
-            color:  #FFFFFF;
-            text-decoration: none;
-        }
-
-        a:visited {
-            color: #FFFFFF;
-        }
-
-        a:hover {
             color: #68B2A0;
+        }
+
+        .Login {
+            display: flex;
+            // float: right;
+            width: 92px;
+            height: 34px;
+            padding-top: 20px;
+            margin: 0.5em;
+            // padding-right: 20px;
+            // justify-content: space-between;
+            justify-content: space-evenly;
+
+            // flex-basis: 100px;
+
+            font-family: Arial;
+            font-style: normal;
+            font-weight: normal;
+            font-size: 20px;
+            line-height: 34px;
+            align-self: stretch;
+
+            a:link {
+                color:  #FFFFFF;
+                text-decoration: none;
+            }
+
+            a:visited {
+                color: #FFFFFF;
+            }
+
+            a:hover {
+                color: #68B2A0;
+            }
         }
     }
 
@@ -508,12 +516,15 @@
     .Header {
         flex-direction: column;
     
-        .Logo {
-            font-size: 40px;
-        }
-        .Login {  
-            padding-right: 0px;  
-            font-size: 15px;
+        .NavBar {
+            .Logo {
+                font-size: 40px;
+                margin-right: 40%;
+            }
+            .Login {  
+                padding-right: 0px;  
+                font-size: 15px;
+            }    
         }
     
         .HeaderText {
@@ -601,13 +612,16 @@
   @media only screen and (min-width: 768px) {
     .Header {
         flex-direction: column;
-    
-        .Logo {
-            font-size: 40px;
-        }
-        .Login {  
-            padding-right: 0px;  
-            font-size: 15px;
+
+        .NavBar {
+            .Logo {
+                font-size: 40px;
+                margin-right: 55%;
+            }
+            .Login {  
+                padding-right: 0px;  
+                font-size: 15px;
+            }    
         }
     
         .HeaderText {
@@ -650,13 +664,16 @@
   @media only screen and (min-width: 992px) {
     .Header {
         flex-direction: column;
-    
-        .Logo {
-            font-size: 40px;
-        }
-        .Login {  
-            padding-right: 0px;  
-            font-size: 15px;
+
+        .NavBar {
+            .Logo {
+                font-size: 40px;
+                margin-right: 60%;
+            }
+            .Login {  
+                padding-right: 0px;  
+                font-size: 15px;
+            }    
         }
     
         .HeaderText {
@@ -700,15 +717,20 @@
   @media only screen and (min-width: 1200px) {
     .Header {
         flex-direction: column;
-    
-        .Logo {
-            font-size: 40px;
+
+        .NavBar {
+            .Logo {
+                font-size: 40px;
+                margin-right: 70%;
+            }
+            .Login {  
+                padding-right: 0px;  
+                font-size: 15px;
+            }
+        
         }
-        .Login {  
-            padding-right: 0px;  
-            font-size: 15px;
-        }
     
+        
         .HeaderText {
             font-size: 50px;
         }
