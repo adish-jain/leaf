@@ -11,22 +11,22 @@ type File = {
 
 type codeFile = {
   code: string;
-}
+};
 
 export function useFiles(
-  draftId: any, 
-  draftFiles: any, 
+  draftId: any,
+  draftFiles: any,
   draftTitle: string,
   storedSteps: any,
-  mutate: any) {
-
-    /*
+  mutate: any
+) {
+  /*
     Manages the files within filebar.
     The id, language, & name fields are guaranteed to be correct.
     */
-    let files = [...draftFiles];
+  let files = [...draftFiles];
 
-    /*
+  /*
     Manages the code within the files. 
     The code field is guaranteed to be correct.
     Create this separation to maintain consistency between local state 
@@ -34,137 +34,140 @@ export function useFiles(
     local changes to code until it is saved, propagated to Firebase,
     and then `files` is updated to reflect the new code changes. 
     */
-    var [codeFiles, updateFiles] = useState<File[]>(files.slice());
-    if (files[0]["id"] !== codeFiles[0]["id"] || files.length !== codeFiles.length) {
-      updateFiles(files.slice());
-    }
+  var [codeFiles, updateFiles] = useState<File[]>(files.slice());
+  if (
+    files[0]["id"] !== codeFiles[0]["id"] ||
+    files.length !== codeFiles.length
+  ) {
+    updateFiles(files.slice());
+  }
 
-    // Need to fix this to be maxNum of files so far to avoid duplicate keys  
-    let numOfUntitleds = files.length; 
+  // Need to fix this to be maxNum of files so far to avoid duplicate keys
+  let numOfUntitleds = files.length;
 
-    /* 
+  /* 
     Manages which file is selected in the filebar.
     files[selectedfileIndex] will give you the current selected file
     */
-    const [selectedFileIndex, changeSelectedFileIndex] = useState(0);
-    
-    type tExtToName = {
-      [key: string]: string
-    }
+  const [selectedFileIndex, changeSelectedFileIndex] = useState(0);
 
-    type tNameToExt = {
-      [key: string]: string
-    }
+  type tExtToName = {
+    [key: string]: string;
+  };
 
-    /*
+  type tNameToExt = {
+    [key: string]: string;
+  };
+
+  /*
     Maps file extensions -> value that will be passed to CodeMirror to syntax highlight.
     Used to map file names to language selection for file. 
     */
-    const extToName: tExtToName = {
-      "py": "python", 
-      "jsx": "jsx", 
-      "js": "javascript", 
-      "html": "xml",
-      "go": "go",
-      "css": "css",
-      "c": "text/x-csrc",
-      "h": "text/x-csrc",
-      "cpp": "text/x-c++src",
-      "java": "text/x-java",
-      "php": "php",
-      "rb": "ruby",
-      "txt": "textile",
-    }
-    Object.freeze(extToName);
+  const extToName: tExtToName = {
+    py: "python",
+    jsx: "jsx",
+    js: "javascript",
+    html: "xml",
+    go: "go",
+    css: "css",
+    c: "text/x-csrc",
+    h: "text/x-csrc",
+    cpp: "text/x-c++src",
+    java: "text/x-java",
+    php: "php",
+    rb: "ruby",
+    txt: "textile",
+  };
+  Object.freeze(extToName);
 
-    /*
+  /*
     Maps value from languageBar selection to file extension.
     Used to map language selection for file to proper file extension name. 
     */
-    const nameToExt: tNameToExt = {
-      "python": "py", 
-      "jsx": "jsx", 
-      "javascript": "js", 
-      "xml": "html", 
-      "go": "go",
-      "css": "css",
-      "text/x-csrc": "c",
-      "text/x-c++src": "cpp",
-      "text/x-java": "java",
-      "php": "php",
-      "ruby": "rb",
-      "textile": "txt",
-    }
-    Object.freeze(nameToExt);
+  const nameToExt: tNameToExt = {
+    python: "py",
+    jsx: "jsx",
+    javascript: "js",
+    xml: "html",
+    go: "go",
+    css: "css",
+    "text/x-csrc": "c",
+    "text/x-c++src": "cpp",
+    "text/x-java": "java",
+    php: "php",
+    ruby: "rb",
+    textile: "txt",
+  };
+  Object.freeze(nameToExt);
 
-    /*
+  /*
     Update the code in DynamicCodeEditor in the correct file
     */
-    function changeCode(value: string) {
-      let duplicateFiles = [...codeFiles];
-      duplicateFiles[selectedFileIndex].code = value;
-      updateFiles(duplicateFiles);
-    }
+  function changeCode(value: string) {
+    let duplicateFiles = [...codeFiles];
+    duplicateFiles[selectedFileIndex].code = value;
+    updateFiles(duplicateFiles);
+  }
 
-    /*
+  /*
     Gets a list of currently existing file names.
     Unused, but leaving in case useful for later.
     */
-    function getFileNames() {
-      let names: string[] = [];
-      files.forEach(file => {
-        names.push(file.name);
-      })
-      return names;
-    }
+  function getFileNames() {
+    let names: string[] = [];
+    files.forEach((file) => {
+      names.push(file.name);
+    });
+    return names;
+  }
 
-    /*
+  /*
     Checks to see if the fileName already exists in our list of files.
     */
-    function fileNameExistsFullSearch(name: string): boolean {
-      let exists = false;
-      files.forEach((file) => {
-        if (file.name == name) {
-          exists = true;
-        }
-      });
-      return exists;
-    }
+  function fileNameExistsFullSearch(name: string): boolean {
+    let exists = false;
+    files.forEach((file) => {
+      if (file.name == name) {
+        exists = true;
+      }
+    });
+    return exists;
+  }
 
-    /*
+  /*
     Checks to see if the fileName already exists in our list of files by
     checking every index except the selectedFileIndex.
     */
-    function fileNameExistsPartialSearch(name: string): boolean {
-      let exists = false;
-      files.forEach((file, index) => {
-        if (file.name === name && index != selectedFileIndex) {
-          exists = true;
-        }
-      });
-      return exists;
-    }
-
-    function getNewFileName() {
-      let newFileName = `untitled${numOfUntitleds}`;
-      while (fileNameExistsFullSearch(newFileName)) {
-        numOfUntitleds++;
-        newFileName = `untitled${numOfUntitleds}`;
+  function fileNameExistsPartialSearch(name: string): boolean {
+    let exists = false;
+    files.forEach((file, index) => {
+      if (file.name === name && index != selectedFileIndex) {
+        exists = true;
       }
-      return newFileName;
-    }
+    });
+    return exists;
+  }
 
-    /*
+  function getNewFileName() {
+    let newFileName = `untitled${numOfUntitleds}`;
+    while (fileNameExistsFullSearch(newFileName)) {
+      numOfUntitleds++;
+      newFileName = `untitled${numOfUntitleds}`;
+    }
+    return newFileName;
+  }
+
+  /*
     When a files name is changed, we update the name field.
     Triggered from `FileName.tsx`.
     */
-    function onNameChange(name: string) {
-      let duplicateFiles = [...files];
-      duplicateFiles[selectedFileIndex].name = name;
-      updateFiles(duplicateFiles);
-    }
-   
-    /*
+  function onNameChange(name: string) {
+    let duplicateFiles = [...files];
+    duplicateFiles[selectedFileIndex].name = name;
+    updateFiles(duplicateFiles);
+  }
+
+  /*
     Saves the file name to Firebase. Triggered from `FileName.tsx`. 
     Also updates the language selection for the file to match the new file name.
     If the file name is already taken, use `getNewFileName` to name file & throw alert.
@@ -172,287 +175,290 @@ export function useFiles(
       `value` is the file name as a string.
       `external` is true when triggered from `FileName.tsx` & false otherwise.
     */
-    function saveFileName(value: string, external: boolean) {
-      let duplicateFiles = [...files];
-      value = value.trim();
+  function saveFileName(value: string, external: boolean) {
+    let duplicateFiles = [...files];
+    value = value.trim();
 
-      if (fileNameExistsPartialSearch(value)) {
-        alert("This file name already exists. Please try another name.");
-        duplicateFiles[selectedFileIndex].name = getNewFileName();
-      } else {
-        duplicateFiles[selectedFileIndex].name = value;
-      }
-
-      files = duplicateFiles;
-      updateFiles(duplicateFiles);
-      if (external) {
-        setLangFromName(files[selectedFileIndex].name);
-      }
-      
-      let title = draftTitle;
-      let optimisticSteps = storedSteps;
-      let mutateState = { title, optimisticSteps, files };
-
-      mutate(mutateState, false);
-
-      var data = {
-        requestedAPI: "save_file_name",
-        draftId: draftId,
-        fileId: files[selectedFileIndex].id,
-        fileName: files[selectedFileIndex].name,
-      }
-
-      fetch("/api/endpoint", {
-        method: "POST",
-        headers: new Headers({ "Content-Type": "application/json" }),
-        body: JSON.stringify(data),
-      }).then(async (res: any) => {
-        console.log(res);
-      });
+    if (fileNameExistsPartialSearch(value)) {
+      alert("This file name already exists. Please try another name.");
+      duplicateFiles[selectedFileIndex].name = getNewFileName();
+    } else {
+      duplicateFiles[selectedFileIndex].name = value;
     }
 
-    /*
+    files = duplicateFiles;
+    updateFiles(duplicateFiles);
+    if (external) {
+      setLangFromName(files[selectedFileIndex].name);
+    }
+
+    let title = draftTitle;
+    let optimisticSteps = storedSteps;
+    let mutateState = { title, optimisticSteps, files };
+
+    mutate(mutateState, false);
+
+    var data = {
+      requestedAPI: "save_file_name",
+      draftId: draftId,
+      fileId: files[selectedFileIndex].id,
+      fileName: files[selectedFileIndex].name,
+    };
+
+    fetch("/api/endpoint", {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify(data),
+    }).then(async (res: any) => {
+      console.log(res);
+    });
+  }
+
+  /*
     Saves the language selection to Firebase. Triggered from `LanguageBar.tsx`. 
     Also updates the file name to match the new language selection. 
       `language` is the language selection as a string.
       `external` is true when triggered from `LanguageBar.tsx` & false otherwise.
     */
-    function changeFileLanguage(language: string, external: boolean) {
-      let fileId = files[selectedFileIndex].id;
-      let duplicateFiles = [...files];
-      duplicateFiles[selectedFileIndex].language = language;
-      files = duplicateFiles;
-      codeFiles = duplicateFiles;
-      if (external) {
-        setNameFromLang(language);
-      }
-
-      let title = draftTitle;
-      let optimisticSteps = storedSteps;
-
-      let mutateState = { title, optimisticSteps, files };
-      mutate(mutateState, true); 
-      
-      var data = {
-        requestedAPI: "change_file_language",
-        draftId: draftId,
-        fileId: fileId,
-        language: language,
-      }
-
-      fetch("/api/endpoint", {
-        method: "POST",
-        headers: new Headers({ "Content-Type": "application/json" }),
-        body: JSON.stringify(data),
-      }).then(async (res: any) => {
-        console.log(res);
-      });
+  function changeFileLanguage(language: string, external: boolean) {
+    let fileId = files[selectedFileIndex].id;
+    let duplicateFiles = [...files];
+    duplicateFiles[selectedFileIndex].language = language;
+    files = duplicateFiles;
+    codeFiles = duplicateFiles;
+    if (external) {
+      setNameFromLang(language);
     }
 
-    /*
+    let title = draftTitle;
+    let optimisticSteps = storedSteps;
+
+    let mutateState = { title, optimisticSteps, files };
+    mutate(mutateState, true);
+
+    var data = {
+      requestedAPI: "change_file_language",
+      draftId: draftId,
+      fileId: fileId,
+      language: language,
+    };
+
+    fetch("/api/endpoint", {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify(data),
+    }).then(async (res: any) => {
+      console.log(res);
+    });
+  }
+
+  /*
     Sets the language of the file given the file name. 
     Called by saveFileName (defined above) when `external` is true. 
     If no extension is included in the filename, default to text file.
     Throws an alert if an unsupported extension is given, and defaults to text file.
     */
-    function setLangFromName(value: string) {
-      let fileNameTokens = value.split(".");
-      let langType;
-      if (fileNameTokens.length === 1) { // no extension defaults to txt
-        langType = "txt";
-      } else {
-        langType = fileNameTokens[fileNameTokens.length - 1];
-      }
-
-      langType = langType.trim();
-
-      if (!(langType in extToName)) { // if extension type isn't supported
-        alert("This file extension is not supported yet!");
-        langType = "txt";
-      }
-
-      changeFileLanguage(extToName[langType], false);
+  function setLangFromName(value: string) {
+    let fileNameTokens = value.split(".");
+    let langType;
+    if (fileNameTokens.length === 1) {
+      // no extension defaults to txt
+      langType = "txt";
+    } else {
+      langType = fileNameTokens[fileNameTokens.length - 1];
     }
 
-    /*
+    langType = langType.trim();
+
+    if (!(langType in extToName)) {
+      // if extension type isn't supported
+      alert("This file extension is not supported yet!");
+      langType = "txt";
+    }
+
+    changeFileLanguage(extToName[langType], false);
+  }
+
+  /*
     Sets the extension of the file given the language selection. 
     Called by changeFileLanguage (defined above) when `external` is true.
     */
-    function setNameFromLang(value: string) {
-      let extension = nameToExt[value];
-      let fileName = files[selectedFileIndex].name;
-      let newName;
-      if (!(fileName.includes("."))) {
-        newName = fileName + "." + extension;
+  function setNameFromLang(value: string) {
+    let extension = nameToExt[value];
+    let fileName = files[selectedFileIndex].name;
+    let newName;
+    if (!fileName.includes(".")) {
+      newName = fileName + "." + extension;
+    } else {
+      let extIdx = fileName.lastIndexOf(".");
+      let beforeExt = fileName.slice(0, extIdx);
+      if (value == "textile") {
+        newName = beforeExt;
       } else {
-        let extIdx = fileName.lastIndexOf(".");
-        let beforeExt = fileName.slice(0, extIdx);
-        if (value == "textile") {
-          newName = beforeExt;
-        } else {
-          newName = beforeExt + "." + extension;
-        }
+        newName = beforeExt + "." + extension;
       }
-      
-      saveFileName(newName, false);
     }
 
-    /*
+    saveFileName(newName, false);
+  }
+
+  /*
     Adds a new file to the Filebar. 
     Calls saveFile to save file to Firebase.
     New files are by default text files. 
     Triggered from `FileBar.tsx`.
     */
-    function addFile() {
-      // make sure file is untitled2, untitled3, etc.
-      numOfUntitleds++;
-      let newFileName = getNewFileName();
-      let newFileCode = "// Write some code here ...";
-      let newFileLang = "textile";
-      let newFileId = shortId.generate();
+  function addFile() {
+    // make sure file is untitled2, untitled3, etc.
+    numOfUntitleds++;
+    let newFileName = getNewFileName();
+    let newFileCode = "// Write some code here ...";
+    let newFileLang = "textile";
+    let newFileId = shortId.generate();
 
-      files.push({
-        name: newFileName,
-        id: newFileId,
-        code: newFileCode,
-        language: newFileLang,
-      })
+    files.push({
+      name: newFileName,
+      id: newFileId,
+      code: newFileCode,
+      language: newFileLang,
+    });
 
-      codeFiles.push({
-        name: newFileName,
-        id: newFileId,
-        code: newFileCode,
-        language: newFileLang,
-      })
+    codeFiles.push({
+      name: newFileName,
+      id: newFileId,
+      code: newFileCode,
+      language: newFileLang,
+    });
 
-      let title = draftTitle;
-      let optimisticSteps = storedSteps;
-      let mutateState = { title, optimisticSteps, files };
+    let title = draftTitle;
+    let optimisticSteps = storedSteps;
+    let mutateState = { title, optimisticSteps, files };
 
-      mutate(mutateState, true);
-      saveFile(newFileId, newFileName, newFileCode, newFileLang);
-    }
+    mutate(mutateState, false);
+    saveFile(newFileId, newFileName, newFileCode, newFileLang);
+  }
 
-    /*
+  /*
     Saves a file to Firebase. 
     */
-    function saveFile(
-      fileId: string,
-      fileName: string,
-      fileCode: string,
-      fileLang: string) {
-      // save file 
-      var data = {
-        requestedAPI: "save_file",
-        draftId: draftId,
-        fileId: fileId,
-        fileName: fileName,
-        fileCode: fileCode,
-        fileLang: fileLang,
-      }
+  function saveFile(
+    fileId: string,
+    fileName: string,
+    fileCode: string,
+    fileLang: string
+  ) {
+    // save file
+    var data = {
+      requestedAPI: "save_file",
+      draftId: draftId,
+      fileId: fileId,
+      fileName: fileName,
+      fileCode: fileCode,
+      fileLang: fileLang,
+    };
 
-      fetch("/api/endpoint", {
-        method: "POST",
-        headers: new Headers({ "Content-Type": "application/json" }),
-        body: JSON.stringify(data),
-      }).then(async (res: any) => {
-        console.log(res);
-      });
-    }
+    fetch("/api/endpoint", {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify(data),
+    }).then(async (res: any) => {
+      let updatedFiles = await res.json();
+    });
+  }
 
-    /*
+  /*
     Deletes a file in the filebar. 
     Makes sure that the selected file is set correctly after deletion.
     Triggered from `FileName.tsx`.
     */
-    function removeFile(toDeleteIndex: number) {
-      // can have minimum one file
-      if (files.length === 1) {
-        return;
-      }
-      if (toDeleteIndex < 0 || toDeleteIndex > files.length - 1) {
-        return;
-      }
-
-      let cloneFiles = [...files];
-      let toDeleteFileId = files[toDeleteIndex].id;
-      if (toDeleteIndex <= selectedFileIndex) {
-        // shift selected file index back by one, with minimum index of 0
-        let newIndex = Math.max(selectedFileIndex - 1, 0);
-        changeSelectedFileIndex(newIndex);
-      }
-     
-      cloneFiles.splice(toDeleteIndex, 1);
-      files = cloneFiles;
-      codeFiles = cloneFiles;
-
-      let title = draftTitle;
-      let optimisticSteps = storedSteps;
-      
-      let mutateState = { title, optimisticSteps, files };
-      mutate(mutateState, false);
-      deleteFile(toDeleteFileId);
+  function removeFile(toDeleteIndex: number) {
+    // can have minimum one file
+    if (files.length === 1) {
+      return;
+    }
+    if (toDeleteIndex < 0 || toDeleteIndex > files.length - 1) {
+      return;
     }
 
-    /*
+    let cloneFiles = [...files];
+    let toDeleteFileId = files[toDeleteIndex].id;
+    if (toDeleteIndex <= selectedFileIndex) {
+      // shift selected file index back by one, with minimum index of 0
+      let newIndex = Math.max(selectedFileIndex - 1, 0);
+      changeSelectedFileIndex(newIndex);
+    }
+
+    cloneFiles.splice(toDeleteIndex, 1);
+    files = cloneFiles;
+    codeFiles = cloneFiles;
+
+    let title = draftTitle;
+    let optimisticSteps = storedSteps;
+
+    let mutateState = { title, optimisticSteps, files };
+    mutate(mutateState, false);
+    deleteFile(toDeleteFileId);
+  }
+
+  /*
     Removes file from Firebase.
     */
-    function deleteFile(fileId: string) {
-      var data = {
-        requestedAPI: "delete_file",
-        draftId: draftId,
-        fileId: fileId,
-      }
+  function deleteFile(fileId: string) {
+    var data = {
+      requestedAPI: "delete_file",
+      draftId: draftId,
+      fileId: fileId,
+    };
 
-      fetch("/api/endpoint", {
-        method: "POST",
-        headers: new Headers({ "Content-Type": "application/json" }),
-        body: JSON.stringify(data),
-      }).then(async (res: any) => {
-        console.log(res);
-      });
-    }
+    fetch("/api/endpoint", {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify(data),
+    }).then(async (res: any) => {
+      let updatedFiles = await res.json();
+    });
+  }
 
-    /*
+  /*
     Saves file code to Firebase. Triggered from `DynamicCodeEditor.tsx`. 
     */
-    function saveFileCode() {
-      let fileId = files[selectedFileIndex].id;
-      let code = codeFiles[selectedFileIndex].code;
+  function saveFileCode() {
+    let fileId = files[selectedFileIndex].id;
+    let code = codeFiles[selectedFileIndex].code;
 
-      files[selectedFileIndex].code = code;
-      let title = draftTitle;
-      let optimisticSteps = storedSteps;
-      
-      let mutateState = { title, optimisticSteps, files };
-      mutate(mutateState, false);
+    files[selectedFileIndex].code = code;
+    let title = draftTitle;
+    let optimisticSteps = storedSteps;
 
-      var data = {
-        requestedAPI: "save_file_code",
-        draftId: draftId,
-        fileId: fileId,
-        code: code,
-      }
+    let mutateState = { title, optimisticSteps, files };
+    mutate(mutateState, false);
 
-      fetch("/api/endpoint", {
-        method: "POST",
-        headers: new Headers({ "Content-Type": "application/json" }),
-        body: JSON.stringify(data),
-      }).then(async (res: any) => {
-        console.log(res);
-      });
-    }
-    
-    return { 
-        selectedFileIndex, 
-        codeFiles,
-        addFile, 
-        removeFile, 
-        changeCode, 
-        changeSelectedFileIndex, 
-        changeFileLanguage,
-        saveFileName,
-        onNameChange,
-        saveFileCode,
-    }
+    var data = {
+      requestedAPI: "save_file_code",
+      draftId: draftId,
+      fileId: fileId,
+      code: code,
+    };
+
+    fetch("/api/endpoint", {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify(data),
+    }).then(async (res: any) => {
+      console.log(res);
+    });
+  }
+
+  return {
+    selectedFileIndex,
+    codeFiles,
+    addFile,
+    removeFile,
+    changeCode,
+    changeSelectedFileIndex,
+    changeFileLanguage,
+    saveFileName,
+    onNameChange,
+    saveFileCode,
+  };
 }

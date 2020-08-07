@@ -16,10 +16,16 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   let postUid = req.body.postUid;
 
   try {
-    await db.collection("posts").doc(postUid).delete();
+    await db
+      .collection("users")
+      .doc(uid)
+      .collection("drafts")
+      .doc(postUid)
+      .delete();
   } catch (error) {
     console.log(error);
   }
+
   let posts = await getUserPosts(uid);
   res.send(posts);
   return;
