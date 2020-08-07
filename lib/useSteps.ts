@@ -127,7 +127,6 @@ export function useSteps(draftId: string, authenticated: boolean) {
   }
 
   function removeLines(stepIndex: number) {
-    console.log("remove lines for ", stepIndex);
     let stepId = storedSteps![stepIndex].id;
     // optimistic mutate
     let optimisticSteps = storedSteps!.slice();
