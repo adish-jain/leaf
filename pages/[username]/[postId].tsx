@@ -33,13 +33,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
   let title = postData.title;
   let errored = postData.errored;
 
+  // replace undefineds with null to prevent nextJS errors
   for (let i = 0; i < steps.length; i++) {
     if (steps[i].lines === undefined || steps[i].lines === null) {
       steps[i].lines = null;
       steps[i].fileId = null;
       // to be deprecated
-      steps[i].fileName = null;
     }
+    steps[i].fileName = null;
   }
 
   return {

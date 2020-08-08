@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
+const moment = require("moment");
 import Router from "next/router";
 import { useEffect } from "react";
 import useSWR, { SWRConfig, mutate } from "swr";
@@ -141,18 +142,23 @@ function YourPosts(props: {
     } else {
       return (
         <div>
-          {posts!.map((post: any) => (
-            <Post
-              title={post.title}
-              postId={post.postId}
-              goToPost={goToPost}
-              postUid={post.id}
-              deletePost={deletePost}
-              key={post.id}
-              postsEditClicked={postsEditClicked}
-              username={username}
-            />
-          ))}
+          {posts!.map((post: any) => {
+            let day = moment.unix(post.createdAt._seconds);
+            let formattedDate = day.format("MMMM Do YYYY");
+            return (
+              <Post
+                formattedDate={formattedDate}
+                title={post.title}
+                postId={post.postId}
+                goToPost={goToPost}
+                postUid={post.id}
+                deletePost={deletePost}
+                key={post.id}
+                postsEditClicked={postsEditClicked}
+                username={username}
+              />
+            );
+          })}
         </div>
       );
     }
@@ -189,25 +195,30 @@ function Post(props: {
   goToPost: (username: string, postId: string) => void;
   postsEditClicked: boolean;
   username: string;
+  formattedDate: string;
 }) {
   let { username, postId, deletePost, postUid } = props;
+
+  const DeleteButton = () => {
+    return (
+      <button
+        onClick={(e) => props.deletePost(postUid)}
+        className={landingStyles["Edit"]}
+      >
+        X
+      </button>
+    );
+  };
+
   return (
     <div className={landingStyles["DraftWrapper"]}>
-      {props.postsEditClicked ? (
-        <button
-          onClick={(e) => props.deletePost(postUid)}
-          className={landingStyles["Edit"]}
-        >
-          X
-        </button>
-      ) : (
-        <div></div>
-      )}
+      {props.postsEditClicked ? <DeleteButton /> : <div></div>}
       <div
         onClick={(e) => props.goToPost(username, postId)}
         className={landingStyles["draft"]}
       >
         <p className={landingStyles["Draft-Title"]}>{props.title}</p>
+        <p>{props.formattedDate}</p>
       </div>
     </div>
   );

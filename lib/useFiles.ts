@@ -202,7 +202,6 @@ export function useFiles(
       requestedAPI: "save_file_name",
       draftId: draftId,
       fileId: files[selectedFileIndex].id,
-      fileName: files[selectedFileIndex].name,
     };
 
     fetch("/api/endpoint", {

@@ -20,8 +20,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
         steps[i].lines = null;
         steps[i].fileId = null;
         // to be deprecated
-        steps[i].fileName = null;
       }
+      steps[i].fileName = null;
     }
 
     return {
