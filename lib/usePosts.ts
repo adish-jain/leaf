@@ -8,7 +8,7 @@ type PostsType = {
   title: string;
   // user id
   uid: string;
-  // unique id
+  // unique id, used for editing the post
   id: string;
   username: string;
   createdAt: {
@@ -81,6 +81,10 @@ export function usePosts(authenticated: boolean) {
     Router.push("/[username]/[postId]", "/" + username + "/" + postId);
   }
 
+  function goToDraft(draftId: string) {
+    Router.push("/drafts/[draftId]", "/drafts/" + draftId);
+  }
+
   // Toggles the edit button for published posts
   async function togglePostsEdit() {
     changeEditClicked(!postsEditClicked);
@@ -91,6 +95,7 @@ export function usePosts(authenticated: boolean) {
     deletePost,
     goToPost,
     postsEditClicked,
-    togglePostsEdit
+    togglePostsEdit,
+    goToDraft
   };
 }

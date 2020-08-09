@@ -38,7 +38,7 @@ type PublishingProps = {
   deleteStoredStep: (stepId: any) => void;
   moveStepUp: (stepId: any) => void;
   moveStepDown: (stepId: any) => void;
-  saveTitle: (title: string) => void;
+  onTitleChange: (title: string) => void;
   selectedFileIndex: number;
   lines: { start: Line; end: Line };
   saveLines: (fileName: string, remove: boolean) => void;
@@ -46,8 +46,6 @@ type PublishingProps = {
 };
 
 type PublishingState = {
-  title: string;
-  saveTitle: boolean;
   previewLoading: boolean;
 };
 
@@ -70,12 +68,8 @@ export default class Publishing extends Component<
     this.closeStep = this.closeStep.bind(this);
     this.previewDraft = this.previewDraft.bind(this);
     this.publishDraft = this.publishDraft.bind(this);
-    this.saveTitle = this.saveTitle.bind(this);
-    this.onTitleChange = this.onTitleChange.bind(this);
 
     this.state = {
-      title: props.title,
-      saveTitle: false,
       previewLoading: false,
     };
   }
@@ -127,21 +121,6 @@ export default class Publishing extends Component<
         console.log(err);
       });
   }
-  saveTitle(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    if (this.state.saveTitle) {
-      this.props.saveTitle(this.state.title);
-    }
-    this.setState({
-      saveTitle: false,
-    });
-  }
-
-  onTitleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    this.setState({
-      title: e.target.value,
-      saveTitle: true,
-    });
-  }
 
   previewDraft(e: React.MouseEvent<HTMLButtonElement>) {
     let { draftId } = this.props;
@@ -168,6 +147,43 @@ export default class Publishing extends Component<
       });
   }
 
+  PublishingButtons = () => {
+    return (
+      <div className={publishingStyles.PublishingButtonsWrapper}>
+        <div className={publishingStyles.publishingButtons}>
+          <button
+            onClick={this.previewDraft}
+            className={publishingStyles.preview}
+          >
+            {this.state.previewLoading ? "Loading Preview..." : "Preview"}
+          </button>
+          <button
+            onClick={this.publishDraft}
+            className={publishingStyles.publish}
+          >
+            Publish
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  PublishingHeader = () => {
+    return (
+      <div className={publishingStyles.header}>
+        <TextareaAutosize
+          placeholder={this.props.title}
+          value={this.props.title}
+          onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
+            let myTarget = e.target as HTMLTextAreaElement;
+            this.props.onTitleChange(myTarget.value);
+          }}
+          name="title"
+        />
+      </div>
+    );
+  };
+
   render() {
     let {
       storedSteps,
@@ -175,52 +191,17 @@ export default class Publishing extends Component<
       changeEditingStep,
       selectedFileIndex,
       files,
+      onTitleChange,
       saveLines,
     } = this.props;
-
-    const PublishingButtons = () => {
-      return (
-        <div className={publishingStyles.PublishingButtonsWrapper}>
-          <div className={publishingStyles.publishingButtons}>
-            <button
-              onClick={this.previewDraft}
-              className={publishingStyles.preview}
-            >
-              {this.state.previewLoading ? "Loading Preview..." : "Preview"}
-            </button>
-            <button
-              onClick={this.publishDraft}
-              className={publishingStyles.publish}
-            >
-              Publish
-            </button>
-          </div>
-        </div>
-      );
-    };
-
-    const PublishingHeader = () => {
-      return (
-        <div className={publishingStyles.header}>
-          <TextareaAutosize
-            placeholder={"Untitled"}
-            defaultValue={this.props.title}
-            onChange={this.onTitleChange}
-            onBlur={this.saveTitle}
-            name="title"
-          />
-        </div>
-      );
-    };
 
     function StoredSteps() {
       return <div></div>;
     }
-
     return (
       <div className={publishingStyles.publishing}>
-        <PublishingButtons />
-        <PublishingHeader />
+        <this.PublishingButtons />
+        <this.PublishingHeader />
         {storedSteps.map((storedStep, index) => {
           return (
             <StoredStep

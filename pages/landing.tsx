@@ -68,6 +68,7 @@ export default function Landing() {
     posts,
     deletePost,
     goToPost,
+    goToDraft,
     postsEditClicked,
     togglePostsEdit,
   } = usePosts(authenticated);
@@ -107,6 +108,7 @@ export default function Landing() {
             deletePost={deletePost}
             posts={posts}
             goToPost={goToPost}
+            goToDraft={goToDraft}
             togglePostsEdit={togglePostsEdit}
             postsEditClicked={postsEditClicked}
             username={username}
@@ -124,6 +126,7 @@ function YourPosts(props: {
   togglePostsEdit: () => void;
   postsEditClicked: boolean;
   username: string;
+  goToDraft: (draftId: string) => void;
 }) {
   let {
     posts,
@@ -132,6 +135,7 @@ function YourPosts(props: {
     togglePostsEdit,
     postsEditClicked,
     username,
+    goToDraft,
   } = props;
 
   const noPosts = posts === undefined || posts.length === 0;
@@ -150,7 +154,9 @@ function YourPosts(props: {
                 formattedDate={formattedDate}
                 title={post.title}
                 postId={post.postId}
+                goToDraft={goToDraft}
                 goToPost={goToPost}
+                draftId={post.id}
                 postUid={post.id}
                 deletePost={deletePost}
                 key={post.id}
@@ -196,29 +202,39 @@ function Post(props: {
   postsEditClicked: boolean;
   username: string;
   formattedDate: string;
+  draftId: string;
+  goToDraft: (draftId: string) => void;
 }) {
-  let { username, postId, deletePost, postUid } = props;
+  let { username, postId, deletePost, postUid, goToDraft } = props;
 
-  const DeleteButton = () => {
+  const Editbuttons = () => {
     return (
-      <button
-        onClick={(e) => props.deletePost(postUid)}
-        className={landingStyles["Edit"]}
-      >
-        X
-      </button>
+      <div className={landingStyles["EditButtons"]}>
+        <button
+          onClick={(e) => props.deletePost(postUid)}
+          className={landingStyles["Edit"]}
+        >
+          X
+        </button>
+        <button
+          className={landingStyles["edit-"]}
+          onClick={(e) => goToDraft(props.draftId)}
+        >
+          Edit Post
+        </button>
+      </div>
     );
   };
 
   return (
     <div className={landingStyles["DraftWrapper"]}>
-      {props.postsEditClicked ? <DeleteButton /> : <div></div>}
+      {props.postsEditClicked ? <Editbuttons /> : <div></div>}
       <div
         onClick={(e) => props.goToPost(username, postId)}
         className={landingStyles["draft"]}
       >
         <p className={landingStyles["Draft-Title"]}>{props.title}</p>
-        <p>{props.formattedDate}</p>
+        <p>Published on {props.formattedDate}</p>
       </div>
     </div>
   );

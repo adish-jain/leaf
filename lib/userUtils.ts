@@ -240,3 +240,14 @@ export async function checkEmailDNE(email: string) {
     return false;
   }
 }
+
+export async function getDraftTitle(uid: string, draftId: string) {
+  let draftData = await db
+    .collection("users")
+    .doc(uid)
+    .collection("drafts")
+    .doc(draftId)
+    .get();
+  let title = draftData.data().title;
+  return title;
+}

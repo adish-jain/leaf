@@ -67,7 +67,7 @@ const DraftView = () => {
   let draftFiles = draftData["files"];
   let errored = draftData["errored"];
 
-  let { saveTitle, draftTitle } = useDraftTitle(
+  let { onTitleChange, draftTitle } = useDraftTitle(
     draftId as string,
     authenticated
   );
@@ -151,7 +151,7 @@ const DraftView = () => {
               deleteStoredStep={deleteStoredStep}
               moveStepUp={moveStepUp}
               moveStepDown={moveStepDown}
-              saveTitle={saveTitle}
+              onTitleChange={onTitleChange}
               editingStep={editingStep}
               changeEditingStep={changeEditingStep}
               selectedFileIndex={selectedFileIndex}
