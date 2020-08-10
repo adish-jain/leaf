@@ -69,7 +69,6 @@ const DraftView = () => {
   let draftFiles = draftData["files"];
   let errored = draftData["errored"];
   const draftPublished = draftData["published"];
-  console.log(draftPublished);
   const postId = draftData["postId"];
   const username = draftData["username"];
 
@@ -107,7 +106,6 @@ const DraftView = () => {
   } = useFiles(draftId, draftFiles, mutate);
 
   function goToPublishedPost() {
-    console.log("Called");
     goToPost(username, postId);
   }
 

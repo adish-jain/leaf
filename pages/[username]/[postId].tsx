@@ -7,6 +7,7 @@ import { getUsernameFromUid } from "../../lib/userUtils";
 import { getDraftDataFromPostId } from "../../lib/postUtils";
 import DefaultErrorPage from "next/error";
 import { useRouter } from "next/router";
+import ErroredPage from "../404";
 
 export async function getStaticPaths() {
   return {
@@ -27,31 +28,38 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   let username = context.params.username as string;
   let postId = context.params.postId as string;
-  let postData = await getDraftDataFromPostId(username, postId);
-  let steps = postData.steps;
-  let files = postData.files;
-  let title = postData.title;
-  let errored = postData.errored;
-
-  // replace undefineds with null to prevent nextJS errors
-  for (let i = 0; i < steps.length; i++) {
-    if (steps[i].lines === undefined || steps[i].lines === null) {
-      steps[i].lines = null;
-      steps[i].fileId = null;
-      // to be deprecated
+  try {
+    let postData = await getDraftDataFromPostId(username, postId);
+    let steps = postData.steps;
+    let files = postData.files;
+    let title = postData.title;
+    let errored = postData.errored;
+    // replace undefineds with null to prevent nextJS errors
+    for (let i = 0; i < steps.length; i++) {
+      if (steps[i].lines === undefined || steps[i].lines === null) {
+        steps[i].lines = null;
+        steps[i].fileId = null;
+        // to be deprecated
+      }
+      steps[i].fileName = null;
     }
-    steps[i].fileName = null;
+    return {
+      revalidate: 1,
+      props: {
+        steps,
+        title,
+        files,
+        errored,
+      },
+    };
+  } catch (error) {
+    return {
+      revalidate: 1,
+      props: {
+        errored: true,
+      },
+    };
   }
-
-  return {
-    revalidate: 1,
-    props: {
-      steps,
-      title,
-      files,
-      errored,
-    },
-  };
 };
 
 type StepType = {

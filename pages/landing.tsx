@@ -1,10 +1,6 @@
-import { useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 const moment = require("moment");
-import Router from "next/router";
-import { useEffect } from "react";
-import useSWR, { SWRConfig, mutate } from "swr";
 const fetch = require("node-fetch");
 global.Headers = fetch.Headers;
 const landingStyles = require("../styles/Landing.module.scss");
@@ -12,7 +8,6 @@ import { useLoggedIn, logOut } from "../lib/UseLoggedIn";
 import { useDrafts } from "../lib/useDrafts";
 import { useUserInfo } from "../lib/useUserInfo";
 import { usePosts, goToPost } from "../lib/usePosts";
-import auth from "./api/auth";
 
 type DraftType = {
   id: string;
