@@ -43,6 +43,8 @@ type PublishingProps = {
   lines: { start: Line; end: Line };
   saveLines: (fileName: string, remove: boolean) => void;
   files: File[];
+  published: boolean;
+  goToPublishedPost: () => void;
 };
 
 type PublishingState = {
@@ -157,12 +159,21 @@ export default class Publishing extends Component<
           >
             {this.state.previewLoading ? "Loading Preview..." : "Preview"}
           </button>
-          <button
-            onClick={this.publishDraft}
-            className={publishingStyles.publish}
-          >
-            Publish
-          </button>
+          {this.props.published ? (
+            <button
+              onClick={(e) => this.props.goToPublishedPost()}
+              className={publishingStyles.publish}
+            >
+              Go to Published Post
+            </button>
+          ) : (
+            <button
+              onClick={this.publishDraft}
+              className={publishingStyles.publish}
+            >
+              Publish
+            </button>
+          )}
         </div>
       </div>
     );

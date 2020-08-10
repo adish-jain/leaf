@@ -70,15 +70,10 @@ export function usePosts(authenticated: boolean) {
 
     removeSpecificPost();
 
-    fetch("api/endpoint", myRequest).then(async (res: any) => {
+    fetch("/api/endpoint", myRequest).then(async (res: any) => {
       let updatedPosts = await res.json();
       mutate("getPosts", updatedPosts);
     });
-  }
-
-  // Redirects to a published Post
-  function goToPost(username: string, postId: string) {
-    Router.push("/[username]/[postId]", "/" + username + "/" + postId);
   }
 
   function goToDraft(draftId: string) {
@@ -93,9 +88,13 @@ export function usePosts(authenticated: boolean) {
   return {
     posts,
     deletePost,
-    goToPost,
     postsEditClicked,
     togglePostsEdit,
-    goToDraft
+    goToDraft,
   };
+}
+
+// Redirects to a published Post
+export function goToPost(username: string, postId: string) {
+  Router.push("/[username]/[postId]", "/" + username + "/" + postId);
 }

@@ -28,7 +28,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   let username = context.params.username as string;
   let postId = context.params.postId as string;
   let postData = await getDraftDataFromPostId(username, postId);
-  let steps = postData.optimisticSteps;
+  let steps = postData.steps;
   let files = postData.files;
   let title = postData.title;
   let errored = postData.errored;
