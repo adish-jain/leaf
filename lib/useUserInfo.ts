@@ -1,6 +1,5 @@
 import { useState } from "react";
 import useSWR, { SWRConfig } from "swr";
-import { send } from "process";
 
 const myRequest = (requestedAPI: string) => {
   return {
