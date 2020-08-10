@@ -1,5 +1,6 @@
 import { useState } from "react";
 import useSWR, { SWRConfig } from "swr";
+import { send } from "process";
 
 const myRequest = (requestedAPI: string) => {
   return {
@@ -26,6 +27,7 @@ export function useUserInfo(authenticated: boolean) {
   const [usernameTaken, updateUsernameTaken] = useState(false);
   const [emailError, updateEmailError] = useState("");
   const [passwordStatus, updatePasswordStatus] = useState("");
+  const [sendEmailVerificationStatus, updateSendEmailVerificationStatus] = useState("");
   let { data: userInfo, mutate } = useSWR(
     authenticated ? "getUserInfo" : null,
     userInfoFetcher,
@@ -130,10 +132,23 @@ export function useUserInfo(authenticated: boolean) {
       }),
     };
 
-    let updateUsernameResponse = await fetch(
-      "api/endpoint",
+    await fetch(
+      "/api/endpoint",
       sendEmailVerificationRequest
-    );
+    )
+    .then((res) => {
+      if (res.status === 200) {
+        updateSendEmailVerificationStatus("Verification email sent");
+      } 
+      if (res.status === 403) {
+        res.json().then((resJson) => {
+          updateSendEmailVerificationStatus(resJson.error);
+        });
+      }
+    })
+    .catch(function (error: any) {
+      console.log(error);
+    });
   }
 
   return {
@@ -156,5 +171,6 @@ export function useUserInfo(authenticated: boolean) {
     passwordStatus,
     emailVerified,
     sendEmailVerification,
+    sendEmailVerificationStatus
   };
 }
