@@ -11,7 +11,7 @@ const landingStyles = require("../styles/Landing.module.scss");
 import { useLoggedIn, logOut } from "../lib/UseLoggedIn";
 import { useDrafts } from "../lib/useDrafts";
 import { useUserInfo } from "../lib/useUserInfo";
-import { usePosts } from "../lib/usePosts";
+import { usePosts, goToPost } from "../lib/usePosts";
 import auth from "./api/auth";
 
 type DraftType = {
@@ -67,7 +67,6 @@ export default function Landing() {
   const {
     posts,
     deletePost,
-    goToPost,
     goToDraft,
     postsEditClicked,
     togglePostsEdit,

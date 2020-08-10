@@ -4,7 +4,7 @@ const admin = require("firebase-admin");
 initFirebaseAdmin();
 let db = admin.firestore();
 
-import { getUidFromUsername } from "./userUtils";
+import { getUidFromUsername, getUsernameFromUid } from "./userUtils";
 
 export async function adjustStepOrder(
   uid: string,
@@ -33,21 +33,29 @@ export async function getDraftDataHandler(uid: string, draftId: string) {
       .doc(draftId)
       .get();
     let title = draftData.data().title;
-    let storedSteps = await getUserStepsForDraft(uid, draftId);
+    let published = draftData.data().published;
+    let postId = draftData.data().postId;
     let files = await getFilesForDraft(uid, draftId);
+    let username = await getUsernameFromUid(uid);
+    console.log("published is ", published);
     let results = {
       title: title,
-      optimisticSteps: storedSteps,
       files: files,
       errored: false,
+      published,
+      postId,
+      username,
     };
     return results;
   } catch (error) {
+    console.log(error);
     let results = {
       title: "",
-      optimisticSteps: [],
       files: [],
       errored: true,
+      published: false,
+      postId: "",
+      username: "",
     };
     return results;
   }
@@ -74,7 +82,7 @@ export async function getUserStepsForDraft(uid: string, draftId: string) {
           lines: resultsJSON.lines,
           fileName: resultsJSON.fileName,
           id: resultsJSON.id,
-          fileId: resultsJSON.fileId
+          fileId: resultsJSON.fileId,
         });
       });
       return results;
@@ -98,7 +106,11 @@ export async function getDraftDataFromPostId(username: string, postId: string) {
       return myPostRef.id;
     });
 
-  return getDraftDataHandler(uid, draftId);
+  let steps = await getUserStepsForDraft(uid, draftId);
+  let otherDraftData = await getDraftDataHandler(uid, draftId);
+
+  // merge steps with main draft data
+  return { ...otherDraftData, steps };
 }
 
 type File = {

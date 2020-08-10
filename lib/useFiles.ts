@@ -13,13 +13,7 @@ type codeFile = {
   code: string;
 };
 
-export function useFiles(
-  draftId: any,
-  draftFiles: any,
-  draftTitle: string,
-  storedSteps: any,
-  mutate: any
-) {
+export function useFiles(draftId: any, draftFiles: any, mutate: any) {
   /*
     Manages the files within filebar.
     The id, language, & name fields are guaranteed to be correct.
@@ -192,16 +186,15 @@ export function useFiles(
       setLangFromName(files[selectedFileIndex].name);
     }
 
-    let title = draftTitle;
-    let optimisticSteps = storedSteps;
-    let mutateState = { title, optimisticSteps, files };
-
-    mutate(mutateState, false);
+    mutate(async (mutateState: any) => {
+      return { ...mutateState, files };
+    }, false);
 
     var data = {
       requestedAPI: "save_file_name",
       draftId: draftId,
       fileId: files[selectedFileIndex].id,
+      fileName: value,
     };
 
     fetch("/api/endpoint", {
@@ -229,11 +222,9 @@ export function useFiles(
       setNameFromLang(language);
     }
 
-    let title = draftTitle;
-    let optimisticSteps = storedSteps;
-
-    let mutateState = { title, optimisticSteps, files };
-    mutate(mutateState, true);
+    mutate(async (mutateState: any) => {
+      return { ...mutateState, files };
+    }, false);
 
     var data = {
       requestedAPI: "change_file_language",
@@ -329,11 +320,10 @@ export function useFiles(
       language: newFileLang,
     });
 
-    let title = draftTitle;
-    let optimisticSteps = storedSteps;
-    let mutateState = { title, optimisticSteps, files };
+    mutate(async (mutateState: any) => {
+      return { ...mutateState, files };
+    }, false);
 
-    mutate(mutateState, false);
     saveFile(newFileId, newFileName, newFileCode, newFileLang);
   }
 
@@ -391,11 +381,10 @@ export function useFiles(
     files = cloneFiles;
     codeFiles = cloneFiles;
 
-    let title = draftTitle;
-    let optimisticSteps = storedSteps;
+    mutate(async (mutateState: any) => {
+      return { ...mutateState, files };
+    }, false);
 
-    let mutateState = { title, optimisticSteps, files };
-    mutate(mutateState, false);
     deleteFile(toDeleteFileId);
   }
 
@@ -426,11 +415,10 @@ export function useFiles(
     let code = codeFiles[selectedFileIndex].code;
 
     files[selectedFileIndex].code = code;
-    let title = draftTitle;
-    let optimisticSteps = storedSteps;
 
-    let mutateState = { title, optimisticSteps, files };
-    mutate(mutateState, false);
+    mutate(async (mutateState: any) => {
+      return { ...mutateState, files };
+    }, false);
 
     var data = {
       requestedAPI: "save_file_code",
