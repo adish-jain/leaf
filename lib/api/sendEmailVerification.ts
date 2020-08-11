@@ -32,7 +32,6 @@ export default async function sendEmailVerification(
     .then(function (firebaseUser: any) {
       firebaseUser.user.sendEmailVerification()
       .then(function (response: any) {
-        console.log("send email");
         res.status(200).end();
         return;
       }) 
