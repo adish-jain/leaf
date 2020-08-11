@@ -4,6 +4,11 @@ import Router from "next/router";
 
 const WAIT_INTERVAL = 1000;
 
+/* 
+TIMER BEHAVIOR:
+Timer makes sure that API requests to save the title are only called 1s after 
+the user stops typing. 
+*/
 let timer: ReturnType<typeof setTimeout>;
 
 export function useDraftTitle(draftId: string, authenticated: boolean) {

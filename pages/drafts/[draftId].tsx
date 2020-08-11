@@ -105,8 +105,20 @@ const DraftView = () => {
     saveFileCode,
   } = useFiles(draftId, draftFiles, mutate);
 
-  function goToPublishedPost() {
-    goToPost(username, postId);
+  async function goToPublishedPost() {
+    await fetch("/api/endpoint", {
+      method: "POST",
+      data: { requestedAPI: "immediatePublish" },
+      headers: new Headers({ "Content-Type": "application/json" }),
+    })
+      .then((res: any) => {
+        goToPost(username, postId);
+
+        // HTTP 301 response
+      })
+      .catch(function (err: any) {
+        console.log(err);
+      });
   }
 
   // wrapper function for deleting a file.

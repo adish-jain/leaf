@@ -54,7 +54,7 @@ export default async function publishPost(
     .replace(/\s+/g, "-")
     .toLowerCase()
     .substr(0, 100);
-  let deduplicationId = uid.substr(0, 6);
+  let deduplicationId = Math.random().toString(36).substring(2, 10);
   let postId = titleWithDashes + "-" + deduplicationId;
 
   db.collection("users").doc(uid).collection("drafts").doc(draftId).update({

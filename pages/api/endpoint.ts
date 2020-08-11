@@ -28,6 +28,7 @@ import handleSendEmailVerification from "../../lib/api/sendEmailVerification";
 import handlePublishPost from "../../lib/api/publishPost";
 import handleGetPosts from "../../lib/api/getPosts";
 import handleDeletePost from "../../lib/api/deletePost";
+import handleImmediatePublish from "../../lib/api/immediatePublish";
 
 // editing drafts title
 import handleSaveTitle from "../../lib/api/saveTitle";
@@ -161,6 +162,10 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
 
     case "publishPost": {
       return handlePublishPost(req, res);
+    }
+
+    case "immediatePublish": {
+      return;
     }
 
     case "getPosts": {
