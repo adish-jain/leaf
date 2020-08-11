@@ -28,8 +28,6 @@ import handleSendEmailVerification from "../../lib/api/sendEmailVerification";
 import handlePublishPost from "../../lib/api/publishPost";
 import handleGetPosts from "../../lib/api/getPosts";
 import handleDeletePost from "../../lib/api/deletePost";
-import handleImmediatePublish from "../../lib/api/immediatePublish";
-import handleExitPreview from '../../lib/api/exitPreview';
 
 // editing drafts title
 import handleSaveTitle from "../../lib/api/saveTitle";

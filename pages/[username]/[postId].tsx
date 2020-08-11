@@ -91,20 +91,6 @@ const Post = (props: UserPageProps) => {
     return <div>Loading...</div>;
   }
 
-  useEffect(() => {
-    const rawData = {
-      requestedAPI: "exitPreview",
-    };
-
-    const myRequest = {
-      method: "POST",
-      headers: new Headers({ "Content-Type": "application/json" }),
-      body: JSON.stringify(rawData),
-    };
-
-    fetch("/api/endpoint", myRequest).then((res: any) => res.json());
-  });
-
   return (
     <div className="container">
       <Head>

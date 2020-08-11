@@ -106,18 +106,7 @@ const DraftView = () => {
   } = useFiles(draftId, draftFiles, mutate);
 
   async function goToPublishedPost() {
-    await fetch("/api/endpoint", {
-      method: "POST",
-      data: { requestedAPI: "immediatePublish" },
-      headers: new Headers({ "Content-Type": "application/json" }),
-    })
-      .then((res: any) => {
-        window.location.href = `/${username}/${postId}`;
-        // HTTP 301 response
-      })
-      .catch(function (err: any) {
-        console.log(err);
-      });
+    window.location.href = `/${username}/${postId}`;
   }
 
   // wrapper function for deleting a file.
