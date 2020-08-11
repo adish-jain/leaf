@@ -163,7 +163,7 @@ export async function getUserPosts(uid: string) {
       draftsCollection.forEach(function (result: any) {
         let resultsJSON = result.data();
 
-        //published posts have published set to true, so we ignore these
+        //published posts have published set to true, so we include these
         if (resultsJSON.published) {
           resultsJSON.id = result.id;
           results.push(resultsJSON);

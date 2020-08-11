@@ -112,8 +112,7 @@ const DraftView = () => {
       headers: new Headers({ "Content-Type": "application/json" }),
     })
       .then((res: any) => {
-        goToPost(username, postId);
-
+        window.location.href = `/${username}/${postId}`;
         // HTTP 301 response
       })
       .catch(function (err: any) {
