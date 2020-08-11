@@ -55,7 +55,7 @@ export default async function setEmailHandler(
     });
 
   if (errored) {
-      return;
+    return;
   }
   
   await db.collection("users").doc(uid).set(
