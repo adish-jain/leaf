@@ -87,6 +87,10 @@ type UserPageProps = {
 const Post = (props: UserPageProps) => {
   const router = useRouter();
 
+  if (router.isFallback) {
+    return <div>Loading...</div>;
+  }
+
   useEffect(() => {
     const rawData = {
       requestedAPI: "exitPreview",
@@ -100,7 +104,7 @@ const Post = (props: UserPageProps) => {
 
     fetch("/api/endpoint", myRequest).then((res: any) => res.json());
   });
-  
+
   return (
     <div className="container">
       <Head>
