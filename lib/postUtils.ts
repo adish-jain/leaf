@@ -37,7 +37,6 @@ export async function getDraftDataHandler(uid: string, draftId: string) {
     let postId = draftData.data().postId;
     let files = await getFilesForDraft(uid, draftId);
     let username = await getUsernameFromUid(uid);
-    console.log("published is ", published);
     let results = {
       title: title,
       files: files,

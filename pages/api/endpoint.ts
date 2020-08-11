@@ -165,14 +165,6 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
       return handlePublishPost(req, res);
     }
 
-    case "immediatePublish": {
-      return handleImmediatePublish(req, res);
-    }
-
-    case "exitPreview": {
-      return handleExitPreview(req, res);
-    }
-
     case "getPosts": {
       return handleGetPosts(req, res);
     }
