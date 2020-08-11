@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { GetStaticProps } from "next";
 import Head from "next/head";
 import FinishedPost from "../../components/FinishedPost";
@@ -87,10 +87,20 @@ type UserPageProps = {
 const Post = (props: UserPageProps) => {
   const router = useRouter();
 
-  if (router.isFallback) {
-    return <div>Loading...</div>;
-  }
+  useEffect(() => {
+    const rawData = {
+      requestedAPI: "exitPreview",
+    };
 
+    const myRequest = {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify(rawData),
+    };
+
+    fetch("/api/endpoint", myRequest).then((res: any) => res.json());
+  });
+  
   return (
     <div className="container">
       <Head>

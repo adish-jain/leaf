@@ -29,6 +29,7 @@ import handlePublishPost from "../../lib/api/publishPost";
 import handleGetPosts from "../../lib/api/getPosts";
 import handleDeletePost from "../../lib/api/deletePost";
 import handleImmediatePublish from "../../lib/api/immediatePublish";
+import handleExitPreview from '../../lib/api/exitPreview';
 
 // editing drafts title
 import handleSaveTitle from "../../lib/api/saveTitle";
@@ -165,7 +166,11 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     case "immediatePublish": {
-      return;
+      return handleImmediatePublish(req, res);
+    }
+
+    case "exitPreview": {
+      return handleExitPreview(req, res);
     }
 
     case "getPosts": {
