@@ -1,0 +1,151 @@
+.container {
+    width: 100%;
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    font-family: 'Roboto', sans-serif;
+    width: 100%;
+    height: 100vh;
+    // display: flex;
+    // align-items: center;
+    // justify-content: center;
+}
+
+.Header {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 200px;
+
+    justify-content: center;
+    align-items: center;
+    background: #000000;
+    
+    .NavBar {
+        display: flex;
+        flex-direction: row;   
+        width: 100%; 
+
+        .Logo {
+            display: flex;
+            align-self: flex-start;
+
+            margin-bottom: 30px;
+            margin-left: 3%;
+            margin-right: 70%;
+
+            font-family: Arial rounded MT bold;
+            font-style: normal;
+            font-weight: bold;
+            font-size: 60px;
+
+            color: #68B2A0;
+            cursor: pointer;
+        }
+
+        .Login {
+            display: flex;
+            width: 92px;
+            height: 34px;
+
+            padding-top: 20px;
+            margin-bottom: 30px;
+            justify-content: space-evenly;
+            align-self: stretch;
+
+            font-family: Arial rounded MT bold;
+            font-style: normal;
+            font-weight: normal;
+            font-size: 20px;
+
+            a:link {
+                color:  #FFFFFF;
+                text-decoration: none;
+            }
+
+            a:visited {
+                color: #FFFFFF;
+            }
+
+            a:hover {
+                color: #68B2A0;
+            }
+        }
+    }
+}
+
+// .FAQsection{
+//     width: 100%;
+//     height: 100vh;
+//     // background-color: #3c4053;
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+// }
+
+.accordionItem {
+    background-color: #283042;
+    border-radius: .4rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    box-shadow: .5rem 2px .5rem rgba(0,0,0,.1);
+
+    a {
+        font-size: 1.6rem;
+        color: rgba(255, 255, 255, .8);
+        text-decoration: none;
+        background-color: #283042;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 0;        
+
+        .removeIcon {
+            display: none;
+        }
+
+        ion-icon {
+            padding: .5rem;
+            font-size: 40px;
+        }
+    }
+
+    .answer {
+        max-height: 0;
+        overflow: hidden;
+        position: relative;
+        background-color: #212838;
+        transition: max-height 650ms;
+    }
+
+    .answer::before {
+        content: "";
+        position: absolute;
+        width: .6rem;
+        height: 90%;
+        background-color: #68B2A0;
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%);
+    }
+
+    .answer p {
+        font-size: 1.4rem;
+        color: rgba(255, 255, 255, .6);
+        padding: 2rem;
+    }
+}
+
+.accordionItem:target .answer {
+    max-height: 20rem;
+}
+
+.accordionItem:target a .addIcon {
+    display: none;
+}
+
+.accordionItem:target a .removeIcon {
+    display: block;
+}
+
