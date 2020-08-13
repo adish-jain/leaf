@@ -1,7 +1,7 @@
 import React from "react";
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from "next";
 import Head from "next/head";
-import { getDraftDataHandler } from "../lib/postUtils";
+import { getDraftDataHandler, getUserStepsForDraft } from "../lib/postUtils";
 import FinishedPost from "../components/FinishedPost";
 import DefaultErrorPage from "next/error";
 
@@ -11,7 +11,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     let uid = context.previewData.uid;
     let draftData = await getDraftDataHandler(uid, draftId);
     let title = draftData.title;
-    let steps = draftData.optimisticSteps;
+    let steps = await getUserStepsForDraft(uid, draftId);
     let files = draftData.files;
 
     // replace undefineds with null to prevent nextJS errors
@@ -20,8 +20,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
         steps[i].lines = null;
         steps[i].fileId = null;
         // to be deprecated
-        steps[i].fileName = null;
       }
+      steps[i].fileName = null;
     }
 
     return {

@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebaseAdmin, initFirebase } from "../initFirebase";
-import { getUser, getUserDrafts } from "../userUtils";
+import { getUser, getDraftTitle } from "../userUtils";
 const admin = require("firebase-admin");
 
 let db = admin.firestore();
@@ -31,14 +31,15 @@ async function saveTitleHandler(req: NextApiRequest, res: NextApiResponse) {
   }
 
   // update title in firebase
-  db.collection("users")
-  .doc(uid)
-  .collection("drafts")
-  .doc(draftId)
-  .update({"title": title}); 
-  
+  await db
+    .collection("users")
+    .doc(uid)
+    .collection("drafts")
+    .doc(draftId)
+    .update({ title: title });
+
+  let updatedTitle = await getDraftTitle(uid, draftId);
   res.statusCode = 200;
-  let results = await getUserDrafts(uid);
-  res.send(results);
+  res.send({ draftTitle: updatedTitle });
   return;
 }

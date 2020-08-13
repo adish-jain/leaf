@@ -8,7 +8,7 @@ type PostsType = {
   title: string;
   // user id
   uid: string;
-  // unique id
+  // unique id, used for editing the post
   id: string;
   username: string;
   createdAt: {
@@ -70,15 +70,14 @@ export function usePosts(authenticated: boolean) {
 
     removeSpecificPost();
 
-    fetch("api/endpoint", myRequest).then(async (res: any) => {
+    fetch("/api/endpoint", myRequest).then(async (res: any) => {
       let updatedPosts = await res.json();
       mutate("getPosts", updatedPosts);
     });
   }
 
-  // Redirects to a published Post
-  function goToPost(username: string, postId: string) {
-    Router.push("/[username]/[postId]", "/" + username + "/" + postId);
+  function goToDraft(draftId: string) {
+    Router.push("/drafts/[draftId]", "/drafts/" + draftId);
   }
 
   // Toggles the edit button for published posts
@@ -89,8 +88,13 @@ export function usePosts(authenticated: boolean) {
   return {
     posts,
     deletePost,
-    goToPost,
     postsEditClicked,
-    togglePostsEdit
+    togglePostsEdit,
+    goToDraft,
   };
+}
+
+// Redirects to a published Post
+export function goToPost(username: string, postId: string) {
+  Router.push("/[username]/[postId]", "/" + username + "/" + postId);
 }

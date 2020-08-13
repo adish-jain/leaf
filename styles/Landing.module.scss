@@ -9,6 +9,17 @@
   .Draft-Title {
     font-size: 16px;
   }
+
+  .Edit {
+    width: 100%;
+  }
+  .EditButtons {
+    flex-direction: column !important;
+  }
+
+  .DraftWrapper {
+    flex-direction: column-reverse;
+  }
 }
 
 /* Small devices (portrait tablets and large phones, 600px and up) */
@@ -163,6 +174,14 @@
   word-break: break-word;
 }
 
+.EditButtons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-right: 16px;
+}
+
 .Edit {
   // width: 40px;
 
@@ -173,7 +192,7 @@
 
   border-radius: 16px;
   border-width: 1px;
-  width: 32px;
+  min-width: 32px;
   height: 32px;
   text-emphasis: center;
   margin-right: 16px;

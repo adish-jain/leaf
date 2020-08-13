@@ -71,7 +71,7 @@ export default class PublishedCodeMirror extends Component<
     }
 
     // mark new lines
-    if (currentStep.lines !== null && currentStep.lines !== undefined) {
+    if (currentStep && currentStep.lines !== null && currentStep.lines !== undefined) {
       let newMarker = this.instance?.markText(
         { line: currentStep.lines.start, ch: 0 },
         { line: currentStep.lines.end, ch: 5 },
