@@ -47,7 +47,6 @@ export default class StoredStep extends Component<
   constructor(props: StoredStepProps) {
     super(props);
     this.deleteStoredStep = this.deleteStoredStep.bind(this);
-    this.editStoredStep = this.editStoredStep.bind(this);
     this.updateStoredStep = this.updateStoredStep.bind(this);
     this.moveStepUp = this.moveStepUp.bind(this);
     this.moveStepDown = this.moveStepDown.bind(this);
@@ -56,7 +55,8 @@ export default class StoredStep extends Component<
     };
   }
 
-  onChange = (stepText: any) => {
+  onChange = (stepText: string) => {
+    console.log(stepText);
     this.setState({
       stepText,
     });
@@ -64,10 +64,6 @@ export default class StoredStep extends Component<
 
   deleteStoredStep(e: React.MouseEvent<any>) {
     this.props.deleteStoredStep(this.props.id);
-  }
-
-  editStoredStep(e: React.MouseEvent<HTMLButtonElement>) {
-    this.props.changeEditingStep(this.props.index);
   }
 
   updateStoredStep(
@@ -90,12 +86,18 @@ export default class StoredStep extends Component<
   }
 
   render() {
-    let { saveLines, files, attachedFileId } = this.props;
+    let {
+      saveLines,
+      files,
+      attachedFileId,
+      index,
+      changeEditingStep,
+    } = this.props;
     const contentState = convertFromRaw(this.props.text);
     const editorState = EditorState.createWithContent(contentState);
     const editing = this.props.editing;
 
-    let name = ""
+    let name = "";
     for (let i = 0; i < files.length; i++) {
       if (files[i].id === attachedFileId) {
         name = files[i].name;
@@ -115,13 +117,14 @@ export default class StoredStep extends Component<
           />
         ) : (
           <RenderedStoredStep
-            editStoredStep={this.editStoredStep}
+            changeEditingStep={changeEditingStep}
             deleteStoredStep={this.deleteStoredStep}
             moveStepUp={this.moveStepUp}
             moveStepDown={this.moveStepDown}
             lines={this.props.lines}
             editorState={editorState}
             attachedFileName={name}
+            index={index}
           />
         )}
       </div>

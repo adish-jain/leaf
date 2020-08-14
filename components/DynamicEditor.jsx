@@ -75,6 +75,7 @@ Creates a static toolbar for each editor, for in-sync editing.
 */
 export default class DynamicEditor extends Component {
   constructor(props) {
+    console.log("constructor");
     super(props);
     const toolbarPlugin = createToolbarPlugin();
     const text = "Begin Writing...";
@@ -83,18 +84,16 @@ export default class DynamicEditor extends Component {
     };
     this.plugins = [toolbarPlugin];
 
-    this.state = {
-      editorState: this.props.editorState ? this.props.editorState : createEditorStateWithText(text),
-    }
+    // this.state = {
+    //   editorState: this.props.editorState ? this.props.editorState : createEditorStateWithText(text),
+    // }
   }
 
   onChange = (editorState) => {
-    this.setState({
-      editorState,
-    });
+    // this.setState({
+    //   editorState,
+    // });
     const value = JSON.stringify(convertToRaw(editorState.getCurrentContent()));
-    // const blocks = convertToRaw(editorState.getCurrentContent()).blocks;
-    // const value = blocks.map(block => (!block.text.trim() && '\n') || block.text).join('\n');
     this.props.onChange(value); //added
   };
 
@@ -103,12 +102,13 @@ export default class DynamicEditor extends Component {
   };
 
   render() {
+    console.log("render");
     const { Toolbar } = this.PluginComponents;
     return (
       <div>
         <div onClick={this.focus}>
           <Editor
-            editorState={this.state.editorState}
+            editorState={this.props.editorState}
             onChange={this.onChange}
             plugins={this.plugins}
             ref={(element) => {

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, createRef } from "react";
 import dynamic from "next/dynamic";
 const StepStyles = require("../styles/Step.module.scss");
 
@@ -26,9 +26,14 @@ export default class Step extends Component<
   EditingStoredStepProps,
   EditingStoredStepState
 > {
+
   constructor(props: EditingStoredStepProps) {
     super(props);
     this.state = { remove: false };
+  }
+
+  componentDidMount() {
+
   }
 
   saveEditingStoredStep(e: React.MouseEvent<HTMLButtonElement>) {
