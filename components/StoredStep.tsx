@@ -20,12 +20,8 @@ type StoredStepProps = {
   text: any;
   lines: { start: number; end: number };
   index: number;
-  updateStoredStep: (
-    text: any,
-    stepId: any,
-    oldLines: any,
-    removeLines: any
-  ) => void;
+  mutateStoredStep: (text: string, stepId: string) => void;
+  saveStepToBackend: (stepId: string, text: string) => void;
   deleteStoredStep: (stepId: any) => void;
   moveStepUp: (stepId: any) => void;
   moveStepDown: (stepId: any) => void;
@@ -36,30 +32,33 @@ type StoredStepProps = {
   attachedFileId: string;
 };
 
-type StoredStepState = {
-  stepText: any;
-};
+let timer: ReturnType<typeof setTimeout>;
+const WAIT_INTERVAL = 3000;
 
-export default class StoredStep extends Component<
-  StoredStepProps,
-  StoredStepState
-> {
+export default class StoredStep extends Component<StoredStepProps> {
   constructor(props: StoredStepProps) {
     super(props);
     this.deleteStoredStep = this.deleteStoredStep.bind(this);
     this.updateStoredStep = this.updateStoredStep.bind(this);
     this.moveStepUp = this.moveStepUp.bind(this);
     this.moveStepDown = this.moveStepDown.bind(this);
-    this.state = {
-      stepText: this.props.text,
-    };
+    this.immediateUpdate = this.immediateUpdate.bind(this);
   }
 
+  immediateUpdate(stepText: string) {
+    let stepId = this.props.id;
+    this.props.mutateStoredStep(stepId, stepText);
+    this.props.saveStepToBackend(stepId, stepText);
+  }
+
+  // essentially just triggering time
   onChange = (stepText: string) => {
-    console.log(stepText);
-    this.setState({
-      stepText,
-    });
+    clearTimeout(timer!);
+    let stepId = this.props.id;
+    timer = setTimeout(() => {
+      this.props.mutateStoredStep(stepId, stepText);
+      this.props.saveStepToBackend(stepId, stepText);
+    }, WAIT_INTERVAL);
   };
 
   deleteStoredStep(e: React.MouseEvent<any>) {
@@ -72,7 +71,7 @@ export default class StoredStep extends Component<
   ) {
     let text = this.state.stepText;
     let stepId = this.props.id;
-    this.props.updateStoredStep(stepId, text, this.props.lines, removeLines);
+    this.props.mutateStoredStep(stepId, text);
 
     this.props.changeEditingStep(-1);
   }
@@ -114,6 +113,7 @@ export default class StoredStep extends Component<
             lines={this.props.lines}
             saveLines={saveLines}
             attachedFileName={name}
+            immediateUpdate={this.immediateUpdate}
           />
         ) : (
           <RenderedStoredStep

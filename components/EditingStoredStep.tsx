@@ -16,6 +16,7 @@ type EditingStoredStepProps = {
   lines: { start: number; end: number };
   saveLines: (fileName: string, remove: boolean) => void;
   attachedFileName: string;
+  immediateUpdate: (stepText: string) => void;
 };
 
 type EditingStoredStepState = {
@@ -26,14 +27,9 @@ export default class Step extends Component<
   EditingStoredStepProps,
   EditingStoredStepState
 > {
-
   constructor(props: EditingStoredStepProps) {
     super(props);
     this.state = { remove: false };
-  }
-
-  componentDidMount() {
-
   }
 
   saveEditingStoredStep(e: React.MouseEvent<HTMLButtonElement>) {
@@ -47,6 +43,7 @@ export default class Step extends Component<
       lines,
       saveLines,
       attachedFileName,
+      immediateUpdate,
     } = this.props;
 
     const Buttons = () => {
@@ -108,6 +105,7 @@ export default class Step extends Component<
                 // @ts-ignore
                 onChange={onChange}
                 editorState={editorState}
+                immediateUpdate={immediateUpdate}
               />
             }
           </div>

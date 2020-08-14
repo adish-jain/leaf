@@ -99,17 +99,28 @@ export function useSteps(draftId: string, authenticated: boolean) {
   /*
   Updates a step in Firebase. Triggered from `EditingStoredStep.tsx`.
   */
-  function updateStoredStep(stepId: any, text: any) {
+  function mutateStoredStep(stepId: any, text: any) {
+    let optimisticSteps = storedSteps!.slice();
+    let idx = findIdx(stepId);
+
+    optimisticSteps[idx] = {
+      ...optimisticSteps[idx],
+      text,
+    };
+
+    mutate(optimisticSteps, false);
+    saveStepToBackend(stepId, text);
+  }
+
+  function saveStepToBackend(stepId: string, text: string) {
     let data = {
       requestedAPI: "update_step",
       text: text,
       draftId: draftId,
       stepId: stepId,
     };
-
-    let optimisticSteps = storedSteps!.slice();
     let idx = findIdx(stepId);
-
+    let optimisticSteps = storedSteps!.slice();
     optimisticSteps[idx] = {
       ...optimisticSteps[idx],
       text,
@@ -344,7 +355,8 @@ export function useSteps(draftId: string, authenticated: boolean) {
 
   return {
     saveStep,
-    updateStoredStep,
+    mutateStoredStep,
+    saveStepToBackend,
     deleteStoredStep,
     moveStepUp,
     moveStepDown,

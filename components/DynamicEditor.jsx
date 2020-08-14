@@ -14,11 +14,11 @@ import {
   OrderedListButton,
   BlockquoteButton,
   CodeBlockButton,
-} from 'draft-js-buttons';
-import EditorStyles from '../styles/EditorStyles.module.scss';
-import '!style-loader!css-loader!draft-js-static-toolbar-plugin/lib/plugin.css';
+} from "draft-js-buttons";
+import EditorStyles from "../styles/EditorStyles.module.scss";
+import "!style-loader!css-loader!draft-js-static-toolbar-plugin/lib/plugin.css";
 
-var shortId = require('shortid');
+var shortId = require("shortid");
 
 /* 
 Component rendered when Headlines Button is clicked to present option of H1, H2, or H3. 
@@ -40,9 +40,9 @@ class HeadlinesPicker extends Component {
     const buttons = [HeadlineOneButton, HeadlineTwoButton, HeadlineThreeButton];
     return (
       <div>
-        {buttons.map(Button =>
+        {buttons.map((Button) => (
           <Button key={shortId.generate()} {...this.props} />
-        )}
+        ))}
       </div>
     );
   }
@@ -84,17 +84,27 @@ export default class DynamicEditor extends Component {
     };
     this.plugins = [toolbarPlugin];
 
-    // this.state = {
-    //   editorState: this.props.editorState ? this.props.editorState : createEditorStateWithText(text),
-    // }
+    this.state = {
+      editorState: this.props.editorState
+        ? this.props.editorState
+        : createEditorStateWithText(text),
+    };
+  }
+
+  componentWillUnmount() {
+    const value = JSON.stringify(
+      convertToRaw(this.state.editorState.getCurrentContent())
+    );
+    this.props.immediateUpdate(value);
   }
 
   onChange = (editorState) => {
-    // this.setState({
-    //   editorState,
-    // });
+    this.setState({
+      editorState,
+    });
     const value = JSON.stringify(convertToRaw(editorState.getCurrentContent()));
-    this.props.onChange(value); //added
+    // trigger timer
+    this.props.onChange(value);
   };
 
   focus = () => {
@@ -108,7 +118,7 @@ export default class DynamicEditor extends Component {
       <div>
         <div onClick={this.focus}>
           <Editor
-            editorState={this.props.editorState}
+            editorState={this.state.editorState}
             onChange={this.onChange}
             plugins={this.plugins}
             ref={(element) => {

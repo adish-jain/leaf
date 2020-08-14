@@ -79,7 +79,8 @@ const DraftView = () => {
 
   let {
     saveStep,
-    updateStoredStep,
+    mutateStoredStep,
+    saveStepToBackend,
     deleteStoredStep,
     moveStepUp,
     moveStepDown,
@@ -155,7 +156,8 @@ const DraftView = () => {
               title={draftTitle}
               storedSteps={realSteps!}
               saveStep={saveStep}
-              updateStoredStep={updateStoredStep}
+              mutateStoredStep={mutateStoredStep}
+              saveStepToBackend={saveStepToBackend}
               deleteStoredStep={deleteStoredStep}
               moveStepUp={moveStepUp}
               moveStepDown={moveStepDown}
