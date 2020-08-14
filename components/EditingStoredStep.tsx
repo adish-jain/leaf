@@ -17,6 +17,7 @@ type EditingStoredStepProps = {
   saveLines: (fileName: string, remove: boolean) => void;
   attachedFileName: string;
   immediateUpdate: (stepText: string) => void;
+  loading: boolean;
 };
 
 type EditingStoredStepState = {
@@ -44,6 +45,7 @@ export default class Step extends Component<
       saveLines,
       attachedFileName,
       immediateUpdate,
+      loading,
     } = this.props;
 
     const Buttons = () => {

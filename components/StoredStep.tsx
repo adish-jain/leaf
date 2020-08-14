@@ -35,7 +35,10 @@ type StoredStepProps = {
 let timer: ReturnType<typeof setTimeout>;
 const WAIT_INTERVAL = 3000;
 
-export default class StoredStep extends Component<StoredStepProps> {
+export default class StoredStep extends Component<
+  StoredStepProps,
+  { loading: boolean }
+> {
   constructor(props: StoredStepProps) {
     super(props);
     this.deleteStoredStep = this.deleteStoredStep.bind(this);
@@ -43,6 +46,11 @@ export default class StoredStep extends Component<StoredStepProps> {
     this.moveStepUp = this.moveStepUp.bind(this);
     this.moveStepDown = this.moveStepDown.bind(this);
     this.immediateUpdate = this.immediateUpdate.bind(this);
+    this.handleTimeout = this.handleTimeout.bind(this);
+
+    this.state = {
+      loading: false,
+    };
   }
 
   immediateUpdate(stepText: string) {
@@ -54,12 +62,26 @@ export default class StoredStep extends Component<StoredStepProps> {
   // essentially just triggering time
   onChange = (stepText: string) => {
     clearTimeout(timer!);
-    let stepId = this.props.id;
     timer = setTimeout(() => {
-      this.props.mutateStoredStep(stepId, stepText);
-      this.props.saveStepToBackend(stepId, stepText);
+      this.handleTimeout(stepText);
     }, WAIT_INTERVAL);
   };
+
+  handleTimeout(stepText: string) {
+    let stepId = this.props.id;
+    this.setState(
+      {
+        loading: true,
+      },
+      () => {
+        this.props.mutateStoredStep(stepId, stepText);
+        this.props.saveStepToBackend(stepId, stepText);
+        this.setState({
+          loading: false,
+        });
+      }
+    );
+  }
 
   deleteStoredStep(e: React.MouseEvent<any>) {
     this.props.deleteStoredStep(this.props.id);
@@ -114,6 +136,7 @@ export default class StoredStep extends Component<StoredStepProps> {
             saveLines={saveLines}
             attachedFileName={name}
             immediateUpdate={this.immediateUpdate}
+            loading={this.state.loading}
           />
         ) : (
           <RenderedStoredStep

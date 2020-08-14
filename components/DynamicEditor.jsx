@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { convertToRaw, convertFromRaw } from "draft-js";
+import { convertToRaw, EditorState, SelectionState } from "draft-js";
 import Editor, { createEditorStateWithText } from "draft-js-plugins-editor";
 import createToolbarPlugin, { Separator } from "draft-js-static-toolbar-plugin";
 import {
@@ -89,6 +89,34 @@ export default class DynamicEditor extends Component {
         ? this.props.editorState
         : createEditorStateWithText(text),
     };
+  }
+
+  componentDidMount() {
+    this.focus();
+    this.moveSelectionToEnd();
+  }
+
+  moveSelectionToEnd() {
+    let { editorState } = this.state;
+    const content = editorState.getCurrentContent();
+    const blockMap = content.getBlockMap();
+
+    const key = blockMap.last().getKey();
+    const length = blockMap.last().getLength();
+
+    // On Chrome and Safari, calling focus on contenteditable focuses the
+    // cursor at the first character. This is something you don't expect when
+    // you're clicking on an input element but not directly on a character.
+    // Put the cursor back where it was before the blur.
+    const selection = new SelectionState({
+      anchorKey: key,
+      anchorOffset: length,
+      focusKey: key,
+      focusOffset: length,
+    });
+    this.setState({
+      editorState: EditorState.forceSelection(editorState, selection),
+    });
   }
 
   componentWillUnmount() {
