@@ -105,7 +105,7 @@ function AboutLeaf() {
             <p>
                 Leaf is a platform designed to reshape the way learners 
                 interact with coding tutorials. Inspired by Stripe's side-by-side API 
-                documentation, we wanted to build a tool which gave everyone 
+                documentation, we wanted to build a tool which gives everyone 
                 a convenient way to process information through reactive learning. <br></br><br></br>
 
                 No more publishing code snippets on Medium! Leaf allows you to write out the steps of your coding tutorial using Markdown
@@ -354,7 +354,6 @@ function Feedback() {
 }
 
 class Series extends Component{
-
     componentDidMount() {
         const popup1 = typeformEmbed.makePopup(
             'https://adish664547.typeform.com/to/ggvipXSR', 
@@ -376,8 +375,8 @@ class Series extends Component{
 
     render() {
         return (
-            <div>
-                <button id="bt-popup" className={aboutStyles.button}>Give us some feedback</button>
+            <div className={aboutStyles.popupButton}>
+                <button id="bt-popup">Give us some feedback</button>
             </div>
         )
     }
