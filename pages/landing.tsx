@@ -1,17 +1,13 @@
-import { useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
-import Router from "next/router";
-import { useEffect } from "react";
-import useSWR, { SWRConfig, mutate } from "swr";
+const moment = require("moment");
 const fetch = require("node-fetch");
 global.Headers = fetch.Headers;
 const landingStyles = require("../styles/Landing.module.scss");
 import { useLoggedIn, logOut } from "../lib/UseLoggedIn";
 import { useDrafts } from "../lib/useDrafts";
 import { useUserInfo } from "../lib/useUserInfo";
-import { usePosts } from "../lib/usePosts";
-import auth from "./api/auth";
+import { usePosts, goToPost } from "../lib/usePosts";
 
 type DraftType = {
   id: string;
@@ -66,7 +62,7 @@ export default function Landing() {
   const {
     posts,
     deletePost,
-    goToPost,
+    goToDraft,
     postsEditClicked,
     togglePostsEdit,
   } = usePosts(authenticated);
@@ -106,8 +102,10 @@ export default function Landing() {
             deletePost={deletePost}
             posts={posts}
             goToPost={goToPost}
+            goToDraft={goToDraft}
             togglePostsEdit={togglePostsEdit}
             postsEditClicked={postsEditClicked}
+            username={username}
           />
         </div>
       </main>
@@ -121,6 +119,8 @@ function YourPosts(props: {
   deletePost: (postUid: string) => void;
   togglePostsEdit: () => void;
   postsEditClicked: boolean;
+  username: string;
+  goToDraft: (draftId: string) => void;
 }) {
   let {
     posts,
@@ -128,40 +128,61 @@ function YourPosts(props: {
     deletePost,
     togglePostsEdit,
     postsEditClicked,
+    username,
+    goToDraft,
   } = props;
 
-  let content;
-  if (posts === undefined || posts === []) {
-    content = <NonePublished />;
-  } else {
-    content = (
-      <div>
-        {posts.map((post: any) => (
-          <Post
-            username={post.username}
-            title={post.title}
-            postId={post.postId}
-            goToPost={goToPost}
-            postUid={post.id}
-            deletePost={deletePost}
-            key={post.id}
-            postsEditClicked={postsEditClicked}
-          />
-        ))}
-      </div>
-    );
-  }
+  const noPosts = posts === undefined || posts.length === 0;
 
-  return (
-    <div className={`${landingStyles.right} ${landingStyles.Section}`}>
-      <h1>Your Published Posts</h1>
-      <hr />
+  const Content = () => {
+    if (noPosts) {
+      return <NonePublished />;
+    } else {
+      return (
+        <div>
+          {posts!.map((post: any) => {
+            let day = moment.unix(post.createdAt._seconds);
+            let formattedDate = day.format("MMMM Do YYYY");
+            return (
+              <Post
+                formattedDate={formattedDate}
+                title={post.title}
+                postId={post.postId}
+                goToDraft={goToDraft}
+                goToPost={goToPost}
+                draftId={post.id}
+                postUid={post.id}
+                deletePost={deletePost}
+                key={post.id}
+                postsEditClicked={postsEditClicked}
+                username={username}
+              />
+            );
+          })}
+        </div>
+      );
+    }
+  };
+
+  const EditButton = () => {
+    if (noPosts) {
+      return <div></div>;
+    }
+    return (
       <div className={landingStyles["DraftButtons"]}>
         <button onClick={togglePostsEdit}>
           {postsEditClicked ? "Done" : "Edit"}
         </button>
       </div>
-      {content}
+    );
+  };
+
+  return (
+    <div className={`${landingStyles.right} ${landingStyles.Section}`}>
+      <h1>Your Published Posts</h1>
+      <hr />
+      <EditButton />
+      <Content />
     </div>
   );
 }
@@ -169,30 +190,45 @@ function YourPosts(props: {
 function Post(props: {
   title: string;
   postId: string;
-  username: string;
   postUid: string;
   deletePost: (postUid: string) => void;
   goToPost: (username: string, postId: string) => void;
   postsEditClicked: boolean;
+  username: string;
+  formattedDate: string;
+  draftId: string;
+  goToDraft: (draftId: string) => void;
 }) {
-  let { username, postId, deletePost, postUid } = props;
-  return (
-    <div className={landingStyles["DraftWrapper"]}>
-      {props.postsEditClicked ? (
+  let { username, postId, deletePost, postUid, goToDraft } = props;
+
+  const Editbuttons = () => {
+    return (
+      <div className={landingStyles["EditButtons"]}>
         <button
           onClick={(e) => props.deletePost(postUid)}
           className={landingStyles["Edit"]}
         >
           X
         </button>
-      ) : (
-        <div></div>
-      )}
+        <button
+          className={landingStyles["edit-"]}
+          onClick={(e) => goToDraft(props.draftId)}
+        >
+          Edit Post
+        </button>
+      </div>
+    );
+  };
+
+  return (
+    <div className={landingStyles["DraftWrapper"]}>
+      {props.postsEditClicked ? <Editbuttons /> : <div></div>}
       <div
         onClick={(e) => props.goToPost(username, postId)}
         className={landingStyles["draft"]}
       >
         <p className={landingStyles["Draft-Title"]}>{props.title}</p>
+        <p>Published on {props.formattedDate}</p>
       </div>
     </div>
   );

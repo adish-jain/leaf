@@ -3,9 +3,11 @@ import { GetStaticProps, GetStaticPaths, GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Scrolling from "../../components/Scrolling";
-import { getArticlesFromUsername } from "../../lib/userUtils";
+import { getUserPosts, getUidFromUsername } from "../../lib/userUtils";
 import getUsernames from "../../lib/api/getUsernames";
 const profileStyles = require("../../styles/Profile.module.scss");
+import DefaultErrorPage from "next/error";
+import ErroredPage from "../404";
 
 export async function getStaticPaths() {
   return {
@@ -21,36 +23,66 @@ export const getStaticProps: GetStaticProps = async (context) => {
       revalidate: 1,
       props: {
         publishedPosts: [],
+        errored: true,
       },
     };
   }
   let username = params.username as string;
-  let posts = await getArticlesFromUsername(username);
-  return {
-    props: {
-      revalidate: 1,
-      publishedPosts: posts,
-      username: username,
-    },
-  };
+  let uid: string;
+  try {
+    uid = await getUidFromUsername(username);
+    let posts = await getUserPosts(uid);
+    let publishedPosts = [];
+    for (let i = 0; i < posts.length; i++) {
+      let currentPost = posts[i];
+      publishedPosts.push({
+        uid: uid,
+        title: currentPost.title,
+        postId: currentPost.title,
+        id: currentPost.id,
+        published: currentPost.published,
+      });
+    }
+    return {
+      props: {
+        revalidate: 1,
+        publishedPosts: publishedPosts,
+        username: username,
+        errored: false,
+      },
+    };
+  } catch {
+    return {
+      props: {
+        errored: true,
+      },
+    };
+  }
 };
 
 type PostType = {
   createdAt: Date;
+  publishedat: Date;
   uid: string;
   title: string;
   postId: string;
   id: string;
+  published: boolean;
 };
 
 type UserPageProps = {
   publishedPosts: PostType[];
   username: string;
+  errored: boolean;
 };
 
 const UserPage = (props: UserPageProps) => {
   const [currentStep, updateStep] = useState(0);
   const router = useRouter();
+
+  if (props.errored) {
+    return <ErroredPage />;
+  }
 
   if (router.isFallback) {
     return <div>Loading...</div>;

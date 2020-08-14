@@ -9,6 +9,7 @@ import Publishing from "../../components/Publishing";
 import CodeEditor from "../../components/CodeEditor";
 import DefaultErrorPage from "next/error";
 import Head from "next/head";
+import { goToPost } from "../../lib/usePosts";
 const fetch = require("node-fetch");
 
 global.Headers = fetch.Headers;
@@ -42,11 +43,9 @@ const DraftView = () => {
   };
 
   const fetcher = (url: string) =>
-    fetch(url, myRequest).then((res: any) => res.json());
+    fetch("/api/endpoint", myRequest).then((res: any) => res.json());
 
   const initialData: any = {
-    title: "",
-    optimisticSteps: [],
     files: [
       {
         id: "",
@@ -56,18 +55,24 @@ const DraftView = () => {
       },
     ],
     errored: false,
+    published: false,
+    postId: "",
+    username: "",
   };
 
   let { data: draftData, mutate } = useSWR(
-    authenticated ? "/api/endpoint" : null,
+    authenticated ? "getDraftData" : null,
     fetcher,
     { initialData, revalidateOnMount: true }
   );
 
   let draftFiles = draftData["files"];
   let errored = draftData["errored"];
+  const draftPublished = draftData["published"];
+  const postId = draftData["postId"];
+  const username = draftData["username"];
 
-  let { saveTitle, draftTitle } = useDraftTitle(
+  let { onTitleChange, draftTitle } = useDraftTitle(
     draftId as string,
     authenticated
   );
@@ -85,7 +90,6 @@ const DraftView = () => {
     changeLines,
     saveLines,
     removeLines,
-    renameStepFileName,
   } = useSteps(draftId as string, authenticated);
 
   let {
@@ -99,7 +103,11 @@ const DraftView = () => {
     saveFileName,
     onNameChange,
     saveFileCode,
-  } = useFiles(draftId, draftFiles, draftTitle, realSteps, mutate);
+  } = useFiles(draftId, draftFiles, mutate);
+
+  async function goToPublishedPost() {
+    window.location.href = `/${username}/${postId}`;
+  }
 
   // wrapper function for deleting a file.
   // when a file is deleted, make sure all associated steps remove that file
@@ -151,13 +159,15 @@ const DraftView = () => {
               deleteStoredStep={deleteStoredStep}
               moveStepUp={moveStepUp}
               moveStepDown={moveStepDown}
-              saveTitle={saveTitle}
+              onTitleChange={onTitleChange}
               editingStep={editingStep}
               changeEditingStep={changeEditingStep}
               selectedFileIndex={selectedFileIndex}
               lines={lines}
               files={draftFiles}
               saveLines={saveLines}
+              published={draftPublished}
+              goToPublishedPost={goToPublishedPost}
             />
             <CodeEditor
               draftId={draftId as string}

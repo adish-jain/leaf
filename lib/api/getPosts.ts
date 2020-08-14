@@ -4,11 +4,7 @@ import { initFirebaseAdmin, initFirebase } from "../initFirebase";
 const admin = require("firebase-admin");
 const firebase = require("firebase/app");
 import fetch from "isomorphic-fetch";
-import {
-  getUsernameFromUid,
-  getUser,
-  getArticlesFromUsername,
-} from "../userUtils";
+import { getUsernameFromUid, getUser, getUserPosts } from "../userUtils";
 
 let db = admin.firestore();
 
@@ -17,12 +13,7 @@ initFirebase();
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   let { uid } = await getUser(req, res);
-  let username = await getUsernameFromUid(uid);
-  if (username === undefined) {
-    res.send([]);
-    return;
-  }
-  let posts = await getArticlesFromUsername(username);
+  let posts = await getUserPosts(uid);
   res.send(posts);
   return;
 };
