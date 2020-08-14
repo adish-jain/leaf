@@ -2,9 +2,7 @@ import Head from "next/head";
 import React, { Component } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useLoggedIn } from "../lib/UseLoggedIn";
 import * as typeformEmbed from '@typeform/embed';
-// import React, { Component } from 'react';
 
 const aboutStyles = require("../styles/About.module.scss");
 
@@ -106,14 +104,20 @@ function AboutLeaf() {
                 Leaf is a platform designed to reshape the way learners 
                 interact with coding tutorials. Inspired by Stripe's side-by-side API 
                 documentation, we wanted to build a tool which gives everyone 
-                a convenient way to process information through reactive learning. <br></br><br></br>
+                a convenient way to process information through reactive learning. 
+                <br></br><br></br>
 
-                No more publishing code snippets on Medium! Leaf allows you to write out the steps of your coding tutorial using Markdown
-                in the left pane, and then write the associated code of your steps in a code editor on 
+                No more publishing code snippets on Medium! 
+                Leaf allows you to write out the steps 
+                of your coding tutorial using Markdown
+                in the left pane, and then write the associated 
+                code of your steps in a code editor on 
                 the right pane. <br></br><br></br>
 
-                Leaf lets you associate your steps with parts of your codebase, so when you scroll
-                through a finished tutorial, the code editor automatically scrolls to the
+                Leaf lets you associate your steps with parts of 
+                your codebase, so when you scroll
+                through a finished tutorial, the code editor 
+                automatically scrolls to the
                 relevant code. <br></br><br></br>
             </p>
         </div>
@@ -145,8 +149,9 @@ function FAQ() {
                     </a>
                     <div className={aboutStyles.answer}>
                         <p>
-                        Your email allows us to verify that you are a real human. Once you signup,
-                        you'll get an email that allows you to verify who you are. You won't need to verify
+                        Your email allows us to verify that you are a real human. 
+                        Once you signup, you'll get an email that allows 
+                        you to verify who you are. You won't need to verify
                         yourself until you want to publish your first post!
                         </p>
                     </div>
@@ -168,8 +173,10 @@ function FAQ() {
                     </a>
                     <div className={aboutStyles.answer}>
                         <p>
-                        Your account will allow you to keep all your tutorials in order. Once you publish your tutorial,
-                        you'll get a permanent link to your tutorial which you'll be able to access through your account. 
+                        Your account will allow you to keep all your 
+                        tutorials in order. Once you publish your tutorial,
+                        you'll get a permanent link to your tutorial which 
+                        you'll be able to access through your account. 
                         </p>
                     </div>
                 </div>
@@ -190,12 +197,16 @@ function FAQ() {
                     </a>
                     <div className={aboutStyles.answer}>
                         <p>
-                        Our code editor currently allows you to do automatic syntax-highlighting on an 
-                        extensive list of languages: HTML, CSS, JSX, Javascript, Python, C/C++, Java, Go, PHP, Ruby, & plain text. 
-                        You can change the language of your file by toggling the language selection or by renaming
+                        Our code editor currently allows you to do 
+                        automatic syntax-highlighting on an 
+                        extensive list of languages: HTML, CSS, 
+                        JSX, Javascript, Python, C/C++, Java, Go, PHP, Ruby, & plain text. 
+                        You can change the language of your file 
+                        by toggling the language selection or by renaming
                         your file with the relevant file extension. <br></br><br></br>
                         
-                        Don't see one of your favorite languages here? Shoot us some feedback below!
+                        Don't see one of your favorite languages here? 
+                        Shoot us some feedback below!
                         </p>
                     </div>
                 </div>
@@ -247,7 +258,8 @@ function FAQ() {
 
                 <div className={aboutStyles.accordionItem} id="question6">
                     <a href="#question6">
-                        I'm trying to publish a post, but am running into an issue with email verification. What's this about?
+                        I'm trying to publish a post, but am running into an 
+                        issue with email verification. What's this about?
                         <div className={aboutStyles.addIcon}>
                             {//@ts-ignore
                             <ion-icon icon="add"></ion-icon>
@@ -261,11 +273,14 @@ function FAQ() {
                     </a>
                     <div className={aboutStyles.answer}>
                         <p>
-                        Before you can publish your first post, we ask that you verify the email you signed up with! 
-                        You should have received a verification email when you created your account, but if you can't find it,
+                        Before you can publish your first post, we ask that you 
+                        verify the email you signed up with! 
+                        You should have received a verification email 
+                        when you created your account, but if you can't find it,
                         you can re-request a verification email in Settings. <br></br><br></br>
 
-                        You can also change your email there if you want to verify using a separate email. 
+                        You can also change your email there 
+                        if you want to verify using a separate email. 
                         </p>
                     </div>
                 </div>
@@ -286,7 +301,8 @@ function FAQ() {
                     </a>
                     <div className={aboutStyles.answer}>
                         <p>
-                        Yes! We all make mistakes, and you can edit yours easily by clicking <b>Edit</b> under <b>Your Published Posts. </b>
+                        Yes! We all make mistakes, and you can edit yours easily by clicking 
+                        <b>Edit</b> under <b>Your Published Posts. </b>
                         This will allow you to edit any post you've already published. 
                         </p>
                     </div>
@@ -308,7 +324,8 @@ function FAQ() {
                     </a>
                     <div className={aboutStyles.answer}>
                         <p>
-                        You now have a coding tutorial better than any you've published before! Get excited! <br></br><br></br>
+                        You now have a coding tutorial better than any 
+                        you've published before! Get excited! <br></br><br></br>
                         Share the knowledge you've created & give us a good rating on Yelp.
                         </p>
                     </div>
@@ -325,12 +342,14 @@ function Feedback() {
         <div className={aboutStyles.feedback}>
             <h1>Feedback</h1>
             <p>
-                Leaf is still in a very early-development stage as a tool, so we appreciate you staying
-                with us while we work out the wrinkles & make this a smooth experience. <br></br><br></br>
-                If you find any bugs or have ideas for improving Leaf, we're all ears. Fill out an issue below.
+                Leaf is still in a very early-development stage as a tool, 
+                so we appreciate you staying
+                with us while we work out the wrinkles & make this a smooth experience. 
+                <br></br><br></br>If you find any bugs or have ideas for 
+                improving Leaf, we're all ears. Fill out an issue below.
                 <br></br><br></br>
             </p>
-            <Series />
+            <TypeForm />
             {/* <form action="mailto:adish@getleaf.app" method="post" >
                 <div className={aboutStyles.input}>
                     <input type="text" id="name" name="name" placeholder="Who are you?"/>
@@ -353,10 +372,10 @@ function Feedback() {
     );
 }
 
-class Series extends Component{
+class TypeForm extends Component{
     componentDidMount() {
         const popup1 = typeformEmbed.makePopup(
-            'https://adish664547.typeform.com/to/ggvipXSR', 
+            "https://adish664547.typeform.com/to/ggvipXSR", 
             {
                 mode: 'popup',
                 autoClose: 3000, 
@@ -368,7 +387,7 @@ class Series extends Component{
             }
         )
         // @ts-ignore
-        document.getElementById('bt-popup').addEventListener('click', function() {
+        document.getElementById("bt-popup").addEventListener("click", function() {
             popup1.open();
         });
     }

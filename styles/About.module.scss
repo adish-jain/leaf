@@ -1,5 +1,4 @@
 .container {
-    // width: 100%;
     max-width: 80rem;
     margin: 0 auto;
     padding: 0 1.5rem;
@@ -10,9 +9,6 @@
         font-size: 1.4rem;
         padding: 2rem;
     }
-    // display: flex;
-    // align-items: center;
-    // justify-content: center;
 }
 
 .Header {
@@ -78,7 +74,7 @@
     }
 }
 
-.aboutLeaf p{
+.aboutLeaf p {
     font-size: 1.4rem;
     padding: 2rem;
 }
@@ -116,7 +112,7 @@
         overflow: hidden;
         position: relative;
         background-color: #FFFFFF;
-        transition: max-height 650ms;
+        transition: max-height 650ms ease-in-out;
     }
 
     .answer::before {
@@ -232,7 +228,6 @@
         border-radius: 40px;
         cursor: pointer;
     }
-    
 }
 
 /* Extra small devices (phones, 600px and down) */
@@ -256,10 +251,10 @@
             }    
         }
     }
-  }
+}
   
-  /* Medium devices (landscape tablets, 768px and up) */
-  @media only screen and (min-width: 768px) {
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
     .Header {
         display: flex;
         flex-direction: column;
@@ -275,10 +270,10 @@
             }    
         }
     }
-  }
-  
-  /* Large devices (laptops/desktops, 992px and up) */
-  @media only screen and (min-width: 992px) {
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
     .Header {
         display: flex;
         flex-direction: column;
@@ -294,10 +289,10 @@
             }    
         }
     }
-  }
-  
-  /* Extra large devices (large laptops and desktops, 1200px and up) */
-  @media only screen and (min-width: 1200px) {
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
     .Header {
         display: flex;
         flex-direction: column;
@@ -315,4 +310,4 @@
         
         }
     }
-  }
+}
