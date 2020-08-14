@@ -1,8 +1,10 @@
 import Head from "next/head";
-import React, { useState } from "react";
+import React, { Component } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useLoggedIn } from "../lib/UseLoggedIn";
+import * as typeformEmbed from '@typeform/embed';
+// import React, { Component } from 'react';
 
 const aboutStyles = require("../styles/About.module.scss");
 
@@ -19,6 +21,7 @@ export default function About() {
       <Head>
         <title>About</title>
         <script src="https://unpkg.com/ionicons@5.1.2/dist/ionicons.js"></script>
+        <script src="https://embed.typeform.com/embed.js"></script>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main >
@@ -218,8 +221,8 @@ function FAQ() {
                     </div>
                 </div>
 
-                <div className={aboutStyles.accordionItem} id="question9">
-                    <a href="#question9">
+                <div className={aboutStyles.accordionItem} id="question5">
+                    <a href="#question5">
                         How do I associate my tutorial's steps with code?
                         <div className={aboutStyles.addIcon}>
                             {//@ts-ignore
@@ -242,8 +245,8 @@ function FAQ() {
                 </div>
 
 
-                <div className={aboutStyles.accordionItem} id="question5">
-                    <a href="#question5">
+                <div className={aboutStyles.accordionItem} id="question6">
+                    <a href="#question6">
                         I'm trying to publish a post, but am running into an issue with email verification. What's this about?
                         <div className={aboutStyles.addIcon}>
                             {//@ts-ignore
@@ -267,8 +270,8 @@ function FAQ() {
                     </div>
                 </div>
 
-                <div className={aboutStyles.accordionItem} id="question6">
-                    <a href="#question6">
+                <div className={aboutStyles.accordionItem} id="question7">
+                    <a href="#question7">
                         Can I edit my posts after publishing them?
                         <div className={aboutStyles.addIcon}>
                             {//@ts-ignore
@@ -289,8 +292,8 @@ function FAQ() {
                     </div>
                 </div>
 
-                <div className={aboutStyles.accordionItem} id="question7">
-                    <a href="#question7">
+                <div className={aboutStyles.accordionItem} id="question8">
+                    <a href="#question8">
                         O.K. I've published my first post. Now what?
                         <div className={aboutStyles.addIcon}>
                             {//@ts-ignore
@@ -324,9 +327,10 @@ function Feedback() {
             <p>
                 Leaf is still in a very early-development stage as a tool, so we appreciate you staying
                 with us while we work out the wrinkles & make this a smooth experience. <br></br><br></br>
-                If you find any bugs or have ideas for improving Leaf, we're all ears. Fill out an issue here:
+                If you find any bugs or have ideas for improving Leaf, we're all ears. Fill out an issue below.
                 <br></br><br></br>
             </p>
+            <Series />
             {/* <form action="mailto:adish@getleaf.app" method="post" >
                 <div className={aboutStyles.input}>
                     <input type="text" id="name" name="name" placeholder="Who are you?"/>
@@ -347,4 +351,34 @@ function Feedback() {
             </form> */}
         </div>
     );
+}
+
+class Series extends Component{
+
+    componentDidMount() {
+        const popup1 = typeformEmbed.makePopup(
+            'https://adish664547.typeform.com/to/ggvipXSR', 
+            {
+                mode: 'popup',
+                autoClose: 3000, 
+                hideHeaders: true,
+                hideFooter: true,
+                onSubmit: function() {
+                    console.log("Typeform successfully submitted")
+                }
+            }
+        )
+        // @ts-ignore
+        document.getElementById('bt-popup').addEventListener('click', function() {
+            popup1.open();
+        });
+    }
+
+    render() {
+        return (
+            <div>
+                <button id="bt-popup" className={aboutStyles.button}>Give us some feedback</button>
+            </div>
+        )
+    }
 }
