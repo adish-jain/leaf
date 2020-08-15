@@ -1,4 +1,4 @@
-import React, { Component, createRef } from "react";
+import React, { Component } from "react";
 import DraftEditor, { Editor } from "draft-js";
 const StepStyles = require("../styles/Step.module.scss");
 
@@ -19,21 +19,8 @@ export default class Step extends Component<
   RenderedStoredStepProps,
   RenderedStoredStepState
 > {
-  // editorRef = createRef<Editor>();
-  editorRef = React.createRef<Editor>();
-
-  // editorRef = useRef<{ focus: () => void }>();
-  // editorRef = React.RefObject<DraftEditor>();
-  // editorRef = useRef<((instance: Editor | null) => void)>();
-
   constructor(props: RenderedStoredStepProps) {
     super(props);
-
-    // console.log(this.props.lines);
-  }
-
-  componentDidMount() {
-    // this.editorRef.current!.focus();
   }
 
   Buttons = () => {
@@ -42,6 +29,7 @@ export default class Step extends Component<
       <div className={StepStyles.Buttons}>
         <button
           onClick={(e) => {
+            e.stopPropagation();
             changeEditingStep(index);
           }}
           className={StepStyles.Save}
@@ -50,6 +38,7 @@ export default class Step extends Component<
         </button>
         <div
           onClick={(e) => {
+            e.stopPropagation();
             this.props.moveStepUp();
           }}
           className={StepStyles.Up}
@@ -58,6 +47,7 @@ export default class Step extends Component<
         </div>
         <div
           onClick={(e) => {
+            e.stopPropagation();
             this.props.moveStepDown();
           }}
           className={StepStyles.Down}
@@ -103,7 +93,10 @@ export default class Step extends Component<
 
     return (
       <div
-        onClick={(e) => changeEditingStep(index)}
+        onClick={(e) => {
+          console.log("wrapper click");
+          changeEditingStep(index);
+        }}
         className={StepStyles.Step}
       >
         <div className={StepStyles["main-content"]}>
@@ -111,7 +104,6 @@ export default class Step extends Component<
             <Editor
               editorState={this.props.editorState}
               readOnly={true}
-              ref={this.editorRef}
               onChange={(e) => null}
             />
           </div>

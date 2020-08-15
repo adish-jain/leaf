@@ -97,7 +97,7 @@ export function useSteps(draftId: string, authenticated: boolean) {
   }
 
   /*
-  Updates a step in Firebase. Triggered from `EditingStoredStep.tsx`.
+  mutates content inside a desired step. Does not save text to backend.
   */
   function mutateStoredStep(stepId: any, text: any) {
     let optimisticSteps = storedSteps!.slice();
@@ -111,6 +111,9 @@ export function useSteps(draftId: string, authenticated: boolean) {
     mutate(optimisticSteps, false);
   }
 
+  /*
+  Updates a step in Firebase. Triggered from `StoredStep.tsx`.
+  */
   async function saveStepToBackend(stepId: string, text: string) {
     let data = {
       requestedAPI: "update_step",

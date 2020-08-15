@@ -75,7 +75,6 @@ Creates a static toolbar for each editor, for in-sync editing.
 */
 export default class DynamicEditor extends Component {
   constructor(props) {
-    console.log("constructor");
     super(props);
     const toolbarPlugin = createToolbarPlugin();
     const text = "Begin Writing...";
@@ -92,6 +91,8 @@ export default class DynamicEditor extends Component {
   }
 
   componentDidMount() {
+    // When editor is changed to editing mode, the editor will be focused,
+    // and cursor set to end of content
     this.focus();
     this.moveSelectionToEnd();
   }
@@ -128,11 +129,13 @@ export default class DynamicEditor extends Component {
   }
 
   onChange = (editorState) => {
+    // need to maintain internal editorState to maintain cursor position
     this.setState({
       editorState,
     });
     const value = JSON.stringify(convertToRaw(editorState.getCurrentContent()));
-    // trigger timer
+    // need to maintain editorState in parent component as well to save to backend
+    // backend is saved on a timer, this onChange function will reset the timer
     this.props.onChange(value);
   };
 

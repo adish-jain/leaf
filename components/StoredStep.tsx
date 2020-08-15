@@ -32,6 +32,7 @@ type StoredStepProps = {
   attachedFileId: string;
 };
 
+// timer to make sure that content is saved 3 seconds after user stops typing
 let timer: ReturnType<typeof setTimeout>;
 const WAIT_INTERVAL = 3000;
 
@@ -48,10 +49,13 @@ export default class StoredStep extends Component<
     this.handleTimeout = this.handleTimeout.bind(this);
 
     this.state = {
+      // loading boolean is to allow an indicator to show up
+      // when the step is saving content to backend
       loading: false,
     };
   }
 
+  // mutates the content, and saves the content to the backend
   immediateUpdate(stepText: string) {
     let stepId = this.props.id;
     this.props.mutateStoredStep(stepId, stepText);
