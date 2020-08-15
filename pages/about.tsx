@@ -357,11 +357,27 @@ function Team() {
                 <div className={aboutStyles.img__wrap}>
                     <figure className={aboutStyles.figure}>
                         <img className={aboutStyles.img__img} src='/images/adi.png'></img>
-                        <figcaption>Co-Founder, CEO</figcaption>
+                        <figcaption>
+                            Rahul Sarathy<br></br>
+                            Co-Founder, CEO<br></br>
+                        </figcaption>
                     </figure>
                     <div className={aboutStyles.img__description_layer}>
                         <p className={aboutStyles.img__description}>
-                            Hey guys! Rah here!
+                            I previously created <a href="getpulp.io">getpulp.io</a> where I was trying to 
+                            figure out how to improve the experience of reading things online. 
+                            I’m endlessly curious about how people can express themselves 
+                            on the internet in ways other than a standard blog post or video.<br></br><br></br>
+                            If questions like this also interest you, 
+                            feel free to reach out via Twitter.
+                            <br></br>
+                            <br></br>
+
+                            <div className={aboutStyles.icons}>
+                                <a href="https://twitter.com/outofthebot" target="_blank">
+                                    <img src="https://img.icons8.com/color/48/000000/twitter.png"/>
+                                </a>
+                            </div>
                         </p>
                     </div>
                 </div>
@@ -369,12 +385,30 @@ function Team() {
                 <div className={aboutStyles.img__wrap}>
                     <figure className={aboutStyles.figure}>
                         <img className={aboutStyles.img__img} src='/images/adi.png'></img>
-                        <figcaption>Co-Founder, CTO</figcaption>
+                        <figcaption>
+                            Adish Jain<br></br>
+                            Co-Founder, CTO<br></br>
+                        </figcaption>
                     </figure>
+
                     <div className={aboutStyles.img__description_layer}>
                         <p className={aboutStyles.img__description}>
-                            Hey guys! Adi here.
+                            I am really interested in problems having to do with educational systems. 
+                            Tech can be used to foster better learning and improve the 
+                            transfer of knowledge, and as a computer science teacher of 3 years, I'm 
+                            always looking for better ways to convey ideas to people. <br></br><br></br>
+                            Want to talk? Shoot me a message on Twitter.
+
+                            <br></br>
+                            <br></br>
+
+                            <div className={aboutStyles.icons}>
+                                <a href="https://twitter.com/_adishj" target="_blank">
+                                    <img src="https://img.icons8.com/color/48/000000/twitter.png"/>
+                                </a>
+                            </div>
                         </p>
+                           
                     </div>
                 </div>
 
