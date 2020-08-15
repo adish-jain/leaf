@@ -27,15 +27,6 @@ export default class Step extends Component<
     let { changeEditingStep, index } = this.props;
     return (
       <div className={StepStyles.Buttons}>
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            changeEditingStep(index);
-          }}
-          className={StepStyles.Save}
-        >
-          Edit
-        </button>
         <div
           onClick={(e) => {
             e.stopPropagation();
@@ -93,10 +84,7 @@ export default class Step extends Component<
 
     return (
       <div
-        onClick={(e) => {
-          console.log("wrapper click");
-          changeEditingStep(index);
-        }}
+        onClick={(e) => changeEditingStep(index)}
         className={StepStyles.Step}
       >
         <div className={StepStyles["main-content"]}>
