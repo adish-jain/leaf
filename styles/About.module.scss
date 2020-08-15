@@ -4,6 +4,7 @@
     padding: 0 1.5rem;
     font-family: 'Roboto', sans-serif;
     height: 100vh;
+    align-items: center;
 
     p {
         font-size: 1.4rem;
@@ -79,6 +80,12 @@
     padding: 2rem;
 }
 
+.accordion {
+    display: flex;
+    flex-direction: column;
+    // align-items: center;
+    // justify-content: center;
+}
 .accordionItem {
     background-color: #FFFFFF;
     border-radius: .4rem;
@@ -108,18 +115,33 @@
     }
 
     .answer {
+        display: flex;
+        flex-direction: column;
         max-height: 0;
         overflow: hidden;
         position: relative;
         background-color: #FFFFFF;
         transition: max-height 650ms ease-in-out;
+        align-items: center;
+        justify-content: center;
+
+        img.animatedGif{
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            width: auto;
+            height: 500px;
+        }
+
+        p {
+            align-self: flex-start;
+        }
     }
 
     .answer::before {
         content: "";
         position: absolute;
         width: .6rem;
-        height: 90%;
+        height: 100%;
         background-color: #68B2A0;
         top: 50%;
         left: 0;
@@ -134,7 +156,7 @@
 }
 
 .accordionItem:target .answer {
-    max-height: 20rem;
+    max-height: 50rem;
 }
 
 .accordionItem:target a .addIcon {
@@ -145,8 +167,70 @@
     display: block;
 }
 
-.feedback {
+.teamSection {
     padding-top: 2rem;
+
+    .teamBody {
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+    
+        .img__wrap {
+            position: relative;
+            height: 200px;
+            width: 257px;
+        }
+
+        .figure {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+    
+        .img__img {
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            width: auto;
+            height: 250px;
+            border-radius: 30px;
+        }
+          
+        .img__description_layer {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            color: #fff;
+            visibility: hidden;
+            opacity: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        
+            transition: opacity .2s, visibility .2s;
+        }
+          
+        .img__wrap:hover .img__description_layer {
+            visibility: visible;
+            opacity: 0.7;
+        }
+          
+        .img__description {
+            transition: .2s;
+            transform: translateY(1em);
+        }
+        
+        .img__wrap:hover .img__description {
+            transform: translateY(0);
+            transform: translateX(0.2em);
+        }
+    }
+}
+
+.feedback {
+    padding-top: 8rem;
 }
 // .feedback {
 //     input[type=text], select, textarea {

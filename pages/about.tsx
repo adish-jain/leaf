@@ -28,6 +28,7 @@ export default function About() {
             <div className={aboutStyles.container}>
                 <AboutLeaf />
                 <FAQ />
+                <Team />
                 <Feedback />
             </div>
         </div>
@@ -204,10 +205,13 @@ function FAQ() {
                         You can change the language of your file 
                         by toggling the language selection or by renaming
                         your file with the relevant file extension. <br></br><br></br>
-                        
+                    
                         Don't see one of your favorite languages here? 
                         Shoot us some feedback below!
                         </p>
+
+                        <img className={aboutStyles.animatedGif} src='/images/languagetoggle.gif'></img>
+
                     </div>
                 </div>
 
@@ -227,7 +231,8 @@ function FAQ() {
                     </a>
                     <div className={aboutStyles.answer}>
                         <p>
-                        Everything you do in your draft is saved & stored for you to pick up later. 
+                        Everything you do in your draft is saved & 
+                        stored for you to pick up later. 
                         </p>
                     </div>
                 </div>
@@ -252,6 +257,8 @@ function FAQ() {
                         to associate with the step. Highlight the lines of code you want to select
                         and you should be able to link the code to the step you're on.   
                         </p>
+
+                        <img className={aboutStyles.animatedGif} src='/images/associatecode.gif'></img>
                     </div>
                 </div>
 
@@ -301,8 +308,8 @@ function FAQ() {
                     </a>
                     <div className={aboutStyles.answer}>
                         <p>
-                        Yes! We all make mistakes, and you can edit yours easily by clicking 
-                        <b>Edit</b> under <b>Your Published Posts. </b>
+                        Yes! We all make mistakes, and you can edit yours easily by clicking  
+                        <b> Edit</b> under <b>Your Published Posts. </b>
                         This will allow you to edit any post you've already published. 
                         </p>
                     </div>
@@ -336,6 +343,41 @@ function FAQ() {
         </div>
     );
   }
+
+function Team() {
+    return (
+        <div className={aboutStyles.teamSection}>
+            <h1>The Team</h1>
+            <div className={aboutStyles.teamBody}>
+
+                <div className={aboutStyles.img__wrap}>
+                    <figure className={aboutStyles.figure}>
+                        <img className={aboutStyles.img__img} src='/images/adi.png'></img>
+                        <figcaption>Co-Founder, CEO</figcaption>
+                    </figure>
+                    <div className={aboutStyles.img__description_layer}>
+                        <p className={aboutStyles.img__description}>
+                            Hey guys! Rah here!
+                        </p>
+                    </div>
+                </div>
+                
+                <div className={aboutStyles.img__wrap}>
+                    <figure className={aboutStyles.figure}>
+                        <img className={aboutStyles.img__img} src='/images/adi.png'></img>
+                        <figcaption>Co-Founder, CTO</figcaption>
+                    </figure>
+                    <div className={aboutStyles.img__description_layer}>
+                        <p className={aboutStyles.img__description}>
+                            Hey guys! Adi here.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    );
+}
 
 function Feedback() {
     return (
