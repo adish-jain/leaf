@@ -78,6 +78,17 @@
 .aboutLeaf p {
     font-size: 1.4rem;
     padding: 2rem;
+
+    a:link {
+        text-decoration: none;
+        color: #68B2A0;
+
+    }
+
+    a:visited {
+        text-decoration: none;
+        color: #68B2A0;
+    }
 }
 
 .accordion {

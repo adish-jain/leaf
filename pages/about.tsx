@@ -103,8 +103,11 @@ function AboutLeaf() {
             <h1>About</h1>
             <p>
                 Leaf is a platform designed to reshape the way learners 
-                interact with coding tutorials. Inspired by Stripe's side-by-side API 
-                documentation, we wanted to build a tool which gives everyone 
+                interact with coding tutorials. Inspired by  
+                <a href="https://stripe.com/docs/payments/integration-builder" target="_blank">
+                    <strong> Stripe's side-by-side API documentation</strong>
+                </a>
+                , we wanted to build a tool which gives everyone 
                 a convenient way to process information through reactive learning. 
                 <br></br><br></br>
 
@@ -134,6 +137,7 @@ function FAQ() {
         <div>
             <h1>FAQ</h1>
             <div className={aboutStyles.accordion}>
+            {/* <div className={aboutStyles.accordion}>
                 <div className={aboutStyles.accordionItem} id="question1">
                     <a href="#question1">
                         Why do I need to provide an email?
@@ -156,9 +160,9 @@ function FAQ() {
                         yourself until you want to publish your first post!
                         </p>
                     </div>
-                </div>
+                </div> */}
 
-                <div className={aboutStyles.accordionItem} id="question2">
+                {/* <div className={aboutStyles.accordionItem} id="question2">
                     <a href="#question2">
                         Do I need an account?
                         <div className={aboutStyles.addIcon}>
@@ -180,10 +184,10 @@ function FAQ() {
                         you'll be able to access through your account. 
                         </p>
                     </div>
-                </div>
+                </div> */}
 
-                <div className={aboutStyles.accordionItem} id="question3">
-                    <a href="#question3">
+                <div className={aboutStyles.accordionItem} id="question1">
+                    <a href="#question1">
                         What languages do you support?
                         <div className={aboutStyles.addIcon}>
                             {//@ts-ignore
@@ -215,7 +219,7 @@ function FAQ() {
                     </div>
                 </div>
 
-                <div className={aboutStyles.accordionItem} id="question4">
+                {/* <div className={aboutStyles.accordionItem} id="question4">
                     <a href="#question4">
                         O.K. I've started a draft. Can I save it & finish it later?
                         <div className={aboutStyles.addIcon}>
@@ -235,10 +239,10 @@ function FAQ() {
                         stored for you to pick up later. 
                         </p>
                     </div>
-                </div>
+                </div> */}
 
-                <div className={aboutStyles.accordionItem} id="question5">
-                    <a href="#question5">
+                <div className={aboutStyles.accordionItem} id="question2">
+                    <a href="#question2">
                         How do I associate my tutorial's steps with code?
                         <div className={aboutStyles.addIcon}>
                             {//@ts-ignore
@@ -263,8 +267,8 @@ function FAQ() {
                 </div>
 
 
-                <div className={aboutStyles.accordionItem} id="question6">
-                    <a href="#question6">
+                <div className={aboutStyles.accordionItem} id="question3">
+                    <a href="#question3">
                         I'm trying to publish a post, but am running into an 
                         issue with email verification. What's this about?
                         <div className={aboutStyles.addIcon}>
@@ -292,8 +296,8 @@ function FAQ() {
                     </div>
                 </div>
 
-                <div className={aboutStyles.accordionItem} id="question7">
-                    <a href="#question7">
+                <div className={aboutStyles.accordionItem} id="question4">
+                    <a href="#question4">
                         Can I edit my posts after publishing them?
                         <div className={aboutStyles.addIcon}>
                             {//@ts-ignore
@@ -312,11 +316,13 @@ function FAQ() {
                         <b> Edit</b> under <b>Your Published Posts. </b>
                         This will allow you to edit any post you've already published. 
                         </p>
+
+                        <img className={aboutStyles.animatedGif} src='/images/editingposts.gif'></img>
                     </div>
                 </div>
 
-                <div className={aboutStyles.accordionItem} id="question8">
-                    <a href="#question8">
+                <div className={aboutStyles.accordionItem} id="question5">
+                    <a href="#question5">
                         O.K. I've published my first post. Now what?
                         <div className={aboutStyles.addIcon}>
                             {//@ts-ignore
@@ -337,8 +343,6 @@ function FAQ() {
                         </p>
                     </div>
                 </div>
-
-                
             </div>
         </div>
     );
