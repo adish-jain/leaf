@@ -109,10 +109,9 @@ export function useSteps(draftId: string, authenticated: boolean) {
     };
 
     mutate(optimisticSteps, false);
-    saveStepToBackend(stepId, text);
   }
 
-  function saveStepToBackend(stepId: string, text: string) {
+  async function saveStepToBackend(stepId: string, text: string) {
     let data = {
       requestedAPI: "update_step",
       text: text,
@@ -128,12 +127,12 @@ export function useSteps(draftId: string, authenticated: boolean) {
 
     mutate(optimisticSteps, false);
 
-    fetch("/api/endpoint", {
+    await fetch("/api/endpoint", {
       method: "POST",
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify(data),
     }).then(async (res: any) => {
-      console.log(res);
+      // console.log(res);
     });
   }
 

@@ -7,10 +7,6 @@ const DynamicEditor = dynamic((() => import("./DynamicEditor")) as any, {
 });
 
 type EditingStoredStepProps = {
-  updateStoredStep: (
-    e: React.MouseEvent<HTMLButtonElement>,
-    removeLines: any
-  ) => void;
   onChange: (stepText: any) => void;
   editorState: any;
   lines: { start: number; end: number };
@@ -18,6 +14,7 @@ type EditingStoredStepProps = {
   attachedFileName: string;
   immediateUpdate: (stepText: string) => void;
   loading: boolean;
+  changeEditingStep: (editingStep: number) => void;
 };
 
 type EditingStoredStepState = {
@@ -33,10 +30,6 @@ export default class Step extends Component<
     this.state = { remove: false };
   }
 
-  saveEditingStoredStep(e: React.MouseEvent<HTMLButtonElement>) {
-    this.props.updateStoredStep(e, this.state.remove);
-  }
-
   render() {
     let {
       onChange,
@@ -46,6 +39,7 @@ export default class Step extends Component<
       attachedFileName,
       immediateUpdate,
       loading,
+      changeEditingStep,
     } = this.props;
 
     const Buttons = () => {
@@ -53,12 +47,13 @@ export default class Step extends Component<
         <div className={StepStyles.Buttons}>
           <button
             onClick={(e) => {
-              this.saveEditingStoredStep(e);
+              changeEditingStep(-1);
             }}
             className={StepStyles.Save}
           >
-            Save
+            Done Editing
           </button>
+          <div className={StepStyles['loading']}>{loading ? "Saving content..." : ""}</div>
         </div>
       );
     };
@@ -102,14 +97,12 @@ export default class Step extends Component<
       <div>
         <div className={StepStyles.Step}>
           <div className={StepStyles["editing-draft"]}>
-            {
-              <DynamicEditor
-                // @ts-ignore
-                onChange={onChange}
-                editorState={editorState}
-                immediateUpdate={immediateUpdate}
-              />
-            }
+            <DynamicEditor
+              // @ts-ignore
+              onChange={onChange}
+              editorState={editorState}
+              immediateUpdate={immediateUpdate}
+            />
           </div>
           <Buttons />
           <Lines />

@@ -120,6 +120,7 @@ export default class DynamicEditor extends Component {
   }
 
   componentWillUnmount() {
+    // save to API if the step exits out of edit mode
     const value = JSON.stringify(
       convertToRaw(this.state.editorState.getCurrentContent())
     );
@@ -140,7 +141,6 @@ export default class DynamicEditor extends Component {
   };
 
   render() {
-    console.log("render");
     const { Toolbar } = this.PluginComponents;
     return (
       <div>

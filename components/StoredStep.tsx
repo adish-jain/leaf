@@ -42,7 +42,6 @@ export default class StoredStep extends Component<
   constructor(props: StoredStepProps) {
     super(props);
     this.deleteStoredStep = this.deleteStoredStep.bind(this);
-    this.updateStoredStep = this.updateStoredStep.bind(this);
     this.moveStepUp = this.moveStepUp.bind(this);
     this.moveStepDown = this.moveStepDown.bind(this);
     this.immediateUpdate = this.immediateUpdate.bind(this);
@@ -73,9 +72,9 @@ export default class StoredStep extends Component<
       {
         loading: true,
       },
-      () => {
+      async () => {
         this.props.mutateStoredStep(stepId, stepText);
-        this.props.saveStepToBackend(stepId, stepText);
+        await this.props.saveStepToBackend(stepId, stepText);
         this.setState({
           loading: false,
         });
@@ -85,17 +84,6 @@ export default class StoredStep extends Component<
 
   deleteStoredStep(e: React.MouseEvent<any>) {
     this.props.deleteStoredStep(this.props.id);
-  }
-
-  updateStoredStep(
-    e: React.MouseEvent<HTMLButtonElement>,
-    removeLines: boolean
-  ) {
-    let text = this.state.stepText;
-    let stepId = this.props.id;
-    this.props.mutateStoredStep(stepId, text);
-
-    this.props.changeEditingStep(-1);
   }
 
   moveStepUp() {
@@ -129,7 +117,6 @@ export default class StoredStep extends Component<
       <div>
         {editing ? (
           <EditingStoredStep
-            updateStoredStep={this.updateStoredStep}
             onChange={this.onChange}
             editorState={editorState}
             lines={this.props.lines}
@@ -137,6 +124,7 @@ export default class StoredStep extends Component<
             attachedFileName={name}
             immediateUpdate={this.immediateUpdate}
             loading={this.state.loading}
+            changeEditingStep={changeEditingStep}
           />
         ) : (
           <RenderedStoredStep
