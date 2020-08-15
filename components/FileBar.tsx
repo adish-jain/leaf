@@ -53,7 +53,7 @@ export default class FileBar extends Component<FileBarProps> {
             index={index}
           />
         ))}
-        <button onClick={e => addFile()}>+</button>
+        <button  className={fileBarStyles['add-new-file-btn']} onClick={e => addFile()}>Add New file</button>
       </div>
     );
   }

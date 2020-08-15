@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { GetStaticProps } from "next";
 import Head from "next/head";
 import FinishedPost from "../../components/FinishedPost";
 import { getAllPosts } from "../../lib/api/publishPost";
 import { getUsernameFromUid } from "../../lib/userUtils";
-import { getPostData } from "../../lib/postUtils";
+import { getDraftDataFromPostId } from "../../lib/postUtils";
 import DefaultErrorPage from "next/error";
 import { useRouter } from "next/router";
+import ErroredPage from "../404";
 
 export async function getStaticPaths() {
   return {
@@ -27,34 +28,45 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   let username = context.params.username as string;
   let postId = context.params.postId as string;
-  let postData = await getPostData(username, postId);
-  let steps = postData.steps;
-  let files = postData.files;
-  let title = postData.title;
-  let errored = postData.errored;
-
-  for (let i = 0; i < steps.length; i++) {
-    if (steps[i].lines === undefined || steps[i].lines === null) {
-      steps[i].lines = null;
+  try {
+    let postData = await getDraftDataFromPostId(username, postId);
+    let steps = postData.steps;
+    let files = postData.files;
+    let title = postData.title;
+    let errored = postData.errored;
+    // replace undefineds with null to prevent nextJS errors
+    for (let i = 0; i < steps.length; i++) {
+      if (steps[i].lines === undefined || steps[i].lines === null) {
+        steps[i].lines = null;
+        steps[i].fileId = null;
+        // to be deprecated
+      }
       steps[i].fileName = null;
     }
+    return {
+      revalidate: 1,
+      props: {
+        steps,
+        title,
+        files,
+        errored,
+      },
+    };
+  } catch (error) {
+    return {
+      revalidate: 1,
+      props: {
+        errored: true,
+      },
+    };
   }
-
-  return {
-    revalidate: 1,
-    props: {
-      steps,
-      title,
-      files,
-      errored,
-    },
-  };
 };
 
 type StepType = {
   text: string;
   id: string;
   fileName: string;
+  fileId: string;
   lines: { start: number; end: number };
 };
 

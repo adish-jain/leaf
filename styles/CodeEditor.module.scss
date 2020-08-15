@@ -17,8 +17,8 @@
 /* Extra large devices (large laptops and desktops, 1200px and up) */
 @media only screen and (min-width: 1200px) {
   .CodeEditor {
-    min-width: 664px;
-    max-width: 640px;
+    // min-width: 664px;
+    // max-width: 640px;
   }
 }
 
@@ -41,7 +41,9 @@
 .CodeEditor {
   box-shadow: 0px 4px 16px #edece9;
   border-radius: 8px;
-  width: 100%;
+  min-width: 330px;
+  width: 51vw;
+  margin-right: 3vw;
   height: 96vh;
   position: sticky;
   top: 2vh;

@@ -30,8 +30,18 @@ export default async function sendEmailVerification(
     .auth()
     .signInWithCustomToken(customToken)
     .then(function (firebaseUser: any) {
-      firebaseUser.user.sendEmailVerification();
-      console.log("send email");
+      firebaseUser.user.sendEmailVerification()
+      .then(function (response: any) {
+        res.status(200).end();
+        return;
+      }) 
+      .catch(function (error: any) {
+        console.log(error);
+        res.status(403).send({
+          error: "Email verification has already been sent",
+        });
+        return;
+      })
       firebase
         .auth()
         .signOut()
@@ -53,7 +63,5 @@ export default async function sendEmailVerification(
       console.log(errorMessage);
       // ...
     });
-  res.status(200);
-  res.end();
   return;
 }

@@ -28,6 +28,7 @@ export default function SignUp() {
     passwordStatus,
     emailVerified,
     sendEmailVerification,
+    sendEmailVerificationStatus,
   } = useUserInfo(authenticated);
   return (
     <div className="container">
@@ -77,6 +78,7 @@ export default function SignUp() {
           emailError={emailError}
           emailVerified={emailVerified}
           sendEmailVerification={sendEmailVerification}
+          sendEmailVerificationStatus={sendEmailVerificationStatus}
         />
       
       </main>
@@ -146,7 +148,8 @@ function Email(
     saveNewEmail: any,
     emailError: string,
     emailVerified: boolean,
-    sendEmailVerification: any
+    sendEmailVerification: any,
+    sendEmailVerificationStatus: string
   }) {
     return (
       <div>
@@ -163,6 +166,8 @@ function Email(
           <button onClick={(e) => props.sendEmailVerification()}>
             Send email verification
           </button>
+          <EmailVerificationStatus 
+            sendEmailVerificationStatus={props.sendEmailVerificationStatus} />
         </div>
       </div>
     );
@@ -189,6 +194,17 @@ function PasswordStatus(props: { passwordStatus: string }) {
   return (
     <div>
       {props.passwordStatus === "" ? <div></div> : <p>{props.passwordStatus}</p> }
+    </div>
+  );
+}
+
+function EmailVerificationStatus(props: { sendEmailVerificationStatus: string }) {
+  return (
+    <div>
+      {props.sendEmailVerificationStatus === "" ? 
+        <div></div> 
+        : 
+        <p>{props.sendEmailVerificationStatus}</p> }
     </div>
   );
 }

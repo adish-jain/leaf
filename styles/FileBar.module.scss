@@ -5,26 +5,61 @@
   border-radius: 8px 8px 0px 0px;
   flex-direction: row;
   display: flex;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  // padding-right: 16px;
+  align-items: center;
+  // padding: 8px;
+}
+
+.add-new-file-btn {
+  margin-left: 8px;
+  min-width: 94px;
+  text-align: left;
 }
 
 .published-filebar {
   display: flex;
+  height: 3vh;
   flex-direction: row;
-  // overflow-x: scroll;
+  background: #3f4447;
+  border-radius: 8px 8px 0px 0px;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-right: 16px;
+  align-items: center;
 }
 
 .published-file {
-  padding: 4px;
-  margin-right: 4px;
+  // margin-right: 16px;
   cursor: pointer;
-  border-style: solid;
-  border-color: white;
+  padding: 8px;
+
+  border-right-style: solid;
+  border-right-color: #4c5153;
+  border-right-width: 1px;
+  color: rgb(137, 137, 132);
 }
 
 .published-file-selected {
-  padding: 4px;
-  margin-right: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px;
+
+  // padding: 4px;
+  // margin-right: 4px;
   cursor: pointer;
-  border-style: solid;
-  border-color: red;
+  border-right-style: solid;
+  border-right-color: white;
+  border-right-width: 1px;
+  color: white;
+
+  border-left-style: solid;
+  border-left-color: white;
+  border-left-width: 1px;
 }

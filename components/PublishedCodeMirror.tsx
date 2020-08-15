@@ -49,16 +49,29 @@ export default class PublishedCodeMirror extends Component<
 
   constructor(props: CodeMirrorProps) {
     super(props);
+    this.updateLines = this.updateLines.bind(this);
 
     this.instance = undefined;
   }
 
+  componentDidMount() {
+    this.updateLines();
+  }
+
   componentDidUpdate(prevProps: CodeMirrorProps) {
+    this.updateLines();
+  }
+
+  updateLines() {
     let { currentStep } = this.props;
+
+    // clear previous highlighted lines
     for (let i = 0; i < markers.length; i++) {
       markers[i].clear();
     }
-    if (currentStep.lines !== null && currentStep.lines !== undefined) {
+
+    // mark new lines
+    if (currentStep && currentStep.lines !== null && currentStep.lines !== undefined) {
       let newMarker = this.instance?.markText(
         { line: currentStep.lines.start, ch: 0 },
         { line: currentStep.lines.end, ch: 5 },
@@ -87,7 +100,7 @@ export default class PublishedCodeMirror extends Component<
           position: relative;
           background-color: #263238;
           font-size: 12px;
-          height: auto;
+          height: 0px;
         `}</style>
         <CodeMirror2
           className={"CodeEditor"}

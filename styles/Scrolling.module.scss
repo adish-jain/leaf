@@ -1,6 +1,9 @@
 .scrolling {
   min-width: 400px;
   flex-grow: 100;
+  width: 40%;
+  margin-left: 3%;
+  margin-right: 3%;
 }
 
 .step {
@@ -19,34 +22,29 @@
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
   .scrolling {
-    margin-right: 16px;
   }
 }
 
 /* Small devices (portrait tablets and large phones, 600px and up) */
 @media only screen and (min-width: 600px) {
   .scrolling {
-    margin-right: 16px;
   }
 }
 
 /* Medium devices (landscape tablets, 768px and up) */
 @media only screen and (min-width: 768px) {
   .scrolling {
-    margin-right: 24px;
   }
 }
 
 /* Large devices (laptops/desktops, 992px and up) */
 @media only screen and (min-width: 992px) {
   .scrolling {
-    margin-right: 64px;
   }
 }
 
 /* Extra large devices (large laptops and desktops, 1200px and up) */
 @media only screen and (min-width: 1200px) {
   .scrolling {
-    margin-right: 64px;
   }
 }
