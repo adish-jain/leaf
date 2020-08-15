@@ -63,7 +63,6 @@ export default sentryHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let requestBody = req.body;
     let requestedAPI = requestBody.requestedAPI;
-
     switch (requestedAPI) {
       /* 
     ------ Authentication ------
