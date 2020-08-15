@@ -11,7 +11,6 @@ initFirebase();
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   let { uid } = await getUser(req, res);
-  throw "inside preview mode";
 
   let draftId = req.body.draftId;
   if (uid === "") {
