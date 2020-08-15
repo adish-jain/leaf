@@ -1,23 +1,26 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getUser } from "../../lib/userUtils";
 var crypto = require("crypto");
+import sentryHandler from "../../lib/sentryHandler";
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
-  let cookies = req.cookies;
-  let userToken = cookies.userToken;
-  // get draft ID
-  // get User email
-  let { userRecord, uid } = await getUser(req, res);
-  let { draftId } = req.query;
+export default sentryHandler(
+  async (req: NextApiRequest, res: NextApiResponse) => {
+    let cookies = req.cookies;
+    let userToken = cookies.userToken;
+    // get draft ID
+    // get User email
+    let { userRecord, uid } = await getUser(req, res);
+    let { draftId } = req.query;
 
-  //   let token = createToken();
-  res.setPreviewData({
-    uid,
-    draftId: draftId,
-  });
-  res.writeHead(307, { Location: "/preview" });
-  res.end("Preview mode enabled");
-};
+    //   let token = createToken();
+    res.setPreviewData({
+      uid,
+      draftId: draftId,
+    });
+    res.writeHead(307, { Location: "/preview" });
+    res.end("Preview mode enabled");
+  }
+);
 
 function createToken(): String {
   var token = crypto.randomBytes(64).toString("hex").substr(0, 10);

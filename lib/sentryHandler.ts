@@ -1,7 +1,7 @@
 import * as Sentry from "@sentry/node";
 import { NextApiRequest, NextApiResponse, NextApiHandler } from "next";
 
-Sentry.init({ dsn: process.env.SENTRY_DSN });
+Sentry.init({ dsn: process.env.SENTRY_BACKEND_DSN });
 
 const sentryHandler = (apiHandler: NextApiHandler) => {
   return async (req: NextApiRequest, res: NextApiResponse) => {
@@ -16,8 +16,4 @@ const sentryHandler = (apiHandler: NextApiHandler) => {
   };
 };
 
-export default sentryHandler(
-  async (req: NextApiRequest, res: NextApiResponse) => {
-    // ...your main business logic here
-  }
-);
+export default sentryHandler;

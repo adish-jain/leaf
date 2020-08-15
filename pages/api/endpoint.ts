@@ -54,172 +54,176 @@ import handleSaveFileName from "../../lib/api/saveFileName";
 // email
 import handlePasswordReset from "../../lib/api/passwordReset";
 
+import sentryHandler from "../../lib/sentryHandler";
+
 const firebase = require("firebase/app");
 initFirebase();
 
-export default (req: NextApiRequest, res: NextApiResponse) => {
-  let requestBody = req.body;
-  let requestedAPI = requestBody.requestedAPI;
-  switch (requestedAPI) {
-    /* 
+export default sentryHandler(
+  async (req: NextApiRequest, res: NextApiResponse) => {
+    let requestBody = req.body;
+    let requestedAPI = requestBody.requestedAPI;
+
+    switch (requestedAPI) {
+      /* 
     ------ Authentication ------
     */
+      case "login": {
+        return handleLogin(req, res);
+      }
 
-    case "login": {
-      return handleLogin(req, res);
-    }
+      case "signup": {
+        return handleSignup(req, res);
+      }
 
-    case "signup": {
-      return handleSignup(req, res);
-    }
+      case "logout": {
+        return handleLogout(req, res);
+      }
 
-    case "logout": {
-      return handleLogout(req, res);
-    }
-
-    /*
+      /*
     ------ Settings ------
     */
 
-    case "check_userId": {
-      return handlecheckId(req, res);
-    }
+      case "check_userId": {
+        return handlecheckId(req, res);
+      }
 
-    case "set_userId": {
-      return handleSetId(req, res);
-    }
+      case "set_userId": {
+        return handleSetId(req, res);
+      }
 
-    case "set_userEmail": {
-      return handleSetEmail(req, res);
-    }
+      case "set_userEmail": {
+        return handleSetEmail(req, res);
+      }
 
-    case "set_userPassword": {
-      return handleSetPassword(req, res);
-    }
+      case "set_userPassword": {
+        return handleSetPassword(req, res);
+      }
 
-    case "get_userInfo": {
-      return handleGetUserInfo(req, res);
-    }
+      case "get_userInfo": {
+        return handleGetUserInfo(req, res);
+      }
 
-    case "sendEmailVerification": {
-      return handleSendEmailVerification(req, res);
-    }
+      case "sendEmailVerification": {
+        return handleSendEmailVerification(req, res);
+      }
 
-    /* 
+      /* 
     ------ Drafts ------
     */
 
-    case "getDrafts": {
-      /* 
+      case "getDrafts": {
+        /* 
       Get all drafts
       */
-      return handleGetDrafts(req, res);
-    }
+        return handleGetDrafts(req, res);
+      }
 
-    case "add_draft": {
-      return handleAddDraft(req, res);
-    }
+      case "add_draft": {
+        return handleAddDraft(req, res);
+      }
 
-    case "delete_draft": {
-      /* 
+      case "delete_draft": {
+        /* 
       Delete Draft
       */
-      return handleDeleteDraft(req, res);
-    }
+        return handleDeleteDraft(req, res);
+      }
 
-    case "get_draft_data": {
-      return handleGetDraftData(req, res);
-    }
+      case "get_draft_data": {
+        return handleGetDraftData(req, res);
+      }
 
-    case "getDraftSteps": {
-      return handleGetSteps(req, res);
-    }
+      case "getDraftSteps": {
+        return handleGetSteps(req, res);
+      }
 
-    case "save_step": {
-      return handleSaveStep(req, res);
-    }
+      case "save_step": {
+        return handleSaveStep(req, res);
+      }
 
-    case "delete_step": {
-      return handleDeleteStep(req, res);
-    }
+      case "delete_step": {
+        return handleDeleteStep(req, res);
+      }
 
-    case "update_step": {
-      return handleUpdateStep(req, res);
-    }
+      case "update_step": {
+        return handleUpdateStep(req, res);
+      }
 
-    case "updateStepLines": {
-      return handleUpdateStepLines(req, res);
-    }
+      case "updateStepLines": {
+        return handleUpdateStepLines(req, res);
+      }
 
-    case "renameStepFileName": {
-      return handleRenameStepFileName(req, res);
-    }
+      case "renameStepFileName": {
+        return handleRenameStepFileName(req, res);
+      }
 
-    /* 
+      /* 
     ------ Posts ------
     */
 
-    case "publishPost": {
-      return handlePublishPost(req, res);
-    }
+      case "publishPost": {
+        return handlePublishPost(req, res);
+      }
 
-    case "getPosts": {
-      return handleGetPosts(req, res);
-    }
+      case "getPosts": {
+        return handleGetPosts(req, res);
+      }
 
-    case "deletePost": {
-      return handleDeletePost(req, res);
-    }
+      case "deletePost": {
+        return handleDeletePost(req, res);
+      }
 
-    case "change_step_order": {
-      return handleChangeStepOrder(req, res);
-    }
+      case "change_step_order": {
+        return handleChangeStepOrder(req, res);
+      }
 
-    case "save_title": {
-      return handleSaveTitle(req, res);
-    }
+      case "save_title": {
+        return handleSaveTitle(req, res);
+      }
 
-    case "getDraftTitle": {
-      return handleGetTitle(req, res);
-    }
+      case "getDraftTitle": {
+        return handleGetTitle(req, res);
+      }
 
-    /* 
+      /* 
     ------ Files ------
     */
 
-    // POST
-    case "getFiles": {
-      return handleGetFiles(req, res);
-    }
+      // POST
+      case "getFiles": {
+        return handleGetFiles(req, res);
+      }
 
-    case "save_file": {
-      return handleSaveFile(req, res);
-    }
+      case "save_file": {
+        return handleSaveFile(req, res);
+      }
 
-    case "delete_file": {
-      return handleDeleteFile(req, res);
-    }
+      case "delete_file": {
+        return handleDeleteFile(req, res);
+      }
 
-    case "change_file_language": {
-      return handleChangeFileLanguage(req, res);
-    }
+      case "change_file_language": {
+        return handleChangeFileLanguage(req, res);
+      }
 
-    case "save_file_code": {
-      return handleSaveFileCode(req, res);
-    }
+      case "save_file_code": {
+        return handleSaveFileCode(req, res);
+      }
 
-    case "save_file_name": {
-      return handleSaveFileName(req, res);
-    }
+      case "save_file_name": {
+        return handleSaveFileName(req, res);
+      }
 
-    // email
-    case "passwordReset": {
-      return handlePasswordReset(req, res);
-    }
+      // email
+      case "passwordReset": {
+        return handlePasswordReset(req, res);
+      }
 
-    default: {
-      res.statusCode = 403;
-      res.end();
+      default: {
+        res.statusCode = 403;
+        res.end();
+      }
     }
   }
-};
+);
