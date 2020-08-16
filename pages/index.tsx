@@ -5,7 +5,6 @@ import { useLoggedIn, logOut } from "../lib/UseLoggedIn";
 
 import { useRouter } from "next/router";
 
-const appStyles = require("../styles/App.module.scss");
 const indexStyles = require("../styles/Index.module.scss");
 
 export default function Pages() {
@@ -20,6 +19,11 @@ export default function Pages() {
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     router.push("/login");
+  };
+
+  const goToIndex = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    router.push("/");
   };
 
   return (
@@ -38,8 +42,8 @@ export default function Pages() {
         />
       </Head>
       <main className={indexStyles.MainWrapper}>
-        <Header />
-        <Body handleClick={handleClick}/>
+        <Header goToIndex={goToIndex}/>
+        <Body handleClick={handleClick} />
       </main>
     </div>
   );
@@ -48,19 +52,19 @@ export default function Pages() {
 /*
 Header Components
 */
-function Header() {
+function Header(props: {goToIndex: any}) {
   return (
     <div className={indexStyles.Header}>
-      <NavBar />
+      <NavBar goToIndex={props.goToIndex}/>
       <HeaderText />
     </div>
   );
 }
 
-function NavBar() {
+function NavBar(props: {goToIndex: any}) {
   return (
     <div className={indexStyles.NavBar}>
-      <Logo />
+      <Logo goToIndex={props.goToIndex}/>
       <Login />
       <Signup />
       <About />
@@ -68,11 +72,11 @@ function NavBar() {
   )
 }
 
-function Logo() {
+function Logo(props: {goToIndex: any}) {
   return (
-    <div className={indexStyles.Logo}> 
-      Leaf.
-    </div>  
+    <div className={indexStyles.Logo} onClick={props.goToIndex}> 
+      <img src="/images/logo.svg"/>
+    </div>    
   );
 }
 
@@ -99,7 +103,7 @@ function Signup() {
 function About() {
   return (
     <div className={indexStyles.Login}>
-      <Link href="/login">
+      <Link href="/about">
         <a>About</a>
       </Link>
     </div>
