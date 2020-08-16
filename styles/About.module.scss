@@ -20,7 +20,8 @@
 
     justify-content: center;
     align-items: center;
-    background: #000000;
+    background: #ffffff;
+
     
     .NavBar {
         display: flex;
@@ -30,17 +31,46 @@
         .Logo {
             display: flex;
             align-self: flex-start;
+            // margin-bottom: 30px;
+            // margin-left: 3%;
+            img {
+                max-width: 50%;
+                height: auto;
+                width: auto; 
+                // border-radius: 20px;
+            }
 
-            margin-bottom: 30px;
-            margin-left: 3%;
-            margin-right: 70%;
+            img:hover {
+                /* Start the shake animation and make the animation last for 0.5 seconds */
+                animation: shake 0.5s;
+              
+                /* When the animation is finished, start again */
+                animation-iteration-count: infinite;
+              }
+              
+              @keyframes shake {
+                0% { transform: translate(1px, 1px) rotate(0deg); }
+                10% { transform: translate(-1px, -2px) rotate(-1deg); }
+                20% { transform: translate(-3px, 0px) rotate(1deg); }
+                30% { transform: translate(3px, 2px) rotate(0deg); }
+                40% { transform: translate(1px, -1px) rotate(1deg); }
+                50% { transform: translate(-1px, 2px) rotate(-1deg); }
+                60% { transform: translate(-3px, 1px) rotate(0deg); }
+                70% { transform: translate(3px, 1px) rotate(-1deg); }
+                80% { transform: translate(-1px, -1px) rotate(1deg); }
+                90% { transform: translate(1px, 2px) rotate(0deg); }
+                100% { transform: translate(1px, -2px) rotate(-1deg); }
+              }
+              
 
-            font-family: Arial rounded MT bold;
-            font-style: normal;
-            font-weight: bold;
-            font-size: 60px;
+            
 
-            color: #68B2A0;
+            // font-family: Arial rounded MT bold;
+            // font-style: normal;
+            // font-weight: bold;
+            // font-size: 60px;
+
+            // color: #68B2A0;
             cursor: pointer;
         }
 
@@ -51,8 +81,9 @@
 
             padding-top: 20px;
             margin-bottom: 30px;
+            margin-right: 2rem;
             justify-content: space-evenly;
-            align-self: stretch;
+            // align-self: stretch;
 
             font-family: Arial rounded MT bold;
             font-style: normal;
@@ -60,16 +91,16 @@
             font-size: 20px;
 
             a:link {
-                color:  #FFFFFF;
+                color:  #000000;
                 text-decoration: none;
             }
 
             a:visited {
-                color: #FFFFFF;
+                color: #000000;
             }
 
             a:hover {
-                color: #68B2A0;
+                color: #1DB954;
             }
         }
     }
@@ -81,13 +112,13 @@
 
     a:link {
         text-decoration: none;
-        color: #68B2A0;
+        color: #1DB954;
 
     }
 
     a:visited {
         text-decoration: none;
-        color: #68B2A0;
+        color: #1DB954;
     }
 }
 
@@ -153,7 +184,7 @@
         position: absolute;
         width: .6rem;
         height: 100%;
-        background-color: #68B2A0;
+        background-color: #1DB954;
         top: 50%;
         left: 0;
         transform: translateY(-50%);
@@ -199,12 +230,12 @@
 
                 a:link {
                     text-decoration: none;
-                    color: #68B2A0;
+                    color: #1DB954;
                 }
 
                 a:visited {
                     text-decoration: none;
-                    color: #68B2A0;
+                    color: #1DB954;
                 }
 
                 a:hover {
@@ -236,8 +267,8 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: #a9d4c9;
-            color: #fff;
+            background: #fff;
+            color: #000;
             visibility: hidden;
             opacity: 5;
             border-radius: 30px;
@@ -252,12 +283,12 @@
 
             a:link {
                 text-decoration: none;
-                color: #1e2825;
+                color: #1DB954;
             }
 
             a:visited {
                 text-decoration: none;
-                color: #1e2825;
+                color: #1DB954;
             }
 
             a:hover {
@@ -374,12 +405,19 @@
             align-items: center;
             .Logo {
                 display: flex;
+                align-self: flex-start;
+                margin-bottom: 30px;
                 margin-left: 3%;
-                margin-right: 5%;
-                font-size: 40px;
+                img {
+                    min-width: 30%;
+                    height: auto;
+                    width: 30%;  
+                    // border-radius: 20px;
+                }
             }
 
             .Login {  
+                align-self: flex-end;
                 padding-right: 0px;  
                 font-size: 15px;
             }    
@@ -395,10 +433,19 @@
 
         .NavBar {
             .Logo {
-                font-size: 40px;
-                margin-right: 55%;
+                display: flex;
+                align-self: flex-start;
+                margin-bottom: 30px;
+                margin-left: 3%;
+                img {
+                    min-width: 20%;
+                    height: auto;
+                    width: 20%; 
+                    // border-radius: 20px;
+                }
             }
             .Login {  
+                align-self: flex-end;
                 padding-right: 0px;  
                 font-size: 15px;
             }    
@@ -414,10 +461,19 @@
 
         .NavBar {
             .Logo {
-                font-size: 50px;
-                margin-right: 60%;
+                display: flex;
+                align-self: flex-start;
+                margin-bottom: 30px;
+                margin-left: 3%;
+                img {
+                    min-width: 20%;
+                    height: auto;
+                    width: 20%; 
+                    // border-radius: 20px;
+                }
             }
             .Login {  
+                align-self: flex-end;
                 padding-right: 0px;  
                 font-size: 20px;
             }    
@@ -433,12 +489,21 @@
 
         .NavBar {
             .Logo {
-                font-size: 50px;
-                margin-left: 5%;
-                margin-right: 65%;
+                display: flex;
+                align-self: flex-start;
+                // margin-bottom: 30px;
+                padding-top: 20px;
+                margin-left: 3%;
+                img {
+                    min-width: 10%;
+                    height: auto;
+                    width: 12%; 
+                    // border-radius: 20px;
+                }
             }
             .Login {  
-                padding-right: 0px;  
+                align-self: flex-end;
+                padding-right: 0px;
                 font-size: 20px;
             }
         

@@ -75,8 +75,8 @@ function NavBar(props: {goToIndex: any}) {
 function Logo(props: {goToIndex: any}) {
   return (
     <div className={indexStyles.Logo} onClick={props.goToIndex}> 
-      Leaf.
-    </div>  
+      <img src="/images/logo.svg"/>
+    </div>    
   );
 }
 

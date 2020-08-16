@@ -62,7 +62,7 @@ function NavBar(props: {goToIndex: any}) {
 function Logo(props: {goToIndex: any}) {
     return (
         <div className={aboutStyles.Logo} onClick={props.goToIndex}> 
-        Leaf.
+            <img src="/images/icon.svg"/>
         </div>  
     );
 }
@@ -356,7 +356,7 @@ function Team() {
 
                 <div className={aboutStyles.img__wrap}>
                     <figure className={aboutStyles.figure}>
-                        <img className={aboutStyles.img__img} src='/images/adi.png'></img>
+                        <img className={aboutStyles.img__img} src='/images/rah.png'></img>
                         <figcaption>
                             Rahul Sarathy<br></br>
                             Co-Founder, CEO<br></br>
