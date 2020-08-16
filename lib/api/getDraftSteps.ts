@@ -11,6 +11,7 @@ initFirebase();
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   let { uid } = await getUser(req, res);
+
   let draftId = req.body.draftId;
   if (uid === "") {
     res.statusCode = 403;
