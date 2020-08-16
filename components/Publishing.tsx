@@ -29,12 +29,8 @@ type PublishingProps = {
   editingStep: number;
   changeEditingStep: (editingStep: number) => void;
   saveStep: (stepId: string, text: any) => void;
-  updateStoredStep: (
-    stepId: string,
-    text: any,
-    oldLines: any,
-    removeLines: any
-  ) => void;
+  mutateStoredStep: (stepId: string, text: string) => void;
+  saveStepToBackend: (stepId: string, text: string) => void;
   deleteStoredStep: (stepId: any) => void;
   moveStepUp: (stepId: any) => void;
   moveStepDown: (stepId: any) => void;
@@ -204,6 +200,9 @@ export default class Publishing extends Component<
       files,
       onTitleChange,
       saveLines,
+      mutateStoredStep,
+      saveStepToBackend,
+      deleteStoredStep,
     } = this.props;
 
     function StoredSteps() {
@@ -221,8 +220,9 @@ export default class Publishing extends Component<
               draftId={this.props.draftId}
               text={JSON.parse(storedStep.text)}
               lines={storedStep.lines}
-              deleteStoredStep={this.props.deleteStoredStep}
-              updateStoredStep={this.props.updateStoredStep}
+              deleteStoredStep={deleteStoredStep}
+              mutateStoredStep={mutateStoredStep}
+              saveStepToBackend={saveStepToBackend}
               moveStepUp={this.props.moveStepUp}
               moveStepDown={this.props.moveStepDown}
               key={storedStep.id}

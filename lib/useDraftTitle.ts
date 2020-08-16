@@ -60,7 +60,7 @@ export function useDraftTitle(draftId: string, authenticated: boolean) {
   Triggered from `Publishing.tsx`.
   */
   function saveTitle(newTitle: string) {
-    // mutate("getDraftTitle", { draftTitle: title }, false);
+    // mutate("getDraftTitle", { draftTitle: newTitle }, false);
     var data = {
       requestedAPI: "save_title",
       draftId: draftId,
@@ -73,7 +73,7 @@ export function useDraftTitle(draftId: string, authenticated: boolean) {
       body: JSON.stringify(data),
     }).then(async (res: any) => {
       let resJSON = await res.json();
-      mutate("getDraftTitle", { draftTitle: resJSON.draftTitle }, false);
+      // mutate("getDraftTitle", { draftTitle: resJSON.draftTitle }, false);
     });
   }
 

@@ -97,16 +97,9 @@ export function useSteps(draftId: string, authenticated: boolean) {
   }
 
   /*
-  Updates a step in Firebase. Triggered from `EditingStoredStep.tsx`.
+  mutates content inside a desired step. Does not save text to backend.
   */
-  function updateStoredStep(stepId: any, text: any) {
-    let data = {
-      requestedAPI: "update_step",
-      text: text,
-      draftId: draftId,
-      stepId: stepId,
-    };
-
+  function mutateStoredStep(stepId: any, text: any) {
     let optimisticSteps = storedSteps!.slice();
     let idx = findIdx(stepId);
 
@@ -116,13 +109,33 @@ export function useSteps(draftId: string, authenticated: boolean) {
     };
 
     mutate(optimisticSteps, false);
+  }
 
-    fetch("/api/endpoint", {
+  /*
+  Updates a step in Firebase. Triggered from `StoredStep.tsx`.
+  */
+  async function saveStepToBackend(stepId: string, text: string) {
+    let data = {
+      requestedAPI: "update_step",
+      text: text,
+      draftId: draftId,
+      stepId: stepId,
+    };
+    let idx = findIdx(stepId);
+    let optimisticSteps = storedSteps!.slice();
+    optimisticSteps[idx] = {
+      ...optimisticSteps[idx],
+      text,
+    };
+
+    mutate(optimisticSteps, false);
+
+    await fetch("/api/endpoint", {
       method: "POST",
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify(data),
     }).then(async (res: any) => {
-      console.log(res);
+      // console.log(res);
     });
   }
 
@@ -344,7 +357,8 @@ export function useSteps(draftId: string, authenticated: boolean) {
 
   return {
     saveStep,
-    updateStoredStep,
+    mutateStoredStep,
+    saveStepToBackend,
     deleteStoredStep,
     moveStepUp,
     moveStepDown,

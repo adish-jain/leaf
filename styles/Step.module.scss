@@ -78,6 +78,7 @@
   padding-top: 8px;
   padding-right: 8px;
   padding-bottom: 8px;
+  align-items: center;
   // padding-bottom: 24px;
 
   .Up {
@@ -211,4 +212,9 @@
 
 .main-content {
   padding: 16px;
+}
+
+.loading {
+  color: #898984;
+  margin-right: 4px;
 }

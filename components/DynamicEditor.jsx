@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { convertToRaw, convertFromRaw } from "draft-js";
+import { convertToRaw, EditorState, SelectionState } from "draft-js";
 import Editor, { createEditorStateWithText } from "draft-js-plugins-editor";
 import createToolbarPlugin, { Separator } from "draft-js-static-toolbar-plugin";
 import {
@@ -14,11 +14,11 @@ import {
   OrderedListButton,
   BlockquoteButton,
   CodeBlockButton,
-} from 'draft-js-buttons';
-import EditorStyles from '../styles/EditorStyles.module.scss';
-import '!style-loader!css-loader!draft-js-static-toolbar-plugin/lib/plugin.css';
+} from "draft-js-buttons";
+import EditorStyles from "../styles/EditorStyles.module.scss";
+import "!style-loader!css-loader!draft-js-static-toolbar-plugin/lib/plugin.css";
 
-var shortId = require('shortid');
+var shortId = require("shortid");
 
 /* 
 Component rendered when Headlines Button is clicked to present option of H1, H2, or H3. 
@@ -40,9 +40,9 @@ class HeadlinesPicker extends Component {
     const buttons = [HeadlineOneButton, HeadlineTwoButton, HeadlineThreeButton];
     return (
       <div>
-        {buttons.map(Button =>
+        {buttons.map((Button) => (
           <Button key={shortId.generate()} {...this.props} />
-        )}
+        ))}
       </div>
     );
   }
@@ -84,18 +84,59 @@ export default class DynamicEditor extends Component {
     this.plugins = [toolbarPlugin];
 
     this.state = {
-      editorState: this.props.editorState ? this.props.editorState : createEditorStateWithText(text),
-    }
+      editorState: this.props.editorState
+        ? this.props.editorState
+        : createEditorStateWithText(text),
+    };
+  }
+
+  componentDidMount() {
+    // When editor is changed to editing mode, the editor will be focused,
+    // and cursor set to end of content
+    this.focus();
+    this.moveSelectionToEnd();
+  }
+
+  moveSelectionToEnd() {
+    let { editorState } = this.state;
+    const content = editorState.getCurrentContent();
+    const blockMap = content.getBlockMap();
+
+    const key = blockMap.last().getKey();
+    const length = blockMap.last().getLength();
+
+    // On Chrome and Safari, calling focus on contenteditable focuses the
+    // cursor at the first character. This is something you don't expect when
+    // you're clicking on an input element but not directly on a character.
+    // Put the cursor back where it was before the blur.
+    const selection = new SelectionState({
+      anchorKey: key,
+      anchorOffset: length,
+      focusKey: key,
+      focusOffset: length,
+    });
+    this.setState({
+      editorState: EditorState.forceSelection(editorState, selection),
+    });
+  }
+
+  componentWillUnmount() {
+    // save to API if the step exits out of edit mode
+    const value = JSON.stringify(
+      convertToRaw(this.state.editorState.getCurrentContent())
+    );
+    this.props.immediateUpdate(value);
   }
 
   onChange = (editorState) => {
+    // need to maintain internal editorState to maintain cursor position
     this.setState({
       editorState,
     });
     const value = JSON.stringify(convertToRaw(editorState.getCurrentContent()));
-    // const blocks = convertToRaw(editorState.getCurrentContent()).blocks;
-    // const value = blocks.map(block => (!block.text.trim() && '\n') || block.text).join('\n');
-    this.props.onChange(value); //added
+    // need to maintain editorState in parent component as well to save to backend
+    // backend is saved on a timer, this onChange function will reset the timer
+    this.props.onChange(value);
   };
 
   focus = () => {

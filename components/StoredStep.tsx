@@ -20,12 +20,8 @@ type StoredStepProps = {
   text: any;
   lines: { start: number; end: number };
   index: number;
-  updateStoredStep: (
-    text: any,
-    stepId: any,
-    oldLines: any,
-    removeLines: any
-  ) => void;
+  mutateStoredStep: (text: string, stepId: string) => void;
+  saveStepToBackend: (stepId: string, text: string) => void;
   deleteStoredStep: (stepId: any) => void;
   moveStepUp: (stepId: any) => void;
   moveStepDown: (stepId: any) => void;
@@ -36,49 +32,62 @@ type StoredStepProps = {
   attachedFileId: string;
 };
 
-type StoredStepState = {
-  stepText: any;
-};
+// timer to make sure that content is saved 3 seconds after user stops typing
+let timer: ReturnType<typeof setTimeout>;
+const WAIT_INTERVAL = 3000;
 
 export default class StoredStep extends Component<
   StoredStepProps,
-  StoredStepState
+  { loading: boolean }
 > {
   constructor(props: StoredStepProps) {
     super(props);
     this.deleteStoredStep = this.deleteStoredStep.bind(this);
-    this.editStoredStep = this.editStoredStep.bind(this);
-    this.updateStoredStep = this.updateStoredStep.bind(this);
     this.moveStepUp = this.moveStepUp.bind(this);
     this.moveStepDown = this.moveStepDown.bind(this);
+    this.immediateUpdate = this.immediateUpdate.bind(this);
+    this.handleTimeout = this.handleTimeout.bind(this);
+
     this.state = {
-      stepText: this.props.text,
+      // loading boolean is to allow an indicator to show up
+      // when the step is saving content to backend
+      loading: false,
     };
   }
 
-  onChange = (stepText: any) => {
-    this.setState({
-      stepText,
-    });
+  // mutates the content, and saves the content to the backend
+  immediateUpdate(stepText: string) {
+    let stepId = this.props.id;
+    this.props.mutateStoredStep(stepId, stepText);
+    this.props.saveStepToBackend(stepId, stepText);
+  }
+
+  // essentially just triggering time
+  onChange = (stepText: string) => {
+    clearTimeout(timer!);
+    timer = setTimeout(() => {
+      this.handleTimeout(stepText);
+    }, WAIT_INTERVAL);
   };
+
+  handleTimeout(stepText: string) {
+    let stepId = this.props.id;
+    this.setState(
+      {
+        loading: true,
+      },
+      async () => {
+        this.props.mutateStoredStep(stepId, stepText);
+        await this.props.saveStepToBackend(stepId, stepText);
+        this.setState({
+          loading: false,
+        });
+      }
+    );
+  }
 
   deleteStoredStep(e: React.MouseEvent<any>) {
     this.props.deleteStoredStep(this.props.id);
-  }
-
-  editStoredStep(e: React.MouseEvent<HTMLButtonElement>) {
-    this.props.changeEditingStep(this.props.index);
-  }
-
-  updateStoredStep(
-    e: React.MouseEvent<HTMLButtonElement>,
-    removeLines: boolean
-  ) {
-    let text = this.state.stepText;
-    let stepId = this.props.id;
-    this.props.updateStoredStep(stepId, text, this.props.lines, removeLines);
-
-    this.props.changeEditingStep(-1);
   }
 
   moveStepUp() {
@@ -90,12 +99,18 @@ export default class StoredStep extends Component<
   }
 
   render() {
-    let { saveLines, files, attachedFileId } = this.props;
+    let {
+      saveLines,
+      files,
+      attachedFileId,
+      index,
+      changeEditingStep,
+    } = this.props;
     const contentState = convertFromRaw(this.props.text);
     const editorState = EditorState.createWithContent(contentState);
     const editing = this.props.editing;
 
-    let name = ""
+    let name = "";
     for (let i = 0; i < files.length; i++) {
       if (files[i].id === attachedFileId) {
         name = files[i].name;
@@ -106,22 +121,25 @@ export default class StoredStep extends Component<
       <div>
         {editing ? (
           <EditingStoredStep
-            updateStoredStep={this.updateStoredStep}
             onChange={this.onChange}
             editorState={editorState}
             lines={this.props.lines}
             saveLines={saveLines}
             attachedFileName={name}
+            immediateUpdate={this.immediateUpdate}
+            loading={this.state.loading}
+            changeEditingStep={changeEditingStep}
           />
         ) : (
           <RenderedStoredStep
-            editStoredStep={this.editStoredStep}
+            changeEditingStep={changeEditingStep}
             deleteStoredStep={this.deleteStoredStep}
             moveStepUp={this.moveStepUp}
             moveStepDown={this.moveStepDown}
             lines={this.props.lines}
             editorState={editorState}
             attachedFileName={name}
+            index={index}
           />
         )}
       </div>
