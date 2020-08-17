@@ -30,6 +30,7 @@ export function useFiles(draftId: any, draftFiles: any, mutate: any) {
     */
   var [codeFiles, updateFiles] = useState<File[]>(files.slice());
   if (
+    files.length != 0 &&
     files[0]["id"] !== codeFiles[0]["id"] ||
     files.length !== codeFiles.length
   ) {

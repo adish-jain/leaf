@@ -28,7 +28,13 @@ async function getTitleHandler(req: NextApiRequest, res: NextApiResponse) {
     .collection("drafts")
     .doc(draftId)
     .get();
-  let title = draftData.data().title;
+  
+  let title;
+  try {
+    title = draftData.data().title;
+  } catch {
+    title = "";
+  }
 
   res.statusCode = 200;
   res.send({draftTitle: title});
