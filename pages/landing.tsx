@@ -4,7 +4,7 @@ const moment = require("moment");
 const fetch = require("node-fetch");
 global.Headers = fetch.Headers;
 const landingStyles = require("../styles/Landing.module.scss");
-import { useLoggedIn, logOut } from "../lib/UseLoggedIn";
+import { useLoggedIn, logOut, goToIndex } from "../lib/UseLoggedIn";
 import { useDrafts } from "../lib/useDrafts";
 import { useUserInfo } from "../lib/useUserInfo";
 import { usePosts, goToPost } from "../lib/usePosts";
@@ -88,7 +88,7 @@ export default function Landing() {
         />
       </Head>
       <main>
-        <LandingHeader userInfo={{ username: username }} />
+        <NavBar userInfo={{ username: username }}/>
         <div className={landingStyles.landing}>
           <YourDrafts
             deleteDraft={deleteDraft}
@@ -352,19 +352,46 @@ function Draft(props: DraftProps) {
   );
 }
 
-function LandingHeader(props: any) {
+function NavBar(props: any) {
   return (
-    <div className={landingStyles.header}>
-      <button className={landingStyles.Logout} onClick={logOut}>
-        Logout
-      </button>
+      <div className={landingStyles.header}>
+        <Logo />
+        <div className={landingStyles.Login}>
+          <Link href={"/" + props.userInfo.username}>
+              <a>Profile</a>
+          </Link>
+        </div>
+        <Settings />
+        <Logout />
+      </div>
+  );
+}
+
+function Logo() {
+  return (
+      <div className={landingStyles.Logo} onClick={goToIndex}> 
+          <img src="/images/icon.svg"/>
+      </div>  
+  );
+}
+
+function Logout() {
+  return (
+      <div className={landingStyles.Login} onClick={logOut}>
+      <Link href="/login">
+          <a>Logout</a>
+      </Link>
+      </div>
+  );
+}
+
+function Settings() {
+  return (
+      <div className={landingStyles.Login}>
       <Link href="/settings">
-        <a>Settings</a>
+          <a>Settings</a>
       </Link>
-      <Link href={"/" + props.userInfo.username}>
-        <a>My Profile</a>
-      </Link>
-    </div>
+      </div>
   );
 }
 
