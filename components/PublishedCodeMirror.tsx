@@ -9,13 +9,19 @@ require("codemirror/mode/jsx/jsx");
 type CodeMirrorProps = {
   currentStep: StepType;
   currentFile: File;
+  lines: Lines;
+};
+
+type Lines = {
+  start: number;
+  end: number;
 };
 
 type StepType = {
   text: string;
   id: string;
-  fileName: string;
-  lines: { start: number; end: number };
+  fileId: string;
+  lines: Lines;
 };
 
 type CodeMirrorState = {};
@@ -63,15 +69,23 @@ export default class PublishedCodeMirror extends Component<
   }
 
   updateLines() {
-    let { currentStep } = this.props;
+    let { currentStep, currentFile } = this.props;
 
     // clear previous highlighted lines
     for (let i = 0; i < markers.length; i++) {
       markers[i].clear();
     }
 
+    if (currentStep.fileId !== currentFile.id) {
+      return;
+    }
+
     // mark new lines
-    if (currentStep && currentStep.lines !== null && currentStep.lines !== undefined) {
+    if (
+      currentStep &&
+      currentStep.lines !== null &&
+      currentStep.lines !== undefined
+    ) {
       let newMarker = this.instance?.markText(
         { line: currentStep.lines.start, ch: 0 },
         { line: currentStep.lines.end, ch: 5 },
