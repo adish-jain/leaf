@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Controlled as CodeMirror2 } from "react-codemirror2";
 import { Editor } from "draft-js";
+import animateScrollTo from "animated-scroll-to";
 
 // require('codemirror/mode/xml/xml');
 // require('codemirror/mode/javascript/javascript');
@@ -10,6 +11,8 @@ type CodeMirrorProps = {
   currentStep: StepType;
   currentFile: File;
   lines: Lines;
+  editorInstance: CodeMirror.Editor | undefined;
+  mountEditor: (editor: CodeMirror.Editor) => void;
 };
 
 type Lines = {
@@ -64,8 +67,16 @@ export default class PublishedCodeMirror extends Component<
     this.updateLines();
   }
 
-  componentDidUpdate(prevProps: CodeMirrorProps) {
+  getSnapshotBeforeUpdate(
+    prevProps: CodeMirrorProps,
+    prevState: CodeMirrorState
+  ) {
     this.updateLines();
+    return null;
+  }
+
+  componentDidUpdate(prevProps: CodeMirrorProps) {
+    // this.updateLines();
   }
 
   updateLines() {
@@ -87,8 +98,8 @@ export default class PublishedCodeMirror extends Component<
       currentStep.lines !== undefined
     ) {
       let newMarker = this.instance?.markText(
-        { line: currentStep.lines.start, ch: 0 },
-        { line: currentStep.lines.end, ch: 5 },
+        { line: currentStep.lines.start - 1, ch: 0 },
+        { line: currentStep.lines.end - 1, ch: 80 },
         {
           className: "MarkText",
         }
@@ -97,11 +108,16 @@ export default class PublishedCodeMirror extends Component<
 
       // get top position of selected line and scroll to it
       let t = this.instance!.charCoords(
-        { line: currentStep.lines.start, ch: 0 },
+        { line: currentStep.lines.start - 1, ch: 0 },
         "local"
       ).top;
-      let middleHeight = this.instance!.getScrollerElement().offsetHeight / 2;
-      this.instance?.scrollTo(null, t - middleHeight - 5);
+      // let middleHeight = this.instance!.getScrollerElement().offsetHeight / 2;
+
+      let animationOptions = {
+        elementToScroll: this.instance!.getScrollerElement(),
+      };
+      console.log("animating");
+      animateScrollTo(t, animationOptions);
     }
   }
 
@@ -128,16 +144,14 @@ export default class PublishedCodeMirror extends Component<
           onSelection={(editor, data) => {}}
           editorDidMount={(editor) => {
             this.instance = editor;
+            // this.props.mountEditor(editor);
             editor.setSize("100%", "100%");
+            // this.props.editorInstance!.setSize("100%", "100%");
           }}
           scroll={{
-            y: 0,
+            // y: 0,
           }}
-          onBeforeChange={(editor, data, value) => {
-            this.setState({
-              value,
-            });
-          }}
+          onBeforeChange={(editor, data, value) => {}}
         />
       </div>
     );

@@ -34,6 +34,8 @@ type PublishedCodeEditorProps = {
   files: File[];
   currentFile: File;
   updateFile: (fileIndex: number) => void;
+  editorInstance: CodeMirror.Editor | undefined;
+  mountEditor: (editor: CodeMirror.Editor) => void;
 };
 
 type PublishedCodeEditorState = {
@@ -53,7 +55,14 @@ export default class PublishedCodeEditor extends Component<
   }
 
   render() {
-    let { files, currentFile, currentStep, updateFile } = this.props;
+    let {
+      files,
+      currentFile,
+      currentStep,
+      updateFile,
+      editorInstance,
+      mountEditor,
+    } = this.props;
     return (
       <div className={PublishedCodeEditorStyles["editor-wrapper"]}>
         <PublishedFileBar
@@ -66,6 +75,8 @@ export default class PublishedCodeEditor extends Component<
             //@ts-ignore
             currentFile={currentFile}
             currentStep={currentStep}
+            editorInstance={editorInstance}
+            mountEditor={mountEditor}
           />
         }
         <PublishedLanguageBar language={currentFile.language} />
