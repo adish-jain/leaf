@@ -65,16 +65,8 @@ export default class PublishedCodeMirror extends Component<
     this.updateLines();
   }
 
-  getSnapshotBeforeUpdate(
-    prevProps: CodeMirrorProps,
-    prevState: CodeMirrorState
-  ) {
-    this.updateLines();
-    return null;
-  }
-
   componentDidUpdate(prevProps: CodeMirrorProps) {
-    // this.updateLines();
+    this.updateLines();
   }
 
   updateLines() {
