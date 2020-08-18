@@ -1,5 +1,7 @@
 import React, { useState, Component } from "react";
 import Scrolling from "./Scrolling";
+import animateScrollTo from "animated-scroll-to";
+
 import PublishedCodeEditor from "./PublishedCodeEditor";
 const appStyles = require("../styles/App.module.scss");
 
@@ -27,7 +29,9 @@ const stepsInView: { [stepIndex: number]: boolean } = {};
 
 const FinishedPost = (props: FinishedPostProps) => {
   const [currentStepIndex, updateStep] = useState(0);
-  const [currentFile, updateFile] = useState(0);
+  const [currentFileIndex, updateFile] = useState(0);
+  let editorInstance: CodeMirror.Editor | undefined = undefined;
+  const markers: CodeMirror.TextMarker[] = [];
 
   function changeStep(newStep: number, yPos: number, entered: boolean) {
     // stepsInView keeps track of what steps are inside the viewport
@@ -45,6 +49,7 @@ const FinishedPost = (props: FinishedPostProps) => {
           }
         }
         updateStep(stepIndex);
+
         // this is the first step in view, so we break
         break;
       }
@@ -60,7 +65,7 @@ const FinishedPost = (props: FinishedPostProps) => {
         steps={props.steps}
       />
       <PublishedCodeEditor
-        currentFile={props.files[currentFile]}
+        currentFile={props.files[currentFileIndex]}
         files={props.files}
         currentStep={props.steps[currentStepIndex]}
         updateFile={updateFile}

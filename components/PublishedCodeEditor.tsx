@@ -53,7 +53,12 @@ export default class PublishedCodeEditor extends Component<
   }
 
   render() {
-    let { files, currentFile, currentStep, updateFile } = this.props;
+    let {
+      files,
+      currentFile,
+      currentStep,
+      updateFile,
+    } = this.props;
     return (
       <div className={PublishedCodeEditorStyles["editor-wrapper"]}>
         <PublishedFileBar

@@ -47,6 +47,7 @@ export default class Step extends Component<
         </div>
         <div
           onClick={(e) => {
+            e.stopPropagation();
             this.props.deleteStoredStep(e);
           }}
           className={StepStyles.Close}
