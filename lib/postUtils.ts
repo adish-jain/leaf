@@ -47,7 +47,7 @@ export async function getDraftDataHandler(uid: string, draftId: string) {
     };
     return results;
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     let results = {
       title: "",
       files: [],

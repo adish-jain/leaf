@@ -135,7 +135,8 @@ export function useSteps(draftId: string, authenticated: boolean) {
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify(data),
     }).then(async (res: any) => {
-      // console.log(res);
+      // let resJSON = await res.json();
+      // mutate(resJSON, false);
     });
   }
 
