@@ -11,8 +11,6 @@ type CodeMirrorProps = {
   currentStep: StepType;
   currentFile: File;
   lines: Lines;
-  editorInstance: CodeMirror.Editor | undefined;
-  mountEditor: (editor: CodeMirror.Editor) => void;
 };
 
 type Lines = {
@@ -111,12 +109,12 @@ export default class PublishedCodeMirror extends Component<
         { line: currentStep.lines.start - 1, ch: 0 },
         "local"
       ).top;
-      // let middleHeight = this.instance!.getScrollerElement().offsetHeight / 2;
 
       let animationOptions = {
         elementToScroll: this.instance!.getScrollerElement(),
+        // add offset so scrolled to line isnt exactly at top
+        verticalOffset: -50,
       };
-      console.log("animating");
       animateScrollTo(t, animationOptions);
     }
   }
@@ -144,9 +142,7 @@ export default class PublishedCodeMirror extends Component<
           onSelection={(editor, data) => {}}
           editorDidMount={(editor) => {
             this.instance = editor;
-            // this.props.mountEditor(editor);
             editor.setSize("100%", "100%");
-            // this.props.editorInstance!.setSize("100%", "100%");
           }}
           scroll={{
             // y: 0,
