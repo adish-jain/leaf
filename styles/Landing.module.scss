@@ -99,11 +99,11 @@
 
   .Logo {
     display: flex;
+    margin-left: 1rem;
     align-self: flex-start;
     margin-right: auto;
     img {
-        height: auto;
-        width: 100px; 
+      height: 60px; 
     }
   
     img:hover {
