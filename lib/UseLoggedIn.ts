@@ -49,3 +49,23 @@ export function logOut() {
     Router.replace(`/login`);
   });
 }
+
+export function goToIndex() {
+  let data = {
+    requestedAPI: "logout",
+  };
+  fetch("/api/endpoint", {
+    method: "POST",
+    // eslint-disable-next-line no-undef
+    credentials: "same-origin",
+    body: JSON.stringify(data),
+    headers: new Headers({ "Content-Type": "application/json" }),
+  }).then((res) => {
+    console.log(res);
+    Router.replace(`/`);
+  });
+}
+
+export function goToLanding() {
+  Router.replace("/landing");
+}

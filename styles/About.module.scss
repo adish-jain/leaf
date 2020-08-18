@@ -25,19 +25,16 @@
     
     .NavBar {
         display: flex;
-        flex-direction: row;   
+        flex-direction: row;  
         width: 100%; 
 
         .Logo {
             display: flex;
             align-self: flex-start;
-            // margin-bottom: 30px;
-            // margin-left: 3%;
+            margin-right: auto;
+            padding-left: 3rem;
             img {
-                max-width: 50%;
-                height: auto;
-                width: auto; 
-                // border-radius: 20px;
+                height: 60px;
             }
 
             img:hover {
@@ -61,16 +58,6 @@
                 90% { transform: translate(1px, 2px) rotate(0deg); }
                 100% { transform: translate(1px, -2px) rotate(-1deg); }
               }
-              
-
-            
-
-            // font-family: Arial rounded MT bold;
-            // font-style: normal;
-            // font-weight: bold;
-            // font-size: 60px;
-
-            // color: #68B2A0;
             cursor: pointer;
         }
 
@@ -79,13 +66,12 @@
             width: 92px;
             height: 34px;
 
-            padding-top: 20px;
+            padding-top: 30px;
             margin-bottom: 30px;
             margin-right: 2rem;
             justify-content: space-evenly;
-            // align-self: stretch;
 
-            font-family: Arial rounded MT bold;
+            font-family: 'Roboto', sans-serif;
             font-style: normal;
             font-weight: normal;
             font-size: 20px;
@@ -125,8 +111,6 @@
 .accordion {
     display: flex;
     flex-direction: column;
-    // align-items: center;
-    // justify-content: center;
 }
 .accordionItem {
     background-color: #FFFFFF;
@@ -399,29 +383,6 @@
 @media only screen and (max-width: 768px) {
     .Header {
         flex-direction: column;
-    
-        .NavBar {
-            justify-content: center;
-            align-items: center;
-            .Logo {
-                display: flex;
-                align-self: flex-start;
-                margin-bottom: 30px;
-                margin-left: 3%;
-                img {
-                    min-width: 30%;
-                    height: auto;
-                    width: 30%;  
-                    // border-radius: 20px;
-                }
-            }
-
-            .Login {  
-                align-self: flex-end;
-                padding-right: 0px;  
-                font-size: 15px;
-            }    
-        }
     }
 }
   
@@ -430,26 +391,6 @@
     .Header {
         display: flex;
         flex-direction: column;
-
-        .NavBar {
-            .Logo {
-                display: flex;
-                align-self: flex-start;
-                margin-bottom: 30px;
-                margin-left: 3%;
-                img {
-                    min-width: 20%;
-                    height: auto;
-                    width: 20%; 
-                    // border-radius: 20px;
-                }
-            }
-            .Login {  
-                align-self: flex-end;
-                padding-right: 0px;  
-                font-size: 15px;
-            }    
-        }
     }
 }
 
@@ -458,26 +399,6 @@
     .Header {
         display: flex;
         flex-direction: column;
-
-        .NavBar {
-            .Logo {
-                display: flex;
-                align-self: flex-start;
-                margin-bottom: 30px;
-                margin-left: 3%;
-                img {
-                    min-width: 20%;
-                    height: auto;
-                    width: 20%; 
-                    // border-radius: 20px;
-                }
-            }
-            .Login {  
-                align-self: flex-end;
-                padding-right: 0px;  
-                font-size: 20px;
-            }    
-        }
     }
 }
 
@@ -486,27 +407,5 @@
     .Header {
         display: flex;
         flex-direction: column;
-
-        .NavBar {
-            .Logo {
-                display: flex;
-                align-self: flex-start;
-                // margin-bottom: 30px;
-                padding-top: 20px;
-                margin-left: 3%;
-                img {
-                    min-width: 10%;
-                    height: auto;
-                    width: 12%; 
-                    // border-radius: 20px;
-                }
-            }
-            .Login {  
-                align-self: flex-end;
-                padding-right: 0px;
-                font-size: 20px;
-            }
-        
-        }
     }
 }

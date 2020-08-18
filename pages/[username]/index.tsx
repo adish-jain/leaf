@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import Scrolling from "../../components/Scrolling";
 import { getUserPosts, getUidFromUsername } from "../../lib/userUtils";
+import { goToLanding } from "../../lib/UseLoggedIn";
 import getUsernames from "../../lib/api/getUsernames";
 const profileStyles = require("../../styles/Profile.module.scss");
 import DefaultErrorPage from "next/error";
@@ -96,6 +97,9 @@ const UserPage = (props: UserPageProps) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
+        <div className={profileStyles.Logo} onClick={goToLanding}> 
+            <img src="/images/icon.svg"/>
+        </div>  
         <div className={profileStyles["Content"]}>
           <h1 className={profileStyles["Header"]}>{props.username}</h1>
           {posts.length === 0 ? (

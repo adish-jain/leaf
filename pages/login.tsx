@@ -116,6 +116,11 @@ export default function Login() {
     updateErrored(false);
   }
 
+  const goToIndex = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    router.push("/");
+  };
+
   return (
     <div className="container">
       <Head>
@@ -132,7 +137,9 @@ export default function Login() {
         />
       </Head>
       <main className={loginStyles.LoginMain}>
-        <div className={loginStyles.Logo}></div>
+        <div className={loginStyles.Logo}>
+          <Logo goToIndex={goToIndex}/>
+        </div>
         <div className={loginStyles.Login}>
           {forgotPassword ? 
           ( 
@@ -233,5 +240,13 @@ function LoginScreen(
         </div>
       </div>
     </div>
+  );
+}
+
+function Logo(props: {goToIndex: any}) {
+  return (
+      <div className={loginStyles.Logo} onClick={props.goToIndex}> 
+          <img src="/images/icon.svg"/>
+      </div>  
   );
 }

@@ -86,6 +86,11 @@ export default function SignUp() {
       });
   };
 
+  const goToIndex = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    router.push("/");
+  };
+
   return (
     <div className="container">
       <Head>
@@ -102,7 +107,9 @@ export default function SignUp() {
         />
       </Head>
       <main className={loginStyles.LoginMain}>
-        <div className={loginStyles.Logo}></div>
+        <div className={loginStyles.Logo}>
+          <Logo goToIndex={goToIndex}/>
+        </div>
         <style jsx global>{`
           html {
             height: 100%;
@@ -155,5 +162,13 @@ export default function SignUp() {
         </div>
       </main>
     </div>
+  );
+}
+
+function Logo(props: {goToIndex: any}) {
+  return (
+      <div className={loginStyles.Logo} onClick={props.goToIndex}> 
+          <img src="/images/icon.svg"/>
+      </div>  
   );
 }
