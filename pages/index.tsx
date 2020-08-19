@@ -209,11 +209,14 @@ export default function Pages() {
       </Head>
       <main className={indexStyles.MainWrapper}>
         <Header goToIndex={goToIndex}/>
+        <Block1 />
         <Title />
         {/* <Tutorial /> */}
         <Row1 />
+        <Block2 />
         <Row2 />
         <Row3 />
+        <Block3 />
         <Row4 />
         <Footer goToIndex={goToIndex}/>
       </main>
@@ -285,7 +288,7 @@ function Title() {
   return (
       <div className={indexStyles.Title}> 
         <TitleText />
-        <GetStarted />
+        {/* <GetStarted /> */}
       </div>
   )
 }
@@ -293,37 +296,67 @@ function Title() {
 function TitleText() {
   return (
     <div className={indexStyles.Title}>
-      <img src="/images/web.svg"/>
-      <div className={indexStyles.h1Text}>
-          A platform built from the ground up, <br></br>for coding tutorials
-      </div>
-      <div className={indexStyles.h2Text}>
-          Say goodbye to publishing code snippets on Medium
+      {/* <img src="/images/web.svg"/> */}
+      <div className={indexStyles.Banner}>
+        <div className={indexStyles.Text}>
+          <div className={indexStyles.h1Text}>
+              A new way to convey
+          </div>
+          <div className={indexStyles.h2Text}>
+            Leaf is a platform built from the ground up, <br></br>for coding tutorials
+          </div>
+          <div className={indexStyles.TitleButtons}>
+              <Link href="/signup">
+                <div className={indexStyles.GetStarted}>
+                  <div className={indexStyles.button}>
+                    Get Started
+                  </div>
+                </div>
+              </Link>
+              <Link href="/signup">
+                <div className={indexStyles.Examples}>
+                  <div className={indexStyles.button}>
+                    Learn More
+                  </div>
+                </div>
+              </Link>
+          </div>
+			  </div>
+        <div className={indexStyles.computer}>
+            <img src="https://www.bebold.ch/img/home/macbook-white.png"/>
+            <div className={indexStyles.tutorial}></div>
+        </div>
       </div>
     </div>
   );
 }
 
-function GetStarted() {
-  return (
-    <div className={indexStyles.TitleButtons}>
-        <Link href="/signup">
-          <div className={indexStyles.GetStarted}>
-            <div className={indexStyles.button}>
-              Get Started
-            </div>
-          </div>
-        </Link>
-        <Link href="/signup">
-          <div className={indexStyles.Examples}>
-            <div className={indexStyles.button}>
-              Learn More
-            </div>
-          </div>
-        </Link>
-    </div>
-  );
-}
+// function GetStarted() {
+//   return (
+//     <div className={indexStyles.Title}>
+//       <div className={indexStyles.Banner}>
+//         <div className={indexStyles.Text}>
+//           <div className={indexStyles.TitleButtons}>
+//               <Link href="/signup">
+//                 <div className={indexStyles.GetStarted}>
+//                   <div className={indexStyles.button}>
+//                     Get Started
+//                   </div>
+//                 </div>
+//               </Link>
+//               <Link href="/signup">
+//                 <div className={indexStyles.Examples}>
+//                   <div className={indexStyles.button}>
+//                     Learn More
+//                   </div>
+//                 </div>
+//               </Link>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
 
 function GetStarted2() {
   return (
@@ -382,7 +415,7 @@ function Row4() {
   return (
     <div className={indexStyles.Row4}> 
       <div className={indexStyles.Row4Text}>
-        Get started with Leaf
+        Say goodbye to publishing code snippets on Medium
       </div>
       <GetStarted2 />
     </div>
@@ -395,4 +428,38 @@ function Footer(props: {goToIndex: any}) {
       <NavBar goToIndex={props.goToIndex}/>
     </div>
   );
+}
+
+function Block1() {
+  return (
+    <div className={indexStyles.block1}>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  )
+}
+
+function Block2() {
+  return (
+    <div className={indexStyles.block2}>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  )
+}
+
+
+function Block3() {
+  return (
+    <div className={indexStyles.block3}>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  )
 }
