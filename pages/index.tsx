@@ -214,6 +214,8 @@ export default function Pages() {
         <Row1 />
         <Row2 />
         <Row3 />
+        <Row4 />
+        <Footer goToIndex={goToIndex}/>
       </main>
     </div>
   );
@@ -303,10 +305,31 @@ function TitleText() {
 
 function GetStarted() {
   return (
+    <div className={indexStyles.TitleButtons}>
+        <Link href="/signup">
+          <div className={indexStyles.GetStarted}>
+            <div className={indexStyles.button}>
+              Get Started
+            </div>
+          </div>
+        </Link>
+        <Link href="/signup">
+          <div className={indexStyles.Examples}>
+            <div className={indexStyles.button}>
+              Learn More
+            </div>
+          </div>
+        </Link>
+    </div>
+  );
+}
+
+function GetStarted2() {
+  return (
       <Link href="/signup">
-        <div className={indexStyles.GetStarted}>
+        <div className={indexStyles.GetStarted2}>
           <div className={indexStyles.button}>
-            Get Started
+            Sign Up
           </div>
         </div>
       </Link>
@@ -350,6 +373,25 @@ function Row3() {
           <img src="/images/publish.svg" />
         </div>
         <img src="/images/ex.svg" />
+    </div>
+  );
+}
+
+function Row4() {
+  return (
+    <div className={indexStyles.Row4}> 
+      <div className={indexStyles.Row4Text}>
+        Get started with Leaf
+      </div>
+      <GetStarted2 />
+    </div>
+  );
+}
+
+function Footer(props: {goToIndex: any}) {
+  return (
+    <div className={indexStyles.Footer}>
+      <NavBar goToIndex={props.goToIndex}/>
     </div>
   );
 }
