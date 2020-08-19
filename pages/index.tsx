@@ -293,6 +293,7 @@ function Title() {
 function TitleText() {
   return (
     <div className={indexStyles.Title}>
+      <img src="/images/web.svg"/>
       <div className={indexStyles.h1Text}>
           A platform built from the ground up, <br></br>for coding tutorials
       </div>
