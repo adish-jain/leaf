@@ -210,7 +210,7 @@ export default function Pages() {
       <main className={indexStyles.MainWrapper}>
         <Header goToIndex={goToIndex}/>
         <Title />
-        <Tutorial />
+        {/* <Tutorial /> */}
         <Row1 />
         <Row2 />
         <Row3 />
@@ -281,10 +281,10 @@ function About() {
 
 function Title() {
   return (
-    <div className={indexStyles.Title}> 
-      <TitleText />
-      <GetStarted />
-    </div>
+      <div className={indexStyles.Title}> 
+        <TitleText />
+        <GetStarted />
+      </div>
   )
 }
 
@@ -313,46 +313,43 @@ function GetStarted() {
   );
 }
 
-function Tutorial() {
-  return (
-    <div className={indexStyles.Tutorial}> 
-      {/* <img src="/images/ex.png"/> */}
-    </div>
-  )
-}
+// function Tutorial() {
+//   return (
+//     <div className={indexStyles.Tutorial}> 
+//       <img src="/images/ex.svg"/>
+//     </div>
+//   )
+// }
 
 function Row1() {
   return (
-    <div>
-      <div className={indexStyles.RowHeader}>
-        <img src="/images/steps.svg" />
-      </div>
       <div className={indexStyles.Row1}> 
-      </div>
+        <div className={indexStyles.RowHeader}>
+          <img src="/images/steps.svg" />
+        </div>
+        <img src="/images/ex.svg" />
     </div>
   );
 }
 
 function Row2() {
   return (
-    <div>
-      <div className={indexStyles.RowHeader}>
-        <img src="/images/code.svg" />
-      </div>
-      <div className={indexStyles.Row1}> 
-      </div>
+      <div className={indexStyles.Row2}> 
+        <div className={indexStyles.Row2Header}>
+          <img src="/images/code.svg" />
+        </div>
+        <img src="/images/ex.svg" />
     </div>
   );
 }
 
 function Row3() {
   return (
-    <div>
-      <div className={indexStyles.RowHeader}>
-        <img src="/images/publish.svg" />
-      </div>
       <div className={indexStyles.Row1}> 
-      </div>
+        <div className={indexStyles.RowHeader}>
+          <img src="/images/publish.svg" />
+        </div>
+        <img src="/images/ex.svg" />
     </div>
   );
 }
