@@ -377,6 +377,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    
 }
 
 .Header {
@@ -389,13 +390,14 @@
     top: 0px;
     
     background: #FFFFFF;
-    box-shadow: 0px 2px 12px #F4F4F4;
+    // box-shadow: 0px 2px 12px #F4F4F4;
 
     justify-content: center;
     align-items: center;
     // background: #ffffff;
     
     .NavBar {
+        // background: transparent;
         display: flex;
         flex-direction: row;   
         width: 100%; 
@@ -413,10 +415,12 @@
                 height: 60px;
             }
             cursor: pointer;
+            z-index: 1;
         }
 
 
         .Login {
+            z-index: 1;
             display: flex;
             width: 92px;
             height: 34px;
@@ -447,27 +451,26 @@
 }
 
 .Title {
+    // opacity: 0.5;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    // background-image: url("/images/ex.svg");
-    // background-repeat: no-repeat;
-    // background-position: center center;
-    // filter: blur(8px);
-    // -webkit-filter: blur(8px);
-    // text-align: center;
-    img {
-        width: 35%;
-        height: auto;
-    }
+
+    // img {
+    //     background: transparent;
+    //     width: 35%;
+    //     height: auto;
+    // }
     .Banner{
+        background: transparent;
         display: flex;
         flex-direction: row;
         width: 100%;
         align-items: center;
         justify-content: center;
         .Text {
+            background: transparent;
             margin-left: 5rem;
             display: flex;
             flex-direction: column;
@@ -476,6 +479,7 @@
             align-items: center;
             justify-content: center;
             .h1Text {
+                z-index: 1;
                 width: 100%;
                 height: 92px;
                 left: 29px;
@@ -495,6 +499,7 @@
                 color: #000000;
             }
             .h2Text {
+                z-index: 1;
                 width: 100%;
                 height: 46px;
                 // margin-left: 251px;
@@ -514,6 +519,7 @@
         
             }
             .TitleButtons {
+                background: transparent;
                 display: flex;
                 flex-direction: row;
                 padding: 16px;
@@ -522,8 +528,9 @@
                 // justify-content: center;
                 // justify-content: space-evenly;
                 .GetStarted {
-                    width: 200px;
-                    height: 78px;
+                    z-index: 1;
+                    width: 180px;
+                    height: 70px;
                     // left: 596px;
                     margin-right: 20px;
                     margin-top: 28px;
@@ -539,14 +546,14 @@
                     font-family: Helvetica;
                     font-style: normal;
                     font-weight: bold;
-                    font-size: 30px;
+                    font-size: 24px;
                     line-height: 46px;
                     /* identical to box height */
                     
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    border-radius: 18px;
+                    border-radius: 36px;
                     
                     color: #FFFFFF;
                 
@@ -554,8 +561,9 @@
                 }
         
                 .Examples {
-                    width: 200px;
-                    height: 78px;
+                    z-index: 1;
+                    width: 180px;
+                    height: 70px;
                     // left: 596px;
                     margin-top: 28px;
                     
@@ -570,14 +578,14 @@
                     font-family: Helvetica;
                     font-style: normal;
                     font-weight: bold;
-                    font-size: 30px;
+                    font-size: 24px;
                     line-height: 46px;
                     /* identical to box height */
                     
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    border-radius: 18px;
+                    border-radius: 36px;
                 
                     cursor: pointer;
                 }
@@ -757,6 +765,7 @@
         color: #000000;
     }
     .GetStarted2 {
+        z-index: 1;
         width: 248px;
         height: 78px;
         // left: 596px;
@@ -780,7 +789,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 18px;
+        border-radius: 36px;
         
         color: #FFFFFF;
     
@@ -856,7 +865,7 @@
     }
 }
 
-.block1 {
+.Stripe1 {
     width: 100%;
     height: 760px;
     background: linear-gradient(150deg, rgb(131, 110, 237) 15%, #05d5ff 70%, #a6ffcb 94%);
@@ -865,35 +874,9 @@
     opacity: 0.2;
     transform: skewY(-6deg);
     transform-origin: 0;
-
-    .block1 span {
-        height: 190px;
-        position: absolute;
-     }
-     .block1 span:nth-child(1) { // Select the 4th span inside .block 
-        width: 33.33333%;
-        bottom: 0;
-        background: #1fa2ff;
-     }
-     .block1 span:nth-child(2) { // Select the 4th span inside .block 
-        width: 33.33333%;
-        bottom: 0;
-        background: #1fa2ff;
-     }
-     .block1 span:nth-child(3) { // Select the 4th span inside .block 
-        width: 33.33333%;
-        bottom: 0;
-        background: #1fa2ff;
-     }
-
-     .block1 span:nth-child(4) { // Select the 4th span inside .block 
-        width: 33.33333%;
-        bottom: 0;
-        background: #1fa2ff;
-     }
  }
 
- .block2 {
+ .Stripe2 {
     margin-top: 1850px;
     width: 100%;
     height: 760px;
@@ -903,35 +886,9 @@
     opacity: 0.2;
     transform: skewY(-6deg);
     transform-origin: 0;
-
-    .block2 span {
-        height: 190px;
-        position: absolute;
-     }
-     .block2 span:nth-child(1) { // Select the 4th span inside .block 
-        width: 33.33333%;
-        bottom: 0;
-        background: #1fa2ff;
-     }
-     .block2 span:nth-child(2) { // Select the 4th span inside .block 
-        width: 33.33333%;
-        bottom: 0;
-        background: #1fa2ff;
-     }
-     .block2 span:nth-child(3) { // Select the 4th span inside .block 
-        width: 33.33333%;
-        bottom: 0;
-        background: #1fa2ff;
-     }
-
-     .block2 span:nth-child(4) { // Select the 4th span inside .block 
-        width: 33.33333%;
-        bottom: 0;
-        background: #1fa2ff;
-     }
  }
 
- .block3 {
+ .Stripe3 {
     margin-top: 3350px;
     width: 100%;
     height: 300px;
@@ -941,30 +898,4 @@
     opacity: 0.2;
     transform: skewY(5deg);
     transform-origin: 0;
-
-    .block3 span {
-        height: 190px;
-        position: absolute;
-     }
-     .block3 span:nth-child(1) { // Select the 4th span inside .block 
-        width: 33.33333%;
-        bottom: 0;
-        background: #1fa2ff;
-     }
-     .block3 span:nth-child(2) { // Select the 4th span inside .block 
-        width: 33.33333%;
-        bottom: 0;
-        background: #1fa2ff;
-     }
-     .block3 span:nth-child(3) { // Select the 4th span inside .block 
-        width: 33.33333%;
-        bottom: 0;
-        background: #1fa2ff;
-     }
-
-     .block3 span:nth-child(4) { // Select the 4th span inside .block 
-        width: 33.33333%;
-        bottom: 0;
-        background: #1fa2ff;
-     }
  }

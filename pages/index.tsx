@@ -209,14 +209,15 @@ export default function Pages() {
       </Head>
       <main className={indexStyles.MainWrapper}>
         <Header goToIndex={goToIndex}/>
-        <Block1 />
+        <Stripe1 />
+
         <Title />
         {/* <Tutorial /> */}
         <Row1 />
-        <Block2 />
+        <Stripe2 />
         <Row2 />
         <Row3 />
-        <Block3 />
+        <Stripe3 />
         <Row4 />
         <Footer goToIndex={goToIndex}/>
       </main>
@@ -430,36 +431,24 @@ function Footer(props: {goToIndex: any}) {
   );
 }
 
-function Block1() {
+function Stripe1() {
   return (
-    <div className={indexStyles.block1}>
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
+    <div className={indexStyles.Stripe1}>
     </div>
   )
 }
 
-function Block2() {
+function Stripe2() {
   return (
-    <div className={indexStyles.block2}>
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
+    <div className={indexStyles.Stripe2}>
     </div>
   )
 }
 
 
-function Block3() {
+function Stripe3() {
   return (
-    <div className={indexStyles.block3}>
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
+    <div className={indexStyles.Stripe3}>
     </div>
   )
 }
