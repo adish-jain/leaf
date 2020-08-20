@@ -54,6 +54,7 @@ export default async function publishPost(
     .replace(/\s+/g, "-")
     .toLowerCase()
     .substr(0, 100);
+  titleWithDashes = titleWithDashes.replace(/[^a-zA-Z ]/g, "");
   let deduplicationId = Math.random().toString(36).substring(2, 10);
   let postId = titleWithDashes + "-" + deduplicationId;
 

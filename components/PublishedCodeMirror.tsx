@@ -8,9 +8,8 @@ import animateScrollTo from "animated-scroll-to";
 require("codemirror/mode/jsx/jsx");
 
 type CodeMirrorProps = {
-  currentStep: StepType;
   currentFile: File;
-  lines: Lines;
+  currentStep?: StepType;
 };
 
 type Lines = {
@@ -77,7 +76,7 @@ export default class PublishedCodeMirror extends Component<
       markers[i].clear();
     }
 
-    if (currentStep.fileId !== currentFile.id) {
+    if (currentStep?.fileId !== currentFile.id) {
       return;
     }
 

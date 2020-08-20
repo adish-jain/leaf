@@ -30,7 +30,7 @@ type StepType = {
 
 type PublishedCodeEditorProps = {
   // changeStep: (newStep: number) => void;
-  currentStep: StepType;
+  currentStep?: StepType;
   files: File[];
   currentFile: File;
   updateFile: (fileIndex: number) => void;
@@ -53,12 +53,7 @@ export default class PublishedCodeEditor extends Component<
   }
 
   render() {
-    let {
-      files,
-      currentFile,
-      currentStep,
-      updateFile,
-    } = this.props;
+    let { files, currentFile, currentStep, updateFile } = this.props;
     return (
       <div className={PublishedCodeEditorStyles["editor-wrapper"]}>
         <PublishedFileBar
@@ -66,13 +61,11 @@ export default class PublishedCodeEditor extends Component<
           files={files}
           currentFile={currentFile}
         />
-        {
-          <PublishedCodeMirror
-            //@ts-ignore
-            currentFile={currentFile}
-            currentStep={currentStep}
-          />
-        }
+        <PublishedCodeMirror
+          //@ts-ignore
+          currentFile={currentFile}
+          currentStep={currentStep}
+        />
         <PublishedLanguageBar language={currentFile.language} />
       </div>
     );
