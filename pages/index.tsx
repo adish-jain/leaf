@@ -324,8 +324,9 @@ function TitleText() {
           </div>
 			  </div>
         <div className={indexStyles.computer}>
-            <img src="https://www.bebold.ch/img/home/macbook-white.png"/>
-            <div className={indexStyles.tutorial}></div>
+          <img src="/images/laptop3.svg"/>
+            {/* <img src="https://www.bebold.ch/img/home/macbook-white.png"/> */}
+            {/* <div className={indexStyles.tutorial}></div> */}
         </div>
       </div>
     </div>

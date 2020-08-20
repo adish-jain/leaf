@@ -390,7 +390,7 @@
     top: 0px;
     
     background: #FFFFFF;
-    // box-shadow: 0px 2px 12px #F4F4F4;
+    box-shadow: 0px 2px 12px #F4F4F4;
 
     justify-content: center;
     align-items: center;
@@ -456,6 +456,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    margin-top: 5rem;
+
 
     // img {
     //     background: transparent;
@@ -524,8 +526,8 @@
                 flex-direction: row;
                 padding: 16px;
                 width: 100%;
-                // align-items: center;
-                // justify-content: center;
+                align-items: center;
+                justify-content: left;
                 // justify-content: space-evenly;
                 .GetStarted {
                     z-index: 1;
@@ -612,6 +614,7 @@
                 // top: 50%;
                 // left: 30%;
                 // margin-left: 10px;
+                // margin-top: 8rem;
                 width: 120%;
                 height: auto;
                 // -webkit-transform: translate(-50%, -50%);
@@ -690,7 +693,7 @@
     text-align: center;
     // background-position: center center;
 
-    margin-top: 48px;
+    margin-top: 130px;
     // margin-left: 10%;
     margin-bottom: 50px;
 
@@ -868,7 +871,10 @@
 .Stripe1 {
     width: 100%;
     height: 760px;
-    background: linear-gradient(150deg, rgb(131, 110, 237) 15%, #05d5ff 70%, #a6ffcb 94%);
+    // background: linear-gradient(0deg, #1D976C 15%,#93F9B9 80%);
+    // background: linear-gradient(150deg, #CC9896 10%, #99D696 45%, #a6ffcb 94%);
+    background: linear-gradient(150deg, #0830C2 15%, #93F9B9 70%, #5084AE 94%);
+    // background: linear-gradient(150deg, #e21515 30%, #F2C14E 70%, #4D9078); 
     position: absolute;
     top: 0;
     opacity: 0.2;
@@ -877,7 +883,7 @@
  }
 
  .Stripe2 {
-    margin-top: 1850px;
+    margin-top: 1790px;
     width: 100%;
     height: 760px;
     background: linear-gradient(150deg, rgb(131, 110, 237) 15%, #05d5ff 70%, #a6ffcb 94%);

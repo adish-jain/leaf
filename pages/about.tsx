@@ -359,7 +359,6 @@ function Team() {
                         <img className={aboutStyles.img__img} src='/images/rah.png'></img>
                         <figcaption>
                             Rahul Sarathy<br></br>
-                            Co-Founder, CEO<br></br>
                         </figcaption>
                     </figure>
                     <div className={aboutStyles.img__description_layer}>
@@ -387,7 +386,6 @@ function Team() {
                         <img className={aboutStyles.img__img} src='/images/adi.png'></img>
                         <figcaption>
                             Adish Jain<br></br>
-                            Co-Founder, CTO<br></br>
                         </figcaption>
                     </figure>
 
