@@ -904,10 +904,12 @@
 .Stripe1 {
     width: 100%;
     height: 760px;
-    background: linear-gradient(150deg, rgb(131, 110, 237) 15%, #05d5ff 70%, #a6ffcb 94%);
+    // background: linear-gradient(150deg, rgb(131, 110, 237) 15%, #05d5ff 70%, #a6ffcb 94%);
+    // background: radial-gradient( circle farthest-corner at 10% 20%,  rgba(50,172,109,1) 0%, rgba(209,251,155,1) 100.2% );
+    background: radial-gradient( circle 827px at 47.3% 48%,  rgba(255,255,255,1) 0%, rgba(138,192,216,1) 90% );
     position: absolute;
     top: 0;
-    opacity: 0.2;
+    opacity: 0.5;
     transform: skewY(-6deg);
     transform-origin: 0;
  }
@@ -918,11 +920,11 @@
     // margin-top: 100%;
     width: 100%;
     height: 760px;
-    background: linear-gradient(150deg, rgb(131, 110, 237) 15%, #05d5ff 70%, #a6ffcb 94%);
+    background: radial-gradient( circle 827px at 47.3% 48%,  rgba(255,255,255,1) 0%, rgba(138,192,216,1) 90% );
     // position: sticky;
     position: absolute;
     top: 0;
-    opacity: 0.2;
+    opacity: 0.5;
     transform: skewY(-6deg);
     transform-origin: 0;
 }
@@ -932,10 +934,10 @@
     // align-self: baseline;
     width: 100%;
     height: 280px;
-    background: linear-gradient(150deg, rgb(131, 110, 237) 15%, #05d5ff 70%, #a6ffcb 94%);
+    background: radial-gradient( circle 827px at 47.3% 48%,  rgba(255,255,255,1) 0%, rgba(138,192,216,1) 90% );
     position: absolute;
     top: 0;
-    opacity: 0.2;
+    opacity: 0.5;
     transform: skewY(5deg);
     transform-origin: 0;
  }
