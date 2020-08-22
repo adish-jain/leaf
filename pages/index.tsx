@@ -214,10 +214,10 @@ export default function Pages() {
         <Title />
         {/* <Tutorial /> */}
         <Row1 />
-        <Stripe2 />
+        {/* <Stripe2 /> */}
         <Row2 />
         <Row3 />
-        <Stripe3 />
+        {/* <Stripe3 /> */}
         <Row4 />
         <Footer goToIndex={goToIndex}/>
       </main>
@@ -394,6 +394,7 @@ function Row1() {
 function Row2() {
   return (
       <div className={indexStyles.Row2}> 
+        <Stripe2 />
         <div className={indexStyles.Row2Header}>
           <img src="/images/code.svg" />
         </div>
@@ -416,6 +417,7 @@ function Row3() {
 function Row4() {
   return (
     <div className={indexStyles.Row4}> 
+      <Stripe3 />
       <div className={indexStyles.Row4Text}>
         Say goodbye to publishing code snippets on Medium
       </div>
