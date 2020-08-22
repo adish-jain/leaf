@@ -368,6 +368,7 @@
 
 .container {
     width: 100%;
+    height: 100%;
 }
 
 .MainWrapper {
@@ -486,6 +487,7 @@
                 height: 92px;
                 left: 29px;
                 margin-top: 40px;
+                margin-bottom: 20px;
                 
                 font-family: Arial;
                 font-style: normal;
@@ -505,7 +507,7 @@
                 width: 100%;
                 height: 46px;
                 // margin-left: 251px;
-                margin-top: 48px;
+                // margin-top: 30px;
                 
                 font-family: Arial;
                 font-style: normal;
@@ -613,35 +615,36 @@
                 // position: absolute;
                 // top: 50%;
                 // left: 30%;
-                // margin-left: 10px;
+                margin-left: 10px;
                 // margin-top: 8rem;
-                width: 120%;
+                width: 100%;
+                // background-attachment: fixed;
                 height: auto;
                 // -webkit-transform: translate(-50%, -50%);
-                transform: translate(-10%, 5%);
+                transform: translate(-5%, 5%);
                 z-index: 1;
             }
-            .tutorial {
-                position: absolute;
-                top: 30%;
-                left: 50%;
-                width: 25%;
-                height: auto;
-                padding-top: 28%;
-                // -webkit-transform: translate(-50%, -50%);
-                // transform: translate(-50%, -50%);
-                background-size: contain;
-                // z-index: 15;
-                // z-index: 0;
-                // -webkit-transition: all 0.3s ease;
-                // transition: all 0.3s ease;
-                // background-position-y: 50%;
-                // background-position-x: 80%;
-                transform: translate(50%, 25%);
-                background-image: url("/images/ex.svg");
-                background-repeat: no-repeat;
-                // background-position: center center;
-            }
+            // .tutorial {
+            //     position: absolute;
+            //     top: 30%;
+            //     left: 50%;
+            //     width: 25%;
+            //     height: auto;
+            //     padding-top: 28%;
+            //     // -webkit-transform: translate(-50%, -50%);
+            //     // transform: translate(-50%, -50%);
+            //     background-size: contain;
+            //     // z-index: 15;
+            //     // z-index: 0;
+            //     // -webkit-transition: all 0.3s ease;
+            //     // transition: all 0.3s ease;
+            //     // background-position-y: 50%;
+            //     // background-position-x: 80%;
+            //     transform: translate(50%, 25%);
+            //     background-image: url("/images/ex.svg");
+            //     background-repeat: no-repeat;
+            //     // background-position: center center;
+            // }
         }
 
         // .computer2 {
@@ -664,26 +667,26 @@
 
 
 
-.Tutorial {
-    margin-top: 106px;
-    margin-bottom: 50px;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    // background-size: contain;
-    img {
-        height: auto;
-        width: 80%;
-    }
-    // width: ;
+// .Tutorial {
+//     margin-top: 106px;
+//     margin-bottom: 50px;
+//     align-items: center;
+//     justify-content: center;
+//     text-align: center;
+//     // background-size: contain;
+//     img {
+//         height: auto;
+//         width: 80%;
+//     }
+//     // width: ;
 
-    // background-image: url("/images/ex.svg");
-    // background-repeat: no-repeat;
-    // background-position: center center;
-    // // background-size: contain;
-    // filter: drop-shadow(0px 2.12355px 2.12355px rgba(0, 0, 0, 0.25));
-    border-radius: 4.24709px;
-}
+//     // background-image: url("/images/ex.svg");
+//     // background-repeat: no-repeat;
+//     // background-position: center center;
+//     // // background-size: contain;
+//     // filter: drop-shadow(0px 2.12355px 2.12355px rgba(0, 0, 0, 0.25));
+//     border-radius: 4.24709px;
+// }
 
 .Row1 {
     display: flex;
@@ -693,7 +696,8 @@
     text-align: center;
     // background-position: center center;
 
-    margin-top: 130px;
+    margin-top: 200px;
+    // margin-top: 3vh;
     // margin-left: 10%;
     margin-bottom: 50px;
 
@@ -705,7 +709,7 @@
 
     .RowHeader {
         align-self: flex-start;
-        margin-left: 128px;
+        // margin-left: 128px;
     }
 
     // background-image: url("/images/ex.svg");
@@ -734,7 +738,7 @@
     }
 
     .Row2Header {
-        display: flex;
+        // display: flex;
         align-self: flex-end;
         // margin-right: 10px;
         // align-self: flex-end;
@@ -744,6 +748,35 @@
     // background-image: url("/images/ex.svg");
     // background-repeat: no-repeat;
     // background-position: center center;
+    filter: drop-shadow(0px 2.12355px 2.12355px rgba(0, 0, 0, 0.25));
+    border-radius: 4.24709px;
+}
+
+.Row3 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    // background-position: center center;
+
+    margin-top: 48px;
+    // margin-left: 10%;
+    margin-bottom: 50px;
+
+    img {
+        height: auto;
+        width: 70%;
+    }
+    // width: 100%;
+
+    .RowHeader {
+        align-self: flex-start;
+        // margin-left: 128px;
+    }
+
+    // background-image: url("/images/ex.svg");
+    // background-repeat: no-repeat;
     filter: drop-shadow(0px 2.12355px 2.12355px rgba(0, 0, 0, 0.25));
     border-radius: 4.24709px;
 }
@@ -871,21 +904,6 @@
 .Stripe1 {
     width: 100%;
     height: 760px;
-    // background: linear-gradient(0deg, #1D976C 15%,#93F9B9 80%);
-    // background: linear-gradient(150deg, #CC9896 10%, #99D696 45%, #a6ffcb 94%);
-    background: linear-gradient(150deg, #0830C2 15%, #93F9B9 70%, #5084AE 94%);
-    // background: linear-gradient(150deg, #e21515 30%, #F2C14E 70%, #4D9078); 
-    position: absolute;
-    top: 0;
-    opacity: 0.2;
-    transform: skewY(-6deg);
-    transform-origin: 0;
- }
-
- .Stripe2 {
-    margin-top: 1790px;
-    width: 100%;
-    height: 760px;
     background: linear-gradient(150deg, rgb(131, 110, 237) 15%, #05d5ff 70%, #a6ffcb 94%);
     position: absolute;
     top: 0;
@@ -894,10 +912,26 @@
     transform-origin: 0;
  }
 
- .Stripe3 {
-    margin-top: 3350px;
+.Stripe2 {
+    margin-top: 1780px;
+    // margin-top: calc(100% - 300px);
+    // margin-top: 100%;
     width: 100%;
-    height: 300px;
+    height: 760px;
+    background: linear-gradient(150deg, rgb(131, 110, 237) 15%, #05d5ff 70%, #a6ffcb 94%);
+    // position: sticky;
+    position: absolute;
+    top: 0;
+    opacity: 0.2;
+    transform: skewY(-6deg);
+    transform-origin: 0;
+}
+
+ .Stripe3 {
+    margin-top: 3320px;
+    // align-self: baseline;
+    width: 100%;
+    height: 280px;
     background: linear-gradient(150deg, rgb(131, 110, 237) 15%, #05d5ff 70%, #a6ffcb 94%);
     position: absolute;
     top: 0;
@@ -905,3 +939,891 @@
     transform: skewY(5deg);
     transform-origin: 0;
  }
+
+/* Extra small devices (phones, 505px and down) */
+@media only screen and (max-width: 506px) {
+    .Title {
+        margin-right: 1rem;
+        width: 100%;
+        // margin-left: 0rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-top: 5rem;
+
+        .Banner{
+            background: transparent;
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            align-items: center;
+            justify-content: center;
+            .Text {
+                background: transparent;
+                margin-left: 3rem;
+                display: flex;
+                flex-direction: column;
+                // width: 150%;
+                height: 50%;
+                align-items: center;
+                justify-content: center;
+                .h1Text {
+                    z-index: 1;
+                    width: 100%;
+                    height: 92px;
+                    // left: 29px;
+                    // align-self: flex-start;
+                    // margin-right: 100px;
+                    margin-top: 40px;
+                    // margin-bottom: 20px;
+                    
+                    font-family: Arial;
+                    font-style: normal;
+                    font-weight: bold;
+                    font-size: 60px;
+                    line-height: 60px;
+                    display: flex;
+                    align-items: center;
+                    text-align: center;
+            
+                    color: #000000;
+                    /* identical to box height */
+                    
+                    color: #000000;
+                }
+                .h2Text {
+                    z-index: 1;
+                    width: 100%;
+                    height: 46px;
+                    // margin-left: 251px;
+                    // align-self: flex-start;
+                    margin-top: 70px;
+                    margin-bottom: 20px;
+                    
+                    font-family: Arial;
+                    font-style: normal;
+                    font-weight: normal;
+                    font-size: 30px;
+                    line-height: 35px;
+                    /* identical to box height */
+                    
+                    display: flex;
+                    align-items: center;
+                    text-align: center;
+                    
+                    color: #000000;
+            
+                }
+                .TitleButtons {
+                    background: transparent;
+                    display: flex;
+                    flex-direction: row;
+                    padding: 16px;
+                    // width: 200%;
+                    // margin-left: 70px;
+                    align-items: center;
+                    justify-content: center;
+                    // justify-content: space-evenly;
+                    .GetStarted {
+                        z-index: 1;
+                        width: 180px;
+                        height: 70px;
+                        // left: 596px;
+                        margin-right: 20px;
+                        margin-top: 28px;
+                        
+                        background: #4DB6F1;
+                        box-shadow: 0px 4px 8px rgba(159, 159, 159, 0.25);
+                        border-radius: 4px;
+                    
+                        position: static;
+                        left: 16px;
+                        top: 16px;
+                        
+                        font-family: Helvetica;
+                        font-style: normal;
+                        font-weight: bold;
+                        font-size: 18px;
+                        line-height: 46px;
+                        /* identical to box height */
+                        
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-radius: 36px;
+                        
+                        color: #FFFFFF;
+                    
+                        cursor: pointer;
+                    }
+            
+                    .Examples {
+                        z-index: 1;
+                        width: 180px;
+                        height: 70px;
+                        // left: 596px;
+                        margin-top: 28px;
+                        
+                        background: #ffffff;
+                        box-shadow: 0px 4px 8px rgba(159, 159, 159, 0.25);
+                        border-radius: 4px;
+                    
+                        position: static;
+                        left: 16px;
+                        top: 16px;
+                        
+                        font-family: Helvetica;
+                        font-style: normal;
+                        font-weight: bold;
+                        font-size: 18px;
+                        line-height: 46px;
+                        /* identical to box height */
+                        
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-radius: 36px;
+                    
+                        cursor: pointer;
+                    }
+                }
+            }
+            .computer {
+               display: none;
+            }
+        }
+    }
+}
+
+
+/* Small devices (phones, 732px and down) */
+@media only screen and (min-width: 506px) {
+    .Title {
+        margin-right: 1rem;
+        width: 100%;
+        // margin-left: 0rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-top: 5rem;
+
+        .Banner{
+            background: transparent;
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            align-items: center;
+            justify-content: center;
+            .Text {
+                background: transparent;
+                margin-left: 3rem;
+                display: flex;
+                flex-direction: column;
+                // width: 150%;
+                height: 50%;
+                align-items: center;
+                justify-content: center;
+                .h1Text {
+                    z-index: 1;
+                    width: 100%;
+                    height: 92px;
+                    // left: 29px;
+                    // align-self: flex-start;
+                    // margin-right: 100px;
+                    margin-top: 40px;
+                    // margin-bottom: 20px;
+                    
+                    font-family: Arial;
+                    font-style: normal;
+                    font-weight: bold;
+                    font-size: 60px;
+                    line-height: 75px;
+                    display: flex;
+                    align-items: center;
+                    text-align: center;
+            
+                    color: #000000;
+                    /* identical to box height */
+                    
+                    color: #000000;
+                }
+                .h2Text {
+                    z-index: 1;
+                    width: 100%;
+                    height: 46px;
+                    // margin-left: 251px;
+                    // align-self: flex-start;
+                    margin-top: 60px;
+                    margin-bottom: 20px;
+                    
+                    font-family: Arial;
+                    font-style: normal;
+                    font-weight: normal;
+                    font-size: 35px;
+                    line-height: 46px;
+                    /* identical to box height */
+                    
+                    display: flex;
+                    align-items: center;
+                    text-align: center;
+                    
+                    color: #000000;
+            
+                }
+                .TitleButtons {
+                    background: transparent;
+                    display: flex;
+                    flex-direction: row;
+                    padding: 16px;
+                    // width: 200%;
+                    // margin-left: 70px;
+                    align-items: center;
+                    justify-content: center;
+                    // justify-content: space-evenly;
+                    .GetStarted {
+                        z-index: 1;
+                        width: 180px;
+                        height: 70px;
+                        // left: 596px;
+                        margin-right: 20px;
+                        margin-top: 28px;
+                        
+                        background: #4DB6F1;
+                        box-shadow: 0px 4px 8px rgba(159, 159, 159, 0.25);
+                        border-radius: 4px;
+                    
+                        position: static;
+                        left: 16px;
+                        top: 16px;
+                        
+                        font-family: Helvetica;
+                        font-style: normal;
+                        font-weight: bold;
+                        font-size: 24px;
+                        line-height: 46px;
+                        /* identical to box height */
+                        
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-radius: 36px;
+                        
+                        color: #FFFFFF;
+                    
+                        cursor: pointer;
+                    }
+            
+                    .Examples {
+                        z-index: 1;
+                        width: 180px;
+                        height: 70px;
+                        // left: 596px;
+                        margin-top: 28px;
+                        
+                        background: #ffffff;
+                        box-shadow: 0px 4px 8px rgba(159, 159, 159, 0.25);
+                        border-radius: 4px;
+                    
+                        position: static;
+                        left: 16px;
+                        top: 16px;
+                        
+                        font-family: Helvetica;
+                        font-style: normal;
+                        font-weight: bold;
+                        font-size: 24px;
+                        line-height: 46px;
+                        /* identical to box height */
+                        
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-radius: 36px;
+                    
+                        cursor: pointer;
+                    }
+                }
+            }
+            .computer {
+               display: none;
+            }
+        }
+    }
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+    .Title {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-top: 5rem;
+
+        .Banner{
+            background: transparent;
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            align-items: center;
+            justify-content: center;
+            .Text {
+                background: transparent;
+                margin-left: 3rem;
+                display: flex;
+                flex-direction: column;
+                width: 60%;
+                height: 50%;
+                align-items: center;
+                justify-content: center;
+                .h1Text {
+                    z-index: 1;
+                    width: 100%;
+                    height: 92px;
+                    left: 29px;
+                    align-self: flex-start;
+                    margin-top: 40px;
+                    margin-bottom: 50px;
+                    
+                    font-family: Arial;
+                    font-style: normal;
+                    font-weight: bold;
+                    font-size: 65px;
+                    line-height: 75px;
+                    display: flex;
+                    align-items: center;
+                    text-align: left;
+            
+                    color: #000000;
+                    /* identical to box height */
+                    
+                    color: #000000;
+                }
+                .h2Text {
+                    z-index: 1;
+                    width: 100%;
+                    height: 46px;
+                    // margin-left: 251px;
+                    align-self: flex-start;
+                    margin-top: 48px;
+                    margin-bottom: 20px;
+                    
+                    font-family: Arial;
+                    font-style: normal;
+                    font-weight: normal;
+                    font-size: 35px;
+                    line-height: 46px;
+                    /* identical to box height */
+                    
+                    display: flex;
+                    align-items: center;
+                    text-align: left;
+                    
+                    color: #000000;
+            
+                }
+                .TitleButtons {
+                    background: transparent;
+                    display: flex;
+                    flex-direction: row;
+                    padding: 16px;
+                    width: 100%;
+                    align-items: center;
+                    justify-content: left;
+                    // justify-content: space-evenly;
+                    .GetStarted {
+                        z-index: 1;
+                        width: 180px;
+                        height: 70px;
+                        // left: 596px;
+                        margin-right: 20px;
+                        margin-top: 28px;
+                        
+                        background: #4DB6F1;
+                        box-shadow: 0px 4px 8px rgba(159, 159, 159, 0.25);
+                        border-radius: 4px;
+                    
+                        position: static;
+                        left: 16px;
+                        top: 16px;
+                        
+                        font-family: Helvetica;
+                        font-style: normal;
+                        font-weight: bold;
+                        font-size: 24px;
+                        line-height: 46px;
+                        /* identical to box height */
+                        
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-radius: 36px;
+                        
+                        color: #FFFFFF;
+                    
+                        cursor: pointer;
+                    }
+            
+                    .Examples {
+                        z-index: 1;
+                        width: 180px;
+                        height: 70px;
+                        // left: 596px;
+                        margin-top: 28px;
+                        
+                        background: #ffffff;
+                        box-shadow: 0px 4px 8px rgba(159, 159, 159, 0.25);
+                        border-radius: 4px;
+                    
+                        position: static;
+                        left: 16px;
+                        top: 16px;
+                        
+                        font-family: Helvetica;
+                        font-style: normal;
+                        font-weight: bold;
+                        font-size: 24px;
+                        line-height: 46px;
+                        /* identical to box height */
+                        
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-radius: 36px;
+                    
+                        cursor: pointer;
+                    }
+                }
+            }
+            .computer {
+                display: flex;
+                opacity: 1;
+                transition: all .3s ease;
+        
+                img {
+                    width: 100%;
+                    height: auto;
+                    transform: translate(-5%, 5%);
+                    z-index: 1;
+                }
+            }
+        }
+    }
+
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+    .Title {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-top: 5rem;
+
+        .Banner{
+            background: transparent;
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            align-items: center;
+            justify-content: center;
+            .Text {
+                background: transparent;
+                margin-left: 5rem;
+                display: flex;
+                flex-direction: column;
+                width: 70%;
+                height: 50%;
+                align-items: center;
+                justify-content: center;
+                .h1Text {
+                    z-index: 1;
+                    width: 100%;
+                    height: 92px;
+                    left: 29px;
+                    margin-top: 40px;
+                    margin-bottom: 40px;
+                    
+                    font-family: Arial;
+                    font-style: normal;
+                    font-weight: bold;
+                    font-size: 65px;
+                    line-height: 75px;
+                    display: flex;
+                    align-items: center;
+            
+                    color: #000000;
+                    /* identical to box height */
+                    
+                    color: #000000;
+                }
+                .h2Text {
+                    z-index: 1;
+                    width: 100%;
+                    height: 46px;
+                    // margin-left: 251px;
+                    margin-top: 48px;
+                    margin-bottom: 10px;
+                    
+                    font-family: Arial;
+                    font-style: normal;
+                    font-weight: normal;
+                    font-size: 35px;
+                    line-height: 46px;
+                    /* identical to box height */
+                    
+                    display: flex;
+                    align-items: center;
+                    
+                    color: #000000;
+            
+                }
+            }
+        }
+    }
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+    .Title {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-top: 5rem;
+
+        .Banner{
+            background: transparent;
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            align-items: center;
+            justify-content: center;
+            .Text {
+                background: transparent;
+                margin-left: 5rem;
+                display: flex;
+                flex-direction: column;
+                width: 70%;
+                height: 50%;
+                align-items: center;
+                justify-content: center;
+                .h1Text {
+                    z-index: 1;
+                    width: 100%;
+                    height: 92px;
+                    left: 29px;
+                    margin-top: 40px;
+                    
+                    font-family: Arial;
+                    font-style: normal;
+                    font-weight: bold;
+                    font-size: 65px;
+                    line-height: 75px;
+                    display: flex;
+                    align-items: center;
+            
+                    color: #000000;
+                    /* identical to box height */
+                    
+                    color: #000000;
+                }
+                .h2Text {
+                    z-index: 1;
+                    width: 100%;
+                    height: 46px;
+                    // margin-left: 251px;
+                    margin-top: 48px;
+                    
+                    font-family: Arial;
+                    font-style: normal;
+                    font-weight: normal;
+                    font-size: 35px;
+                    line-height: 46px;
+                    /* identical to box height */
+                    
+                    display: flex;
+                    align-items: center;
+                    
+                    color: #000000;
+            
+                }
+                .TitleButtons {
+                    background: transparent;
+                    display: flex;
+                    flex-direction: row;
+                    padding: 16px;
+                    width: 100%;
+                    align-items: center;
+                    justify-content: left;
+                    // justify-content: space-evenly;
+                    .GetStarted {
+                        z-index: 1;
+                        width: 180px;
+                        height: 70px;
+                        // left: 596px;
+                        margin-right: 20px;
+                        margin-top: 28px;
+                        
+                        background: #4DB6F1;
+                        box-shadow: 0px 4px 8px rgba(159, 159, 159, 0.25);
+                        border-radius: 4px;
+                    
+                        position: static;
+                        left: 16px;
+                        top: 16px;
+                        
+                        font-family: Helvetica;
+                        font-style: normal;
+                        font-weight: bold;
+                        font-size: 24px;
+                        line-height: 46px;
+                        /* identical to box height */
+                        
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-radius: 36px;
+                        
+                        color: #FFFFFF;
+                    
+                        cursor: pointer;
+                    }
+            
+                    .Examples {
+                        z-index: 1;
+                        width: 180px;
+                        height: 70px;
+                        // left: 596px;
+                        margin-top: 28px;
+                        
+                        background: #ffffff;
+                        box-shadow: 0px 4px 8px rgba(159, 159, 159, 0.25);
+                        border-radius: 4px;
+                    
+                        position: static;
+                        left: 16px;
+                        top: 16px;
+                        
+                        font-family: Helvetica;
+                        font-style: normal;
+                        font-weight: bold;
+                        font-size: 24px;
+                        line-height: 46px;
+                        /* identical to box height */
+                        
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-radius: 36px;
+                    
+                        cursor: pointer;
+                    }
+                }
+            }
+            .computer {
+                opacity: 1;
+                transition: all .3s ease;
+        
+                img {
+                    width: 100%;
+                    height: auto;
+                    transform: translate(-5%, 5%);
+                    z-index: 1;
+                }
+            }
+        }
+    }
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1300px) {
+    .Title {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-top: 5rem;
+
+        .Banner{
+            background: transparent;
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            align-items: center;
+            justify-content: center;
+            .Text {
+                background: transparent;
+                margin-left: 5rem;
+                display: flex;
+                flex-direction: column;
+                width: 70%;
+                height: 50%;
+                align-items: center;
+                justify-content: center;
+                .h1Text {
+                    z-index: 1;
+                    width: 100%;
+                    height: 92px;
+                    left: 29px;
+                    margin-top: 40px;
+                    margin-bottom: 10px;
+                    
+                    font-family: Arial;
+                    font-style: normal;
+                    font-weight: bold;
+                    font-size: 65px;
+                    line-height: 75px;
+                    display: flex;
+                    align-items: center;
+            
+                    color: #000000;
+                    /* identical to box height */
+                    
+                    color: #000000;
+                }
+                .h2Text {
+                    z-index: 1;
+                    width: 100%;
+                    height: 46px;
+                    // margin-left: 251px;
+                    margin-top: 10px;
+                    margin-bottom: 0px;
+                    
+                    font-family: Arial;
+                    font-style: normal;
+                    font-weight: normal;
+                    font-size: 35px;
+                    line-height: 46px;
+                    /* identical to box height */
+                    
+                    display: flex;
+                    align-items: center;
+                    
+                    color: #000000;
+            
+                }
+                .TitleButtons {
+                    background: transparent;
+                    display: flex;
+                    flex-direction: row;
+                    padding: 16px;
+                    width: 100%;
+                    align-items: center;
+                    justify-content: left;
+                    // justify-content: space-evenly;
+                    .GetStarted {
+                        z-index: 1;
+                        width: 180px;
+                        height: 70px;
+                        // left: 596px;
+                        margin-right: 20px;
+                        margin-top: 28px;
+                        
+                        background: #4DB6F1;
+                        box-shadow: 0px 4px 8px rgba(159, 159, 159, 0.25);
+                        border-radius: 4px;
+                    
+                        position: static;
+                        left: 16px;
+                        top: 16px;
+                        
+                        font-family: Helvetica;
+                        font-style: normal;
+                        font-weight: bold;
+                        font-size: 24px;
+                        line-height: 46px;
+                        /* identical to box height */
+                        
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-radius: 36px;
+                        
+                        color: #FFFFFF;
+                    
+                        cursor: pointer;
+                    }
+            
+                    .Examples {
+                        z-index: 1;
+                        width: 180px;
+                        height: 70px;
+                        // left: 596px;
+                        margin-top: 28px;
+                        
+                        background: #ffffff;
+                        box-shadow: 0px 4px 8px rgba(159, 159, 159, 0.25);
+                        border-radius: 4px;
+                    
+                        position: static;
+                        left: 16px;
+                        top: 16px;
+                        
+                        font-family: Helvetica;
+                        font-style: normal;
+                        font-weight: bold;
+                        font-size: 24px;
+                        line-height: 46px;
+                        /* identical to box height */
+                        
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-radius: 36px;
+                    
+                        cursor: pointer;
+                    }
+                }
+            }
+            .computer {
+                opacity: 1;
+                transition: all .3s ease;
+        
+                img {
+                    width: 100%;
+                    height: auto;
+                    transform: translate(-5%, 5%);
+                    z-index: 1;
+                }
+            }
+        }
+    }
+    // .Stripe1 {
+    //     width: 100%;
+    //     height: 760px;
+    //     background: linear-gradient(150deg, rgb(131, 110, 237) 15%, #05d5ff 70%, #a6ffcb 94%);
+    //     position: absolute;
+    //     top: 0;
+    //     opacity: 0.2;
+    //     transform: skewY(-6deg);
+    //     transform-origin: 0;
+    //  }
+    
+    // .Stripe2 {
+    //     margin-top: 1780px;
+    //     width: 100%;
+    //     height: 760px;
+    //     background: linear-gradient(150deg, rgb(131, 110, 237) 15%, #05d5ff 70%, #a6ffcb 94%);
+    //     position: absolute;
+    //     top: 0;
+    //     opacity: 0.2;
+    //     transform: skewY(-6deg);
+    //     transform-origin: 0;
+    // }
+    
+    //  .Stripe3 {
+    //     margin-top: 3320px;
+    //     width: 100%;
+    //     height: 280px;
+    //     background: linear-gradient(150deg, rgb(131, 110, 237) 15%, #05d5ff 70%, #a6ffcb 94%);
+    //     position: absolute;
+    //     top: 0;
+    //     opacity: 0.2;
+    //     transform: skewY(5deg);
+    //     transform-origin: 0;
+    //  }
+}

@@ -304,7 +304,7 @@ function TitleText() {
               A new way to convey
           </div>
           <div className={indexStyles.h2Text}>
-            Leaf is a platform built from the ground up, <br></br>for coding tutorials
+            Leaf is a platform built from the ground up, for coding tutorials
           </div>
           <div className={indexStyles.TitleButtons}>
               <Link href="/signup">
@@ -404,7 +404,7 @@ function Row2() {
 
 function Row3() {
   return (
-      <div className={indexStyles.Row1}> 
+      <div className={indexStyles.Row3}> 
         <div className={indexStyles.RowHeader}>
           <img src="/images/publish.svg" />
         </div>
@@ -443,6 +443,10 @@ function Stripe2() {
   return (
     <div className={indexStyles.Stripe2}>
     </div>
+    // <div className={indexStyles.relativeStripe2}>
+    //   <div className={indexStyles.Stripe2}>
+    //   </div>
+    // </div>
   )
 }
 
