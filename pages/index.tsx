@@ -74,9 +74,9 @@
 
 // function Logo(props: {goToIndex: any}) {
 //   return (
-//     <div className={indexStyles.Logo} onClick={props.goToIndex}> 
+//     <div className={indexStyles.Logo} onClick={props.goToIndex}>
 //       <img src="/images/logo.svg"/>
-//     </div>    
+//     </div>
 //   );
 // }
 
@@ -138,7 +138,7 @@
 // */
 // function Body(props: {handleClick: any}) {
 //   return (
-//     <div className={indexStyles.Body}> 
+//     <div className={indexStyles.Body}>
 //       <BodyBox />
 //       <BodyText handleClick={props.handleClick}/>
 //     </div>
@@ -149,7 +149,7 @@
 //   return (
 //       <div>
 //         <div className={indexStyles.BodyTextH1}>
-//           Coding tutorials <br></br> to the next level<br></br> 
+//           Coding tutorials <br></br> to the next level<br></br>
 //         </div>
 //         <div className={indexStyles.BodyTextH2}>
 //            Steps & code editor <br></br> side-by-side for a <br></br> seamless experience
@@ -208,18 +208,17 @@ export default function Pages() {
         />
       </Head>
       <main className={indexStyles.MainWrapper}>
-        <Header goToIndex={goToIndex}/>
+        <Header goToIndex={goToIndex} />
         <Stripe1 />
-
         <Title />
         {/* <Tutorial /> */}
         <Row1 />
-        <Stripe2 />
+        {/* <Stripe2 /> */}
         <Row2 />
         <Row3 />
-        <Stripe3 />
+        {/* <Stripe3 /> */}
         <Row4 />
-        <Footer goToIndex={goToIndex}/>
+        <Footer goToIndex={goToIndex} />
       </main>
     </div>
   );
@@ -228,30 +227,30 @@ export default function Pages() {
 /*
 Header Components
 */
-function Header(props: {goToIndex: any}) {
+function Header(props: { goToIndex: any }) {
   return (
     <div className={indexStyles.Header}>
-      <NavBar goToIndex={props.goToIndex}/>
+      <NavBar goToIndex={props.goToIndex} />
     </div>
   );
 }
 
-function NavBar(props: {goToIndex: any}) {
+function NavBar(props: { goToIndex: any }) {
   return (
     <div className={indexStyles.NavBar}>
-      <Logo goToIndex={props.goToIndex}/>
+      <Logo goToIndex={props.goToIndex} />
       <Signup />
       <Login />
       <About />
     </div>
-  )
+  );
 }
 
-function Logo(props: {goToIndex: any}) {
+function Logo(props: { goToIndex: any }) {
   return (
-    <div className={indexStyles.Logo} onClick={props.goToIndex}> 
-      <img src="/images/logo.svg"/>
-    </div>    
+    <div className={indexStyles.Logo} onClick={props.goToIndex}>
+      <img src="/images/logo.svg" />
+    </div>
   );
 }
 
@@ -287,11 +286,11 @@ function About() {
 
 function Title() {
   return (
-      <div className={indexStyles.Title}> 
-        <TitleText />
-        {/* <GetStarted /> */}
-      </div>
-  )
+    <div className={indexStyles.Title}>
+      <TitleText />
+      {/* <GetStarted /> */}
+    </div>
+  );
 }
 
 function TitleText() {
@@ -300,32 +299,27 @@ function TitleText() {
       {/* <img src="/images/web.svg"/> */}
       <div className={indexStyles.Banner}>
         <div className={indexStyles.Text}>
-          <div className={indexStyles.h1Text}>
-              A new way to convey
-          </div>
+          <div className={indexStyles.h1Text}>A new way to convey</div>
           <div className={indexStyles.h2Text}>
-            Leaf is a platform built from the ground up, <br></br>for coding tutorials
+            Leaf is a platform built from the ground up, <br></br>for coding
+            tutorials
           </div>
           <div className={indexStyles.TitleButtons}>
-              <Link href="/signup">
-                <div className={indexStyles.GetStarted}>
-                  <div className={indexStyles.button}>
-                    Get Started
-                  </div>
-                </div>
-              </Link>
-              <Link href="/signup">
-                <div className={indexStyles.Examples}>
-                  <div className={indexStyles.button}>
-                    Learn More
-                  </div>
-                </div>
-              </Link>
+            <Link href="/signup">
+              <div className={indexStyles.GetStarted}>
+                <div className={indexStyles.button}>Get Started</div>
+              </div>
+            </Link>
+            <Link href="/signup">
+              <div className={indexStyles.Examples}>
+                <div className={indexStyles.button}>Learn More</div>
+              </div>
+            </Link>
           </div>
-			  </div>
+        </div>
         <div className={indexStyles.computer}>
-            <img src="https://www.bebold.ch/img/home/macbook-white.png"/>
-            <div className={indexStyles.tutorial}></div>
+          <img src="https://www.bebold.ch/img/home/macbook-white.png" />
+          <div className={indexStyles.tutorial}></div>
         </div>
       </div>
     </div>
@@ -361,19 +355,17 @@ function TitleText() {
 
 function GetStarted2() {
   return (
-      <Link href="/signup">
-        <div className={indexStyles.GetStarted2}>
-          <div className={indexStyles.button}>
-            Sign Up
-          </div>
-        </div>
-      </Link>
+    <Link href="/signup">
+      <div className={indexStyles.GetStarted2}>
+        <div className={indexStyles.button}>Sign Up</div>
+      </div>
+    </Link>
   );
 }
 
 // function Tutorial() {
 //   return (
-//     <div className={indexStyles.Tutorial}> 
+//     <div className={indexStyles.Tutorial}>
 //       <img src="/images/ex.svg"/>
 //     </div>
 //   )
@@ -381,40 +373,42 @@ function GetStarted2() {
 
 function Row1() {
   return (
-      <div className={indexStyles.Row1}> 
-        <div className={indexStyles.RowHeader}>
-          <img src="/images/steps.svg" />
-        </div>
-        <img src="/images/ex.svg" />
+    <div className={indexStyles.Row1}>
+      <div className={indexStyles.RowHeader}>
+        <img src="/images/steps.svg" />
+      </div>
+      <img src="/images/ex.svg" />
     </div>
   );
 }
 
 function Row2() {
   return (
-      <div className={indexStyles.Row2}> 
-        <div className={indexStyles.Row2Header}>
-          <img src="/images/code.svg" />
-        </div>
-        <img src="/images/ex.svg" />
+    <div className={indexStyles.Row2}>
+      <Stripe2 />
+      <div className={indexStyles.Row2Header}>
+        <img src="/images/code.svg" />
+      </div>
+      <img src="/images/ex.svg" />
     </div>
   );
 }
 
 function Row3() {
   return (
-      <div className={indexStyles.Row1}> 
-        <div className={indexStyles.RowHeader}>
-          <img src="/images/publish.svg" />
-        </div>
-        <img src="/images/ex.svg" />
+    <div className={indexStyles.Row1}>
+      <Stripe3 />
+      <div className={indexStyles.RowHeader}>
+        <img src="/images/publish.svg" />
+      </div>
+      <img src="/images/ex.svg" />
     </div>
   );
 }
 
 function Row4() {
   return (
-    <div className={indexStyles.Row4}> 
+    <div className={indexStyles.Row4}>
       <div className={indexStyles.Row4Text}>
         Say goodbye to publishing code snippets on Medium
       </div>
@@ -423,32 +417,22 @@ function Row4() {
   );
 }
 
-function Footer(props: {goToIndex: any}) {
+function Footer(props: { goToIndex: any }) {
   return (
     <div className={indexStyles.Footer}>
-      <NavBar goToIndex={props.goToIndex}/>
+      <NavBar goToIndex={props.goToIndex} />
     </div>
   );
 }
 
 function Stripe1() {
-  return (
-    <div className={indexStyles.Stripe1}>
-    </div>
-  )
+  return <div className={indexStyles.Stripe1}></div>;
 }
 
 function Stripe2() {
-  return (
-    <div className={indexStyles.Stripe2}>
-    </div>
-  )
+  return <div className={indexStyles.Stripe2}></div>;
 }
 
-
 function Stripe3() {
-  return (
-    <div className={indexStyles.Stripe3}>
-    </div>
-  )
+  return <div className={indexStyles.Stripe3}></div>;
 }
