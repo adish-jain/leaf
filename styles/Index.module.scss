@@ -183,8 +183,8 @@
                         transform: translate(0%, 10%);
                     }
                 }
-        
-                .Examples {
+
+                a {
                     z-index: 1;
                     width: 180px;
                     height: 50px;
@@ -207,15 +207,31 @@
                     align-items: center;
                     justify-content: center;
                     border-radius: 36px;
-                
+                    
                     cursor: pointer;
 
-                    img {
-                        padding-left: 0.6rem;
-                        width: 20px;
-                        height: auto;
-                        transform: translate(0%, 10%);
+                    .Examples {
+                        img {
+                            padding-left: 0.6rem;
+                            width: 20px;
+                            height: auto;
+                            transform: translate(0%, 10%);
+                        }
                     }
+                }
+                a:link {
+                    color:  #000000;
+                    text-decoration: none;
+                }
+    
+                a:visited {
+                    color: #000000;
+                    text-decoration: none;
+                }
+    
+                a:hover {
+                    color: #000000;
+                    text-decoration: none;
                 }
             }
         }
