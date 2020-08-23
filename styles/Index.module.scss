@@ -1,371 +1,3 @@
-// .container {
-//     width: 100%;
-// }
-
-// .MainWrapper {
-//     width: 100%;
-//     font-family: 'Roboto';
-// }
-
-// .Header {
-//     display: flex;
-//     flex-direction: row;
-//     width: 100%;
-//     height: 320px;
-
-//     justify-content: center;
-//     align-items: center;
-//     background: #ffffff;
-    
-//     .NavBar {
-//         display: flex;
-//         flex-direction: row;   
-//         width: 100%; 
-
-//         .Logo {
-//             display: flex;
-//             align-self: flex-start;
-//             margin-right: auto;
-//             margin-left: 5rem;
-//             img {
-//                 height: 60px;
-//             }
-//             cursor: pointer;
-//         }
-
-
-//         .Login {
-//             display: flex;
-//             width: 92px;
-//             height: 34px;
-
-//             padding-top: 20px;
-//             margin-bottom: 30px;
-//             justify-content: space-evenly;
-
-//             margin-right: 2rem;
-//             font-style: normal;
-//             font-weight: normal;
-//             font-size: 20px;
-
-//             a:link {
-//                 color:  #000000;
-//                 text-decoration: none;
-//             }
-
-//             a:visited {
-//                 color: #000000;
-//             }
-
-//             a:hover {
-//                 color: #1DB954;
-//             }
-//         }
-//     }
-
-//     .HeaderText {
-//         display: flex;
-//         width: 100%;
-//         height: 75px;
-
-//         align-items: center;
-//         text-align: center;
-//         justify-content: center;
-//         align-self: center;
-
-//         font-style: normal;
-//         font-weight: bold;
-//         font-size: 70px;
-//         line-height: 45px;
-
-//         color: #000000;
-//     }
-
-//     .GetStarted {
-//         display: flex;
-
-//         padding-top: 20px;
-//         align-items: center;
-//         justify-content: center;
-        
-//         .button {
-//             display: flex;
-
-//             align-items: center;
-//             justify-content: center;
-//             padding: 0.5em;
-            
-//             font-weight: bold;
-//             font-size: 28px;
-    
-//             color: #000000;
-//             background: #FFFFFF;
-//             border: 1px solid #000000;
-
-//             box-sizing: border-box;
-//             box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-//             border-radius: 40px;
-//             cursor: pointer;
-//         }
-//     }
-
-//     .button:hover {
-//         background: #1DB954;
-//     }
-// }
-
-// .Body {
-//     display: flex;
-//     flex-direction: row;
-
-//     margin-top: 1em;
-//     justify-content: space-evenly;
-//     align-items: center;
-    
-//     // background-color: #68B2A0;
-//     // background-color: #CDE0C9;
-//     .BodyTextH1 {
-//         position: relative;
-//         width: 100%;
-//         height: 41px;
-
-//         margin-top: 1em;
-//         text-align: left;
-        
-//         font-style: normal;
-//         font-weight: bold;
-//         font-size: 60px;
-//         line-height: 60px;
-        
-//         color: #000000;
-//     }
-
-//     .BodyTextH2 {
-//         position: relative;
-//         width: 100%;
-//         height: 41px;
-
-//         padding-top: 80px;
-//         margin-top: 0.1em;
-//         margin-bottom: 2.5em;
-//         text-align: left;
-        
-//         font-style: normal;
-//         font-weight: light;
-//         font-size: 40px;
-//         line-height: 50px;
-        
-//         color: #000000;
-//     }
-
-//     .Preview {
-//         // position: relative;
-//         display: flex;
-
-//         width: 100%;
-//         height: 200px;
-
-//         margin-top: 40px;
-//         justify-content: center;
-//         align-items: center;
-
-//         border-radius: 20px;
-//         box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.25);        
-//         transition: box-shadow ease-in-out 0.2s;
-//         background: #FFFFFF;
-
-//         cursor: pointer;
-//     }
-      
-//     .Preview:hover {
-//         box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.4);
-//         transition: box-shadow ease-in-out 0.2s;
-//     }
-
-//     img {
-//         max-width: 100%;
-//         height: auto;
-//         width: auto; 
-//         border-radius: 20px;
-//     }
-// }
-
-// /* Extra small devices (phones, 600px and down) */
-// @media only screen and (max-width: 768px) {
-//     .Header {
-//         flex-direction: column;
-    
-//         .HeaderText {
-//             font-size: 45px;
-//         }
-//     }
-
-//     .Body {
-//         display: flex;
-//         flex-direction: column;
-//         padding: 1em;
-
-//         .BodyTextH1 {
-//             margin-top: 1em;
-//             font-size: 35px;
-//             line-height: 40px;
-//         }
-    
-//         .BodyTextH2 {
-//             font-size: 25px;
-//             line-height: 30px;
-//             padding-bottom: 1em;
-//         }
-//     }
-//   }
-  
-//   /* Medium devices (landscape tablets, 768px and up) */
-//   @media only screen and (min-width: 768px) {
-//     .Header {
-//         display: flex;
-//         flex-direction: column;
-    
-//         .HeaderText {
-//             font-size: 50px;
-//         }
-//     }
-
-//     .Body {
-//         display: flex;
-//         flex-direction: column;
-//         padding: 1em;
-    
-//         .BodyTextH1 {
-//             margin-top: 1em;
-//             font-size: 45px;
-//             line-height: 50px;
-//         }
-    
-//         .BodyTextH2 {
-//             font-size: 35px;
-//             line-height: 50px;
-//             padding-bottom: 1.5em;
-//         }
-    
-//         .Preview {
-//             margin-left: 10px;
-//         }
-//     }
-//   }
-  
-//   /* Large devices (laptops/desktops, 992px and up) */
-//   @media only screen and (min-width: 992px) {
-//     .Header {
-//         display: flex;
-//         flex-direction: column;
-    
-//         .HeaderText {
-//             font-size: 60px;
-//         }
-//     }
-
-//     .Body {
-//         display: flex;
-//         flex-direction: column;
-//         padding: 1em;
-    
-//         .BodyTextH1 {
-//             margin-top: 1em;
-//             font-size: 45px;
-//             line-height: 50px;
-//         }
-    
-//         .BodyTextH2 {
-//             font-size: 35px;
-//             line-height: 50px;
-//             padding-bottom: 1.5em;
-//         }
-    
-//         .Preview {
-//             margin-left:10px;
-//         }
-//     }
-//   }
-  
-//   /* Extra large devices (large laptops and desktops, 1200px and up) */
-//   @media only screen and (min-width: 1200px) {
-//     .Header {
-//         display: flex;
-//         flex-direction: column;
-    
-//         .HeaderText {
-//             font-size: 65px;
-//         }
-//     }
-
-//     .Body {
-//         display: flex;
-//         flex-direction: row;
-
-//         padding-top: 40px;
-//         justify-content: space-evenly;
-//         align-items: center;
-        
-//         .BodyTextH1 {
-//             position: relative;
-//             width: 100%;
-//             height: 41px;
-
-//             margin-top: 0em;
-//             margin-bottom: 0.5em;
-//             padding-left: 0.3em;
-//             text-align: left;
-            
-//             font-style: normal;
-//             font-weight: bold;
-//             font-size: 50px;
-//             line-height: 60px;
-            
-//             color: #000000;
-//         }
-    
-//         .BodyTextH2 {
-//             position: relative;
-//             width: 100%;
-//             height: 41px;
-
-//             margin-top: 0.5em;
-//             padding-left: 0.3em;
-//             text-align: left;
-            
-//             font-style: normal;
-//             font-weight: light;
-//             font-size: 40px;
-//             line-height: 50px;
-            
-//             color: #000000;
-//         }
-    
-//         .Preview {
-//             display: flex;
-//             position: relative;
-//             width: 100%;
-//             height: 200px;
-
-//             margin-top: 40px;
-//             justify-content: center;
-//             align-items: center;
-
-//             border-radius: 20px;
-//             box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.25);
-//             transition: box-shadow ease-in-out 0.2s;
-//             background: #FFFFFF;
-    
-//             cursor: pointer;
-//         }
-          
-//         .Preview:hover {
-//             box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.4);
-//             transition: box-shadow ease-in-out 0.2s;
-//         }
-//     }
-//   }
-
 .container {
     width: 100%;
     height: 100%;
@@ -373,7 +5,6 @@
 
 .MainWrapper {
     width: 100%;
-    font-family: 'Roboto';
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -385,7 +16,6 @@
     display: flex;
     flex-direction: row;
     width: 100%;
-    // width: 1440px;
     height: 87px;
     left: 0px;
     top: 0px;
@@ -395,10 +25,8 @@
 
     justify-content: center;
     align-items: center;
-    // background: #ffffff;
     
     .NavBar {
-        // background: transparent;
         display: flex;
         flex-direction: row;   
         width: 100%; 
@@ -407,7 +35,6 @@
             display: flex;
             align-self: flex-start;
             margin-right: auto;
-            // margin-left: 5rem;
             width: 150.75px;
             height: 76px;
             margin-left: 9px;
@@ -418,7 +45,6 @@
             cursor: pointer;
             z-index: 1;
         }
-
 
         .Login {
             z-index: 1;
@@ -452,26 +78,20 @@
 }
 
 .Title {
-    // opacity: 0.5;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     margin-top: 5rem;
 
-
-    // img {
-    //     background: transparent;
-    //     width: 35%;
-    //     height: auto;
-    // }
-    .Banner{
+    .Banner {
         background: transparent;
         display: flex;
         flex-direction: row;
         width: 100%;
         align-items: center;
         justify-content: center;
+
         .Text {
             background: transparent;
             margin-left: 5rem;
@@ -481,6 +101,7 @@
             height: 50%;
             align-items: center;
             justify-content: center;
+
             .h1Text {
                 z-index: 1;
                 width: 100%;
@@ -498,23 +119,18 @@
                 align-items: center;
         
                 color: #000000;
-                /* identical to box height */
-                
-                color: #000000;
             }
+
             .h2Text {
                 z-index: 1;
                 width: 100%;
                 height: 46px;
-                // margin-left: 251px;
-                // margin-top: 30px;
                 
                 font-family: Arial;
                 font-style: normal;
                 font-weight: normal;
                 font-size: 35px;
                 line-height: 46px;
-                /* identical to box height */
                 
                 display: flex;
                 align-items: center;
@@ -522,6 +138,7 @@
                 color: #000000;
         
             }
+
             .TitleButtons {
                 background: transparent;
                 display: flex;
@@ -530,12 +147,11 @@
                 width: 100%;
                 align-items: center;
                 justify-content: left;
-                // justify-content: space-evenly;
+
                 .GetStarted {
                     z-index: 1;
                     width: 180px;
                     height: 70px;
-                    // left: 596px;
                     margin-right: 20px;
                     margin-top: 28px;
                     
@@ -552,7 +168,6 @@
                     font-weight: bold;
                     font-size: 24px;
                     line-height: 46px;
-                    /* identical to box height */
                     
                     display: flex;
                     align-items: center;
@@ -568,7 +183,6 @@
                     z-index: 1;
                     width: 180px;
                     height: 70px;
-                    // left: 596px;
                     margin-top: 28px;
                     
                     background: #ffffff;
@@ -584,7 +198,6 @@
                     font-weight: bold;
                     font-size: 24px;
                     line-height: 46px;
-                    /* identical to box height */
                     
                     display: flex;
                     align-items: center;
@@ -595,32 +208,15 @@
                 }
             }
         }
+
         .computer {
-            // float: right;
-            // top: 50%;
-            // left: 50%;
-            // width: 65%;
-            // height: 70%;
             opacity: 1;
-            // -webkit-transform: translate(-50%, -50%) scale(1);
-            // transform: translate(10%, 30%) scale(1);
-            // z-index: 0;
-            // -webkit-transition: all .3s ease;
             transition: all .3s ease;
     
             img {
-                // align-self: flex-end;
-                // margin-right: auto;
-                // display: flex;
-                // position: absolute;
-                // top: 50%;
-                // left: 30%;
                 margin-left: 10px;
-                // margin-top: 8rem;
                 width: 100%;
-                // background-attachment: fixed;
                 height: auto;
-                // -webkit-transform: translate(-50%, -50%);
                 transform: translate(-5%, 5%);
                 z-index: 1;
             }
@@ -635,42 +231,32 @@
     justify-content: center;
     text-align: center;
     z-index: 1;
-    // background-position: center center;
   
     margin-top: 200px;
-    // margin-left: 10%;
     margin-bottom: 50px;
   
     img {
       height: auto;
       width: 70%;
     }
-    // width: 100%;
   
     .RowHeader {
       align-self: flex-start;
-    //   margin-left: 128px;
     }
   
-    // background-image: url("/images/ex.svg");
-    // background-repeat: no-repeat;
     filter: drop-shadow(0px 2.12355px 2.12355px rgba(0, 0, 0, 0.25));
     border-radius: 4.24709px;
-  }
+}
   
-  .Row2 {
+.Row2 {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
     position: relative;
-    // align-items: center;
-    // justify-content: center;
-    // text-align: center;
   
     margin-top: 48px;
-    // margin-left: 10%;
     margin-bottom: 50px;
   
     img {
@@ -679,51 +265,38 @@
     }
   
     .Row2Header {
-    //   display: flex;
       align-self: flex-end;
-      // margin-right: 10px;
-      // align-self: flex-end;
-      // margin-left: auto;
     }
   
-    // background-image: url("/images/ex.svg");
-    // background-repeat: no-repeat;
-    // background-position: center center;
     filter: drop-shadow(0px 2.12355px 2.12355px rgba(0, 0, 0, 0.25));
     border-radius: 4.24709px;
-  }
+}
 
-  .Row3 {
+.Row3 {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
     z-index: 1;
-    // background-position: center center;
   
     margin-top: 48px;
-    // margin-left: 10%;
     margin-bottom: 50px;
   
     img {
       height: auto;
       width: 70%;
     }
-    // width: 100%;
   
     .RowHeader {
       align-self: flex-start;
-    //   margin-left: 128px;
     }
   
-    // background-image: url("/images/ex.svg");
-    // background-repeat: no-repeat;
     filter: drop-shadow(0px 2.12355px 2.12355px rgba(0, 0, 0, 0.25));
     border-radius: 4.24709px;
-  }
+}
   
-  .Row4 {
+.Row4 {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -732,58 +305,56 @@
     margin-top: 100px;
     margin-bottom: 100px;
     z-index: 1;
-    .Row4Text {
-      font-family: Arial;
-      font-style: normal;
-      font-weight: normal;
-      font-size: 40px;
-      line-height: 46px;
-      display: flex;
-      align-items: center;
-      text-align: center;
-  
-      color: #000000;
-    }
-    .GetStarted2 {
-      z-index: 1;
-      width: 248px;
-      height: 78px;
-      // left: 596px;
-      margin-top: 28px;
-  
-      background: #4db6f1;
-      box-shadow: 0px 4px 8px rgba(159, 159, 159, 0.25);
-      border-radius: 4px;
-  
-      position: static;
-      left: 16px;
-      top: 16px;
-  
-      font-family: Helvetica;
-      font-style: normal;
-      font-weight: bold;
-      font-size: 40px;
-      line-height: 46px;
-      /* identical to box height */
-  
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 36px;
-  
-      color: #ffffff;
-  
-      cursor: pointer;
-    }
-  }
-  
 
+    .Row4Text {
+        font-family: Arial;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 40px;
+        line-height: 46px;
+        display: flex;
+        align-items: center;
+        text-align: center;
+
+        color: #000000;
+    }
+
+    .GetStarted2 {
+        z-index: 1;
+        width: 248px;
+        height: 78px;
+        margin-top: 28px;
+
+        background: #4db6f1;
+        box-shadow: 0px 4px 8px rgba(159, 159, 159, 0.25);
+        border-radius: 4px;
+
+        position: static;
+        left: 16px;
+        top: 16px;
+
+        font-family: Helvetica;
+        font-style: normal;
+        font-weight: bold;
+        font-size: 40px;
+        line-height: 46px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 36px;
+
+        color: #ffffff;
+
+        cursor: pointer;
+    }
+}
+  
 .Footer {
     display: flex;
     flex-direction: row;
     width: 100%;
     margin-top: 20px;
-    // width: 1440px;
     height: 80px;
     left: 0px;
     
@@ -792,7 +363,6 @@
 
     justify-content: bottom;
     align-items: bottom;
-    // background: #ffffff;
     
     .NavBar {
         display: flex;
@@ -804,17 +374,17 @@
             align-self: flex-start;
             margin-right: auto;
             margin-top: 5px;
-            // margin-left: 5rem;
             width: 150.75px;
             height: 76px;
             margin-left: 9px;
             top: 8px;
+
             img {
                 height: 60px;
             }
+
             cursor: pointer;
         }
-
 
         .Login {
             display: flex;
@@ -849,197 +419,87 @@
 .Stripe1 {
     width: 100%;
     height: 760px;
-    // background: linear-gradient(150deg, rgb(131, 110, 237) 15%, #05d5ff 70%, #a6ffcb 94%);
-    // background: radial-gradient( circle farthest-corner at 10% 20%,  rgba(50,172,109,1) 0%, rgba(209,251,155,1) 100.2% );
-    background: radial-gradient( circle 827px at 47.3% 48%,  rgba(255,255,255,1) 0%, rgba(138,192,216,1) 90% );
+    background: radial-gradient( 
+        circle 827px at 47.3% 48%,  
+        rgba(255,255,255,1) 0%, 
+        rgb(10, 164, 235) 90% );
     position: absolute;
     top: 0;
-    opacity: 0.5;
+    opacity: 0.2;
     transform: skewY(-6deg);
     transform-origin: 0;
-    // z-index: -1;
- }
+}
 
 .Stripe2 {
-    // margin-top: 1780px;
-    // margin-top: calc(100% - 300px);
-    // margin-top: 100%;
     margin-top: 100px;
     width: 100vw;
     height: 760px;
-    background: radial-gradient( circle 827px at 47.3% 48%,  rgba(255,255,255,1) 0%, rgba(138,192,216,1) 90% );
-    // position: sticky;
+    background: radial-gradient( 
+        circle 827px at 47.3% 48%,  
+        rgba(255,255,255,1) 0%, 
+        rgb(10, 164, 235) 90% );
     position: absolute;
     top: 0;
-    opacity: 0.5;
-    transform: skewY(-6deg);
+    opacity: 0.2;
+    transform: skewY(-6deg); 
     transform-origin: 0;
     z-index: -1;
 }
 
  .Stripe3 {
-    // margin-top: 3320px;
-    // align-self: baseline;
     margin-bottom: 100px;
     width: 100vw;
     height: 280px;
-    background: radial-gradient( circle 827px at 47.3% 48%,  rgba(255,255,255,1) 0%, rgba(138,192,216,1) 90% );
+    background: radial-gradient( 
+        circle 827px at 47.3% 48%,  
+        rgba(255,255,255,1) 0%, 
+        rgb(10, 164, 235) 90% );
     position: absolute;
-    opacity: 0.5;
-    transform: skewY(5deg);
+    opacity: 0.2;
+    transform: skewY(2deg);
     transform-origin: 0;
     z-index: -1;
- }
+}
 
 /* Extra small devices (phones, 505px and down) */
 @media only screen and (max-width: 506px) {
     .Title {
         margin-right: 1rem;
         width: 100%;
-        // margin-left: 0rem;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        margin-top: 5rem;
-
-        .Banner{
-            background: transparent;
-            display: flex;
-            flex-direction: row;
-            width: 100%;
-            align-items: center;
-            justify-content: center;
+        .Banner {
             .Text {
-                background: transparent;
                 margin-left: 3rem;
-                display: flex;
-                flex-direction: column;
-                // width: 150%;
-                height: 50%;
-                align-items: center;
-                justify-content: center;
+
                 .h1Text {
-                    z-index: 1;
-                    width: 100%;
-                    height: 92px;
-                    // left: 29px;
-                    // align-self: flex-start;
-                    // margin-right: 100px;
-                    margin-top: 40px;
-                    // margin-bottom: 20px;
-                    
-                    font-family: Arial;
-                    font-style: normal;
-                    font-weight: bold;
                     font-size: 60px;
                     line-height: 60px;
-                    display: flex;
-                    align-items: center;
                     text-align: center;
-            
-                    color: #000000;
-                    /* identical to box height */
-                    
-                    color: #000000;
                 }
+
                 .h2Text {
-                    z-index: 1;
-                    width: 100%;
-                    height: 46px;
-                    // margin-left: 251px;
-                    // align-self: flex-start;
                     margin-top: 70px;
                     margin-bottom: 20px;
-                    
-                    font-family: Arial;
-                    font-style: normal;
-                    font-weight: normal;
+
                     font-size: 30px;
                     line-height: 35px;
-                    /* identical to box height */
-                    
-                    display: flex;
-                    align-items: center;
                     text-align: center;
-                    
-                    color: #000000;
-            
                 }
+                
                 .TitleButtons {
-                    background: transparent;
-                    display: flex;
-                    flex-direction: row;
-                    padding: 16px;
-                    // width: 200%;
-                    // margin-left: 70px;
-                    align-items: center;
                     justify-content: center;
-                    // justify-content: space-evenly;
+
                     .GetStarted {
-                        z-index: 1;
-                        width: 180px;
-                        height: 70px;
-                        // left: 596px;
-                        margin-right: 20px;
-                        margin-top: 28px;
-                        
-                        background: #4DB6F1;
-                        box-shadow: 0px 4px 8px rgba(159, 159, 159, 0.25);
-                        border-radius: 4px;
-                    
-                        position: static;
-                        left: 16px;
-                        top: 16px;
-                        
-                        font-family: Helvetica;
-                        font-style: normal;
-                        font-weight: bold;
                         font-size: 18px;
                         line-height: 46px;
-                        /* identical to box height */
-                        
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        border-radius: 36px;
-                        
-                        color: #FFFFFF;
-                    
-                        cursor: pointer;
                     }
             
                     .Examples {
-                        z-index: 1;
-                        width: 180px;
-                        height: 70px;
-                        // left: 596px;
-                        margin-top: 28px;
-                        
-                        background: #ffffff;
-                        box-shadow: 0px 4px 8px rgba(159, 159, 159, 0.25);
-                        border-radius: 4px;
-                    
-                        position: static;
-                        left: 16px;
-                        top: 16px;
-                        
-                        font-family: Helvetica;
-                        font-style: normal;
-                        font-weight: bold;
                         font-size: 18px;
                         line-height: 46px;
-                        /* identical to box height */
-                        
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        border-radius: 36px;
-                    
-                        cursor: pointer;
                     }
                 }
             }
+
             .computer {
                display: none;
             }
@@ -1053,148 +513,25 @@
     .Title {
         margin-right: 1rem;
         width: 100%;
-        // margin-left: 0rem;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        margin-top: 5rem;
 
-        .Banner{
-            background: transparent;
-            display: flex;
-            flex-direction: row;
-            width: 100%;
-            align-items: center;
-            justify-content: center;
+        .Banner {
             .Text {
-                background: transparent;
                 margin-left: 3rem;
-                display: flex;
-                flex-direction: column;
-                // width: 150%;
                 height: 50%;
-                align-items: center;
-                justify-content: center;
+
                 .h1Text {
-                    z-index: 1;
-                    width: 100%;
-                    height: 92px;
-                    // left: 29px;
-                    // align-self: flex-start;
-                    // margin-right: 100px;
-                    margin-top: 40px;
-                    // margin-bottom: 20px;
-                    
-                    font-family: Arial;
-                    font-style: normal;
-                    font-weight: bold;
                     font-size: 60px;
-                    line-height: 75px;
-                    display: flex;
-                    align-items: center;
                     text-align: center;
-            
-                    color: #000000;
-                    /* identical to box height */
-                    
-                    color: #000000;
                 }
+
                 .h2Text {
-                    z-index: 1;
-                    width: 100%;
-                    height: 46px;
-                    // margin-left: 251px;
-                    // align-self: flex-start;
                     margin-top: 60px;
                     margin-bottom: 20px;
-                    
-                    font-family: Arial;
-                    font-style: normal;
-                    font-weight: normal;
-                    font-size: 35px;
-                    line-height: 46px;
-                    /* identical to box height */
-                    
-                    display: flex;
-                    align-items: center;
                     text-align: center;
-                    
-                    color: #000000;
-            
                 }
+
                 .TitleButtons {
-                    background: transparent;
-                    display: flex;
-                    flex-direction: row;
-                    padding: 16px;
-                    // width: 200%;
-                    // margin-left: 70px;
-                    align-items: center;
                     justify-content: center;
-                    // justify-content: space-evenly;
-                    .GetStarted {
-                        z-index: 1;
-                        width: 180px;
-                        height: 70px;
-                        // left: 596px;
-                        margin-right: 20px;
-                        margin-top: 28px;
-                        
-                        background: #4DB6F1;
-                        box-shadow: 0px 4px 8px rgba(159, 159, 159, 0.25);
-                        border-radius: 4px;
-                    
-                        position: static;
-                        left: 16px;
-                        top: 16px;
-                        
-                        font-family: Helvetica;
-                        font-style: normal;
-                        font-weight: bold;
-                        font-size: 24px;
-                        line-height: 46px;
-                        /* identical to box height */
-                        
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        border-radius: 36px;
-                        
-                        color: #FFFFFF;
-                    
-                        cursor: pointer;
-                    }
-            
-                    .Examples {
-                        z-index: 1;
-                        width: 180px;
-                        height: 70px;
-                        // left: 596px;
-                        margin-top: 28px;
-                        
-                        background: #ffffff;
-                        box-shadow: 0px 4px 8px rgba(159, 159, 159, 0.25);
-                        border-radius: 4px;
-                    
-                        position: static;
-                        left: 16px;
-                        top: 16px;
-                        
-                        font-family: Helvetica;
-                        font-style: normal;
-                        font-weight: bold;
-                        font-size: 24px;
-                        line-height: 46px;
-                        /* identical to box height */
-                        
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        border-radius: 36px;
-                    
-                        cursor: pointer;
-                    }
                 }
             }
             .computer {
@@ -1207,188 +544,70 @@
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
     .Stripe1 {
-      height: 760px;
+        height: 760px;
     }
-  
+
     .Stripe2 {
-      height: 350px;
-      margin-top: 50px;
-    //   margin-bottom: 190px;
+        height: 350px;
+        margin-top: 50px;
     }
-  
+
     .Stripe3 {
-      height: 300px;
-      margin-top: 50px;
+        height: 300px;
+        margin-top: 50px;
     }
-  }
+}
   
-  /* Small devices (portrait tablets and large phones, 600px and up) */
-  @media only screen and (min-width: 600px) {
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
     .Stripe1 {
-      height: 760px;
+        height: 760px;
     }
-  
+
     .Stripe2 {
-      height: 450px;
-      margin-top: 50px;
+        height: 450px;
+        margin-top: 50px;
     }
-  
+
     .Stripe3 {
-      height: 300px;
+        height: 300px;
     }
-  }
+}
 
 /* Medium devices (landscape tablets, 768px and up) */
 @media only screen and (min-width: 768px) {
     .Title {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        margin-top: 5rem;
-
-        .Banner{
-            background: transparent;
-            display: flex;
-            flex-direction: row;
-            width: 100%;
-            align-items: center;
-            justify-content: center;
+        .Banner {
             .Text {
-                background: transparent;
                 margin-left: 3rem;
-                display: flex;
-                flex-direction: column;
                 width: 60%;
-                height: 50%;
-                align-items: center;
-                justify-content: center;
+
                 .h1Text {
-                    z-index: 1;
-                    width: 100%;
-                    height: 92px;
-                    left: 29px;
                     align-self: flex-start;
-                    margin-top: 40px;
                     margin-bottom: 50px;
-                    
-                    font-family: Arial;
-                    font-style: normal;
-                    font-weight: bold;
                     font-size: 65px;
-                    line-height: 75px;
-                    display: flex;
-                    align-items: center;
                     text-align: left;
-            
-                    color: #000000;
-                    /* identical to box height */
-                    
-                    color: #000000;
                 }
+
                 .h2Text {
-                    z-index: 1;
-                    width: 100%;
-                    height: 46px;
-                    // margin-left: 251px;
                     align-self: flex-start;
                     margin-top: 48px;
                     margin-bottom: 20px;
-                    
-                    font-family: Arial;
-                    font-style: normal;
-                    font-weight: normal;
-                    font-size: 35px;
-                    line-height: 46px;
-                    /* identical to box height */
-                    
-                    display: flex;
-                    align-items: center;
                     text-align: left;
-                    
-                    color: #000000;
-            
                 }
+
                 .TitleButtons {
-                    background: transparent;
-                    display: flex;
-                    flex-direction: row;
-                    padding: 16px;
-                    width: 100%;
-                    align-items: center;
                     justify-content: left;
-                    // justify-content: space-evenly;
-                    .GetStarted {
-                        z-index: 1;
-                        width: 180px;
-                        height: 70px;
-                        // left: 596px;
-                        margin-right: 20px;
-                        margin-top: 28px;
-                        
-                        background: #4DB6F1;
-                        box-shadow: 0px 4px 8px rgba(159, 159, 159, 0.25);
-                        border-radius: 4px;
-                    
-                        position: static;
-                        left: 16px;
-                        top: 16px;
-                        
-                        font-family: Helvetica;
-                        font-style: normal;
-                        font-weight: bold;
-                        font-size: 24px;
-                        line-height: 46px;
-                        /* identical to box height */
-                        
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        border-radius: 36px;
-                        
-                        color: #FFFFFF;
-                    
-                        cursor: pointer;
-                    }
-            
-                    .Examples {
-                        z-index: 1;
-                        width: 180px;
-                        height: 70px;
-                        // left: 596px;
-                        margin-top: 28px;
-                        
-                        background: #ffffff;
-                        box-shadow: 0px 4px 8px rgba(159, 159, 159, 0.25);
-                        border-radius: 4px;
-                    
-                        position: static;
-                        left: 16px;
-                        top: 16px;
-                        
-                        font-family: Helvetica;
-                        font-style: normal;
-                        font-weight: bold;
-                        font-size: 24px;
-                        line-height: 46px;
-                        /* identical to box height */
-                        
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        border-radius: 36px;
-                    
-                        cursor: pointer;
-                    }
                 }
             }
+
             .computer {
                 display: flex;
                 opacity: 1;
                 transition: all .3s ease;
         
                 img {
-                    width: 100%;
+                    width: 105%;
                     height: auto;
                     transform: translate(-5%, 5%);
                     z-index: 1;
@@ -1396,6 +615,7 @@
             }
         }
     }
+
     .Stripe1 {
         height: 760px;
     }
@@ -1409,86 +629,45 @@
         height: 300px;
         margin-top: 50px;
     }
-
 }
 
 /* Large devices (laptops/desktops, 992px and up) */
 @media only screen and (min-width: 992px) {
     .Title {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        margin-top: 5rem;
-
         .Banner{
-            background: transparent;
-            display: flex;
-            flex-direction: row;
-            width: 100%;
-            align-items: center;
-            justify-content: center;
             .Text {
-                background: transparent;
-                margin-left: 5rem;
-                display: flex;
-                flex-direction: column;
-                width: 70%;
-                height: 50%;
-                align-items: center;
-                justify-content: center;
                 .h1Text {
-                    z-index: 1;
-                    width: 100%;
-                    height: 92px;
-                    left: 29px;
-                    margin-top: 40px;
                     margin-bottom: 40px;
-                    
-                    font-family: Arial;
-                    font-style: normal;
-                    font-weight: bold;
-                    font-size: 65px;
-                    line-height: 75px;
-                    display: flex;
-                    align-items: center;
-            
-                    color: #000000;
-                    /* identical to box height */
-                    
-                    color: #000000;
                 }
+
                 .h2Text {
-                    z-index: 1;
-                    width: 100%;
-                    height: 46px;
-                    // margin-left: 251px;
                     margin-top: 48px;
                     margin-bottom: 10px;
-                    
-                    font-family: Arial;
-                    font-style: normal;
-                    font-weight: normal;
-                    font-size: 35px;
-                    line-height: 46px;
-                    /* identical to box height */
-                    
-                    display: flex;
-                    align-items: center;
-                    
-                    color: #000000;
-            
                 }
             }
         }
     }
+
+    .computer {
+        display: flex;
+        opacity: 1;
+        transition: all .3s ease;
+
+        img {
+            width: 110%;
+            height: auto;
+            transform: translate(-5%, 5%);
+            z-index: 1;
+        }
+    }
+
     .Stripe1 {
         height: 760px;
     }
 
     .Stripe2 {
-        height: 650px;
-        margin-top: 50px;
+        height: 600px;
+        margin-top: 100px;
     }
 
     .Stripe3 {
@@ -1500,310 +679,59 @@
 /* Extra large devices (large laptops and desktops, 1200px and up) */
 @media only screen and (min-width: 1200px) {
     .Title {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        margin-top: 5rem;
-
-        .Banner{
-            background: transparent;
-            display: flex;
-            flex-direction: row;
-            width: 100%;
-            align-items: center;
-            justify-content: center;
+        .Banner { 
             .Text {
-                background: transparent;
-                margin-left: 5rem;
-                display: flex;
-                flex-direction: column;
-                width: 70%;
-                height: 50%;
-                align-items: center;
-                justify-content: center;
-                .h1Text {
-                    z-index: 1;
-                    width: 100%;
-                    height: 92px;
-                    left: 29px;
-                    margin-top: 40px;
-                    
-                    font-family: Arial;
-                    font-style: normal;
-                    font-weight: bold;
-                    font-size: 65px;
-                    line-height: 75px;
-                    display: flex;
-                    align-items: center;
-            
-                    color: #000000;
-                    /* identical to box height */
-                    
-                    color: #000000;
-                }
                 .h2Text {
-                    z-index: 1;
-                    width: 100%;
-                    height: 46px;
-                    // margin-left: 251px;
                     margin-top: 48px;
-                    
-                    font-family: Arial;
-                    font-style: normal;
-                    font-weight: normal;
-                    font-size: 35px;
-                    line-height: 46px;
-                    /* identical to box height */
-                    
-                    display: flex;
-                    align-items: center;
-                    
-                    color: #000000;
-            
-                }
-                .TitleButtons {
-                    background: transparent;
-                    display: flex;
-                    flex-direction: row;
-                    padding: 16px;
-                    width: 100%;
-                    align-items: center;
-                    justify-content: left;
-                    // justify-content: space-evenly;
-                    .GetStarted {
-                        z-index: 1;
-                        width: 180px;
-                        height: 70px;
-                        // left: 596px;
-                        margin-right: 20px;
-                        margin-top: 28px;
-                        
-                        background: #4DB6F1;
-                        box-shadow: 0px 4px 8px rgba(159, 159, 159, 0.25);
-                        border-radius: 4px;
-                    
-                        position: static;
-                        left: 16px;
-                        top: 16px;
-                        
-                        font-family: Helvetica;
-                        font-style: normal;
-                        font-weight: bold;
-                        font-size: 24px;
-                        line-height: 46px;
-                        /* identical to box height */
-                        
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        border-radius: 36px;
-                        
-                        color: #FFFFFF;
-                    
-                        cursor: pointer;
-                    }
-            
-                    .Examples {
-                        z-index: 1;
-                        width: 180px;
-                        height: 70px;
-                        // left: 596px;
-                        margin-top: 28px;
-                        
-                        background: #ffffff;
-                        box-shadow: 0px 4px 8px rgba(159, 159, 159, 0.25);
-                        border-radius: 4px;
-                    
-                        position: static;
-                        left: 16px;
-                        top: 16px;
-                        
-                        font-family: Helvetica;
-                        font-style: normal;
-                        font-weight: bold;
-                        font-size: 24px;
-                        line-height: 46px;
-                        /* identical to box height */
-                        
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        border-radius: 36px;
-                    
-                        cursor: pointer;
-                    }
                 }
             }
+
             .computer {
                 opacity: 1;
                 transition: all .3s ease;
         
                 img {
-                    width: 100%;
+                    width: 110%;
                     height: auto;
-                    transform: translate(-5%, 5%);
+                    transform: translate(-7%, 5%);
                     z-index: 1;
                 }
             }
         }
     }
+
     .Stripe1 {
         height: 760px;
-      }
+    }
+
     .Stripe2 {
-        height: 760px;
+        height: 710px;
     }
 }
 
 /* Extra large devices (large laptops and desktops, 1200px and up) */
 @media only screen and (min-width: 1300px) {
     .Title {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        margin-top: 5rem;
-
-        .Banner{
-            background: transparent;
-            display: flex;
-            flex-direction: row;
-            width: 100%;
-            align-items: center;
-            justify-content: center;
+        .Banner {
             .Text {
-                background: transparent;
-                margin-left: 5rem;
-                display: flex;
-                flex-direction: column;
-                width: 70%;
-                height: 50%;
-                align-items: center;
-                justify-content: center;
                 .h1Text {
-                    z-index: 1;
-                    width: 100%;
-                    height: 92px;
-                    left: 29px;
-                    margin-top: 40px;
                     margin-bottom: 10px;
-                    
-                    font-family: Arial;
-                    font-style: normal;
-                    font-weight: bold;
-                    font-size: 65px;
-                    line-height: 75px;
-                    display: flex;
-                    align-items: center;
-            
-                    color: #000000;
-                    /* identical to box height */
-                    
-                    color: #000000;
                 }
+
                 .h2Text {
-                    z-index: 1;
-                    width: 100%;
-                    height: 46px;
-                    // margin-left: 251px;
                     margin-top: 10px;
                     margin-bottom: 0px;
-                    
-                    font-family: Arial;
-                    font-style: normal;
-                    font-weight: normal;
-                    font-size: 35px;
-                    line-height: 46px;
-                    /* identical to box height */
-                    
-                    display: flex;
-                    align-items: center;
-                    
-                    color: #000000;
-            
-                }
-                .TitleButtons {
-                    background: transparent;
-                    display: flex;
-                    flex-direction: row;
-                    padding: 16px;
-                    width: 100%;
-                    align-items: center;
-                    justify-content: left;
-                    // justify-content: space-evenly;
-                    .GetStarted {
-                        z-index: 1;
-                        width: 180px;
-                        height: 70px;
-                        // left: 596px;
-                        margin-right: 20px;
-                        margin-top: 28px;
-                        
-                        background: #4DB6F1;
-                        box-shadow: 0px 4px 8px rgba(159, 159, 159, 0.25);
-                        border-radius: 4px;
-                    
-                        position: static;
-                        left: 16px;
-                        top: 16px;
-                        
-                        font-family: Helvetica;
-                        font-style: normal;
-                        font-weight: bold;
-                        font-size: 24px;
-                        line-height: 46px;
-                        /* identical to box height */
-                        
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        border-radius: 36px;
-                        
-                        color: #FFFFFF;
-                    
-                        cursor: pointer;
-                    }
-            
-                    .Examples {
-                        z-index: 1;
-                        width: 180px;
-                        height: 70px;
-                        // left: 596px;
-                        margin-top: 28px;
-                        
-                        background: #ffffff;
-                        box-shadow: 0px 4px 8px rgba(159, 159, 159, 0.25);
-                        border-radius: 4px;
-                    
-                        position: static;
-                        left: 16px;
-                        top: 16px;
-                        
-                        font-family: Helvetica;
-                        font-style: normal;
-                        font-weight: bold;
-                        font-size: 24px;
-                        line-height: 46px;
-                        /* identical to box height */
-                        
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        border-radius: 36px;
-                    
-                        cursor: pointer;
-                    }
                 }
             }
+
             .computer {
                 opacity: 1;
                 transition: all .3s ease;
         
                 img {
-                    width: 100%;
+                    width: 110%;
                     height: auto;
-                    transform: translate(-5%, 5%);
+                    transform: translate(-7%, 5%);
                     z-index: 1;
                 }
             }
