@@ -134,6 +134,7 @@ function TitleText() {
               <div className={indexStyles.GetStarted}>
                 <div className={indexStyles.button}>
                   Get Started
+                  <img src="/images/warrow.svg" />
                 </div>
               </div>
             </Link>
@@ -141,6 +142,7 @@ function TitleText() {
               <div className={indexStyles.Examples}>
                 <div className={indexStyles.button}>
                   Learn More
+                  <img src="/images/arrow.svg" />
                 </div>
               </div>
             </Link>
