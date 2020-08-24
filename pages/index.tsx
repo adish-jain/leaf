@@ -67,6 +67,7 @@ function NavBar(props: {goToIndex: any}) {
       <Logo goToIndex={props.goToIndex}/>
       <Signup />
       <Login />
+      <Examples />
       <About />
     </div>
   );
@@ -95,6 +96,16 @@ function Signup() {
     <div className={indexStyles.Login}>
       <Link href="/signup">
         <a>Signup</a>
+      </Link>
+    </div>
+  );
+}
+
+function Examples() {
+  return (
+    <div className={indexStyles.Login}>
+      <Link href="/examples">
+        <a>Examples</a>
       </Link>
     </div>
   );
