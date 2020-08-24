@@ -67,6 +67,7 @@ function NavBar(props: {goToIndex: any}) {
       <Logo goToIndex={props.goToIndex}/>
       <Signup />
       <Login />
+      <Examples />
       <About />
     </div>
   );
@@ -95,6 +96,16 @@ function Signup() {
     <div className={indexStyles.Login}>
       <Link href="/signup">
         <a>Signup</a>
+      </Link>
+    </div>
+  );
+}
+
+function Examples() {
+  return (
+    <div className={indexStyles.Login}>
+      <Link href="/examples">
+        <a>Examples</a>
       </Link>
     </div>
   );
@@ -138,14 +149,14 @@ function TitleText() {
                 </div>
               </div>
             </Link>
-            <a href="https://getleaf.app/outofthebot/howdostepsandscrollingworkintheleafcodebase-y4qrlau9" target="_blank">
+            <Link href="/examples">
               <div className={indexStyles.Examples}>
-                  <div className={indexStyles.button}>
-                      Learn More
-                    <img src="/images/arrow.svg" />
-                  </div>
+                <div className={indexStyles.button}>
+                  Learn More
+                  <img src="/images/arrow.svg" />
+                </div>
               </div>
-            </a>
+            </Link>
           </div>
 			  </div>
         <div className={indexStyles.computer}>
