@@ -1,368 +1,758 @@
 .container {
-    width: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 .MainWrapper {
-    width: 100%;
-    font-family: 'Roboto';
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
-
 
 .Header {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 70px;
+  left: 0px;
+  top: 0px;
+
+  background: #ffffff;
+
+  justify-content: center;
+  align-items: center;
+
+  .NavBar {
     display: flex;
     flex-direction: row;
     width: 100%;
-    height: 320px;
 
-    justify-content: center;
-    align-items: center;
-    background: #ffffff;
-    
-    .NavBar {
-        display: flex;
-        flex-direction: row;   
-        width: 100%; 
-
-        .Logo {
-            display: flex;
-            align-self: flex-start;
-            margin-right: auto;
-            margin-left: 5rem;
-            img {
-                height: 60px;
-            }
-            cursor: pointer;
-        }
-
-
-        .Login {
-            display: flex;
-            width: 92px;
-            height: 34px;
-
-            padding-top: 20px;
-            margin-bottom: 30px;
-            justify-content: space-evenly;
-
-            margin-right: 2rem;
-            font-style: normal;
-            font-weight: normal;
-            font-size: 20px;
-
-            a:link {
-                color:  #000000;
-                text-decoration: none;
-            }
-
-            a:visited {
-                color: #000000;
-            }
-
-            a:hover {
-                color: #1DB954;
-            }
-        }
+    .Logo {
+      display: flex;
+      align-self: flex-start;
+      margin-right: auto;
+      width: 150.75px;
+      height: 76px;
+      margin-top: 1rem;
+      margin-left: 1.5rem;
+      top: 8px;
+      img {
+        height: 60px;
+      }
+      cursor: pointer;
+      z-index: 1;
     }
 
-    .HeaderText {
-        display: flex;
-        width: 100%;
-        height: 75px;
+    .Login {
+      z-index: 1;
+      display: flex;
+      width: 92px;
+      height: 34px;
+      align-self: flex-end;
+      margin-bottom: 30px;
+      justify-content: space-evenly;
 
-        align-items: center;
-        text-align: center;
-        justify-content: center;
-        align-self: center;
+      margin-right: 2rem;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 20px;
 
-        font-style: normal;
-        font-weight: bold;
-        font-size: 70px;
-        line-height: 45px;
-
+      a:link {
         color: #000000;
+        text-decoration: none;
+      }
+
+      a:visited {
+        color: #000000;
+      }
+
+      a:hover {
+        color: #1db954;
+      }
     }
-
-    .GetStarted {
-        display: flex;
-
-        padding-top: 20px;
-        align-items: center;
-        justify-content: center;
-        
-        .button {
-            display: flex;
-
-            align-items: center;
-            justify-content: center;
-            padding: 0.5em;
-            
-            font-weight: bold;
-            font-size: 28px;
-    
-            color: #000000;
-            background: #FFFFFF;
-            border: 1px solid #000000;
-
-            box-sizing: border-box;
-            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-            border-radius: 40px;
-            cursor: pointer;
-        }
-    }
-
-    .button:hover {
-        background: #1DB954;
-    }
+  }
 }
 
-.Body {
+.Title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 5rem;
+
+  .Banner {
+    background: transparent;
     display: flex;
     flex-direction: row;
-
-    margin-top: 1em;
-    justify-content: space-evenly;
+    width: 100%;
     align-items: center;
-    
-    // background-color: #68B2A0;
-    // background-color: #CDE0C9;
-    .BodyTextH1 {
-        position: relative;
-        width: 100%;
-        height: 41px;
+    justify-content: center;
 
-        margin-top: 1em;
-        text-align: left;
-        
+    .Text {
+      background: transparent;
+      margin-left: 5rem;
+      display: flex;
+      flex-direction: column;
+      width: 70%;
+      height: 50%;
+      align-items: center;
+      justify-content: center;
+
+      .h1Text {
+        z-index: 1;
+        width: 100%;
+        height: 92px;
+        left: 29px;
+        margin-top: 40px;
+        margin-bottom: 20px;
+
+        font-family: Arial;
         font-style: normal;
         font-weight: bold;
-        font-size: 60px;
-        line-height: 60px;
-        
-        color: #000000;
-    }
-
-    .BodyTextH2 {
-        position: relative;
-        width: 100%;
-        height: 41px;
-
-        padding-top: 80px;
-        margin-top: 0.1em;
-        margin-bottom: 2.5em;
-        text-align: left;
-        
-        font-style: normal;
-        font-weight: light;
-        font-size: 40px;
-        line-height: 50px;
-        
-        color: #000000;
-    }
-
-    .Preview {
-        // position: relative;
+        font-size: 65px;
+        line-height: 75px;
         display: flex;
-
-        width: 100%;
-        height: 200px;
-
-        margin-top: 40px;
-        justify-content: center;
         align-items: center;
 
-        border-radius: 20px;
-        box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.25);        
-        transition: box-shadow ease-in-out 0.2s;
-        background: #FFFFFF;
+        color: #000000;
+      }
 
-        cursor: pointer;
-    }
-      
-    .Preview:hover {
-        box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.4);
-        transition: box-shadow ease-in-out 0.2s;
+      .h2Text {
+        z-index: 1;
+        width: 100%;
+        height: 46px;
+
+        font-family: Arial;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 35px;
+        line-height: 46px;
+
+        display: flex;
+        align-items: center;
+
+        color: #000000;
+      }
+
+      .TitleButtons {
+        background: transparent;
+        display: flex;
+        flex-direction: row;
+        padding: 16px;
+        width: 100%;
+        align-items: center;
+        justify-content: left;
+
+        .GetStarted {
+          z-index: 1;
+          width: 180px;
+          height: 50px;
+          margin-right: 20px;
+          margin-top: 28px;
+
+          background: #349ae9;
+          box-shadow: 0px 4px 8px rgba(159, 159, 159, 0.25);
+          border-radius: 4px;
+
+          position: static;
+          left: 16px;
+          top: 16px;
+
+          font-family: Helvetica;
+          font-style: normal;
+          font-size: 20px;
+          line-height: 46px;
+
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 36px;
+
+          color: #ffffff;
+
+          cursor: pointer;
+
+          img {
+            padding-left: 0.6rem;
+            width: 20px;
+            height: auto;
+            transform: translate(0%, 10%);
+          }
+        }
+
+        a {
+          z-index: 1;
+          width: 180px;
+          height: 50px;
+          margin-top: 28px;
+
+          background: #ffffff;
+          box-shadow: 0px 4px 8px rgba(159, 159, 159, 0.25);
+          border-radius: 4px;
+
+          position: static;
+          left: 16px;
+          top: 16px;
+
+          font-family: Helvetica;
+          font-style: normal;
+          font-size: 20px;
+          line-height: 46px;
+
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 36px;
+
+          cursor: pointer;
+
+          .Examples {
+            img {
+              padding-left: 0.6rem;
+              width: 20px;
+              height: auto;
+              transform: translate(0%, 10%);
+            }
+          }
+        }
+        a:link {
+          color: #000000;
+          text-decoration: none;
+        }
+
+        a:visited {
+          color: #000000;
+          text-decoration: none;
+        }
+
+        a:hover {
+          color: #000000;
+          text-decoration: none;
+        }
+      }
     }
 
-    img {
-        max-width: 100%;
+    .computer {
+      opacity: 1;
+      transition: all 0.3s ease;
+      position: relative;
+
+      .screen {
+        position: absolute;
+        top: 21.1%;
+        left: 12.9%;
+        width: 64.5%;
+        height: 73.3%;
+        background-color: #fffefc;
+        // background-color: red;
+        z-index: 10;
+        // opacity: 50%;
+        overflow: hidden;
+      }
+
+      img {
+        margin-left: 10px;
+        width: 100%;
         height: auto;
-        width: auto; 
-        border-radius: 20px;
+        transform: translate(-5%, 5%);
+        z-index: 1;
+      }
     }
+  }
+}
+
+.demo {
+  //   object-fit: fill;
+  min-width: 100%;
+  min-height: 100%;
+  //   max-width: auto;
+  width: auto;
+}
+
+.Row1 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 1;
+
+  margin-top: 200px;
+  margin-bottom: 50px;
+
+  img {
+    height: auto;
+    width: 70%;
+  }
+
+  .RowHeader {
+    align-self: flex-start;
+  }
+
+  filter: drop-shadow(0px 2.12355px 2.12355px rgba(0, 0, 0, 0.25));
+  border-radius: 4.24709px;
+}
+
+.Row2 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+
+  margin-top: 48px;
+  margin-bottom: 50px;
+
+  img {
+    height: auto;
+    width: 70%;
+  }
+
+  .Row2Header {
+    align-self: flex-end;
+  }
+
+  filter: drop-shadow(0px 2.12355px 2.12355px rgba(0, 0, 0, 0.25));
+  border-radius: 4.24709px;
+}
+
+.Row3 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 1;
+
+  margin-top: 48px;
+  margin-bottom: 50px;
+
+  img {
+    height: auto;
+    width: 70%;
+  }
+
+  .RowHeader {
+    align-self: flex-start;
+  }
+
+  filter: drop-shadow(0px 2.12355px 2.12355px rgba(0, 0, 0, 0.25));
+  border-radius: 4.24709px;
+}
+
+.Row4 {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 100px;
+  margin-bottom: 100px;
+  z-index: 1;
+
+  .Row4Text {
+    font-family: Arial;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 40px;
+    line-height: 46px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+
+    color: #000000;
+  }
+
+  .GetStarted2 {
+    z-index: 1;
+    width: 248px;
+    height: 78px;
+    margin-top: 28px;
+
+    background: #349ae9;
+    box-shadow: 0px 4px 8px rgba(159, 159, 159, 0.25);
+    border-radius: 4px;
+
+    position: static;
+    left: 16px;
+    top: 16px;
+
+    font-family: Helvetica;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 40px;
+    line-height: 46px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 36px;
+
+    color: #ffffff;
+
+    cursor: pointer;
+  }
+}
+
+.Footer {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  margin-top: 20px;
+  height: 80px;
+  left: 0px;
+
+  background: #ffffff;
+  box-shadow: 2px 0px 12px #f4f4f4;
+
+  justify-content: bottom;
+  align-items: bottom;
+
+  .NavBar {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+
+    .Logo {
+      display: flex;
+      align-self: flex-start;
+      margin-right: auto;
+      margin-top: 5px;
+      width: 150.75px;
+      height: 76px;
+      margin-left: 1.5rem;
+      top: 8px;
+
+      img {
+        height: 60px;
+      }
+
+      cursor: pointer;
+    }
+
+    .Login {
+      display: flex;
+      width: 92px;
+      height: 34px;
+
+      padding-top: 20px;
+      margin-bottom: 30px;
+      justify-content: space-evenly;
+
+      margin-right: 2rem;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 20px;
+
+      a:link {
+        color: #000000;
+        text-decoration: none;
+      }
+
+      a:visited {
+        color: #000000;
+      }
+
+      a:hover {
+        color: #1db954;
+      }
+    }
+  }
+}
+
+.Stripe1 {
+  width: 100%;
+  height: 760px;
+  background: radial-gradient(
+    circle 827px at 47.3% 48%,
+    rgba(255, 255, 255, 1) 0%,
+    rgb(10, 164, 235) 90%
+  );
+  position: absolute;
+  top: 0;
+  opacity: 0.2;
+  transform: skewY(-6deg);
+  transform-origin: 0;
+}
+
+.Stripe2 {
+  margin-top: 100px;
+  width: 100vw;
+  height: 760px;
+  background: radial-gradient(
+    circle 827px at 47.3% 48%,
+    rgba(255, 255, 255, 1) 0%,
+    rgb(10, 164, 235) 90%
+  );
+  position: absolute;
+  top: 0;
+  opacity: 0.2;
+  transform: skewY(-6deg);
+  transform-origin: 0;
+  z-index: -1;
+}
+
+.Stripe3 {
+  margin-bottom: 100px;
+  width: 100vw;
+  height: 280px;
+  background: radial-gradient(
+    circle 827px at 47.3% 48%,
+    rgba(255, 255, 255, 1) 0%,
+    rgb(10, 164, 235) 90%
+  );
+  position: absolute;
+  opacity: 0.2;
+  transform: skewY(2deg);
+  transform-origin: 0;
+  z-index: -1;
+}
+
+/* Extra small devices (phones, 505px and down) */
+@media only screen and (max-width: 506px) {
+  .Title {
+    margin-right: 1rem;
+    width: 100%;
+    .Banner {
+      .Text {
+        margin-left: 3rem;
+
+        .h1Text {
+          font-size: 60px;
+          line-height: 60px;
+          text-align: center;
+        }
+
+        .h2Text {
+          margin-top: 70px;
+          margin-bottom: 20px;
+
+          font-size: 30px;
+          line-height: 35px;
+          text-align: center;
+        }
+
+        .TitleButtons {
+          justify-content: center;
+
+          .GetStarted {
+            font-size: 18px;
+            line-height: 46px;
+          }
+
+          .Examples {
+            font-size: 18px;
+            line-height: 46px;
+          }
+        }
+      }
+
+      .computer {
+        display: none;
+      }
+    }
+  }
+}
+
+/* Small devices (phones, 732px and down) */
+@media only screen and (min-width: 506px) {
+  .Title {
+    margin-right: 1rem;
+    width: 100%;
+
+    .Banner {
+      .Text {
+        margin-left: 3rem;
+        height: 50%;
+
+        .h1Text {
+          font-size: 60px;
+          text-align: center;
+        }
+
+        .h2Text {
+          margin-top: 60px;
+          margin-bottom: 20px;
+          text-align: center;
+        }
+
+        .TitleButtons {
+          justify-content: center;
+        }
+      }
+      .computer {
+        display: none;
+      }
+    }
+  }
 }
 
 /* Extra small devices (phones, 600px and down) */
-@media only screen and (max-width: 768px) {
-    .Header {
-        flex-direction: column;
-    
-        .HeaderText {
-            font-size: 45px;
-        }
-    }
+@media only screen and (max-width: 600px) {
+  .Stripe1 {
+    height: 760px;
+  }
 
-    .Body {
+  .Stripe2 {
+    height: 350px;
+    margin-top: 50px;
+  }
+
+  .Stripe3 {
+    height: 250px;
+    margin-top: 50px;
+  }
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+  .Stripe1 {
+    height: 760px;
+  }
+
+  .Stripe2 {
+    height: 450px;
+    margin-top: 50px;
+  }
+
+  .Stripe3 {
+    height: 250px;
+    margin-top: 70px;
+  }
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+  .Title {
+    .Banner {
+      .Text {
+        margin-left: 3rem;
+        width: 60%;
+
+        .h1Text {
+          align-self: flex-start;
+          margin-bottom: 50px;
+          font-size: 65px;
+          text-align: left;
+        }
+
+        .h2Text {
+          align-self: flex-start;
+          margin-top: 48px;
+          margin-bottom: 20px;
+          text-align: left;
+        }
+
+        .TitleButtons {
+          justify-content: left;
+        }
+      }
+
+      .computer {
         display: flex;
-        flex-direction: column;
-        padding: 1em;
-
-        .BodyTextH1 {
-            margin-top: 1em;
-            font-size: 35px;
-            line-height: 40px;
-        }
-    
-        .BodyTextH2 {
-            font-size: 25px;
-            line-height: 30px;
-            padding-bottom: 1em;
-        }
+        opacity: 1;
+        transition: all 0.3s ease;
+      }
     }
   }
-  
-  /* Medium devices (landscape tablets, 768px and up) */
-  @media only screen and (min-width: 768px) {
-    .Header {
-        display: flex;
-        flex-direction: column;
-    
-        .HeaderText {
-            font-size: 50px;
-        }
-    }
 
-    .Body {
-        display: flex;
-        flex-direction: column;
-        padding: 1em;
-    
-        .BodyTextH1 {
-            margin-top: 1em;
-            font-size: 45px;
-            line-height: 50px;
+  .Stripe1 {
+    height: 760px;
+  }
+
+  .Stripe2 {
+    height: 550px;
+    margin-top: 50px;
+  }
+
+  .Stripe3 {
+    height: 250px;
+    margin-top: 50px;
+  }
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+  .Title {
+    .Banner {
+      .Text {
+        .h1Text {
+          margin-bottom: 40px;
         }
-    
-        .BodyTextH2 {
-            font-size: 35px;
-            line-height: 50px;
-            padding-bottom: 1.5em;
+
+        .h2Text {
+          margin-top: 48px;
+          margin-bottom: 10px;
         }
-    
-        .Preview {
-            margin-left: 10px;
-        }
+      }
     }
   }
-  
-  /* Large devices (laptops/desktops, 992px and up) */
-  @media only screen and (min-width: 992px) {
-    .Header {
-        display: flex;
-        flex-direction: column;
-    
-        .HeaderText {
-            font-size: 60px;
-        }
-    }
 
-    .Body {
-        display: flex;
-        flex-direction: column;
-        padding: 1em;
-    
-        .BodyTextH1 {
-            margin-top: 1em;
-            font-size: 45px;
-            line-height: 50px;
+  .computer {
+    display: flex;
+    opacity: 1;
+    transition: all 0.3s ease;
+  }
+
+  .Stripe1 {
+    height: 760px;
+  }
+
+  .Stripe2 {
+    height: 600px;
+    margin-top: 100px;
+  }
+
+  .Stripe3 {
+    height: 250px;
+    margin-top: 0px;
+  }
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+  .Title {
+    .Banner {
+      .Text {
+        .h2Text {
+          margin-top: 48px;
         }
-    
-        .BodyTextH2 {
-            font-size: 35px;
-            line-height: 50px;
-            padding-bottom: 1.5em;
-        }
-    
-        .Preview {
-            margin-left:10px;
-        }
+      }
+
+      .computer {
+        opacity: 1;
+        transition: all 0.3s ease;
+      }
     }
   }
-  
-  /* Extra large devices (large laptops and desktops, 1200px and up) */
-  @media only screen and (min-width: 1200px) {
-    .Header {
-        display: flex;
-        flex-direction: column;
-    
-        .HeaderText {
-            font-size: 65px;
+
+  .Stripe1 {
+    height: 760px;
+  }
+
+  .Stripe2 {
+    height: 710px;
+  }
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1300px) {
+  .Title {
+    .Banner {
+      .Text {
+        .h2Text {
+          margin-top: 10px;
+          margin-bottom: 0px;
         }
-    }
+      }
 
-    .Body {
-        display: flex;
-        flex-direction: row;
-
-        padding-top: 40px;
-        justify-content: space-evenly;
-        align-items: center;
-        
-        .BodyTextH1 {
-            position: relative;
-            width: 100%;
-            height: 41px;
-
-            margin-top: 0em;
-            margin-bottom: 0.5em;
-            padding-left: 0.3em;
-            text-align: left;
-            
-            font-style: normal;
-            font-weight: bold;
-            font-size: 50px;
-            line-height: 60px;
-            
-            color: #000000;
-        }
-    
-        .BodyTextH2 {
-            position: relative;
-            width: 100%;
-            height: 41px;
-
-            margin-top: 0.5em;
-            padding-left: 0.3em;
-            text-align: left;
-            
-            font-style: normal;
-            font-weight: light;
-            font-size: 40px;
-            line-height: 50px;
-            
-            color: #000000;
-        }
-    
-        .Preview {
-            display: flex;
-            position: relative;
-            width: 100%;
-            height: 200px;
-
-            margin-top: 40px;
-            justify-content: center;
-            align-items: center;
-
-            border-radius: 20px;
-            box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.25);
-            transition: box-shadow ease-in-out 0.2s;
-            background: #FFFFFF;
-    
-            cursor: pointer;
-        }
-          
-        .Preview:hover {
-            box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.4);
-            transition: box-shadow ease-in-out 0.2s;
-        }
+      .computer {
+        opacity: 1;
+        transition: all 0.3s ease;
+      }
     }
   }
+}

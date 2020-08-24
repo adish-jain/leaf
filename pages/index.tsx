@@ -16,11 +16,6 @@ export default function Pages() {
     window.location.href = "/landing";
   }
 
-  const handleClick = (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-    router.push("/login");
-  };
-
   const goToIndex = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     router.push("/");
@@ -42,8 +37,14 @@ export default function Pages() {
         />
       </Head>
       <main className={indexStyles.MainWrapper}>
-        <Header goToIndex={goToIndex}/>
-        <Body handleClick={handleClick} />
+        <Header goToIndex={goToIndex} />
+        <Stripe1 />
+        <Title />
+        <Row1 />
+        <Row2 />
+        <Row3 />
+        <Row4 />
+        <Footer goToIndex={goToIndex} />
       </main>
     </div>
   );
@@ -52,31 +53,30 @@ export default function Pages() {
 /*
 Header Components
 */
-function Header(props: {goToIndex: any}) {
+function Header(props: { goToIndex: any }) {
   return (
     <div className={indexStyles.Header}>
-      <NavBar goToIndex={props.goToIndex}/>
-      <HeaderText />
+      <NavBar goToIndex={props.goToIndex} />
     </div>
   );
 }
 
-function NavBar(props: {goToIndex: any}) {
+function NavBar(props: { goToIndex: any }) {
   return (
     <div className={indexStyles.NavBar}>
-      <Logo goToIndex={props.goToIndex}/>
-      <Login />
+      <Logo goToIndex={props.goToIndex} />
       <Signup />
+      <Login />
       <About />
     </div>
-  )
+  );
 }
 
-function Logo(props: {goToIndex: any}) {
+function Logo(props: { goToIndex: any }) {
   return (
-    <div className={indexStyles.Logo} onClick={props.goToIndex}> 
-      <img src="/images/logo.svg"/>
-    </div>    
+    <div className={indexStyles.Logo} onClick={props.goToIndex}>
+      <img src="/images/logo.svg" />
+    </div>
   );
 }
 
@@ -110,62 +110,130 @@ function About() {
   );
 }
 
-function HeaderText() {
+function Title() {
   return (
-    <div>
-      <div className={indexStyles.HeaderText}>
-          A New Way to Convey
-      </div>
-      <GetStarted />
+    <div className={indexStyles.Title}>
+      <TitleText />
     </div>
   );
 }
 
-function GetStarted() {
+function TitleText() {
   return (
-      <Link href="/signup">
-        <div className={indexStyles.GetStarted}>
-          <div className={indexStyles.button}>
-            Get Started
+    <div className={indexStyles.Title}>
+      <div className={indexStyles.Banner}>
+        <div className={indexStyles.Text}>
+          <div className={indexStyles.h1Text}>A new way to convey</div>
+          <div className={indexStyles.h2Text}>
+            Leaf is a platform built from the ground up, for coding tutorials
+          </div>
+          <div className={indexStyles.TitleButtons}>
+            <Link href="/signup">
+              <div className={indexStyles.GetStarted}>
+                <div className={indexStyles.button}>
+                  Get Started
+                  <img src="/images/warrow.svg" />
+                </div>
+              </div>
+            </Link>
+            <a
+              href="https://getleaf.app/outofthebot/howdostepsandscrollingworkintheleafcodebase-y4qrlau9"
+              target="_blank"
+            >
+              <div className={indexStyles.Examples}>
+                <div className={indexStyles.button}>
+                  Learn More
+                  <img src="/images/arrow.svg" />
+                </div>
+              </div>
+            </a>
           </div>
         </div>
-      </Link>
-  );
-}
-
-/*
-Body Components
-*/
-function Body(props: {handleClick: any}) {
-  return (
-    <div className={indexStyles.Body}> 
-      <BodyBox />
-      <BodyText handleClick={props.handleClick}/>
-    </div>
-  );
-}
-
-function BodyText(props: {handleClick: any}) {
-  return (
-      <div>
-        <div className={indexStyles.BodyTextH1}>
-          Coding tutorials <br></br> to the next level<br></br> 
-        </div>
-        <div className={indexStyles.BodyTextH2}>
-           Steps & code editor <br></br> side-by-side for a <br></br> seamless experience
-        </div>
-        <div onClick={props.handleClick} className={indexStyles.Preview}>
-          <h2>Example</h2>
+        <div className={indexStyles.computer}>
+          <img src="/images/laptop3.svg" />
+          <div className={indexStyles["screen"]}>
+            <video className={indexStyles["demo"]} autoPlay muted loop>
+              <source src={"/videos/frontpage.mp4"} />
+            </video>
+          </div>
         </div>
       </div>
-  );
-}
-
-function BodyBox() {
-  return (
-    <div>
-      <img alt="tutorial" src='/images/tutorial.svg' />
     </div>
   );
 }
 
+function GetStarted2() {
+  return (
+    <Link href="/signup">
+      <div className={indexStyles.GetStarted2}>
+        <div className={indexStyles.button}>Sign Up</div>
+      </div>
+    </Link>
+  );
+}
+
+function Row1() {
+  return (
+    <div className={indexStyles.Row1}>
+      <div className={indexStyles.RowHeader}>
+        <img src="/images/steps.svg" />
+      </div>
+      <img src="/images/ex.svg" />
+    </div>
+  );
+}
+
+function Row2() {
+  return (
+    <div className={indexStyles.Row2}>
+      <Stripe2 />
+      <div className={indexStyles.Row2Header}>
+        <img src="/images/code.svg" />
+      </div>
+      <img src="/images/ex.svg" />
+    </div>
+  );
+}
+
+function Row3() {
+  return (
+    <div className={indexStyles.Row3}>
+      <div className={indexStyles.RowHeader}>
+        <img src="/images/publish.svg" />
+      </div>
+      <img src="/images/ex.svg" />
+    </div>
+  );
+}
+
+function Row4() {
+  return (
+    <div className={indexStyles.Row4}>
+      <Stripe3 />
+      <div className={indexStyles.Row4Text}>
+        Say goodbye to publishing code snippets on Medium
+      </div>
+      <GetStarted2 />
+    </div>
+  );
+}
+
+function Footer(props: { goToIndex: any }) {
+  return (
+    <div className={indexStyles.Footer}>
+      <NavBar goToIndex={props.goToIndex} />
+    </div>
+  );
+}
+
+function Stripe1() {
+  return <div className={indexStyles.Stripe1}></div>;
+}
+
+function Stripe2() {
+  return <div className={indexStyles.Stripe2}></div>;
+}
+
+function Stripe3() {
+  return <div className={indexStyles.Stripe3}></div>;
+}

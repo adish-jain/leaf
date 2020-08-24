@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import * as typeformEmbed from "@typeform/embed";
 import { usePosts } from "../lib/usePosts";
+import { HeaderUnAuthenticated } from "../components/Header";
 
 const aboutStyles = require("../styles/About.module.scss");
 
@@ -24,7 +25,7 @@ export default function About() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <Header goToIndex={goToIndex} />
+        <HeaderUnAuthenticated signup={true} login={true} />
         <div>
           <div className={aboutStyles.container}>
             <AboutLeaf />
@@ -34,66 +35,6 @@ export default function About() {
           </div>
         </div>
       </main>
-    </div>
-  );
-}
-
-/*
-Header Components
-*/
-function Header(props: { goToIndex: any }) {
-  return (
-    <div className={aboutStyles.Header}>
-      <NavBar goToIndex={props.goToIndex} />
-      {/* <hr></hr> */}
-    </div>
-  );
-}
-
-function NavBar(props: { goToIndex: any }) {
-  return (
-    <div className={aboutStyles.NavBar}>
-      <Logo goToIndex={props.goToIndex} />
-      <Login />
-      <Signup />
-    </div>
-  );
-}
-
-function Logo(props: { goToIndex: any }) {
-  return (
-    <div className={aboutStyles.Logo} onClick={props.goToIndex}>
-      <img src="/images/LeafLogo.svg" />
-    </div>
-  );
-}
-
-function Login() {
-  return (
-    <div className={aboutStyles.Login}>
-      <Link href="/login">
-        <a>Login</a>
-      </Link>
-    </div>
-  );
-}
-
-function Signup() {
-  return (
-    <div className={aboutStyles.Login}>
-      <Link href="/signup">
-        <a>Signup</a>
-      </Link>
-    </div>
-  );
-}
-
-function AboutNav() {
-  return (
-    <div className={aboutStyles.Login}>
-      <Link href="/about">
-        <a>About</a>
-      </Link>
     </div>
   );
 }
