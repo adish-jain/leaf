@@ -126,7 +126,7 @@ const DraftView = () => {
   return (
     <div className="container">
       <Head>
-        <title>Code Tutorials</title>
+        <title>{draftTitle}</title>
         <link rel="icon" href="/favicon.ico" />
         <script
           dangerouslySetInnerHTML={{

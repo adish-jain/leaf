@@ -94,7 +94,7 @@ const UserPage = (props: UserPageProps) => {
   return (
     <div className="container">
       <Head>
-        <title>User Page</title>
+        <title>{props.username}'s Leaf</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
