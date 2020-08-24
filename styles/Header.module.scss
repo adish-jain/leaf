@@ -1,77 +1,97 @@
-.Header {
+.logo {
+  display: flex;
+  align-self: flex-start;
+  margin-right: auto;
+  position: relative;
+  left: -10px;
+  //   padding-left: 3rem;
+  img {
+    height: 50px;
+  }
+
+  img:hover {
+  }
+
+  cursor: pointer;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+
+  // justify-content: center;
+  align-items: center;
+  background: #ffffff;
+
+  background-color: white;
+  z-index: 6;
+  box-shadow: 0 4px 5px -5px rgba(0, 0, 0, 0.5);
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+.navbar {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+  padding-left: 80px;
+  padding-right: 80px;
+
+  .menu-items {
     display: flex;
-    flex-direction: row;
-  
-    justify-content: center;
-    align-items: center;
-    background: #ffffff;
-  
-    background-color: white;
-    z-index: 6;
-    box-shadow: 0 4px 5px -5px rgba(0, 0, 0, 0.5);
-    position: fixed;
-    top: 0;
-    width: 100%;
-  
-    hr {
-      width: 100%;
-      border-top: 1px solid #edece9;
+
+    // margin-right: 80px;
+
+    .menu-item {
+      padding: 4px;
+      cursor: poi;
     }
-  
-    .NavBar {
-      display: flex;
-      flex-direction: row;
-      width: 60%;
-      align-items: center;
-  
-      .Logo {
-        display: flex;
-        align-self: flex-start;
-        margin-right: auto;
-        position: relative;
-        left: -10px;
-        //   padding-left: 3rem;
-        img {
-          height: 50px;
-        }
-  
-        img:hover {
-        }
-  
-        cursor: pointer;
-      }
-  
-      .Login {
-        display: flex;
-  
-        margin-right: 16px;
-        justify-content: space-evenly;
-  
-        font-family: "Roboto", sans-serif;
-        font-style: normal;
-        font-weight: normal;
-        font-size: 16px;
-  
-        a:link {
-          color: #000000;
-          text-decoration: none;
-          transition: all ease-in-out 0.2s;
-          padding: 4px;
-        }
-  
-        a:visited {
-          color: #000000;
-          transition: all ease-in-out 0.2s;
-        }
-  
-        a:hover {
-          // color: #1db954;
-          border-radius: 4px;
-          padding: 4px;
-          background-color: #349ae9;
-          color: white;
-          transition: all ease-in-out 0.2s;
-        }
-      }
+
+    .menu-item:hover {
+      border-radius: 4px;
+      padding: 4px;
+      background-color: #349ae9;
+      color: white;
+      transition: all ease-in-out 0.2s;
+    }
+
+    a {
+      margin-right: 16px;
+    }
+
+    a:link {
+      color: #000000;
+      text-decoration: none;
+      transition: all ease-in-out 0.2s;
+      padding: 4px;
+    }
+
+    a:visited {
+      color: #000000;
+      transition: all ease-in-out 0.2s;
+    }
+
+    a:hover {
+      // color: #1db954;
+      border-radius: 4px;
+      padding: 4px;
+      background-color: #349ae9;
+      color: white;
+      transition: all ease-in-out 0.2s;
     }
   }
+
+  .Login {
+    display: flex;
+
+    margin-right: 16px;
+    justify-content: space-evenly;
+
+    font-family: "Roboto", sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+  }
+}

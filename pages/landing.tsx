@@ -4,10 +4,13 @@ const moment = require("moment");
 const fetch = require("node-fetch");
 global.Headers = fetch.Headers;
 const landingStyles = require("../styles/Landing.module.scss");
+const headerStyles = require("../styles/Header.module.scss");
 import { useLoggedIn, logOut, goToIndex } from "../lib/UseLoggedIn";
 import { useDrafts } from "../lib/useDrafts";
 import { useUserInfo } from "../lib/useUserInfo";
 import { usePosts, goToPost } from "../lib/usePosts";
+import { userInfo } from "os";
+import Header from "../components/Header";
 
 type DraftType = {
   id: string;
@@ -42,6 +45,14 @@ const myRequest = (requestedAPI: string) => {
     }),
   };
 };
+
+function Header1(props: { goToIndex: () => void; username: string }) {
+  return (
+    <div className={landingStyles.header}>
+      <NavBar goToIndex={props.goToIndex} username={props.username} />
+    </div>
+  );
+}
 
 export default function Landing() {
   // authenticate
@@ -88,7 +99,8 @@ export default function Landing() {
         />
       </Head>
       <main>
-        <NavBar userInfo={{ username: username }} />
+        {/* <Header1 goToIndex={goToIndex} username={username} /> */}
+        <Header username={username} />
         <div className={landingStyles.landing}>
           <YourDrafts
             deleteDraft={deleteDraft}
@@ -352,32 +364,34 @@ function Draft(props: DraftProps) {
   );
 }
 
-function NavBar(props: any) {
+function NavBar(props: { goToIndex: () => void; username: string }) {
   return (
-    <div className={landingStyles.header}>
+    <div className={landingStyles.navbar}>
       <Logo />
-      <div className={landingStyles.Login}>
-        <Link href={"/" + props.userInfo.username}>
-          <a>Profile</a>
-        </Link>
+      <div className={landingStyles["items"]}>
+        <div className={landingStyles["menu-item"]}>
+          <Link href={"/" + props.username}>
+            <a>Profile</a>
+          </Link>
+        </div>
+        <Settings />
+        <Logout />
       </div>
-      <Settings />
-      <Logout />
     </div>
   );
 }
 
 function Logo() {
   return (
-    <div className={landingStyles.Logo} onClick={goToIndex}>
-      <img src="/images/icon.svg" />
+    <div className={landingStyles.logo} onClick={goToIndex}>
+      <img src="/images/LeafLogo.svg" />
     </div>
   );
 }
 
 function Logout() {
   return (
-    <div className={landingStyles.Login} onClick={logOut}>
+    <div className={landingStyles["menu-item"]} onClick={logOut}>
       Logout
     </div>
   );
@@ -385,7 +399,7 @@ function Logout() {
 
 function Settings() {
   return (
-    <div className={landingStyles.Login}>
+    <div className={landingStyles["menu-item"]}>
       <Link href="/settings">
         <a>Settings</a>
       </Link>
