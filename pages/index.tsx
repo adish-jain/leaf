@@ -185,7 +185,11 @@ function Row1() {
       <div className={indexStyles.RowHeader}>
         <img src="/images/steps.svg" />
       </div>
-      <img src="/images/ex.svg" />
+      <div className={indexStyles.Screen}>
+        <video className={indexStyles.Demo} autoPlay muted loop>
+          <source src={"/videos/associateCode.mp4"} />
+        </video>
+      </div>
     </div>
   );
 }
@@ -197,7 +201,11 @@ function Row2() {
       <div className={indexStyles.Row2Header}>
         <img src="/images/code.svg" />
       </div>
-      <img src="/images/ex.svg" />
+      <div className={indexStyles.Screen}>
+        <video className={indexStyles.Demo} autoPlay muted loop>
+          <source src={"/videos/associateCode.mp4"} />
+        </video>
+      </div>
     </div>
   );
 }
@@ -208,7 +216,11 @@ function Row3() {
       <div className={indexStyles.RowHeader}>
         <img src="/images/publish.svg" />
       </div>
-      <img src="/images/ex.svg" />
+      <div className={indexStyles.Screen}>
+        <video className={indexStyles.Demo} autoPlay muted loop>
+          <source src={"/videos/associateCode.mp4"} />
+        </video>
+      </div>
     </div>
   );
 }
