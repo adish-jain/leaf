@@ -7,6 +7,7 @@ import { getUserPosts, getUidFromUsername } from "../../lib/userUtils";
 import { goToLanding } from "../../lib/UseLoggedIn";
 import getUsernames from "../../lib/api/getUsernames";
 const profileStyles = require("../../styles/Profile.module.scss");
+const headerStyles = require("../../styles/Header.module.scss");
 import DefaultErrorPage from "next/error";
 import ErroredPage from "../404";
 

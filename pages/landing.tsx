@@ -88,7 +88,7 @@ export default function Landing() {
         />
       </Head>
       <main>
-        <NavBar userInfo={{ username: username }}/>
+        <NavBar userInfo={{ username: username }} />
         <div className={landingStyles.landing}>
           <YourDrafts
             deleteDraft={deleteDraft}
@@ -354,44 +354,42 @@ function Draft(props: DraftProps) {
 
 function NavBar(props: any) {
   return (
-      <div className={landingStyles.header}>
-        <Logo />
-        <div className={landingStyles.Login}>
-          <Link href={"/" + props.userInfo.username}>
-              <a>Profile</a>
-          </Link>
-        </div>
-        <Settings />
-        <Logout />
+    <div className={landingStyles.header}>
+      <Logo />
+      <div className={landingStyles.Login}>
+        <Link href={"/" + props.userInfo.username}>
+          <a>Profile</a>
+        </Link>
       </div>
+      <Settings />
+      <Logout />
+    </div>
   );
 }
 
 function Logo() {
   return (
-      <div className={landingStyles.Logo} onClick={goToIndex}> 
-          <img src="/images/icon.svg"/>
-      </div>  
+    <div className={landingStyles.Logo} onClick={goToIndex}>
+      <img src="/images/icon.svg" />
+    </div>
   );
 }
 
 function Logout() {
   return (
-      <div className={landingStyles.Login} onClick={logOut}>
-      <Link href="/login">
-          <a>Logout</a>
-      </Link>
-      </div>
+    <div className={landingStyles.Login} onClick={logOut}>
+      Logout
+    </div>
   );
 }
 
 function Settings() {
   return (
-      <div className={landingStyles.Login}>
+    <div className={landingStyles.Login}>
       <Link href="/settings">
-          <a>Settings</a>
+        <a>Settings</a>
       </Link>
-      </div>
+    </div>
   );
 }
 
