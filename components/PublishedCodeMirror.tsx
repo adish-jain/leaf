@@ -7,7 +7,7 @@ import animateScrollTo from "animated-scroll-to";
 // require('codemirror/mode/javascript/javascript');
 require("codemirror/mode/jsx/jsx");
 
-type CodeMirrorProps = {p
+type CodeMirrorProps = {
   currentFile: File;
   currentStep?: StepType;
 };
