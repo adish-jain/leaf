@@ -1,16 +1,57 @@
 import React, { Component } from "react";
 import Link from "next/link";
 const headerStyles = require("../styles/Header.module.scss");
-import { goToIndex, logOut } from "../lib/UseLoggedIn";
+import { goToIndex, goToLanding, logOut } from "../lib/UseLoggedIn";
 
 type HeaderProps = {
-  username: string;
-  signup: boolean;
-  login: boolean;
-  about: boolean;
-  settings: boolean;
-  profile: boolean;
+  username?: string;
+  signup?: boolean;
+  login?: boolean;
+  about?: boolean;
+  settings?: boolean;
+  profile?: boolean;
 };
+
+export class HeaderUnAuthenticated extends Component<HeaderProps> {
+  constructor(props: HeaderProps) {
+    super(props);
+  }
+
+  render() {
+    const { signup, login, about } = this.props;
+    return (
+      <div className={headerStyles["header"]}>
+        <div className={headerStyles["navbar"]}>
+          <Logo goTo={goToIndex} />
+          <div className={headerStyles["menu-items"]}>
+            {signup ? (
+              <Link href="/signup">
+                <a>Signup</a>
+              </Link>
+            ) : (
+              <div></div>
+            )}
+
+            {login ? (
+              <Link href="/login">
+                <a>Login</a>
+              </Link>
+            ) : (
+              <div></div>
+            )}
+            {about ? (
+              <Link href="/about">
+                <a>About</a>
+              </Link>
+            ) : (
+              <div></div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
 
 export default class Header extends Component<HeaderProps> {
   constructor(props: HeaderProps) {
@@ -18,18 +59,26 @@ export default class Header extends Component<HeaderProps> {
   }
 
   render() {
-    let { username } = this.props;
+    let { username, profile, settings } = this.props;
     return (
       <div className={headerStyles["header"]}>
         <div className={headerStyles["navbar"]}>
-          <Logo />
+          <Logo goTo={goToLanding} />
           <div className={headerStyles["menu-items"]}>
-            <Link href={`/${username}`}>
-              <a>Profile</a>
-            </Link>
-            <Link href="/settings">
-              <a>Settings</a>
-            </Link>
+            {profile ? (
+              <Link href={`/${username}`}>
+                <a>Profile</a>
+              </Link>
+            ) : (
+              <div></div>
+            )}
+            {settings ? (
+              <Link href="/settings">
+                <a>Settings</a>
+              </Link>
+            ) : (
+              <div></div>
+            )}
             <Logout />
           </div>
         </div>
@@ -38,9 +87,9 @@ export default class Header extends Component<HeaderProps> {
   }
 }
 
-function Logo() {
+function Logo(props: { goTo: () => void }) {
   return (
-    <div className={headerStyles.logo} onClick={goToIndex}>
+    <div className={headerStyles.logo} onClick={props.goTo}>
       <img src="/images/LeafLogo.svg" />
     </div>
   );

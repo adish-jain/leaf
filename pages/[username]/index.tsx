@@ -4,11 +4,10 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import Scrolling from "../../components/Scrolling";
 import { getUserPosts, getUidFromUsername } from "../../lib/userUtils";
-import { goToLanding } from "../../lib/UseLoggedIn";
+import { goToLanding, useLoggedIn } from "../../lib/UseLoggedIn";
 import getUsernames from "../../lib/api/getUsernames";
 const profileStyles = require("../../styles/Profile.module.scss");
-const headerStyles = require("../../styles/Header.module.scss");
-import DefaultErrorPage from "next/error";
+import Header, { HeaderUnAuthenticated } from "../../components/Header";
 import ErroredPage from "../404";
 
 export async function getStaticPaths() {
@@ -80,6 +79,7 @@ type UserPageProps = {
 
 const UserPage = (props: UserPageProps) => {
   const [currentStep, updateStep] = useState(0);
+  const { authenticated, error, loading } = useLoggedIn();
   const router = useRouter();
 
   if (props.errored) {
@@ -98,9 +98,11 @@ const UserPage = (props: UserPageProps) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <div className={profileStyles.Logo} onClick={goToLanding}> 
-            <img src="/images/icon.svg"/>
-        </div>  
+        {authenticated ? (
+          <Header profile={false} settings={true} />
+        ) : (
+          <HeaderUnAuthenticated />
+        )}
         <div className={profileStyles["Content"]}>
           <h1 className={profileStyles["Header"]}>{props.username}</h1>
           {posts.length === 0 ? (

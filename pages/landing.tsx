@@ -46,13 +46,6 @@ const myRequest = (requestedAPI: string) => {
   };
 };
 
-function Header1(props: { goToIndex: () => void; username: string }) {
-  return (
-    <div className={landingStyles.header}>
-      <NavBar goToIndex={props.goToIndex} username={props.username} />
-    </div>
-  );
-}
 
 export default function Landing() {
   // authenticate
@@ -99,8 +92,7 @@ export default function Landing() {
         />
       </Head>
       <main>
-        {/* <Header1 goToIndex={goToIndex} username={username} /> */}
-        <Header username={username} />
+        <Header username={username} profile={true} settings={true}/>
         <div className={landingStyles.landing}>
           <YourDrafts
             deleteDraft={deleteDraft}
@@ -360,49 +352,6 @@ function Draft(props: DraftProps) {
       >
         <p className={landingStyles["Draft-Title"]}>{props.title}</p>
       </div>
-    </div>
-  );
-}
-
-function NavBar(props: { goToIndex: () => void; username: string }) {
-  return (
-    <div className={landingStyles.navbar}>
-      <Logo />
-      <div className={landingStyles["items"]}>
-        <div className={landingStyles["menu-item"]}>
-          <Link href={"/" + props.username}>
-            <a>Profile</a>
-          </Link>
-        </div>
-        <Settings />
-        <Logout />
-      </div>
-    </div>
-  );
-}
-
-function Logo() {
-  return (
-    <div className={landingStyles.logo} onClick={goToIndex}>
-      <img src="/images/LeafLogo.svg" />
-    </div>
-  );
-}
-
-function Logout() {
-  return (
-    <div className={landingStyles["menu-item"]} onClick={logOut}>
-      Logout
-    </div>
-  );
-}
-
-function Settings() {
-  return (
-    <div className={landingStyles["menu-item"]}>
-      <Link href="/settings">
-        <a>Settings</a>
-      </Link>
     </div>
   );
 }

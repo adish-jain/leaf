@@ -12,9 +12,7 @@ const fetcher = (url: string) =>
     headers: new Headers({ "Content-Type": "application/json" }),
   }).then((res) => res.json());
 
-
-export function useLoggedIn(
-) {
+export function useLoggedIn() {
   const { data, error } = useSWR("/api/auth", fetcher);
   let loading: boolean;
   useEffect(() => {
@@ -22,7 +20,6 @@ export function useLoggedIn(
       loading = true;
       return;
     }
-
   }, [data]);
 
   if (data === undefined) {
@@ -51,19 +48,7 @@ export function logOut() {
 }
 
 export function goToIndex() {
-  let data = {
-    requestedAPI: "logout",
-  };
-  fetch("/api/endpoint", {
-    method: "POST",
-    // eslint-disable-next-line no-undef
-    credentials: "same-origin",
-    body: JSON.stringify(data),
-    headers: new Headers({ "Content-Type": "application/json" }),
-  }).then((res) => {
-    console.log(res);
-    Router.replace(`/`);
-  });
+  Router.replace(`/`);
 }
 
 export function goToLanding() {

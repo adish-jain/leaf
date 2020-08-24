@@ -4,6 +4,7 @@ import { useLoggedIn } from "../lib/UseLoggedIn";
 import useSWR, { SWRConfig } from "swr";
 import { useUserInfo } from "../lib/useUserInfo";
 const settingStyles = require("../styles/Settings.module.scss");
+import Header from "../components/Header";
 
 export default function SignUp() {
   const initialData: any = {};
@@ -51,6 +52,7 @@ export default function SignUp() {
         />
       </Head>
       <main>
+        <Header settings={false} profile={true} username={username} />
         <div className={settingStyles["settings"]}>
           <h1 className={settingStyles["title"]}>Settings</h1>
           <hr />

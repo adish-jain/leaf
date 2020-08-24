@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useLoggedIn } from "../lib/UseLoggedIn";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { HeaderUnAuthenticated } from "../components/Header";
 
 const headerStyles = require("../styles/Header.module.scss");
 const loginStyles = require("../styles/Login.module.scss");
@@ -108,7 +109,7 @@ export default function SignUp() {
         />
       </Head>
       <main className={loginStyles.LoginMain}>
-        <Header goToIndex={goToIndex} />
+        <HeaderUnAuthenticated login={true} about={true} signup={false} />
         <style jsx global>{`
           html {
             height: 100%;

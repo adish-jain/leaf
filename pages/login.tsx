@@ -3,50 +3,11 @@ import fetch from "isomorphic-unfetch";
 import InferGetStaticPropsType from "next";
 import Link from "next/link";
 import React, { useState } from "react";
-
+import { HeaderUnAuthenticated } from "../components/Header";
 import { useRouter } from "next/router";
 
 const headerStyles = require("../styles/Header.module.scss");
 const loginStyles = require("../styles/Login.module.scss");
-
-function Logo(props: { goToIndex: any }) {
-  return (
-    <div className={headerStyles.Logo} onClick={props.goToIndex}>
-      <img src="/images/LeafLogo.svg" />
-    </div>
-  );
-}
-
-/*
-Header Components
-*/
-function Header(props: { goToIndex: any }) {
-  return (
-    <div className={headerStyles.Header}>
-      <NavBar goToIndex={props.goToIndex} />
-    </div>
-  );
-}
-
-function NavBar(props: { goToIndex: any }) {
-  return (
-    <div className={headerStyles.NavBar}>
-      <Logo goToIndex={props.goToIndex} />
-      <About />
-      <Signup />
-    </div>
-  );
-}
-
-function Signup() {
-  return (
-    <div className={headerStyles.Login}>
-      <Link href="/signup">
-        <a>Signup</a>
-      </Link>
-    </div>
-  );
-}
 
 function About() {
   return (
@@ -187,7 +148,7 @@ export default function Login() {
         />
       </Head>
       <main className={loginStyles.LoginMain}>
-        <Header goToIndex={goToIndex} />
+        <HeaderUnAuthenticated signup={true} about={true} login={false} />
         <div className={loginStyles.Login}>
           {forgotPassword ? (
             <ForgotPassword

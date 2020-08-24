@@ -4,7 +4,9 @@
 }
 
 .settings {
+  margin-top: 64px;
   margin-left: 80px;
+  margin-right: 80px;
 
   hr {
     border-top: 1px solid #edece9;
@@ -39,13 +41,13 @@
 }
 
 .rounded-button {
-    @extend .input-button;
-    border-radius: 4px;
+  @extend .input-button;
+  border-radius: 4px;
 }
 
 .round-input {
-    @extend .default-input;
-    border-radius: 4px;
-    display: block;
-    margin-bottom: 16px;
+  @extend .default-input;
+  border-radius: 4px;
+  display: block;
+  margin-bottom: 16px;
 }
