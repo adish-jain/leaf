@@ -138,14 +138,14 @@ function TitleText() {
                 </div>
               </div>
             </Link>
-            <a href="https://getleaf.app/outofthebot/howdostepsandscrollingworkintheleafcodebase-y4qrlau9" target="_blank">
+            <Link href="/examples">
               <div className={indexStyles.Examples}>
-                  <div className={indexStyles.button}>
-                      Learn More
-                    <img src="/images/arrow.svg" />
-                  </div>
+                <div className={indexStyles.button}>
+                  Learn More
+                  <img src="/images/arrow.svg" />
+                </div>
               </div>
-            </a>
+            </Link>
           </div>
 			  </div>
         <div className={indexStyles.computer}>
