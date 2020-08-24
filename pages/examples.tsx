@@ -119,10 +119,10 @@ function Tutorials() {
   return (
     <div className={exampleStyles.Tutorials}>
       <a 
-        href="https://getleaf.app/outofthebot/howdostepsandscrollingworkintheleafcodebase-y4qrlau9"
+        href="https://getleaf.app/dsps301/binarysearch-58opqzc9"
         target="_blank">
         <div className={exampleStyles.Tutorial}>
-            Algorithms
+            Binary Search
         </div>
       </a>
       <a 
@@ -133,10 +133,10 @@ function Tutorials() {
         </div>
       </a>
       <a 
-        href="https://getleaf.app/outofthebot/howdostepsandscrollingworkintheleafcodebase-y4qrlau9"
+        href="https://getleaf.app/dsps301/kanyewestspower-pm6ne39l"
         target="_blank">
         <div className={exampleStyles.Tutorial}>
-            Django
+            Kanye West's 'Power'
         </div>
       </a>
     </div>
