@@ -243,7 +243,7 @@
     text-align: center;
     z-index: 1;
   
-    margin-top: 200px;
+    margin-top: 170px;
     margin-bottom: 50px;
   
     img {
@@ -288,7 +288,7 @@
     text-align: center;
     position: relative;
   
-    margin-top: 48px;
+    margin-top: 58px;
     margin-bottom: 50px;
   
     img {
@@ -333,7 +333,7 @@
     text-align: center;
     z-index: 1;
   
-    margin-top: 48px;
+    margin-top: 88px;
     margin-bottom: 50px;
   
     img {
@@ -361,7 +361,9 @@
             max-width: 100%;
             max-height: 100%;
             min-height: 100%;
-            // height: 100%;
+            // width: 150%;
+            // height: auto;
+            // height: 120%;
             //   width: auto;
           }
       }
@@ -741,7 +743,7 @@
     }
 
     .Stripe2 {
-        height: 600px;
+        height: 550px;
         margin-top: 100px;
     }
 
@@ -780,7 +782,7 @@
     }
 
     .Stripe2 {
-        height: 710px;
+        height: 650px;
     }
 }
 
@@ -807,5 +809,9 @@
                 }
             }
         }
+    }
+    .Stripe2 {
+        height: 690px;
+        margin-top: 100px;
     }
 }

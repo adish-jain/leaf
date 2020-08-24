@@ -187,7 +187,7 @@ function Row1() {
       </div>
       <div className={indexStyles.Screen}>
         <video className={indexStyles.Demo} autoPlay muted loop>
-          <source src={"/videos/associateCode.mp4"} />
+          <source src={"/videos/steps.mp4"} />
         </video>
       </div>
     </div>
@@ -203,7 +203,7 @@ function Row2() {
       </div>
       <div className={indexStyles.Screen}>
         <video className={indexStyles.Demo} autoPlay muted loop>
-          <source src={"/videos/associateCode.mp4"} />
+          <source src={"/videos/code.mp4"} />
         </video>
       </div>
     </div>
@@ -218,7 +218,7 @@ function Row3() {
       </div>
       <div className={indexStyles.Screen}>
         <video className={indexStyles.Demo} autoPlay muted loop>
-          <source src={"/videos/associateCode.mp4"} />
+          <source src={"/videos/scroll.mp4"} />
         </video>
       </div>
     </div>
