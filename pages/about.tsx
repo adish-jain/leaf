@@ -45,7 +45,7 @@ function Header(props: { goToIndex: any }) {
   return (
     <div className={aboutStyles.Header}>
       <NavBar goToIndex={props.goToIndex} />
-      <hr></hr>
+      {/* <hr></hr> */}
     </div>
   );
 }
@@ -113,12 +113,12 @@ function AboutLeaf() {
       <SectionHeader title={"About"} />
       <p>
         Leaf is a platform designed to reshape the way learners interact with
-        coding tutorials. Inspired by
+        coding tutorials. Inspired by{" "}
         <a
           href="https://stripe.com/docs/payments/integration-builder"
           target="_blank"
         >
-          <strong> Stripe's side-by-side API documentation</strong>
+          Stripe's side-by-side API documentation
         </a>
         , we wanted to build a tool which gives everyone a convenient way to
         process information through reactive learning.
@@ -148,15 +148,13 @@ function Dropdown(props: { title: string; children: any }) {
         </button>
         <p>{props.title}</p>
       </div>
-      {opened ? props.children : <div></div>}
+      <div className={aboutStyles["dropdown-content"]}>
+        {opened ? props.children : <div></div>}
+      </div>
     </div>
   );
 }
 
-/**
- *  Accordion tutorial by Julio Codes
- * 	@youtube     https://www.youtube.com/watch?v=MXrtXg1kpVs
- */
 function FAQ() {
   return (
     <div>
@@ -178,72 +176,80 @@ function FAQ() {
           src="/images/languagetoggle.gif"
         ></img>
       </Dropdown>
-      <div className={aboutStyles.accordion}>
-        <Dropdown title={"How do I associate my tutorial's steps with code?"}>
-          <p>
-            When you are in editing mode for a certain step, go to the file you
-            want to associate with the step. Highlight the lines of code you
-            want to select and you should be able to link the code to the step
-            you're on.
-          </p>
-          <img
-            className={aboutStyles.animatedGif}
-            src="/images/associatecode.gif"
-          ></img>
-        </Dropdown>
-        <Dropdown
-          title={
-            "I'm trying to publish a post, but am running into an issue with email verification. What's this about?"
-          }
-        >
-          <p>
-            Before you can publish your first post, we ask that you verify the
-            email you signed up with! You should have received a verification
-            email when you created your account, but if you can't find it, you
-            can re-request a verification email in Settings. <br></br>
-            <br></br>
-            You can also change your email there if you want to verify using a
-            separate email.
-          </p>
-        </Dropdown>
-        <Dropdown title={"Can I edit my posts after publishing them?"}>
-          {" "}
-          <p>
-            Yes! We all make mistakes, and you can edit yours easily by clicking
-            <b> Edit</b> under <b>Your Published Posts. </b>
-            This will allow you to edit any post you've already published.
-          </p>
-          <img
-            className={aboutStyles.animatedGif}
-            src="/images/editingposts.gif"
-          ></img>
-        </Dropdown>
-        <Dropdown title={"O.K. I've published my first post. Now what?"}>
-          {" "}
-          <p>
-            You now have a coding tutorial better than any you've published
-            before! Get excited! <br></br>
-            <br></br>
-            Share the knowledge you've created & give us a good rating on Yelp.
-          </p>
-        </Dropdown>
-      </div>
+      <Dropdown title={"How do I associate my tutorial's steps with code?"}>
+        <p>
+          When you are in editing mode for a certain step, go to the file you
+          want to associate with the step. Highlight the lines of code you want
+          to select and you should be able to link the code to the step you're
+          on.
+        </p>
+        <img
+          className={aboutStyles.animatedGif}
+          src="/images/associatecode.gif"
+        ></img>
+      </Dropdown>
+      <Dropdown
+        title={
+          "I'm trying to publish a post, but am running into an issue with email verification. What's this about?"
+        }
+      >
+        <p>
+          Before you can publish your first post, we ask that you verify the
+          email you signed up with! You should have received a verification
+          email when you created your account, but if you can't find it, you can
+          re-request a verification email in Settings. <br></br>
+          <br></br>
+          You can also change your email there if you want to verify using a
+          separate email.
+        </p>
+      </Dropdown>
+      <Dropdown title={"Can I edit my posts after publishing them?"}>
+        <p>
+          Yes! We all make mistakes, and you can edit yours easily by clicking
+          <b> Edit</b> under <b>Your Published Posts. </b>
+          This will allow you to edit any post you've already published.
+        </p>
+        <img
+          className={aboutStyles.animatedGif}
+          src="/images/editingposts.gif"
+        ></img>
+      </Dropdown>
+      <Dropdown title={"O.K. I've published my first post. Now what?"}>
+        <p>
+          You now have a coding tutorial better than any you've published
+          before! Get excited! <br></br>
+          <br></br>
+          Share the knowledge you've created & give us a good rating on Yelp.
+        </p>
+      </Dropdown>
     </div>
   );
 }
 
-function PersonCard(props: { img: string; name: string; children: any }) {
-  const { name } = props;
+function PersonCard(props: {
+  img: string;
+  name: string;
+  children: any;
+  username: string;
+}) {
+  const { name, username } = props;
   return (
     <div className={aboutStyles["person-card"]}>
       <div className={aboutStyles["img-header"]}>
         <img
-          className={aboutStyles.img__img}
+          className={aboutStyles["profile-pic"]}
           src={`/images/${props.img}.png`}
         ></img>
         <div className={aboutStyles["bio"]}>
-          <h3>{name}</h3>
-          {props.children}
+          <div>
+            <h3>{name}</h3>
+            {props.children}
+          </div>
+          <div className={aboutStyles.icons}>
+            <a href={`https://twitter.com/${username}`} target="_blank">
+              <img src="images/twitter.svg" />
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -255,23 +261,23 @@ function Team() {
     <div className={aboutStyles["team"]}>
       <SectionHeader title={"The Team"} />
       <div className={aboutStyles["people"]}>
-        <PersonCard img={"rah"} name={"Rajiv Sancheti"}>
+        <PersonCard img={"rah"} name={"Rahul Sarathy"} username={"outofthebot"}>
           <p className={aboutStyles.img__description}>
-            I previously created <a href="getpulp.io">getpulp.io</a> where I was
-            trying to figure out how to improve the experience of reading things
-            online. I’m endlessly curious about how people can express
-            themselves on the internet in ways other than a standard blog post
-            or video. If questions like this also interest you, feel free to
-            reach out via Twitter.
+            I previously created <a href="https://getpulp.io">getpulp.io</a>{" "}
+            where I was trying to figure out how to improve the experience of
+            reading things online. I’m endlessly curious about how people can
+            express themselves on the internet in ways other than a standard
+            blog post or video. If questions like this also interest you, feel
+            free to reach out.
           </p>
         </PersonCard>
-        <PersonCard img={"adi"} name={"Adish Jain"}>
+        <PersonCard img={"adi"} name={"Adish Jain"} username={"_adishj"}>
           <p className={aboutStyles.img__description}>
             I am really interested in problems having to do with educational
             systems. Tech can be used to foster better learning and improve the
             transfer of knowledge, and as a computer science teacher of 3 years,
             I'm always looking for better ways to convey ideas to people. Want
-            to talk? Shoot me a message on Twitter.
+            to talk? Shoot me a message.
           </p>
         </PersonCard>
       </div>
@@ -349,7 +355,7 @@ function Team1() {
 function Feedback() {
   return (
     <div className={aboutStyles.feedback}>
-      <h1>Feedback</h1>
+      <SectionHeader title={"Feedback"} />
       <p>
         Leaf is still in a very early-development stage as a tool, so we
         appreciate you staying with us while we work out the wrinkles & make
@@ -361,24 +367,6 @@ function Feedback() {
         <br></br>
       </p>
       <TypeForm />
-      {/* <form action="mailto:adish@getleaf.app" method="post" >
-                <div className={aboutStyles.input}>
-                    <input type="text" id="name" name="name" placeholder="Who are you?"/>
-                </div>
-                <input type="text" id="email" name="email" placeholder="Email"/>
-
-                <select id="issue" name="issue">
-                    <option value="Bug">Bug</option>
-                    <option value="Idea">Idea</option>
-                    <option value="Suggestion">Suggestion</option>
-                    <option value="Other">Other</option>
-                </select>
-
-                <textarea id="subject" name="subject" placeholder="Message"></textarea>
-
-                <input type="submit" value="Submit"/>
-
-            </form> */}
     </div>
   );
 }

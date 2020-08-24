@@ -6,7 +6,57 @@ import React, { useState } from "react";
 
 import { useRouter } from "next/router";
 
+const headerStyles = require("../styles/Header.module.scss");
 const loginStyles = require("../styles/Login.module.scss");
+
+function Logo(props: { goToIndex: any }) {
+  return (
+    <div className={headerStyles.Logo} onClick={props.goToIndex}>
+      <img src="/images/LeafLogo.svg" />
+    </div>
+  );
+}
+
+/*
+Header Components
+*/
+function Header(props: { goToIndex: any }) {
+  return (
+    <div className={headerStyles.Header}>
+      <NavBar goToIndex={props.goToIndex} />
+    </div>
+  );
+}
+
+function NavBar(props: { goToIndex: any }) {
+  return (
+    <div className={headerStyles.NavBar}>
+      <Logo goToIndex={props.goToIndex} />
+      <About />
+      <Signup />
+    </div>
+  );
+}
+
+function Signup() {
+  return (
+    <div className={headerStyles.Login}>
+      <Link href="/signup">
+        <a>Signup</a>
+      </Link>
+    </div>
+  );
+}
+
+function About() {
+  return (
+    <div className={headerStyles.Login}>
+      <Link href="/about">
+        <a>About</a>
+      </Link>
+    </div>
+  );
+}
 
 export default function Login() {
   const router = useRouter();
@@ -101,20 +151,20 @@ export default function Login() {
       .catch(function (error: any) {
         console.log(error);
       });
-  }
+  };
 
   const handleForgotPassword = (e: React.MouseEvent<HTMLElement>) => {
     changeForgotPassword(true);
     changeLoggingIn(false);
     updateErrored(false);
-  }
+  };
 
   const handleBackToLogin = (e: React.MouseEvent<HTMLElement>) => {
     changeForgotPassword(false);
     changeLoggingIn(false);
     changeResetting(false);
     updateErrored(false);
-  }
+  };
 
   const goToIndex = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
@@ -137,13 +187,10 @@ export default function Login() {
         />
       </Head>
       <main className={loginStyles.LoginMain}>
-        <div className={loginStyles.Logo}>
-          <Logo goToIndex={goToIndex}/>
-        </div>
+        <Header goToIndex={goToIndex} />
         <div className={loginStyles.Login}>
-          {forgotPassword ? 
-          ( 
-            < ForgotPassword 
+          {forgotPassword ? (
+            <ForgotPassword
               handleChangeEmail={handleChangeEmail}
               errored={errored}
               errorMessage={errorMessage}
@@ -152,12 +199,12 @@ export default function Login() {
               handleBackToLogin={handleBackToLogin}
             />
           ) : (
-            < LoginScreen 
-              handleChangeEmail={handleChangeEmail} 
-              errored={errored} 
+            <LoginScreen
+              handleChangeEmail={handleChangeEmail}
+              errored={errored}
               loggingIn={loggingIn}
               errorMessage={errorMessage}
-              handleLoginClick={handleLoginClick} 
+              handleLoginClick={handleLoginClick}
               handleChangePassword={handleChangePassword}
               handleForgotPassword={handleForgotPassword}
             />
@@ -168,15 +215,14 @@ export default function Login() {
   );
 }
 
-function ForgotPassword(
-  props: {
-    handleChangeEmail: any, 
-    errored: boolean, 
-    errorMessage: string, 
-    handleResetClick: any, 
-    resetting: boolean, 
-    handleBackToLogin: any
-  }) {
+function ForgotPassword(props: {
+  handleChangeEmail: any;
+  errored: boolean;
+  errorMessage: string;
+  handleResetClick: any;
+  resetting: boolean;
+  handleBackToLogin: any;
+}) {
   return (
     <div className={loginStyles.LoginBox}>
       <h1>Password Reset</h1>
@@ -190,29 +236,32 @@ function ForgotPassword(
         ) : (
           <p className={loginStyles.ErrorMessage}>{props.errorMessage}</p>
         )}
-        <button className={loginStyles.LoginButton} onClick={props.handleResetClick}>
+        <button
+          className={loginStyles.LoginButton}
+          onClick={props.handleResetClick}
+        >
           {props.resetting ? "Sending Reset Email..." : "Reset Password"}
         </button>
-        <div 
-          className={loginStyles.ForgotPassword} 
-          onClick={props.handleBackToLogin}>
-            <br></br>Back to Login
+        <div
+          className={loginStyles.ForgotPassword}
+          onClick={props.handleBackToLogin}
+        >
+          <br></br>Back to Login
         </div>
       </div>
     </div>
   );
 }
 
-function LoginScreen(
-  props: {
-    handleChangeEmail: any, 
-    errored: boolean, 
-    loggingIn: boolean,
-    errorMessage: string, 
-    handleLoginClick: any, 
-    handleChangePassword: any, 
-    handleForgotPassword: any
-  }) {
+function LoginScreen(props: {
+  handleChangeEmail: any;
+  errored: boolean;
+  loggingIn: boolean;
+  errorMessage: string;
+  handleLoginClick: any;
+  handleChangePassword: any;
+  handleForgotPassword: any;
+}) {
   return (
     <div className={loginStyles.LoginBox}>
       <h1>Login</h1>
@@ -230,23 +279,19 @@ function LoginScreen(
         ) : (
           <p className={loginStyles.ErrorMessage}>{props.errorMessage}</p>
         )}
-        <button className={loginStyles.LoginButton} onClick={props.handleLoginClick}>
+        <button
+          className={loginStyles.LoginButton}
+          onClick={props.handleLoginClick}
+        >
           {props.loggingIn ? "Logging In..." : "Login"}
         </button>
-        <div 
-          className={loginStyles.ForgotPassword} 
-          onClick={props.handleForgotPassword}>
-            <br></br>Forgot Password?
+        <div
+          className={loginStyles.ForgotPassword}
+          onClick={props.handleForgotPassword}
+        >
+          <br></br>Forgot Password?
         </div>
       </div>
     </div>
-  );
-}
-
-function Logo(props: {goToIndex: any}) {
-  return (
-      <div className={loginStyles.Logo} onClick={props.goToIndex}> 
-          <img src="/images/icon.svg"/>
-      </div>  
   );
 }

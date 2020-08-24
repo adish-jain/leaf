@@ -39,7 +39,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
       publishedPosts.push({
         uid: uid,
         title: currentPost.title,
-        postId: currentPost.title,
+        postId: currentPost.postId,
         id: currentPost.id,
         published: currentPost.published,
       });
@@ -125,6 +125,7 @@ function Post(props: { title: string; postId: string; username: string }) {
   let router = useRouter();
 
   function goToPost() {
+    console.log("called");
     router.push(
       "/[username]/[postId]",
       "/" + props.username + "/" + props.postId
