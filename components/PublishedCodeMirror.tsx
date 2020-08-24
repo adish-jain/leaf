@@ -2,10 +2,22 @@ import React, { Component } from "react";
 import { Controlled as CodeMirror2 } from "react-codemirror2";
 import { Editor } from "draft-js";
 import animateScrollTo from "animated-scroll-to";
+import "codemirror/addon/edit/matchbrackets.js";
+import "codemirror/addon/edit/closebrackets.js";
+import "codemirror/mode/go/go.js";
+import "codemirror/mode/css/css.js";
+import "codemirror/mode/clike/clike.js";
+import "codemirror/mode/php/php.js";
+import "codemirror/mode/ruby/ruby.js";
+import "codemirror/mode/textile/textile.js";
+import "codemirror/mode/xml/xml";
+import "codemirror/mode/javascript/javascript";
+import "codemirror/mode/jsx/jsx";
+import "codemirror/mode/python/python";
 
 // require('codemirror/mode/xml/xml');
 // require('codemirror/mode/javascript/javascript');
-require("codemirror/mode/jsx/jsx");
+// require("codemirror/mode/jsx/jsx");
 
 type CodeMirrorProps = {
   currentFile: File;
@@ -126,7 +138,7 @@ export default class PublishedCodeMirror extends Component<
           value={this.props.currentFile.code}
           options={{
             lineNumbers: true,
-            mode: "jsx",
+            mode: this.props.currentFile.language,
             theme: "monokai-sublime",
             lineWrapping: true,
           }}
