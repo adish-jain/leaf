@@ -11,6 +11,7 @@ type HeaderProps = {
   settings?: boolean;
   profile?: boolean;
   logout?: boolean;
+  examples?: boolean;
 };
 
 export class HeaderUnAuthenticated extends Component<HeaderProps> {
@@ -19,7 +20,7 @@ export class HeaderUnAuthenticated extends Component<HeaderProps> {
   }
 
   render() {
-    const { signup, login, about } = this.props;
+    const { signup, login, about, examples } = this.props;
     return (
       <div className={headerStyles["header"]}>
         <div className={headerStyles["navbar"]}>
@@ -43,6 +44,13 @@ export class HeaderUnAuthenticated extends Component<HeaderProps> {
             {about ? (
               <Link href="/about">
                 <a>About</a>
+              </Link>
+            ) : (
+              <div></div>
+            )}
+            {examples ? (
+              <Link href="/examples">
+                <a>Examples</a>
               </Link>
             ) : (
               <div></div>

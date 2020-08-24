@@ -104,6 +104,10 @@
   .person-card {
     margin-bottom: 16px;
 
+    a {
+        text-decoration: none;
+    }
+
     .bio {
         margin-left: 16px;
     }

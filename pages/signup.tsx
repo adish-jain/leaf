@@ -109,7 +109,12 @@ export default function SignUp() {
         />
       </Head>
       <main className={loginStyles.LoginMain}>
-        <HeaderUnAuthenticated login={true} about={true} signup={false} />
+        <HeaderUnAuthenticated
+          examples={true}
+          login={true}
+          about={true}
+          signup={false}
+        />
         <style jsx global>{`
           html {
             height: 100%;

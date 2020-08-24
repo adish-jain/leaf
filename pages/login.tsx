@@ -148,7 +148,12 @@ export default function Login() {
         />
       </Head>
       <main className={loginStyles.LoginMain}>
-        <HeaderUnAuthenticated signup={true} about={true} login={false} />
+        <HeaderUnAuthenticated
+          signup={true}
+          about={true}
+          examples={true}
+          login={false}
+        />
         <div className={loginStyles.Login}>
           {forgotPassword ? (
             <ForgotPassword
