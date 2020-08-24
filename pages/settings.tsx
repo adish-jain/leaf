@@ -52,7 +52,12 @@ export default function SignUp() {
         />
       </Head>
       <main>
-        <Header settings={false} profile={true} username={username} />
+        <Header
+          settings={false}
+          profile={true}
+          logout={true}
+          username={username}
+        />
         <div className={settingStyles["settings"]}>
           <h1 className={settingStyles["title"]}>Settings</h1>
           <hr />

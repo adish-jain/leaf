@@ -10,6 +10,7 @@ type HeaderProps = {
   about?: boolean;
   settings?: boolean;
   profile?: boolean;
+  logout?: boolean;
 };
 
 export class HeaderUnAuthenticated extends Component<HeaderProps> {
@@ -59,7 +60,7 @@ export default class Header extends Component<HeaderProps> {
   }
 
   render() {
-    let { username, profile, settings } = this.props;
+    let { username, profile, settings, logout } = this.props;
     return (
       <div className={headerStyles["header"]}>
         <div className={headerStyles["navbar"]}>
@@ -79,7 +80,7 @@ export default class Header extends Component<HeaderProps> {
             ) : (
               <div></div>
             )}
-            <Logout />
+            {logout ? <Logout /> : <div></div>}
           </div>
         </div>
       </div>

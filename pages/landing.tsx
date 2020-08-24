@@ -46,7 +46,6 @@ const myRequest = (requestedAPI: string) => {
   };
 };
 
-
 export default function Landing() {
   // authenticate
   const { authenticated, error, loading } = useLoggedIn();
@@ -92,7 +91,12 @@ export default function Landing() {
         />
       </Head>
       <main>
-        <Header username={username} profile={true} settings={true}/>
+        <Header
+          username={username}
+          profile={true}
+          settings={true}
+          logout={true}
+        />
         <div className={landingStyles.landing}>
           <YourDrafts
             deleteDraft={deleteDraft}
