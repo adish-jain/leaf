@@ -1,3 +1,288 @@
+/* Extra small devices (phones, 505px and down) */
+@media only screen and (max-width: 600px) {
+  .Title {
+    margin-right: 1rem;
+    width: 100%;
+    height: auto !important;
+    .Banner {
+      flex-direction: column !important;
+      margin-top: 80px !important;
+      .Text {
+        margin-left: 3rem !important;
+
+        .h1Text {
+          font-size: 60px !important;
+          line-height: 60px;
+          text-align: center;
+          margin-bottom: 68px !important;
+        }
+
+        .h2Text {
+          margin-top: 70px !important;
+          margin-bottom: 44px !important;
+
+          font-size: 30px !important;
+          line-height: 35px;
+          text-align: center;
+        }
+
+        .TitleButtons {
+          justify-content: center;
+
+          .GetStarted {
+            font-size: 16px !important;
+            line-height: 46px !important;
+            width: 280px !important;
+          }
+
+          .Examples {
+            font-size: 16px !important;
+            line-height: 46px !important;
+            width: 280px !important;
+          }
+        }
+      }
+    }
+  }
+  .computer {
+    position: relative;
+    left: 32px;
+    top: -40px;
+    .screen {
+      top: 35.5%;
+      left: 23.35%;
+      width: 48.3%;
+      height: 35.5%;
+    }
+  }
+}
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+  .Stripe1 {
+    height: 760px;
+  }
+
+  .Stripe2 {
+    height: 350px;
+    margin-top: 50px;
+  }
+
+  .Stripe3 {
+    height: 250px;
+    margin-top: 50px;
+  }
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+  .Stripe1 {
+    height: 760px;
+  }
+
+  .Stripe2 {
+    height: 450px;
+    margin-top: 50px;
+  }
+
+  .Stripe3 {
+    height: 250px;
+    margin-top: 70px;
+  }
+  .Title {
+    // height: auto !important;
+
+    .Banner {
+      flex-direction: column;
+      margin-top: 80px;
+      .Text {
+        margin-left: 3rem;
+        width: 60%;
+
+        .h1Text {
+          align-self: flex-start;
+          margin-bottom: 50px;
+          font-size: 65px;
+          text-align: left;
+        }
+
+        .h2Text {
+          align-self: flex-start;
+          margin-top: 64px;
+          margin-bottom: 28px;
+          text-align: left;
+        }
+
+        .TitleButtons {
+          justify-content: left;
+        }
+      }
+    }
+  }
+
+  .computer {
+    display: none;
+    // position: relative;
+    // top: -160px;
+    .screen {
+      top: 35.5%;
+      left: 24.1%;
+      width: 48.3%;
+      height: 35.5%;
+    }
+  }
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+  .Title {
+    .Banner {
+      .Text {
+        margin-left: 3rem;
+        width: 60%;
+
+        .h1Text {
+          align-self: flex-start;
+          margin-bottom: 50px;
+          font-size: 65px;
+          text-align: left;
+        }
+
+        .h2Text {
+          align-self: flex-start;
+          margin-top: 64px;
+          margin-bottom: 28px;
+          text-align: left;
+        }
+
+        .TitleButtons {
+          justify-content: left;
+        }
+      }
+    }
+  }
+
+  .computer {
+    display: flex;
+    .screen {
+      top: 35.5%;
+      left: 24.1%;
+      width: 48.3%;
+      height: 35.5%;
+    }
+  }
+
+  .Stripe1 {
+    height: 760px;
+  }
+
+  .Stripe2 {
+    height: 550px;
+    margin-top: 50px;
+  }
+
+  .Stripe3 {
+    height: 250px;
+    margin-top: 50px;
+  }
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+  .Title {
+    .Banner {
+      .Text {
+        .h1Text {
+          margin-bottom: 40px;
+        }
+
+        .h2Text {
+          margin-top: 64px;
+          margin-bottom: 28px;
+        }
+      }
+    }
+  }
+
+  .computer {
+    .screen {
+      top: 35.5%;
+      left: 22.6%;
+      width: 48.3%;
+      height: 35.5%;
+    }
+  }
+
+  .Stripe1 {
+    height: 760px;
+  }
+
+  .Stripe2 {
+    height: 600px;
+    margin-top: 100px;
+  }
+
+  .Stripe3 {
+    height: 250px;
+    margin-top: 0px;
+  }
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+  .Title {
+    .Banner {
+      .Text {
+        .h2Text {
+          margin-top: 48px;
+          margin-bottom: 0px;
+        }
+      }
+    }
+  }
+
+  .computer {
+    .screen {
+      top: 35.5%;
+      left: 22.35%;
+      width: 48.3%;
+      height: 35.5%;
+    }
+  }
+
+  .Stripe1 {
+    height: 760px;
+  }
+
+  .Stripe2 {
+    height: 710px;
+  }
+}
+
+/* Extra large devices (large laptops and desktops, 1300px and up) */
+@media only screen and (min-width: 1300px) {
+  .Title {
+    .Banner {
+      .Text {
+        .h2Text {
+          margin-bottom: 0px;
+          margin-top: 28px;
+        }
+      }
+    }
+  }
+
+  .computer {
+    // display: flex;
+    .screen {
+      top: 35.5%;
+      left: 22.15%;
+      width: 48.3%;
+      height: 35.5%;
+    }
+  }
+}
+
 .container {
   width: 100%;
   height: 100%;
@@ -80,7 +365,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-top: 5rem;
+  height: 80vh;
+  margin-top: auto;
+  margin-bottom: auto;
 
   .Banner {
     background: transparent;
@@ -92,7 +379,7 @@
 
     .Text {
       background: transparent;
-      margin-left: 5rem;
+      margin-left: 80px;
       display: flex;
       flex-direction: column;
       width: 70%;
@@ -347,33 +634,6 @@
         }
       }
     }
-
-    .computer {
-      opacity: 1;
-      transition: all 0.3s ease;
-      position: relative;
-
-      .screen {
-        position: absolute;
-        top: 21.1%;
-        left: 12.9%;
-        width: 64.7%;
-        height: 73.3%;
-        background-color: #fffefc;
-        // background-color: red;
-        z-index: 10;
-        // opacity: 50%;
-        overflow: hidden;
-      }
-
-      img {
-        margin-left: 10px;
-        width: 100%;
-        height: auto;
-        transform: translate(-5%, 5%);
-        z-index: 1;
-      }
-    }
   }
 }
 
@@ -625,248 +885,22 @@
   z-index: -1;
 }
 
-/* Extra small devices (phones, 505px and down) */
-@media only screen and (max-width: 506px) {
-  .Title {
-    margin-right: 1rem;
+.computer {
+  opacity: 1;
+  transition: all 0.3s ease;
+  position: relative;
+
+  .screen {
+    position: absolute;
+    z-index: 10;
+    overflow: hidden;
+  }
+
+  img {
+    margin-left: 10px;
     width: 100%;
-    .Banner {
-      .Text {
-        margin-left: 3rem;
-
-        .h1Text {
-          font-size: 60px;
-          line-height: 60px;
-          text-align: center;
-        }
-
-        .h2Text {
-          margin-top: 70px;
-          margin-bottom: 20px;
-
-          font-size: 30px;
-          line-height: 35px;
-          text-align: center;
-        }
-
-        .TitleButtons {
-          justify-content: center;
-
-          .GetStarted {
-            font-size: 18px;
-            line-height: 46px;
-          }
-
-          .Examples {
-            font-size: 18px;
-            line-height: 46px;
-          }
-        }
-      }
-
-      .computer {
-        display: none;
-      }
-    }
-  }
-}
-
-/* Small devices (phones, 732px and down) */
-@media only screen and (min-width: 506px) {
-  .Title {
-    margin-right: 1rem;
-    width: 100%;
-
-    .Banner {
-      .Text {
-        margin-left: 3rem;
-        height: 50%;
-
-        .h1Text {
-          font-size: 60px;
-          text-align: center;
-        }
-
-        .h2Text {
-          margin-top: 60px;
-          margin-bottom: 20px;
-          text-align: center;
-        }
-
-        .TitleButtons {
-          justify-content: center;
-        }
-      }
-      .computer {
-        display: none;
-      }
-    }
-  }
-}
-
-/* Extra small devices (phones, 600px and down) */
-@media only screen and (max-width: 600px) {
-  .Stripe1 {
-    height: 760px;
-  }
-
-  .Stripe2 {
-    height: 350px;
-    margin-top: 50px;
-  }
-
-  .Stripe3 {
-    height: 250px;
-    margin-top: 50px;
-  }
-}
-
-/* Small devices (portrait tablets and large phones, 600px and up) */
-@media only screen and (min-width: 600px) {
-  .Stripe1 {
-    height: 760px;
-  }
-
-  .Stripe2 {
-    height: 450px;
-    margin-top: 50px;
-  }
-
-  .Stripe3 {
-    height: 250px;
-    margin-top: 70px;
-  }
-}
-
-/* Medium devices (landscape tablets, 768px and up) */
-@media only screen and (min-width: 768px) {
-  .Title {
-    .Banner {
-      .Text {
-        margin-left: 3rem;
-        width: 60%;
-
-        .h1Text {
-          align-self: flex-start;
-          margin-bottom: 50px;
-          font-size: 65px;
-          text-align: left;
-        }
-
-        .h2Text {
-          align-self: flex-start;
-          margin-top: 48px;
-          margin-bottom: 20px;
-          text-align: left;
-        }
-
-        .TitleButtons {
-          justify-content: left;
-        }
-      }
-
-      .computer {
-        display: flex;
-        opacity: 1;
-        transition: all 0.3s ease;
-      }
-    }
-  }
-
-  .Stripe1 {
-    height: 760px;
-  }
-
-  .Stripe2 {
-    height: 550px;
-    margin-top: 50px;
-  }
-
-  .Stripe3 {
-    height: 250px;
-    margin-top: 50px;
-  }
-}
-
-/* Large devices (laptops/desktops, 992px and up) */
-@media only screen and (min-width: 992px) {
-  .Title {
-    .Banner {
-      .Text {
-        .h1Text {
-          margin-bottom: 40px;
-        }
-
-        .h2Text {
-          margin-top: 48px;
-          margin-bottom: 10px;
-        }
-      }
-    }
-  }
-
-  .computer {
-    display: flex;
-    opacity: 1;
-    transition: all 0.3s ease;
-  }
-
-  .Stripe1 {
-    height: 760px;
-  }
-
-  .Stripe2 {
-    height: 600px;
-    margin-top: 100px;
-  }
-
-  .Stripe3 {
-    height: 250px;
-    margin-top: 0px;
-  }
-}
-
-/* Extra large devices (large laptops and desktops, 1200px and up) */
-@media only screen and (min-width: 1200px) {
-  .Title {
-    .Banner {
-      .Text {
-        .h2Text {
-          margin-top: 48px;
-        }
-      }
-
-      .computer {
-        opacity: 1;
-        transition: all 0.3s ease;
-      }
-    }
-  }
-
-  .Stripe1 {
-    height: 760px;
-  }
-
-  .Stripe2 {
-    height: 710px;
-  }
-}
-
-/* Extra large devices (large laptops and desktops, 1200px and up) */
-@media only screen and (min-width: 1300px) {
-  .Title {
-    .Banner {
-      .Text {
-        .h2Text {
-          margin-top: 10px;
-          margin-bottom: 0px;
-        }
-      }
-
-      .computer {
-        opacity: 1;
-        transition: all 0.3s ease;
-      }
-    }
+    height: auto;
+    transform: translate(-5%, 5%);
+    z-index: 1;
   }
 }
