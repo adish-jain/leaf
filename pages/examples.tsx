@@ -24,7 +24,7 @@ export default function Pages() {
   return (
     <div className="container">
       <Head>
-        <title>Leaf</title>
+        <title>Examples</title>
         <link rel="icon" href="/favicon.ico" />
         <script
           dangerouslySetInnerHTML={{
