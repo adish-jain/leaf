@@ -847,6 +847,7 @@
       a:link {
         color: #000000;
         text-decoration: none;
+        padding: 4px;
       }
 
       a:visited {
@@ -854,7 +855,11 @@
       }
 
       a:hover {
-        color: #1db954;
+        border-radius: 4px;
+        padding: 4px;
+        background-color: #349ae9;
+        color: white;
+        transition: all ease-in-out 0.2s;
       }
     }
   }
