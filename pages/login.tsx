@@ -79,6 +79,7 @@ export default function Login() {
       email: email,
       requestedAPI: "passwordReset",
     };
+    console.log(email);
     fetch("/api/endpoint", {
       method: "POST",
       // eslint-disable-next-line no-undef
@@ -87,6 +88,7 @@ export default function Login() {
       body: JSON.stringify(data),
     })
       .then((res) => {
+        console.log("returned from fetch");
         if (res.status === 200) {
           updateErrored(false);
         }

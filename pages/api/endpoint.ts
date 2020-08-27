@@ -216,6 +216,7 @@ export default sentryHandler(
 
       // email
       case "passwordReset": {
+        console.log("entering pw reset");
         return handlePasswordReset(req, res);
       }
 

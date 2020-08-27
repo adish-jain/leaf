@@ -13,8 +13,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   let email = body.email;
   let uid;
 
+  console.log(email);
+
   try {
     uid = await getUidFromEmail(email);
+    console.log(uid);
   } catch (error) {
     res.status(403).send({
       error: "Password Reset failed."
@@ -37,6 +40,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     .auth()
     .signInWithCustomToken(customToken)
     .then(function (firebaseUser: any) {
+      console.log("sending pw reset email");
       firebase.auth().sendPasswordResetEmail(email)
       .catch(function (error: any) {
         switch (error.code) {
@@ -66,6 +70,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             console.log("signed out success");
           },
           function (error: any) {
+            console.log(error);
             // An error happened.
           }
         );
@@ -76,6 +81,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       var errorMessage = error.message;
       console.log(errorMessage);
     });
+    console.log("reached end");
     res.status(200);
     res.end();
     return;
