@@ -2,9 +2,11 @@ import Head from "next/head";
 import fetch from "isomorphic-unfetch";
 import React, { useState } from "react";
 import { useLoggedIn } from "../lib/UseLoggedIn";
-
+import Link from "next/link";
 import { useRouter } from "next/router";
+import { HeaderUnAuthenticated } from "../components/Header";
 
+const headerStyles = require("../styles/Header.module.scss");
 const loginStyles = require("../styles/Login.module.scss");
 
 export default function SignUp() {
@@ -78,7 +80,7 @@ export default function SignUp() {
             updateErrored(true);
             updateErrorMsg(resJson.errorMsg);
             changeSigningUp(false);
-          })
+          });
         }
       })
       .catch((error) => {
@@ -107,9 +109,12 @@ export default function SignUp() {
         />
       </Head>
       <main className={loginStyles.LoginMain}>
-        <div className={loginStyles.Logo}>
-          <Logo goToIndex={goToIndex}/>
-        </div>
+        <HeaderUnAuthenticated
+          examples={true}
+          login={true}
+          about={true}
+          signup={false}
+        />
         <style jsx global>{`
           html {
             height: 100%;
@@ -121,17 +126,15 @@ export default function SignUp() {
             <div className={loginStyles.FormWrapper}>
               <div className={loginStyles.InputBox}>
                 <label>Email</label>
-                <input 
-                  id="email" 
-                  value={email} 
-                  onChange={handleChangeEmail} />
+                <input id="email" value={email} onChange={handleChangeEmail} />
               </div>
               <div className={loginStyles.InputBox}>
                 <label>Username</label>
-                <input 
-                  id="username" 
-                  value={username} 
-                  onChange={handleChangeUsername} />
+                <input
+                  id="username"
+                  value={username}
+                  onChange={handleChangeUsername}
+                />
               </div>
               <div className={loginStyles.InputBox}>
                 <label>Password</label>
@@ -165,10 +168,51 @@ export default function SignUp() {
   );
 }
 
-function Logo(props: {goToIndex: any}) {
+function Logo(props: { goToIndex: any }) {
   return (
-      <div className={loginStyles.Logo} onClick={props.goToIndex}> 
-          <img src="/images/icon.svg"/>
-      </div>  
+    <div className={headerStyles.Logo} onClick={props.goToIndex}>
+      <img src="/images/LeafLogo.svg" />
+    </div>
+  );
+}
+
+/*
+Header Components
+*/
+function Header(props: { goToIndex: any }) {
+  return (
+    <div className={headerStyles.Header}>
+      <NavBar goToIndex={props.goToIndex} />
+    </div>
+  );
+}
+
+function NavBar(props: { goToIndex: any }) {
+  return (
+    <div className={headerStyles.NavBar}>
+      <Logo goToIndex={props.goToIndex} />
+      <About />
+      <Login />
+    </div>
+  );
+}
+
+function Login() {
+  return (
+    <div className={headerStyles.Login}>
+      <Link href="/login">
+        <a>Login</a>
+      </Link>
+    </div>
+  );
+}
+
+function About() {
+  return (
+    <div className={headerStyles.Login}>
+      <Link href="/about">
+        <a>About</a>
+      </Link>
+    </div>
   );
 }

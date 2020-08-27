@@ -7,6 +7,7 @@ import { useDraftTitle } from "../../lib/useDraftTitle";
 import useSWR from "swr";
 import Publishing from "../../components/Publishing";
 import CodeEditor from "../../components/CodeEditor";
+import Header from "../../components/Header";
 import DefaultErrorPage from "next/error";
 import Head from "next/head";
 import { goToPost } from "../../lib/usePosts";
@@ -125,7 +126,7 @@ const DraftView = () => {
   return (
     <div className="container">
       <Head>
-        <title>Code Tutorials</title>
+        <title>{draftTitle}</title>
         <link rel="icon" href="/favicon.ico" />
         <script
           dangerouslySetInnerHTML={{
@@ -143,6 +144,12 @@ const DraftView = () => {
         />
       </Head>
       <main className={appStyles.AppWrapper}>
+        <Header
+          username={username}
+          logout={false}
+          settings={true}
+          profile={true}
+        />
         <style>{`
         div {
        }

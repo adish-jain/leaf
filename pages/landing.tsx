@@ -4,10 +4,13 @@ const moment = require("moment");
 const fetch = require("node-fetch");
 global.Headers = fetch.Headers;
 const landingStyles = require("../styles/Landing.module.scss");
+const headerStyles = require("../styles/Header.module.scss");
 import { useLoggedIn, logOut, goToIndex } from "../lib/UseLoggedIn";
 import { useDrafts } from "../lib/useDrafts";
 import { useUserInfo } from "../lib/useUserInfo";
 import { usePosts, goToPost } from "../lib/usePosts";
+import { userInfo } from "os";
+import Header from "../components/Header";
 
 type DraftType = {
   id: string;
@@ -88,7 +91,12 @@ export default function Landing() {
         />
       </Head>
       <main>
-        <NavBar userInfo={{ username: username }}/>
+        <Header
+          username={username}
+          profile={true}
+          settings={true}
+          logout={true}
+        />
         <div className={landingStyles.landing}>
           <YourDrafts
             deleteDraft={deleteDraft}
@@ -349,49 +357,6 @@ function Draft(props: DraftProps) {
         <p className={landingStyles["Draft-Title"]}>{props.title}</p>
       </div>
     </div>
-  );
-}
-
-function NavBar(props: any) {
-  return (
-      <div className={landingStyles.header}>
-        <Logo />
-        <div className={landingStyles.Login}>
-          <Link href={"/" + props.userInfo.username}>
-              <a>Profile</a>
-          </Link>
-        </div>
-        <Settings />
-        <Logout />
-      </div>
-  );
-}
-
-function Logo() {
-  return (
-      <div className={landingStyles.Logo} onClick={goToIndex}> 
-          <img src="/images/icon.svg"/>
-      </div>  
-  );
-}
-
-function Logout() {
-  return (
-      <div className={landingStyles.Login} onClick={logOut}>
-      <Link href="/login">
-          <a>Logout</a>
-      </Link>
-      </div>
-  );
-}
-
-function Settings() {
-  return (
-      <div className={landingStyles.Login}>
-      <Link href="/settings">
-          <a>Settings</a>
-      </Link>
-      </div>
   );
 }
 

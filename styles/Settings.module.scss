@@ -1,0 +1,53 @@
+.title {
+  font-size: 60px;
+  margin-bottom: 0;
+}
+
+.settings {
+  margin-top: 64px;
+  margin-left: 80px;
+  margin-right: 80px;
+
+  hr {
+    border-top: 1px solid #edece9;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.username-section {
+}
+
+.default-input {
+  padding: 7px;
+  background: #ffffff;
+  border: 1px solid rgba(159, 159, 159, 0.25);
+  box-sizing: border-box;
+  box-shadow: inset 0px 4px 4px rgba(237, 236, 233, 0.25);
+  border-radius: 4px 0px 0px 4px;
+}
+
+.input-button {
+  /* Auto Layout */
+
+  display: flex;
+  flex-direction: row;
+  padding: 8px;
+  background: #4db6f1;
+  border-radius: 0px 4px 4px 0px;
+  border-style: none;
+  color: white;
+  display: inline-block;
+}
+
+.rounded-button {
+  @extend .input-button;
+  border-radius: 4px;
+}
+
+.round-input {
+  @extend .default-input;
+  border-radius: 4px;
+  display: block;
+  margin-bottom: 16px;
+}

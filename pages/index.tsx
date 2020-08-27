@@ -37,14 +37,14 @@ export default function Pages() {
         />
       </Head>
       <main className={indexStyles.MainWrapper}>
-        <Header goToIndex={goToIndex}/>
+        <Header goToIndex={goToIndex} />
         <Stripe1 />
         <Title />
         <Row1 />
         <Row2 />
         <Row3 />
         <Row4 />
-        <Footer goToIndex={goToIndex}/>
+        <Footer goToIndex={goToIndex} />
       </main>
     </div>
   );
@@ -53,18 +53,18 @@ export default function Pages() {
 /*
 Header Components
 */
-function Header(props: {goToIndex: any}) {
+function Header(props: { goToIndex: any }) {
   return (
     <div className={indexStyles.Header}>
-      <NavBar goToIndex={props.goToIndex}/>
+      <NavBar goToIndex={props.goToIndex} />
     </div>
   );
 }
 
-function NavBar(props: {goToIndex: any}) {
+function NavBar(props: { goToIndex: any }) {
   return (
     <div className={indexStyles.NavBar}>
-      <Logo goToIndex={props.goToIndex}/>
+      <Logo goToIndex={props.goToIndex} />
       <Signup />
       <Login />
       <Examples />
@@ -73,11 +73,11 @@ function NavBar(props: {goToIndex: any}) {
   );
 }
 
-function Logo(props: {goToIndex: any}) {
+function Logo(props: { goToIndex: any }) {
   return (
-    <div className={indexStyles.Logo} onClick={props.goToIndex}> 
-      <img src="/images/logo.svg"/>
-    </div>    
+    <div className={indexStyles.Logo} onClick={props.goToIndex}>
+      <img src="/images/logo.svg" />
+    </div>
   );
 }
 
@@ -123,7 +123,7 @@ function About() {
 
 function Title() {
   return (
-    <div className={indexStyles.Title}> 
+    <div className={indexStyles.Title}>
       <TitleText />
     </div>
   );
@@ -134,9 +134,7 @@ function TitleText() {
     <div className={indexStyles.Title}>
       <div className={indexStyles.Banner}>
         <div className={indexStyles.Text}>
-          <div className={indexStyles.h1Text}>
-            A new way to convey
-          </div>
+          <div className={indexStyles.h1Text}>A new way to convey</div>
           <div className={indexStyles.h2Text}>
             Leaf is a platform built from the ground up, for coding tutorials
           </div>
@@ -158,9 +156,14 @@ function TitleText() {
               </div>
             </Link>
           </div>
-			  </div>
+        </div>
         <div className={indexStyles.computer}>
-          <img src="/images/laptop3.svg"/>
+          <img src="/images/laptop3.svg" />
+          <div className={indexStyles["screen"]}>
+            <video className={indexStyles["demo"]} autoPlay muted loop>
+              <source src={"/videos/frontpage.mp4"} />
+            </video>
+          </div>
         </div>
       </div>
     </div>
@@ -171,9 +174,7 @@ function GetStarted2() {
   return (
     <Link href="/signup">
       <div className={indexStyles.GetStarted2}>
-        <div className={indexStyles.button}>
-          Sign Up
-        </div>
+        <div className={indexStyles.button}>Sign Up</div>
       </div>
     </Link>
   );
@@ -181,7 +182,7 @@ function GetStarted2() {
 
 function Row1() {
   return (
-    <div className={indexStyles.Row1}> 
+    <div className={indexStyles.Row1}>
       <div className={indexStyles.RowHeader}>
         <img src="/images/steps.svg" />
       </div>
@@ -196,7 +197,7 @@ function Row1() {
 
 function Row2() {
   return (
-    <div className={indexStyles.Row2}> 
+    <div className={indexStyles.Row2}>
       <Stripe2 />
       <div className={indexStyles.Row2Header}>
         <img src="/images/code.svg" />
@@ -212,7 +213,7 @@ function Row2() {
 
 function Row3() {
   return (
-    <div className={indexStyles.Row3}> 
+    <div className={indexStyles.Row3}>
       <div className={indexStyles.RowHeader}>
         <img src="/images/publish.svg" />
       </div>
@@ -227,7 +228,7 @@ function Row3() {
 
 function Row4() {
   return (
-    <div className={indexStyles.Row4}> 
+    <div className={indexStyles.Row4}>
       <Stripe3 />
       <div className={indexStyles.Row4Text}>
         Say goodbye to publishing code snippets on Medium
@@ -237,28 +238,22 @@ function Row4() {
   );
 }
 
-function Footer(props: {goToIndex: any}) {
+function Footer(props: { goToIndex: any }) {
   return (
     <div className={indexStyles.Footer}>
-      <NavBar goToIndex={props.goToIndex}/>
+      <NavBar goToIndex={props.goToIndex} />
     </div>
   );
 }
 
 function Stripe1() {
-  return (
-    <div className={indexStyles.Stripe1}></div>
-  );
+  return <div className={indexStyles.Stripe1}></div>;
 }
 
 function Stripe2() {
-  return (
-    <div className={indexStyles.Stripe2}></div>
-  );
+  return <div className={indexStyles.Stripe2}></div>;
 }
 
 function Stripe3() {
-  return (
-    <div className={indexStyles.Stripe3}></div>
-  );
+  return <div className={indexStyles.Stripe3}></div>;
 }

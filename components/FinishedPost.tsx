@@ -1,7 +1,8 @@
 import React, { useState, Component } from "react";
 import Scrolling from "./Scrolling";
 import animateScrollTo from "animated-scroll-to";
-
+import { useLoggedIn } from "../lib/UseLoggedIn";
+import Header, { HeaderUnAuthenticated } from "../components/Header";
 import PublishedCodeEditor from "./PublishedCodeEditor";
 const appStyles = require("../styles/App.module.scss");
 
@@ -30,6 +31,7 @@ const stepsInView: { [stepIndex: number]: boolean } = {};
 const FinishedPost = (props: FinishedPostProps) => {
   const [currentStepIndex, updateStep] = useState(0);
   const [currentFileIndex, updateFile] = useState(0);
+  const { authenticated, error, loading } = useLoggedIn();
   let editorInstance: CodeMirror.Editor | undefined = undefined;
   const markers: CodeMirror.TextMarker[] = [];
 
@@ -58,6 +60,11 @@ const FinishedPost = (props: FinishedPostProps) => {
 
   return (
     <div className={appStyles.App}>
+      {authenticated ? (
+        <Header settings={true} profile={true} />
+      ) : (
+        <HeaderUnAuthenticated about={true} login={true} signup={true} />
+      )}
       <Scrolling
         title={props.title}
         currentStepIndex={currentStepIndex}
