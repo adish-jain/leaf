@@ -50,6 +50,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
         title,
         files,
         errored,
+        username,
       },
     };
   } catch (error) {
@@ -77,14 +78,15 @@ type File = {
   name: string;
 };
 
-type UserPageProps = {
+type PostPageProps = {
   steps: StepType[];
   title: string;
   errored: boolean;
   files: File[];
+  username: string;
 };
 
-const Post = (props: UserPageProps) => {
+const Post = (props: PostPageProps) => {
   const router = useRouter();
 
   if (router.isFallback) {
@@ -102,6 +104,7 @@ const Post = (props: UserPageProps) => {
           <DefaultErrorPage statusCode={404} />
         ) : (
           <FinishedPost
+            username={props.username}
             steps={props.steps}
             files={props.files}
             title={props.title}
