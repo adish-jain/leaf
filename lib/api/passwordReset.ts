@@ -39,9 +39,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   await firebase
     .auth()
     .signInWithCustomToken(customToken)
-    .then(function (firebaseUser: any) {
+    .then(async function (firebaseUser: any) {
       console.log("sending pw reset email");
-      firebase.auth().sendPasswordResetEmail(email)
+      await firebase.auth().sendPasswordResetEmail(email)
       .catch(function (error: any) {
         switch (error.code) {
           case "auth/invalid-email":
