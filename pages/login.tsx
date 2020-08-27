@@ -207,7 +207,7 @@ function ForgotPassword(props: {
           className={loginStyles.LoginButton}
           onClick={props.handleResetClick}
         >
-          {props.resetting ? "Sending Reset Email..." : "Reset Password"}
+          {props.resetting ? "Reset Email Sent" : "Reset Password"}
         </button>
         <div
           className={loginStyles.ForgotPassword}
