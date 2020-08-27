@@ -24,6 +24,7 @@ type FinishedPostProps = {
   steps: StepType[];
   title: string;
   files: File[];
+  username: string;
 };
 
 const stepsInView: { [stepIndex: number]: boolean } = {};
@@ -61,7 +62,7 @@ const FinishedPost = (props: FinishedPostProps) => {
   return (
     <div className={appStyles.App}>
       {authenticated ? (
-        <Header settings={true} profile={true} />
+        <Header settings={true} profile={true} username={props.username} />
       ) : (
         <HeaderUnAuthenticated about={true} login={true} signup={true} />
       )}

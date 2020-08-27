@@ -2,6 +2,7 @@ import React from "react";
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from "next";
 import Head from "next/head";
 import { getDraftDataHandler, getUserStepsForDraft } from "../lib/postUtils";
+import { getUsernameFromUid } from "../lib/userUtils";
 import FinishedPost from "../components/FinishedPost";
 import DefaultErrorPage from "next/error";
 
@@ -9,6 +10,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   if (context.preview) {
     let draftId = context.previewData.draftId;
     let uid = context.previewData.uid;
+    let username = await getUsernameFromUid(uid);
     let draftData = await getDraftDataHandler(uid, draftId);
     let title = draftData.title;
     let steps = await getUserStepsForDraft(uid, draftId);
@@ -31,6 +33,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
         steps,
         files,
         errored: false,
+        username: username,
       },
     };
   } else {
@@ -40,6 +43,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
         steps: [],
         files: [],
         errored: true,
+        username: "",
       },
     };
   }
@@ -64,6 +68,7 @@ type DraftPreviewProps = {
   title: string;
   files: File[];
   errored: boolean;
+  username: string;
 };
 
 const DraftPreview = (props: DraftPreviewProps) => {
@@ -95,6 +100,7 @@ const DraftPreview = (props: DraftPreviewProps) => {
             steps={props.steps}
             title={props.title}
             files={props.files}
+            username={props.username}
           />
         )}
       </main>
