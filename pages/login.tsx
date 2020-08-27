@@ -79,6 +79,7 @@ export default function Login() {
       email: email,
       requestedAPI: "passwordReset",
     };
+
     fetch("/api/endpoint", {
       method: "POST",
       // eslint-disable-next-line no-undef

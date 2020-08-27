@@ -15,6 +15,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   try {
     uid = await getUidFromEmail(email);
+    console.log(uid);
   } catch (error) {
     res.status(403).send({
       error: "Password Reset failed."
@@ -36,28 +37,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   await firebase
     .auth()
     .signInWithCustomToken(customToken)
-    .then(function (firebaseUser: any) {
-      firebase.auth().sendPasswordResetEmail(email)
-      .catch(function (error: any) {
-        switch (error.code) {
-          case "auth/invalid-email":
-            res.status(403).send({
-              error: "Email is badly formatted.",
-            });
-            return;
-          case "auth/user-not-found":
-            res.status(403).send({
-              error: "This email doesn't exist in the Leaf system.",
-            });
-            return;
-          default:
-            console.log(error);
-            res.status(403).send({
-              error: "Password Reset failed",
-            });
-        }
-      });
-      firebase
+    try {
+      await firebase
+        .auth()
+        .sendPasswordResetEmail(email);
+      await firebase
         .auth()
         .signOut()
         .then(
@@ -67,15 +51,17 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           },
           function (error: any) {
             // An error happened.
+            console.log(error);
           }
         );
-    })
-    .catch(function (error: any) {
-      // Handle Errors here.
-      var errorCode = error.code;
+    } catch (error) {
       var errorMessage = error.message;
       console.log(errorMessage);
-    });
+      res.status(403).send({
+        error: "Password Reset failed."
+      })
+      return;
+    }
     res.status(200);
     res.end();
     return;
