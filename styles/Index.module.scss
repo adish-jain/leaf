@@ -917,7 +917,8 @@
   opacity: 1;
   transition: all 0.3s ease;
   position: relative;
-
+  transform: scale(1.2);
+  // left: -40px;
   .screen {
     position: absolute;
     z-index: 10;
