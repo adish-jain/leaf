@@ -53,7 +53,7 @@ export default async function publishPost(
   let titleWithDashes = draftTitle
     .replace(/\s+/g, "-")
     .toLowerCase()
-    .substr(0, 100);
+    .substr(0, 16);
   titleWithDashes = titleWithDashes.replace(/[^a-zA-Z ]/g, "");
   let deduplicationId = Math.random().toString(36).substring(2, 10);
   let postId = titleWithDashes + "-" + deduplicationId;
