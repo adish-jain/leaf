@@ -96,7 +96,7 @@ const Post = (props: PostPageProps) => {
   return (
     <div className="container">
       <Head>
-        <title>User Page</title>
+        <title>{props.title}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>

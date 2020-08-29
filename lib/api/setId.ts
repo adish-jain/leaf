@@ -12,7 +12,16 @@ export default async function setIdHandler(
   res: NextApiResponse
 ) {
   let username = req.body.username;
+  if (!isValid(username)) {
+    res.statusCode = 403;
+    res.send({
+      error: "Username cannot contain special characters",
+    });
+    return;
+  }
+
   let unUnique = await checkUsernameDNE(username);
+
   if (!unUnique) {
     res.statusCode == 200;
     res.send({
@@ -25,7 +34,9 @@ export default async function setIdHandler(
 
   if (uid === "") {
     res.statusCode = 403;
-    res.end();
+    res.send({
+      error: "Username taken",
+    });
     return;
   }
 
@@ -41,4 +52,8 @@ export default async function setIdHandler(
     usernameUpdated: true,
   });
   return;
+}
+
+function isValid(username: string) {
+  return !/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(username);
 }
