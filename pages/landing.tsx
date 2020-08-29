@@ -219,7 +219,7 @@ function Post(props: {
           X
         </button>
         <button
-          className={landingStyles["edit-"]}
+          className={landingStyles["edit-post-button"]}
           onClick={(e) => goToDraft(props.draftId)}
         >
           Edit Post
