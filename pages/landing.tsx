@@ -149,7 +149,7 @@ function YourPosts(props: {
       return (
         <div>
           {posts!.map((post: any) => {
-            let day = moment.unix(post.createdAt._seconds);
+            let day = moment.unix(post.publishedAt._seconds);
             let formattedDate = day.format("MMMM Do YYYY");
             return (
               <Post
