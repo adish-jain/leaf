@@ -202,7 +202,7 @@ export async function getUsernameFromUid(uid: string) {
   return username;
 }
 
-export async function checkUsernameDNE(username: string) {
+export async function checkUsernameDNE(username: string): Promise<boolean> {
   let size;
 
   await db

@@ -23,10 +23,13 @@ export function useUserInfo(authenticated: boolean) {
   const [newPassword, changeNewPassword] = useState("");
   const [password, updatePassword] = useState("");
   const [changeUsernameLoading, updateChangeUsernameLoading] = useState(false);
-  const [usernameTaken, updateUsernameTaken] = useState(false);
+  const [userNameError, updateUserNameError] = useState("");
   const [emailError, updateEmailError] = useState("");
   const [passwordStatus, updatePasswordStatus] = useState("");
-  const [sendEmailVerificationStatus, updateSendEmailVerificationStatus] = useState("");
+  const [
+    sendEmailVerificationStatus,
+    updateSendEmailVerificationStatus,
+  ] = useState("");
   let { data: userInfo, mutate } = useSWR(
     authenticated ? "getUserInfo" : null,
     userInfoFetcher,
@@ -53,11 +56,12 @@ export function useUserInfo(authenticated: boolean) {
       "api/endpoint",
       changeUsernameRequest
     ).then((res: any) => res.json());
-    if (!updateUsernameResponse.usernameUpdated) {
-      updateUsernameTaken(true);
-    } else {
+    // console.log(updateUsernameResponse);
+    if (!updateUsernameResponse.error) {
+      updateUserNameError("");
       mutate({ username: newUsername }, true);
-      updateUsernameTaken(false);
+    } else {
+      updateUserNameError(updateUsernameResponse.error);
     }
   }
 
@@ -70,26 +74,23 @@ export function useUserInfo(authenticated: boolean) {
         email: newEmail,
       }),
     };
-    
-    await fetch(
-      "/api/endpoint",
-      changeEmailRequest
-    )
-    .then((res) => {
-      if (res.status === 200) {
-        mutate({ email: newEmail }, true);
-        updateEmailError("");
-        sendEmailVerification();
-      } 
-      if (res.status === 403) {
-        res.json().then((resJson) => {
-          updateEmailError(resJson.error);
-        });
-      }
-    })
-    .catch(function (error: any) {
-      console.log(error);
-    });
+
+    await fetch("/api/endpoint", changeEmailRequest)
+      .then((res) => {
+        if (res.status === 200) {
+          mutate({ email: newEmail }, true);
+          updateEmailError("");
+          sendEmailVerification();
+        }
+        if (res.status === 403) {
+          res.json().then((resJson) => {
+            updateEmailError(resJson.error);
+          });
+        }
+      })
+      .catch(function (error: any) {
+        console.log(error);
+      });
   }
 
   async function saveNewPassword() {
@@ -102,24 +103,21 @@ export function useUserInfo(authenticated: boolean) {
         newPassword: newPassword,
       }),
     };
-    
-    await fetch(
-      "/api/endpoint",
-      changePasswordRequest
-    )
-    .then((res) => {
-      if (res.status === 200) {
-        updatePasswordStatus("Password was successfully reset");
-      } 
-      if (res.status === 403) {
-        res.json().then((resJson) => {
-          updatePasswordStatus(resJson.error);
-        });
-      }
-    })
-    .catch(function (error: any) {
-      console.log(error);
-    });
+
+    await fetch("/api/endpoint", changePasswordRequest)
+      .then((res) => {
+        if (res.status === 200) {
+          updatePasswordStatus("Password was successfully reset");
+        }
+        if (res.status === 403) {
+          res.json().then((resJson) => {
+            updatePasswordStatus(resJson.error);
+          });
+        }
+      })
+      .catch(function (error: any) {
+        console.log(error);
+      });
   }
 
   async function sendEmailVerification() {
@@ -131,23 +129,20 @@ export function useUserInfo(authenticated: boolean) {
       }),
     };
 
-    await fetch(
-      "/api/endpoint",
-      sendEmailVerificationRequest
-    )
-    .then((res) => {
-      if (res.status === 200) {
-        updateSendEmailVerificationStatus("Verification email sent");
-      } 
-      if (res.status === 403) {
-        res.json().then((resJson) => {
-          updateSendEmailVerificationStatus(resJson.error);
-        });
-      }
-    })
-    .catch(function (error: any) {
-      console.log(error);
-    });
+    await fetch("/api/endpoint", sendEmailVerificationRequest)
+      .then((res) => {
+        if (res.status === 200) {
+          updateSendEmailVerificationStatus("Verification email sent");
+        }
+        if (res.status === 403) {
+          res.json().then((resJson) => {
+            updateSendEmailVerificationStatus(resJson.error);
+          });
+        }
+      })
+      .catch(function (error: any) {
+        console.log(error);
+      });
   }
 
   return {
@@ -165,11 +160,11 @@ export function useUserInfo(authenticated: boolean) {
     changeNewEmail,
     changeNewPassword,
     changeUsernameLoading,
-    usernameTaken,
+    userNameError,
     emailError,
     passwordStatus,
     emailVerified,
     sendEmailVerification,
-    sendEmailVerificationStatus
+    sendEmailVerificationStatus,
   };
 }

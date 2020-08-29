@@ -24,7 +24,7 @@ export default function SignUp() {
     changeNewEmail,
     changeNewPassword,
     changeUsernameLoading,
-    usernameTaken,
+    userNameError,
     emailError,
     passwordStatus,
     emailVerified,
@@ -66,7 +66,7 @@ export default function SignUp() {
             username={username}
             newUsername={newUsername}
             saveNewUsername={saveNewUsername}
-            usernameTaken={usernameTaken}
+            userNameError={userNameError}
           />
 
           <Password
@@ -99,7 +99,7 @@ function Username(props: {
   username: string;
   newUsername: string;
   saveNewUsername: any;
-  usernameTaken: boolean;
+  userNameError: string;
 }) {
   return (
     <div className={settingStyles["username-section"]}>
@@ -118,7 +118,7 @@ function Username(props: {
           Change username
         </button>
       </div>
-      <UsernameTaken usernameTaken={props.usernameTaken} />
+      <UserNameError userNameError={props.userNameError} />
     </div>
   );
 }
@@ -201,10 +201,10 @@ function Email(props: {
   );
 }
 
-function UsernameTaken(props: { usernameTaken: boolean }) {
+function UserNameError(props: { userNameError: string }) {
   return (
     <div>
-      {props.usernameTaken ? <p>Username is already taken</p> : <div></div>}
+      {props.userNameError !== "" ? <p>{props.userNameError}</p> : <div></div>}
     </div>
   );
 }
