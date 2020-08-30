@@ -38,6 +38,7 @@ export default function Pages() {
       </Head>
       <main className={indexStyles.MainWrapper}>
         <Header goToIndex={goToIndex} />
+        <HeaderDropDown goToIndex={goToIndex}/>
         <Stripe1 />
         <Title />
         <Row1 />
@@ -71,6 +72,32 @@ function NavBar(props: { goToIndex: any }) {
       <About />
     </div>
   );
+}
+
+function HeaderDropDown(props: {goToIndex: any}) {
+  return (
+    <div className={indexStyles.HeaderDropDown}>
+      <NavBarDropDown goToIndex={props.goToIndex}/>
+    </div>
+  );
+}
+
+function NavBarDropDown(props: {goToIndex: any}) {
+  return (
+    <div className={indexStyles.NavBarDropDown}>
+      <Logo goToIndex={props.goToIndex} />
+      <div className={indexStyles.dropdown}>
+        <button className={indexStyles.dropbtn}> ☰
+        </button>
+        <div className={indexStyles.dropdownContent}>
+          <Signup />
+          <Login />
+          <Examples />
+          <About />
+        </div>
+      </div>
+    </div>
+  )
 }
 
 function Logo(props: { goToIndex: any }) {
@@ -134,9 +161,12 @@ function TitleText() {
     <div className={indexStyles.Title}>
       <div className={indexStyles.Banner}>
         <div className={indexStyles.Text}>
-          <div className={indexStyles.h1Text}>A new way to convey</div>
+          <div className={indexStyles.h1Text}>
+            Leaf is a platform built from the ground up, 
+            for coding tutorials
+          </div>
           <div className={indexStyles.h2Text}>
-            Leaf is a platform built from the ground up, for coding tutorials
+          Say goodbye to publishing code snippets on Medium
           </div>
           <div className={indexStyles.TitleButtons}>
             <Link href="/signup">
@@ -231,7 +261,7 @@ function Row4() {
     <div className={indexStyles.Row4}>
       <Stripe3 />
       <div className={indexStyles.Row4Text}>
-        Say goodbye to publishing code snippets on Medium
+        Get started making beautiful tutorials with Leaf
       </div>
       <GetStarted2 />
     </div>
