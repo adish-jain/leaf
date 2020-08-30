@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebaseAdmin, initFirebase } from "../initFirebase";
-import { getUser, checkUsernameDNE } from "../userUtils";
+import { getUser, userNameErrorMessage } from "../userUtils";
 const admin = require("firebase-admin");
 
 let db = admin.firestore();
@@ -12,36 +12,14 @@ export default async function setIdHandler(
   res: NextApiResponse
 ) {
   let username = req.body.username;
-  if (username.length > 16) {
+  let errorMsg = await userNameErrorMessage(username);
+  if (errorMsg !== "") {
     res.statusCode = 200;
     res.send({
-      error: "Username cannot be longer than 16 characters",
+      error: errorMsg,
     });
     return;
   }
-  if (username.length === 0) {
-    res.statusCode = 200;
-    res.send({
-      error: "Invalid username",
-    });
-    return;
-  }
-  if (!isValid(username)) {
-    res.statusCode = 200;
-    res.send({
-      error: "Username cannot contain special characters",
-    });
-    return;
-  }
-  let unUnique = await checkUsernameDNE(username);
-  if (!unUnique) {
-    res.statusCode = 200;
-    res.send({
-      error: "Username taken",
-    });
-    return;
-  }
-
   let { uid } = await getUser(req, res);
 
   if (uid === "") {

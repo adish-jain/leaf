@@ -251,3 +251,21 @@ export async function getDraftTitle(uid: string, draftId: string) {
   let title = draftData.data().title;
   return title;
 }
+
+export async function userNameErrorMessage(username: string) {
+  function isValid(username: string) {
+    return !/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(username);
+  }
+  let unUnique = await checkUsernameDNE(username);
+  if (username.length > 16) {
+    return "Username cannot be longer than 16 characters";
+  } else if (username.length === 0) {
+    return "Invalid username";
+  } else if (!isValid(username)) {
+    return "Username cannot contain special characters";
+  } else if (!unUnique) {
+    return "Username taken";
+  } else {
+    return "";
+  }
+}
