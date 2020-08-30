@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import useSWR from "swr";
 import { initFirebase, initFirebaseAdmin } from "../../lib/initFirebase";
 import { setTokenCookies } from "../../lib/cookieUtils";
-import { checkUsernameDNE } from "../userUtils";
+import { userNameErrorMessage } from "../userUtils";
 
 const admin = require("firebase-admin");
 const firebase = require("firebase/app");
@@ -20,12 +20,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   let errored = false;
 
-  // check if username exists 
-  let unUnique = await checkUsernameDNE(username);
-  if (!unUnique) {
+  // check if username exists
+  let errorMsg = await userNameErrorMessage(username);
+  if (errorMsg !== "") {
     res.status(403).send({
-      errorMsg: "Username already exists.",
-    }); 
+      errorMsg: errorMsg,
+    });
     return;
   }
 
@@ -38,20 +38,17 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       switch (error.code) {
         case "auth/weak-password":
           res.status(403).send({
-            errorMsg:
-              "Password should be longer than 6 characters.",
+            errorMsg: "Password should be longer than 6 characters.",
           });
           return;
         case "auth/email-already-in-use":
           res.status(403).send({
-            errorMsg:
-              "Email already in use.",
+            errorMsg: "Email already in use.",
           });
           return;
         case "auth/invalid-email":
           res.status(403).send({
-            errorMsg:
-              "Email is badly formatted.",
+            errorMsg: "Email is badly formatted.",
           });
           return;
         default:
@@ -61,13 +58,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           });
       }
     });
-  
+
   if (errored) {
     return;
   }
 
   let signedin_user = userCredential.user;
-  
+
   let currentUser = await firebase.auth().currentUser;
   // console.log(currentUser);
 

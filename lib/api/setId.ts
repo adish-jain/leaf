@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebaseAdmin, initFirebase } from "../initFirebase";
-import { getUser, checkUsernameDNE } from "../userUtils";
+import { getUser, userNameErrorMessage } from "../userUtils";
 const admin = require("firebase-admin");
 
 let db = admin.firestore();
@@ -12,20 +12,21 @@ export default async function setIdHandler(
   res: NextApiResponse
 ) {
   let username = req.body.username;
-  let unUnique = await checkUsernameDNE(username);
-  if (!unUnique) {
-    res.statusCode == 200;
+  let errorMsg = await userNameErrorMessage(username);
+  if (errorMsg !== "") {
+    res.statusCode = 200;
     res.send({
-      usernameUpdated: false,
+      error: errorMsg,
     });
     return;
   }
-
   let { uid } = await getUser(req, res);
 
   if (uid === "") {
     res.statusCode = 403;
-    res.end();
+    res.send({
+      error: "Username taken",
+    });
     return;
   }
 
@@ -41,4 +42,8 @@ export default async function setIdHandler(
     usernameUpdated: true,
   });
   return;
+}
+
+function isValid(username: string) {
+  return !/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(username);
 }
