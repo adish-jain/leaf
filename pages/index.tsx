@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useLoggedIn, logOut } from "../lib/UseLoggedIn";
 
 import { useRouter } from "next/router";
+import { useState } from "react";
 
 const indexStyles = require("../styles/Index.module.scss");
 
@@ -87,7 +88,9 @@ function NavBarDropDown(props: {goToIndex: any}) {
     <div className={indexStyles.NavBarDropDown}>
       <Logo goToIndex={props.goToIndex} />
       <div className={indexStyles.dropdown}>
-        <button className={indexStyles.dropbtn}> ☰
+        <button 
+          className={indexStyles.dropbtn}> 
+        ☰
         </button>
         <div className={indexStyles.dropdownContent}>
           <Signup />
