@@ -2,6 +2,7 @@ import React, { Component, useEffect } from "react";
 const StepStyles = require("../styles/PublishedStep.module.scss");
 import { useInView, InView } from "react-intersection-observer";
 const draftToHtml = require("draftjs-to-html");
+import animateScrollTo from "animated-scroll-to";
 
 type PublishedStepProps = {
   index: number;
@@ -47,11 +48,13 @@ class PublishedStep extends Component<PublishedStepProps, PublishedStepState> {
   }
 
   scrollIntoView() {
-    this.myRef.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-      inline: "start",
-    });
+
+    let animationOptions = {
+      // add offset so scrolled to line isnt exactly at top
+      verticalOffset: -65,
+    };
+
+    animateScrollTo(this.myRef.current!, animationOptions);
   }
 
   calculateThreshold() {
