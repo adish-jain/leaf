@@ -20,18 +20,23 @@
   text-align: left;
 }
 
+.published-filebar-wrapper {
+  background: #3f4447;
+  overflow-x: hidden;
+}
+
 .published-filebar {
   display: flex;
   height: 3vh;
   flex-direction: row;
-  background: #3f4447;
   border-radius: 8px 8px 0px 0px;
-  overflow-x: scroll;
-  overflow-y: hidden;
-  padding-top: 12px;
-  padding-bottom: 12px;
+  // overflow-y: hidden;
+  padding-top: 8px;
+  padding-bottom: 8px;
   padding-right: 16px;
   align-items: center;
+  position: relative;
+  // left: 20px;
 }
 
 .published-file {
@@ -62,4 +67,18 @@
   border-left-style: solid;
   border-left-color: white;
   border-left-width: 1px;
+}
+
+.published-filebar-left {
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  z-index: 3;
+}
+
+.published-filebar-right {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  z-index: 3;
 }
