@@ -84,19 +84,25 @@ function HeaderDropDown(props: {goToIndex: any}) {
 }
 
 function NavBarDropDown(props: {goToIndex: any}) {
+  const [opened, toggleOpen] = useState(false);
   return (
     <div className={indexStyles.NavBarDropDown}>
       <Logo goToIndex={props.goToIndex} />
       <div className={indexStyles.dropdown}>
         <button 
+          onClick={(e) => toggleOpen(!opened)}  
           className={indexStyles.dropbtn}> 
         ☰
         </button>
         <div className={indexStyles.dropdownContent}>
+        {opened ? 
+        <div>
           <Signup />
           <Login />
           <Examples />
           <About />
+        </div> 
+        : <div></div>}
         </div>
       </div>
     </div>
