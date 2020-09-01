@@ -1,5 +1,6 @@
 const firebase = require("firebase/app");
 import "firebase/auth";
+import "firebase/storage";
 
 const admin = require("firebase-admin");
 
@@ -9,6 +10,7 @@ const config = {
   databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
   projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
   serviceAccountId: process.env.FIREBASE_CLIENT_EMAIL,
+  storageBucket: "gs://codingtutorials-95195.appspot.com",
 };
 
 function createAdminConfig() {

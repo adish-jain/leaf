@@ -51,6 +51,9 @@ import handleGetFiles from "../../lib/api/getFiles";
 import handleSaveFileCode from "../../lib/api/saveFileCode";
 import handleSaveFileName from "../../lib/api/saveFileName";
 
+// images
+import handleSaveImage from "../../lib/api/saveImage";
+
 // email
 import handlePasswordReset from "../../lib/api/passwordReset";
 
@@ -217,6 +220,12 @@ export default sentryHandler(
       // email
       case "passwordReset": {
         return handlePasswordReset(req, res);
+      }
+
+      // images
+      case "saveImage": {
+        console.log(req.body);
+        return handleSaveImage(req, res);
       }
 
       default: {
