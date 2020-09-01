@@ -7,6 +7,7 @@ import { useDraftTitle } from "../../lib/useDraftTitle";
 import useSWR from "swr";
 import Publishing from "../../components/Publishing";
 import CodeEditor from "../../components/CodeEditor";
+import Preview from "../../components/Preview";
 import Header from "../../components/Header";
 import DefaultErrorPage from "next/error";
 import Head from "next/head";
@@ -178,25 +179,28 @@ const DraftView = () => {
               published={draftPublished}
               goToPublishedPost={goToPublishedPost}
             />
-            <CodeEditor
-              draftId={draftId as string}
-              editingStep={editingStep}
-              saveFileCode={saveFileCode}
-              draftCode={codeFiles[selectedFileIndex].code}
-              files={draftFiles}
-              addFile={addFile}
-              removeFile={deleteStepAndFile}
-              selectedFileIndex={selectedFileIndex}
-              changeCode={changeCode}
-              changeSelectedFile={changeSelectedFileIndex}
-              changeFileLanguage={changeFileLanguage}
-              saveFileName={saveFileName}
-              onNameChange={onNameChange}
-              language={draftFiles[selectedFileIndex].language}
-              changeLines={changeLines}
-              saveLines={saveLines}
-              lines={lines}
-            />
+            <div className={appStyles.RightPane}>
+              <Preview />
+              <CodeEditor
+                draftId={draftId as string}
+                editingStep={editingStep}
+                saveFileCode={saveFileCode}
+                draftCode={codeFiles[selectedFileIndex].code}
+                files={draftFiles}
+                addFile={addFile}
+                removeFile={deleteStepAndFile}
+                selectedFileIndex={selectedFileIndex}
+                changeCode={changeCode}
+                changeSelectedFile={changeSelectedFileIndex}
+                changeFileLanguage={changeFileLanguage}
+                saveFileName={saveFileName}
+                onNameChange={onNameChange}
+                language={draftFiles[selectedFileIndex].language}
+                changeLines={changeLines}
+                saveLines={saveLines}
+                lines={lines}
+              />
+            </div>
           </div>
         )}
       </main>

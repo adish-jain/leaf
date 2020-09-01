@@ -1,16 +1,18 @@
 .preview {
-  background: #1f1c21;
-  height: 240px;
+  background: #272822;
+  width: 700px;
+  height: 200px;
   max-height: 240px;
-  border-radius: 8px 8px 0px 0px;
+  border-radius: 8px 8px 8px 8px;
   padding: 16px;
+  margin-top: 20px;
 
   .togglePreview {
     color: white;
     font-size: 12px;
   }
 
-  .previewImage {
+  .previewButtons {
     display: flex;
     justify-content: center;
   }
