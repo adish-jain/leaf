@@ -21,6 +21,7 @@
     "@types/typeform__embed": "^0.22.0",
     "@zeit/next-source-maps": "0.0.4-canary.1",
     "animated-scroll-to": "^2.0.10",
+    "atob": "^2.1.2",
     "classnames": "^2.2.6",
     "codemirror": "^5.55.0",
     "cookie": "^0.4.1",
@@ -47,6 +48,7 @@
     "swr": "^0.3.0"
   },
   "devDependencies": {
+    "@types/file-saver": "^2.0.1",
     "typescript": "^3.9.3"
   }
 }
