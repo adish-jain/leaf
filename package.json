@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@google-cloud/storage": "^5.3.0",
     "@sentry/browser": "^5.20.1",
     "@sentry/node": "^5.20.1",
     "@sentry/webpack-plugin": "^1.12.0",
@@ -43,6 +44,7 @@
     "react-dom": "^16.13.1",
     "react-intersection-observer": "^8.26.2",
     "react-transition-group": "^4.4.1",
+    "read-env": "^2.0.0",
     "sass": "^1.26.7",
     "shortid": "^2.2.15",
     "swr": "^0.3.0"
