@@ -34,6 +34,11 @@
   align-items: center;
 }
 
+.published-filebar::-webkit-scrollbar {
+  width: 0px;
+  background: transparent; /* make scrollbar transparent */
+}
+
 .published-file {
   // margin-right: 16px;
   cursor: pointer;
