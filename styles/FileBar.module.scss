@@ -26,11 +26,15 @@
   overflow-y: hidden;
   height: 48px;
   border-radius: 8px 8px 0px 0px;
+  align-items: center;
+  display: flex;
 }
 
 .published-filebar-wrapper::-webkit-scrollbar {
   width: 0px;
-  background: transparent; /* make scrollbar transparent */
+  background: transparent;
+  opacity: 0; /* make scrollbar transparent */
+  height: 0px;
 }
 
 .published-filebar {
@@ -39,12 +43,14 @@
   flex-direction: row;
   // border-radius: 8px 8px 0px 0px;
   // overflow-y: hidden;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 16px;
-  padding-right: 16px;
+  // padding-top: 8px;
+  // padding-bottom: 8px;
+  // padding-left: 16px;
+  // padding-right: 16px;
   align-items: center;
-  position: relative;
+  // position: absolute;
+  // top: 12px;
+  // z-index: 4;
   // left: 20px;
 }
 
@@ -63,8 +69,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 8px;
-
+  // padding: 8px;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-top: 4px;
+  padding-bottom: 4px;
   // padding: 4px;
   // margin-right: 4px;
   cursor: pointer;
