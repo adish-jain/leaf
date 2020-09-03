@@ -224,17 +224,13 @@ export default sentryHandler(
 
       // images
       case "saveImage": {
-        // console.log(req.body);
+        console.log("in endpoint");
         return handleSaveImage(req, res);
       }
 
-      default: {
-        // console.log(req.body);
-        // console.log(req);
-        return handleSaveImage(req, res);
-        // res.statusCode = 403;
-        // res.end();
+      default: 
+        res.statusCode = 403;
+        res.end();
       }
-    }
   }
 );
