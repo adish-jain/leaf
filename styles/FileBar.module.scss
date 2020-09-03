@@ -22,14 +22,22 @@
 
 .published-filebar-wrapper {
   background: #3f4447;
-  overflow-x: hidden;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  height: 48px;
+  border-radius: 8px 8px 0px 0px;
+}
+
+.published-filebar-wrapper::-webkit-scrollbar {
+  width: 0px;
+  background: transparent; /* make scrollbar transparent */
 }
 
 .published-filebar {
   display: flex;
   height: 3vh;
   flex-direction: row;
-  border-radius: 8px 8px 0px 0px;
+  // border-radius: 8px 8px 0px 0px;
   // overflow-y: hidden;
   padding-top: 8px;
   padding-bottom: 8px;
