@@ -18,39 +18,51 @@ type PublishedFileBarProps = {
 export default function PublishedFileBar(props: PublishedFileBarProps) {
   const fileBarWrapperRef = React.useRef<HTMLDivElement>(null);
   const fileBarRef = React.useRef<HTMLDivElement>(null);
-  const [scrollValue, updateScrollValue] = useState(0);
+  const [hideLeft, toggleHideLeft] = useState(true);
+  const [hideRight, toggleHideRight] = useState(true);
+  const options = {
+    elementToScroll: fileBarWrapperRef.current!,
+  };
 
   useEffect(() => {
-    const options = {
-      elementToScroll: fileBarWrapperRef.current!,
-    };
-    animateScrollTo([scrollValue, null], options);
-  }, [scrollValue]);
-
-  function showRight() {
     let width = fileBarWrapperRef.current?.offsetWidth!;
     let total_width = fileBarRef.current?.scrollWidth!;
-    if (!(scrollValue + width >= total_width)) {
-      updateScrollValue(scrollValue + width);
+    let scrollPos = fileBarWrapperRef.current?.scrollLeft!;
+    if (scrollPos < total_width - width) {
+      toggleHideRight(false);
     } else {
-      updateScrollValue(total_width);
+      toggleHideRight(true);
     }
+
+    let currentFileElement = document.getElementById(props.currentFile.id);
+    let overrideOptions = {
+      elementToScroll: fileBarWrapperRef.current!,
+    };
+    animateScrollTo(currentFileElement!, overrideOptions);
+  }, [props.currentFile.id]);
+
+  function moveRight() {
+    let width = fileBarWrapperRef.current?.offsetWidth!;
+    let total_width = fileBarRef.current?.scrollWidth!;
+    let scrollPos = fileBarWrapperRef.current?.scrollLeft!;
+    let newScrollValue = scrollPos + width;
+    animateScrollTo([newScrollValue, null], options);
   }
 
-  function showLeft() {
+  function moveLeft() {
     let width = fileBarWrapperRef.current?.offsetWidth!;
-    if (scrollValue > 0) {
-      updateScrollValue(scrollValue - width);
-    }
+    let scrollPos = fileBarWrapperRef.current?.scrollLeft!;
+    let newScrollValue = scrollPos - width;
+    animateScrollTo([newScrollValue, null], options);
   }
 
   function LeftButton() {
-    if (scrollValue === 0) {
+    if (hideLeft) {
       return <div></div>;
     }
     return (
       <button
-        onClick={showLeft}
+        onClick={moveLeft}
         className={fileBarStyles["published-filebar-left"]}
       >
         <img className={fileBarStyles["arrow-left"]} src="/images/warrow.svg" />
@@ -61,12 +73,12 @@ export default function PublishedFileBar(props: PublishedFileBarProps) {
   function RightButton() {
     let total_width = fileBarRef.current?.scrollWidth!;
     let width = fileBarWrapperRef.current?.offsetWidth!;
-    if (scrollValue + width >= total_width) {
+    if (hideRight) {
       return <div></div>;
     }
     return (
       <button
-        onClick={showRight}
+        onClick={moveRight}
         className={fileBarStyles["published-filebar-right"]}
       >
         <div className={"arrow-button-wrapper"}>
@@ -79,16 +91,39 @@ export default function PublishedFileBar(props: PublishedFileBarProps) {
     );
   }
 
+  function handleScroll(e: React.UIEvent<HTMLElement>) {
+    let scrollPos = fileBarWrapperRef.current?.scrollLeft!;
+    let total_width = fileBarRef.current?.scrollWidth!;
+    let width = fileBarWrapperRef.current?.offsetWidth!;
+
+    if (scrollPos > width) {
+      toggleHideLeft(false);
+    } else {
+      toggleHideLeft(true);
+    }
+    if (scrollPos < total_width - width) {
+      toggleHideRight(false);
+    } else {
+      toggleHideRight(true);
+    }
+  }
+
   return (
     <div
       ref={fileBarWrapperRef}
       className={fileBarStyles["published-filebar-wrapper"]}
+      onScroll={(e) => handleScroll(e)}
     >
       <LeftButton />
-      <div ref={fileBarRef} className={fileBarStyles["published-filebar"]}>
+      <div
+        onScroll={(e) => handleScroll(e)}
+        ref={fileBarRef}
+        className={fileBarStyles["published-filebar"]}
+      >
         {props.files.map((file, index) => (
           <File
             key={file.id}
+            id={file.id}
             index={index}
             name={file.name}
             updateFile={props.updateFile}
@@ -105,16 +140,22 @@ function File(props: {
   name: string;
   index: number;
   selected: boolean;
+  id: string;
   updateFile: (fileIndex: number) => void;
 }) {
+  const fileNameRef = React.useRef<HTMLDivElement>(null);
+
   let className = "published-file";
   if (props.selected) {
     className = "published-file-selected";
   }
+
   return (
     <div
       onClick={(e) => props.updateFile(props.index)}
       className={fileBarStyles[className]}
+      ref={fileNameRef}
+      id={props.id}
     >
       {props.name}
     </div>
