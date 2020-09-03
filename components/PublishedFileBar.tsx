@@ -53,7 +53,7 @@ export default function PublishedFileBar(props: PublishedFileBarProps) {
         onClick={showLeft}
         className={fileBarStyles["published-filebar-left"]}
       >
-        {"<"}
+        <img className={fileBarStyles["arrow-left"]} src="/images/warrow.svg" />
       </button>
     );
   }
@@ -69,7 +69,12 @@ export default function PublishedFileBar(props: PublishedFileBarProps) {
         onClick={showRight}
         className={fileBarStyles["published-filebar-right"]}
       >
-        {">"}
+        <div className={"arrow-button-wrapper"}>
+          <img
+            className={fileBarStyles["arrow-right"]}
+            src="/images/warrow.svg"
+          />
+        </div>
       </button>
     );
   }
