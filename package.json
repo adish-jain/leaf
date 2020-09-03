@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "test": "jest"
   },
   "dependencies": {
     "@sentry/browser": "^5.20.1",
@@ -29,6 +30,7 @@
     "draft-js-plugins-editor": "^3.0.0",
     "draft-js-static-toolbar-plugin": "^3.0.1",
     "draftjs-to-html": "^0.9.1",
+    "enzyme-adapter-react-16": "^1.15.4",
     "firebase": "^7.15.0",
     "firebase-admin": "^8.12.1",
     "isomorphic-fetch": "^2.2.1",
@@ -47,6 +49,16 @@
     "swr": "^0.3.0"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.11.5",
+    "@babel/preset-react": "^7.10.4",
+    "@babel/preset-typescript": "^7.10.4",
+    "@types/enzyme": "^3.10.5",
+    "@types/enzyme-adapter-react-16": "^1.0.6",
+    "babel-jest": "^26.3.0",
+    "enzyme": "^3.11.0",
+    "jest": "^26.4.2",
+    "react-test-renderer": "^16.13.1",
+    "ts-jest": "^26.3.0",
     "typescript": "^3.9.3"
   }
 }
