@@ -15,16 +15,16 @@ const storage = new Storage({
     keyFilename: "envVariables.json",
  });
 
-let bucketName = "codingtutorials-95195.appspot.com";
+let bucketName = process.env.STORAGE_BUCKET;
 
 const uploadFile = async(filename: string) => {   
     await storage.bucket(bucketName).upload(filename, {
         metadata: {
             cacheControl: 'public, max-age=31536000',
         },
-});
+    });
 
-console.log(`${filename} uploaded to ${bucketName}.`);
+    console.log(`${filename} uploaded to ${bucketName}.`);
 }
 
 export default async function handleSaveImage(req: NextApiRequest, res: NextApiResponse) {
@@ -48,3 +48,11 @@ export default async function handleSaveImage(req: NextApiRequest, res: NextApiR
     res.end();
     return;
 }
+
+export const config = {
+    api: {
+      bodyParser: {
+        sizeLimit: '2mb',
+      },
+    },
+  }

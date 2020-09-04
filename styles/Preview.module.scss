@@ -1,5 +1,9 @@
 .preview {
-  background: #272822;
+  // background: #272822;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-style: dashed;
   width: 700px;
   height: 200px;
   max-height: 240px;
@@ -13,7 +17,28 @@
   }
 
   .previewButtons {
-    display: flex;
-    justify-content: center;
+    border: 1px solid #ccc;
+    display: inline-block;
+    padding: 12px 12px;
+    background-color: #37abda;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  input[type="file"] {
+    display: none;
+  }
+
+  button {
+    border: 1px solid #ccc;
+    display: inline-block;
+    padding: 12px 12px;
+    background-color: #37abda;
+    color: white;
+    border-radius: 8px;
+    margin-left: 20px;
+    cursor: pointer;
+
   }
 }
