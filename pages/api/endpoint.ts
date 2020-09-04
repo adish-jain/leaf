@@ -53,6 +53,7 @@ import handleSaveFileName from "../../lib/api/saveFileName";
 
 // images
 import handleSaveImage from "../../lib/api/saveImage";
+// import handleGetImages from "../../lib/api/getDraftImages";
 
 // email
 import handlePasswordReset from "../../lib/api/passwordReset";
@@ -226,6 +227,10 @@ export default sentryHandler(
       case "saveImage": {
         return handleSaveImage(req, res);
       }
+
+      // case "getDraftImages": {
+      //   return handleGetImages(req, res);
+      // }
 
       default: 
         res.statusCode = 403;

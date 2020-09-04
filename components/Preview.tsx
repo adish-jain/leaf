@@ -44,7 +44,7 @@ export default class Preview extends Component<PreviewProps, PreviewState> {
             reader.onerror = error => reject(error);
         });
     
-        let stepId = this.props.steps[this.props.editingStep].id
+        let stepId = this.props.steps[this.props.editingStep].id;
 
         let data = {
             requestedAPI: "saveImage",
@@ -67,18 +67,23 @@ export default class Preview extends Component<PreviewProps, PreviewState> {
         return (
             <div className={previewStyles.preview}>
                 { !this.state.upload ? 
-                    (<div> 
-                        <label className={previewStyles.previewButtons}>
-                            Upload File 
-                            <input 
-                                type="file" 
-                                id="myFile" 
-                                name="filename" 
-                                accept="image/*" 
-                                onChange={(e) => this.handleFileUpload(e)}
-                            />
-                        </label>
-                    </div>)
+                    (this.props.steps[this.props.editingStep].image !== undefined ?
+                        <img src={this.props.steps[this.props.editingStep].image}></img>
+                        :
+                        (<div> 
+                            <label className={previewStyles.previewButtons}>
+                                Upload File 
+                                <input 
+                                    type="file" 
+                                    id="myFile" 
+                                    name="filename" 
+                                    accept="image/*" 
+                                    onChange={(e) => this.handleFileUpload(e)}
+                                />
+                            </label>
+                        </div>
+                        )
+                    )
                     : 
                     (<div className={previewStyles.submit}>
                         <p>

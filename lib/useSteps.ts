@@ -11,6 +11,7 @@ type Step = {
   lines?: { start: number; end: number };
   text: any;
   fileId?: string;
+  image?: string;
 };
 
 export function useSteps(draftId: string, authenticated: boolean) {

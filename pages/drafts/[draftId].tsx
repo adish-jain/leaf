@@ -79,6 +79,7 @@ const DraftView = () => {
     authenticated
   );
 
+
   let {
     saveStep,
     mutateStoredStep,

@@ -82,6 +82,7 @@ export async function getUserStepsForDraft(uid: string, draftId: string) {
           fileName: resultsJSON.fileName,
           id: resultsJSON.id,
           fileId: resultsJSON.fileId,
+          image: resultsJSON.image,
         });
       });
       return results;
