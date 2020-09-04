@@ -12,6 +12,10 @@ export default function Preview() {
         console.log(e.target.files);
         console.log(selectedFile);
     }
+
+    function handleFileSelect(e: any) {
+        uploaded(false);
+    }
     
     async function handleFileSubmit(e: any) {
         console.log(selectedFile);
@@ -41,22 +45,31 @@ export default function Preview() {
     return (
         <div className={previewStyles.preview}>
             { !upload ? 
-                (<label className={previewStyles.previewButtons}>
-                    Upload File
-                    <input 
-                        type="file" 
-                        id="myFile" 
-                        name="filename" 
-                        accept="image/*" 
-                        onChange={(e) => handleFileUpload(e)}
-                    />
-                </label>)
+                (<div> 
+                    <label className={previewStyles.previewButtons}>
+                        Upload File
+                        <input 
+                            type="file" 
+                            id="myFile" 
+                            name="filename" 
+                            accept="image/*" 
+                            onChange={(e) => handleFileUpload(e)}
+                        />
+                    </label>
+                </div>)
                 : 
-                (<div>
-                    Selected {selectedFile.name} 
-                    <button onClick={(e) => handleFileSubmit(e)}>
-                        Submit
-                    </button>
+                (<div className={previewStyles.submit}>
+                    <p>
+                        Selected {selectedFile.name} 
+                    </p>
+                    <div className={previewStyles.submitButtons}>
+                        <button onClick={(e) => handleFileSelect(e)}>
+                            Go Back
+                        </button>
+                        <button onClick={(e) => handleFileSubmit(e)}>
+                            Submit
+                        </button>
+                    </div>
                 </div>)
             }
         </div>

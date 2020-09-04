@@ -1,9 +1,9 @@
 .preview {
-  // background: #272822;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-style: dashed;
+  // border-style: dashed;
+  border: dashed 2px #000;
   width: 700px;
   height: 200px;
   max-height: 240px;
@@ -30,15 +30,31 @@
     display: none;
   }
 
-  button {
-    border: 1px solid #ccc;
-    display: inline-block;
-    padding: 12px 12px;
-    background-color: #37abda;
-    color: white;
-    border-radius: 8px;
-    margin-left: 20px;
-    cursor: pointer;
+  .submit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    p {
+      font-size: 18px;
+    }
+
+    .submitButtons {
+      display: flex;
+      flex-direction: row;
+      button {
+        border: 1px solid #ccc;
+        display: inline-block;
+        padding: 12px 12px;
+        background-color: #37abda;
+        color: white;
+        border-radius: 8px;
+        margin-left: 10px;
+        margin-right: 10px;
+        cursor: pointer;
+      }
+    }
 
   }
 }
