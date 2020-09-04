@@ -357,7 +357,7 @@ export function useSteps(draftId: string, authenticated: boolean) {
     });
   }
 
-  async function addStepImage(selectedFile: any, draftId: any, stepId: any) {
+  async function addStepImage(selectedImage: any, draftId: any, stepId: any) {
       const toBase64 = (file: any) => new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
@@ -369,16 +369,22 @@ export function useSteps(draftId: string, authenticated: boolean) {
         requestedAPI: "saveImage",
         draftId: draftId,
         stepId: stepId,
-        imageFile: await toBase64(selectedFile),
+        imageFile: await toBase64(selectedImage),
     };
 
-    //optimistic mutate
 
     await fetch("/api/endpoint", {
         method: "POST",
         headers: new Headers({ "Content-Type": "application/json" }),
         body: JSON.stringify(data),
         }).then(async (res: any) => {
+          let resJSON = await res.json();
+          let url = resJSON.url;
+          
+          //optimistic mutate
+          let optimisticSteps = storedSteps!.slice();
+          optimisticSteps[editingStep].image = url;
+          mutate(optimisticSteps, false);
     });
   }
 

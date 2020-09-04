@@ -1,13 +1,13 @@
 import React, { useState, Component } from "react";
 const fetch = require("node-fetch");
 const previewStyles = require('../styles/Preview.module.scss');
-let selectedFile: any;
+let selectedImage: any;
 
 type PreviewProps = {
     draftId: any;
     steps: any;
     editingStep: any;
-    addStepImage: (file: any, draftId: any, stepId: any) => void;
+    addStepImage: (image: any, draftId: any, stepId: any) => void;
     deleteStepImage: (draftId: any, stepId: any) => void;
 };
 
@@ -21,29 +21,30 @@ export default class Preview extends Component<PreviewProps, PreviewState> {
         this.state = {
             upload: false,
         };
-        this.handleFileUpload = this.handleFileUpload.bind(this);
-        this.handleFileSelect = this.handleFileSelect.bind(this);
-        this.handleFileSubmit = this.handleFileSubmit.bind(this);
+        this.handleImageUpload = this.handleImageUpload.bind(this);
+        this.handleImageSelect = this.handleImageSelect.bind(this);
+        this.handleImageSubmit = this.handleImageSubmit.bind(this);
+        this.handleImageDelete = this.handleImageDelete.bind(this);
     }
     
-    handleFileUpload(e: any) {
-        selectedFile = e.target.files[0];
+    handleImageUpload(e: any) {
+        selectedImage = e.target.files[0];
         this.setState({ upload: true });
-        console.log(selectedFile);
+        console.log(selectedImage);
     }
 
-    handleFileSelect(e: any) {
+    handleImageSelect(e: any) {
         this.setState({ upload: false });
     }
     
-    async handleFileSubmit(e: any) {
+    async handleImageSubmit(e: any) {
         // console.log(selectedFile);
         let stepId = this.props.steps[this.props.editingStep].id;
-        this.props.addStepImage(selectedFile, this.props.draftId, stepId);
+        await this.props.addStepImage(selectedImage, this.props.draftId, stepId);
         this.setState({ upload: false });
     }
 
-    async handleFileDelete(e: any) {
+    async handleImageDelete(e: any) {
         let stepId = this.props.steps[this.props.editingStep].id;
         this.props.deleteStepImage(this.props.draftId, stepId);
         this.setState({ upload: false });
@@ -55,7 +56,7 @@ export default class Preview extends Component<PreviewProps, PreviewState> {
                 { !this.state.upload ? 
                     (this.props.steps[this.props.editingStep].image !== undefined ?
                         (<div className={previewStyles.imgView}> 
-                            <div className={previewStyles.remove} onClick={(e) => this.handleFileDelete(e)}>X</div>
+                            <div className={previewStyles.remove} onClick={(e) => this.handleImageDelete(e)}>X</div>
                             <img src={this.props.steps[this.props.editingStep].image}></img>
                         </div>
                         )
@@ -68,7 +69,7 @@ export default class Preview extends Component<PreviewProps, PreviewState> {
                                     id="myFile" 
                                     name="filename" 
                                     accept="image/*" 
-                                    onChange={(e) => this.handleFileUpload(e)}
+                                    onChange={(e) => this.handleImageUpload(e)}
                                 />
                             </label>
                         </div>
@@ -78,13 +79,13 @@ export default class Preview extends Component<PreviewProps, PreviewState> {
                     (<div className={previewStyles.preview}>
                         <div className={previewStyles.submit}>
                             <p>
-                                Selected {selectedFile.name} 
+                                Selected {selectedImage.name} 
                             </p>
                             <div className={previewStyles.submitButtons}>
-                                <button onClick={(e) => this.handleFileSelect(e)}>
+                                <button onClick={(e) => this.handleImageSelect(e)}>
                                     Go Back
                                 </button>
-                                <button onClick={(e) => this.handleFileSubmit(e)}>
+                                <button onClick={(e) => this.handleImageSubmit(e)}>
                                     Submit
                                 </button>
                             </div>

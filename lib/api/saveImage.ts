@@ -18,8 +18,8 @@ const storage = new Storage({
 
 let bucketName = process.env.STORAGE_BUCKET;
 
-const uploadFile = async(filename: string) => {   
-    await storage.bucket(bucketName).upload(filename, {
+const uploadImage = async(imageName: string) => {   
+    await storage.bucket(bucketName).upload(imageName, {
         public: true,
         metadata: {
             cacheControl: 'public, max-age=31536000',
@@ -28,12 +28,12 @@ const uploadFile = async(filename: string) => {
     // console.log(`${filename} uploaded to ${bucketName}.`);
 }
 
-const generateFileURL = async(filename: string) => {
-    let fileURL = `https://storage.googleapis.com/${bucketName}/${filename}`
-    return fileURL;
+const generateImageURL = async(imageName: string) => {
+    let imageURL = `https://storage.googleapis.com/${bucketName}/${imageName}`
+    return imageURL;
 }
 
-const saveFileToStep = async(uid: any, draftId: any, stepId: any, fileURL: string) => {
+const saveImageToStep = async(uid: any, draftId: any, stepId: any, imageURL: string) => {
     await db
     .collection("users")
     .doc(uid)
@@ -41,7 +41,7 @@ const saveFileToStep = async(uid: any, draftId: any, stepId: any, fileURL: strin
     .doc(draftId)
     .collection("steps")
     .doc(stepId)
-    .update({ image: fileURL });
+    .update({ image: imageURL });
 }
 
 export default async function handleSaveImage(req: NextApiRequest, res: NextApiResponse) {
@@ -74,20 +74,20 @@ export default async function handleSaveImage(req: NextApiRequest, res: NextApiR
     });
 
     // upload img file to firebase storage 
-    await uploadFile(imageName);
+    await uploadImage(imageName);
 
     // generate public URL for img file to save to firestore
-    let fileURL = await generateFileURL(imageName);
+    let imageURL = await generateImageURL(imageName);
     // console.log(fileURL);
 
     // save img URL to firestore under relevant step
-    await saveFileToStep(uid, draftId, stepId, fileURL);
+    await saveImageToStep(uid, draftId, stepId, imageURL);
 
     // delete local img 
     fs.unlinkSync(imageName);
 
-    res.status(200);    
-    res.end();
+    res.statusCode = 200;    
+    res.send({url: imageURL});
     return;
 }
 
