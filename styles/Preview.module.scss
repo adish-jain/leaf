@@ -1,3 +1,4 @@
+
 .preview {
   display: flex;
   justify-content: center;
@@ -58,3 +59,29 @@
 
   }
 }
+
+.imgView {
+  // img {
+  //   transform: scale(50%, 50%);
+  // }
+  .remove {
+    border-radius: 50%;
+    background: #ffffff;
+    border: 1px solid #edece9;
+    color: #f71600;
+  
+    line-height: 24px;
+  
+    width: 24px;
+    height: 24px;
+  
+    text-align: center;
+    margin-right: 16px;
+    z-index: 1;
+  }
+  
+
+}
+  
+
+

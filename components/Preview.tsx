@@ -61,16 +61,41 @@ export default class Preview extends Component<PreviewProps, PreviewState> {
             body: JSON.stringify(data),
             }).then(async (res: any) => {
         });
+
+        this.setState({ upload: false });
+    }
+
+    async handleFileDelete(e: any) {
+        let stepId = this.props.steps[this.props.editingStep].id;
+
+        let data = {
+            requestedAPI: "deleteImage",
+            draftId: this.props.draftId,
+            stepId: stepId,
+        };
+
+        await fetch("/api/endpoint", {
+            method: "POST",
+            headers: new Headers({ "Content-Type": "application/json" }),
+            body: JSON.stringify(data),
+            }).then(async (res: any) => {
+        });
+
+        this.setState({ upload: false });
     }
 
     render() {
         return (
-            <div className={previewStyles.preview}>
+            <div>
                 { !this.state.upload ? 
                     (this.props.steps[this.props.editingStep].image !== undefined ?
-                        <img src={this.props.steps[this.props.editingStep].image}></img>
+                        (<div className={previewStyles.imgView}> 
+                            <div className={previewStyles.remove} onClick={(e) => this.handleFileDelete(e)}>X</div>
+                            <img src={this.props.steps[this.props.editingStep].image}></img>
+                        </div>
+                        )
                         :
-                        (<div> 
+                        (<div className={previewStyles.preview}> 
                             <label className={previewStyles.previewButtons}>
                                 Upload File 
                                 <input 
@@ -85,19 +110,22 @@ export default class Preview extends Component<PreviewProps, PreviewState> {
                         )
                     )
                     : 
-                    (<div className={previewStyles.submit}>
-                        <p>
-                            Selected {selectedFile.name} 
-                        </p>
-                        <div className={previewStyles.submitButtons}>
-                            <button onClick={(e) => this.handleFileSelect(e)}>
-                                Go Back
-                            </button>
-                            <button onClick={(e) => this.handleFileSubmit(e)}>
-                                Submit
-                            </button>
+                    (<div className={previewStyles.preview}>
+                        <div className={previewStyles.submit}>
+                            <p>
+                                Selected {selectedFile.name} 
+                            </p>
+                            <div className={previewStyles.submitButtons}>
+                                <button onClick={(e) => this.handleFileSelect(e)}>
+                                    Go Back
+                                </button>
+                                <button onClick={(e) => this.handleFileSubmit(e)}>
+                                    Submit
+                                </button>
+                            </div>
                         </div>
-                    </div>)
+                    </div>
+                    )
                 }
             </div>
         );
