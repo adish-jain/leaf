@@ -27,8 +27,6 @@ export default class Preview extends Component<PreviewProps, PreviewState> {
     handleFileUpload(e: any) {
         selectedFile = e.target.files[0];
         this.setState({ upload: true });
-        console.log(this.state.upload);
-        console.log(e.target.files);
         console.log(selectedFile);
     }
 
@@ -37,7 +35,7 @@ export default class Preview extends Component<PreviewProps, PreviewState> {
     }
     
     async handleFileSubmit(e: any) {
-        console.log(selectedFile);
+        // console.log(selectedFile);
     
         const toBase64 = (file: any) => new Promise((resolve, reject) => {
             const reader = new FileReader();

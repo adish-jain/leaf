@@ -25,8 +25,7 @@ const uploadFile = async(filename: string) => {
             cacheControl: 'public, max-age=31536000',
         },
     })
-    console.log(`${filename} uploaded to ${bucketName}.`);
-    console.log()
+    // console.log(`${filename} uploaded to ${bucketName}.`);
 }
 
 const generateFileURL = async(filename: string) => {
@@ -63,14 +62,14 @@ export default async function handleSaveImage(req: NextApiRequest, res: NextApiR
     let mimeType = image.match(/^data:([^;]+);base64,(.*)$/);
     let imageType = mimeType[1].split("/")[1];
     let imageName = shortId.generate().toString() + "." + imageType;
-    console.log(imageName);
+    // console.log(imageName);
 
     // create img file locally temporarily
     await fs.writeFile(imageName, b64, {encoding: 'base64'}, function(err: any) {
         if (err) {
             console.log(err);
         } else {
-            console.log("file created");
+            // console.log("file created");
         }
     });
 
@@ -79,7 +78,7 @@ export default async function handleSaveImage(req: NextApiRequest, res: NextApiR
 
     // generate public URL for img file to save to firestore
     let fileURL = await generateFileURL(imageName);
-    console.log(fileURL);
+    // console.log(fileURL);
 
     // save img URL to firestore under relevant step
     await saveFileToStep(uid, draftId, stepId, fileURL);
