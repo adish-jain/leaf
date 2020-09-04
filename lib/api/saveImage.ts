@@ -19,12 +19,18 @@ let bucketName = process.env.STORAGE_BUCKET;
 
 const uploadFile = async(filename: string) => {   
     await storage.bucket(bucketName).upload(filename, {
+        public: true,
         metadata: {
             cacheControl: 'public, max-age=31536000',
         },
-    });
-
+    })
     console.log(`${filename} uploaded to ${bucketName}.`);
+    console.log()
+}
+
+const generateFileURL = async(filename: string) => {
+    let fileURL = `https://storage.googleapis.com/${bucketName}/${filename}`
+    return fileURL;
 }
 
 export default async function handleSaveImage(req: NextApiRequest, res: NextApiResponse) {
@@ -44,7 +50,12 @@ export default async function handleSaveImage(req: NextApiRequest, res: NextApiR
     });
 
     await uploadFile(imageName);
-    res.status(200);
+    let fileURL = await generateFileURL(imageName);
+    console.log(fileURL);
+
+    fs.unlinkSync(imageName);
+
+    res.status(200);    
     res.end();
     return;
 }
