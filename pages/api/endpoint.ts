@@ -224,7 +224,6 @@ export default sentryHandler(
 
       // images
       case "saveImage": {
-        console.log("in endpoint");
         return handleSaveImage(req, res);
       }
 

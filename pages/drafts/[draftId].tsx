@@ -180,7 +180,14 @@ const DraftView = () => {
               goToPublishedPost={goToPublishedPost}
             />
             <div className={appStyles.RightPane}>
-              <Preview />
+              {editingStep !== -1 ? 
+                (<Preview 
+                  draftId={draftId}
+                  steps={realSteps}
+                  editingStep={editingStep}
+                />) :
+                (<div></div>)
+              } 
               <CodeEditor
                 draftId={draftId as string}
                 editingStep={editingStep}
