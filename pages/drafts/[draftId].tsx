@@ -94,6 +94,8 @@ const DraftView = () => {
     changeLines,
     saveLines,
     removeLines,
+    addStepImage,
+    deleteStepImage
   } = useSteps(draftId as string, authenticated);
 
   let {
@@ -186,6 +188,8 @@ const DraftView = () => {
                   draftId={draftId}
                   steps={realSteps}
                   editingStep={editingStep}
+                  addStepImage={addStepImage}
+                  deleteStepImage={deleteStepImage}
                 />) :
                 (<div></div>)
               } 

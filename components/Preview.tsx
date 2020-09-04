@@ -7,6 +7,8 @@ type PreviewProps = {
     draftId: any;
     steps: any;
     editingStep: any;
+    addStepImage: (file: any, draftId: any, stepId: any) => void;
+    deleteStepImage: (draftId: any, stepId: any) => void;
 };
 
 type PreviewState = {
@@ -36,51 +38,14 @@ export default class Preview extends Component<PreviewProps, PreviewState> {
     
     async handleFileSubmit(e: any) {
         // console.log(selectedFile);
-    
-        const toBase64 = (file: any) => new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = error => reject(error);
-        });
-    
         let stepId = this.props.steps[this.props.editingStep].id;
-
-        let data = {
-            requestedAPI: "saveImage",
-            draftId: this.props.draftId,
-            stepId: stepId,
-            imageFile: await toBase64(selectedFile),
-        };
-    
-        // console.log(JSON.stringify(data));
-    
-        await fetch("/api/endpoint", {
-            method: "POST",
-            headers: new Headers({ "Content-Type": "application/json" }),
-            body: JSON.stringify(data),
-            }).then(async (res: any) => {
-        });
-
+        this.props.addStepImage(selectedFile, this.props.draftId, stepId);
         this.setState({ upload: false });
     }
 
     async handleFileDelete(e: any) {
         let stepId = this.props.steps[this.props.editingStep].id;
-
-        let data = {
-            requestedAPI: "deleteImage",
-            draftId: this.props.draftId,
-            stepId: stepId,
-        };
-
-        await fetch("/api/endpoint", {
-            method: "POST",
-            headers: new Headers({ "Content-Type": "application/json" }),
-            body: JSON.stringify(data),
-            }).then(async (res: any) => {
-        });
-
+        this.props.deleteStepImage(this.props.draftId, stepId);
         this.setState({ upload: false });
     }
 

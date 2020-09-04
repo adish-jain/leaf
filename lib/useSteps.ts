@@ -357,6 +357,51 @@ export function useSteps(draftId: string, authenticated: boolean) {
     });
   }
 
+  async function addStepImage(selectedFile: any, draftId: any, stepId: any) {
+      const toBase64 = (file: any) => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
+
+    let data = {
+        requestedAPI: "saveImage",
+        draftId: draftId,
+        stepId: stepId,
+        imageFile: await toBase64(selectedFile),
+    };
+
+    //optimistic mutate
+
+    await fetch("/api/endpoint", {
+        method: "POST",
+        headers: new Headers({ "Content-Type": "application/json" }),
+        body: JSON.stringify(data),
+        }).then(async (res: any) => {
+    });
+  }
+
+  async function deleteStepImage(draftId: any, stepId: any) {
+    let data = {
+      requestedAPI: "deleteImage",
+      draftId: draftId,
+      stepId: stepId,
+    };
+
+    //optimistic mutate
+    let optimisticSteps = storedSteps!.slice();
+    optimisticSteps[editingStep].image = undefined;
+    mutate(optimisticSteps, false);
+
+    await fetch("/api/endpoint", {
+        method: "POST",
+        headers: new Headers({ "Content-Type": "application/json" }),
+        body: JSON.stringify(data),
+        }).then(async (res: any) => {
+    });
+  }
+
   return {
     saveStep,
     mutateStoredStep,
@@ -372,5 +417,7 @@ export function useSteps(draftId: string, authenticated: boolean) {
     saveLines,
     removeLines,
     renameStepFileName,
+    addStepImage,
+    deleteStepImage,
   };
 }
