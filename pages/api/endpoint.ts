@@ -63,6 +63,14 @@ import sentryHandler from "../../lib/sentryHandler";
 const firebase = require("firebase/app");
 initFirebase();
 
+export const config = {
+    api: {
+      bodyParser: {
+        sizeLimit: '50mb',
+      },
+    },
+  }
+
 export default sentryHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let requestBody = req.body;

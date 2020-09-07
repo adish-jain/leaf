@@ -13,6 +13,7 @@ type PreviewProps = {
 
 type PreviewState = {
     upload: boolean;
+    uploadFailed: boolean;
 };
 
 export default class Preview extends Component<PreviewProps, PreviewState> {
@@ -20,6 +21,7 @@ export default class Preview extends Component<PreviewProps, PreviewState> {
         super(props);
         this.state = {
             upload: false,
+            uploadFailed: false,
         };
         this.handleImageUpload = this.handleImageUpload.bind(this);
         this.handleImageSelect = this.handleImageSelect.bind(this);
@@ -30,18 +32,24 @@ export default class Preview extends Component<PreviewProps, PreviewState> {
     handleImageUpload(e: any) {
         selectedImage = e.target.files[0];
         this.setState({ upload: true });
+        this.setState({ uploadFailed: false });
         console.log(selectedImage);
     }
 
     handleImageSelect(e: any) {
         this.setState({ upload: false });
+        this.setState({ uploadFailed: false });
     }
     
     async handleImageSubmit(e: any) {
-        // console.log(selectedFile);
-        let stepId = this.props.steps[this.props.editingStep].id;
-        await this.props.addStepImage(selectedImage, this.props.draftId, stepId);
-        this.setState({ upload: false });
+        // 50 MB max on image uploads
+        if (selectedImage.size > 50000000) {
+            this.setState({ uploadFailed: true });
+        } else {
+            let stepId = this.props.steps[this.props.editingStep].id;
+            await this.props.addStepImage(selectedImage, this.props.draftId, stepId);
+            this.setState({ upload: false });
+        }
     }
 
     async handleImageDelete(e: any) {
@@ -89,6 +97,7 @@ export default class Preview extends Component<PreviewProps, PreviewState> {
                                     Submit
                                 </button>
                             </div>
+                            {this.state.uploadFailed ? <div><br></br>File size is too big</div> : <div></div>}
                         </div>
                     </div>
                     )

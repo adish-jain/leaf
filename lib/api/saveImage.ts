@@ -91,10 +91,3 @@ export default async function handleSaveImage(req: NextApiRequest, res: NextApiR
     return;
 }
 
-export const config = {
-    api: {
-      bodyParser: {
-        sizeLimit: '2mb',
-      },
-    },
-  }

@@ -385,7 +385,9 @@ export function useSteps(draftId: string, authenticated: boolean) {
           let optimisticSteps = storedSteps!.slice();
           optimisticSteps[editingStep].image = url;
           mutate(optimisticSteps, false);
-    });
+        }).catch((error: any) => {
+          console.log("upload failed");
+        });
   }
 
   async function deleteStepImage(draftId: any, stepId: any) {

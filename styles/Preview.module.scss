@@ -61,9 +61,10 @@
 }
 
 .imgView {
-  // img {
-  //   transform: scale(50%, 50%);
-  // }
+  img {
+    max-width: 200px;
+    height: auto;
+  }
   .remove {
     border-radius: 50%;
     background: #ffffff;
@@ -79,8 +80,6 @@
     margin-right: 16px;
     z-index: 1;
   }
-  
-
 }
   
 
