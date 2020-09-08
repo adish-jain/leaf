@@ -373,11 +373,10 @@ export function useSteps(draftId: string, authenticated: boolean) {
     };
 
 
-    await fetch("/api/endpoint", {
+    fetch("/api/endpoint", {
         method: "POST",
         headers: new Headers({
-          "Content-Type": "application/json",
-          "Accept": "application/json"
+          "Content-Type": "application/json"
        }),
         body: JSON.stringify(data),
         }).then(async (res: any) => {
