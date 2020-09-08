@@ -387,7 +387,7 @@ export function useSteps(draftId: string, authenticated: boolean) {
           mutate(optimisticSteps, false);
         }).catch((error: any) => {
           console.log(error);
-          console.log("upload failed");
+          console.log("upload failed.");
         });
   }
 
