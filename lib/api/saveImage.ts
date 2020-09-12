@@ -30,6 +30,7 @@ const uploadImage = async(imageName: string) => {
 
 const generateImageURL = async(imageName: string) => {
     let imageURL = `https://storage.googleapis.com/${bucketName}/${imageName}`
+    console.log(imageURL);
     return imageURL;
 }
 
@@ -65,7 +66,7 @@ export default async function handleSaveImage(req: NextApiRequest, res: NextApiR
     // console.log(imageName);
 
     // create img file locally temporarily
-    await fs.writeFile(imageName, b64, {encoding: 'base64'}, function(err: any) {
+    await fs.writeFile("/tmp/" + imageName, b64, {encoding: 'base64'}, function(err: any) {
         if (err) {
             console.log(err);
         } else {
@@ -74,7 +75,7 @@ export default async function handleSaveImage(req: NextApiRequest, res: NextApiR
     });
 
     // upload img file to firebase storage 
-    await uploadImage(imageName);
+    await uploadImage("/tmp/" + imageName);
 
     // generate public URL for img file to save to firestore
     let imageURL = await generateImageURL(imageName);
@@ -84,7 +85,7 @@ export default async function handleSaveImage(req: NextApiRequest, res: NextApiR
     await saveImageToStep(uid, draftId, stepId, imageURL);
 
     // delete local img 
-    fs.unlinkSync(imageName);
+    fs.unlinkSync("/tmp/" + imageName);
 
     res.statusCode = 200;    
     res.send({url: imageURL});
