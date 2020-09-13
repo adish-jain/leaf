@@ -383,7 +383,6 @@ export function useSteps(draftId: string, authenticated: boolean) {
           let resJSON = await res.json();
           let url = resJSON.url;
           
-          //optimistic mutate
           let optimisticSteps = storedSteps!.slice();
           optimisticSteps[editingStep].image = url;
           mutate(optimisticSteps, false);

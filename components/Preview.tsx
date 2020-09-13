@@ -46,9 +46,14 @@ export default class Preview extends Component<PreviewProps, PreviewState> {
         if (selectedImage.size > 50000000) {
             this.setState({ uploadFailed: true });
         } else {
+            // optimistic mutate
+            var url = URL.createObjectURL(selectedImage);
+            this.props.steps[this.props.editingStep].image = url;
+            this.setState({ upload: false });
+
             let stepId = this.props.steps[this.props.editingStep].id;
             await this.props.addStepImage(selectedImage, this.props.draftId, stepId);
-            this.setState({ upload: false });
+            // this.setState({ upload: false });
         }
     }
 
