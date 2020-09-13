@@ -7,7 +7,7 @@ type PreviewProps = {
     draftId: any;
     steps: any;
     editingStep: any;
-    addStepImage: (image: any, draftId: any, stepId: any) => void;
+    addStepImage: (image: any, draftId: any, stepId: any) => any;
     deleteStepImage: (draftId: any, stepId: any) => void;
 };
 
