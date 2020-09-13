@@ -13,7 +13,7 @@ module.exports.createEnvVariablesJson = function() {
     result["client_x509_cert_url"] = process.env.CLIENT_CERT_URL;
 
     var fs = require("fs");
-    fs.writeFile("envVariables.json", JSON.stringify(result), {encoding: 'utf8'}, function(err) {
+    fs.writeFile("/tmp/" + "envVariables.json", JSON.stringify(result), {encoding: 'utf8'}, function(err) {
         if (err) {
             console.log(err);
         } else {

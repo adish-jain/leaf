@@ -9,6 +9,10 @@ initFirebaseAdmin();
 initFirebase();
 const { Storage } = require('@google-cloud/storage');
 
+// Create envVariables.json to store files in Firebase storage
+const envVar = require("../../createEnvVariablesJson");
+envVar.createEnvVariablesJson();
+
 var fs = require("fs");
 var shortId = require("shortid");
 
