@@ -17,7 +17,7 @@ var fs = require("fs");
 var shortId = require("shortid");
 
 const storage = new Storage({
-    keyFilename: "envVariables.json",
+    keyFilename: "/tmp/" + "envVariables.json",
  });
 
 let bucketName = process.env.STORAGE_BUCKET;
