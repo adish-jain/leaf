@@ -28,7 +28,48 @@ export default class Step extends Component<
   constructor(props: EditingStoredStepProps) {
     super(props);
     this.state = { remove: false };
+
+    this.handleChange = this.handleChange.bind(this);
   }
+
+  Lines = () => {
+    let { lines, attachedFileName, saveLines } = this.props;
+
+    return (
+      <div className={StepStyles["line-indicator"]}>
+        <div className={StepStyles["center-indicator"]}>
+          {!lines ? (
+            <div className={StepStyles["lines-wrapper"]}>
+              <div className={StepStyles["lines-prompt"]}>
+                Highlight code in the editor to attach to this step.
+              </div>
+              <div className={StepStyles["lines-selected"]}>
+                No lines currently selected.
+              </div>
+            </div>
+          ) : (
+            <div className={StepStyles["lines-wrapper"]}>
+              <div className={StepStyles["lines-prompt"]}></div>
+              <div className={StepStyles["lines-selected"]}>
+                <p>
+                  Selected lines {lines.start} to {lines.end} in{" "}
+                  {attachedFileName}
+                </p>
+                <button
+                  className={StepStyles["Close"]}
+                  onClick={(e) => saveLines("", true)}
+                >
+                  X
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  handleChange(e: React.FormEvent<HTMLSelectElement>) {}
 
   render() {
     let {
@@ -49,45 +90,12 @@ export default class Step extends Component<
             onClick={(e) => {
               changeEditingStep(-1);
             }}
-            className={StepStyles.Save}
+            className={StepStyles["save-button"]}
           >
             Done Editing
           </button>
-          <div className={StepStyles['loading']}>{loading ? "Saving content..." : ""}</div>
-        </div>
-      );
-    };
-
-    const Lines = () => {
-      return (
-        <div className={StepStyles["line-indicator"]}>
-          <div className={StepStyles["center-indicator"]}>
-            {!lines ? (
-              <div className={StepStyles["lines-wrapper"]}>
-                <div className={StepStyles["lines-prompt"]}>
-                  Highlight code in the editor to attach to this step.
-                </div>
-                <div className={StepStyles["lines-selected"]}>
-                  No lines currently selected.
-                </div>
-              </div>
-            ) : (
-              <div className={StepStyles["lines-wrapper"]}>
-                <div className={StepStyles["lines-prompt"]}></div>
-                <div className={StepStyles["lines-selected"]}>
-                  <p>
-                    Selected lines {lines.start} to {lines.end} in{" "}
-                    {attachedFileName}
-                  </p>
-                  <button
-                    className={StepStyles["Close"]}
-                    onClick={(e) => saveLines("", true)}
-                  >
-                    X
-                  </button>
-                </div>
-              </div>
-            )}
+          <div className={StepStyles["loading"]}>
+            {loading ? "Saving content..." : "Content Saved."}
           </div>
         </div>
       );
@@ -95,7 +103,7 @@ export default class Step extends Component<
 
     return (
       <div>
-        <div className={StepStyles.Step}>
+        <div className={StepStyles["step-content"]}>
           <div className={StepStyles["editing-draft"]}>
             <DynamicEditor
               // @ts-ignore
@@ -105,7 +113,19 @@ export default class Step extends Component<
             />
           </div>
           <Buttons />
-          <Lines />
+          {/* <Lines /> */}
+        </div>
+        <div className={StepStyles["block-options"]}>
+          <label className={StepStyles["title"]}>Block Options</label>
+          <div className={StepStyles["divider"]}></div>
+          <label className={StepStyles["header"]}>Block type:</label>
+          <select
+            className={StepStyles["change-block"]}
+            onChange={this.handleChange}
+          >
+            <option value="no_block">No Block</option>
+            <option value="code_editor">Code Editor</option>
+          </select>
         </div>
       </div>
     );

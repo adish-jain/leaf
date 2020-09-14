@@ -7,7 +7,7 @@ import { useDraftTitle } from "../../lib/useDraftTitle";
 import useSWR from "swr";
 import Publishing from "../../components/Publishing";
 import CodeEditor from "../../components/CodeEditor";
-import Preview from "../../components/Preview";
+import ImageView from "../../components/ImageView";
 import Header from "../../components/Header";
 import DefaultErrorPage from "next/error";
 import Head from "next/head";
@@ -145,12 +145,12 @@ const DraftView = () => {
         />
       </Head>
       <main className={appStyles.AppWrapper}>
-        <Header
+        {/* <Header
           username={username}
           logout={false}
           settings={true}
           profile={true}
-        />
+        /> */}
         <style>{`
         div {
        }
@@ -159,54 +159,57 @@ const DraftView = () => {
           <DefaultErrorPage statusCode={404} />
         ) : (
           <div className={appStyles.App}>
-            <Publishing
-              draftId={draftId}
-              title={draftTitle}
-              storedSteps={realSteps!}
-              saveStep={saveStep}
-              mutateStoredStep={mutateStoredStep}
-              saveStepToBackend={saveStepToBackend}
-              deleteStoredStep={deleteStoredStep}
-              moveStepUp={moveStepUp}
-              moveStepDown={moveStepDown}
-              onTitleChange={onTitleChange}
-              editingStep={editingStep}
-              changeEditingStep={changeEditingStep}
-              selectedFileIndex={selectedFileIndex}
-              lines={lines}
-              files={draftFiles}
-              saveLines={saveLines}
-              published={draftPublished}
-              goToPublishedPost={goToPublishedPost}
-            />
-            <div className={appStyles.RightPane}>
-              {editingStep !== -1 ? 
-                (<Preview 
-                  draftId={draftId}
-                  steps={realSteps}
-                  editingStep={editingStep}
-                />) :
-                (<div></div>)
-              } 
-              <CodeEditor
-                draftId={draftId as string}
+            <div className={appStyles["center-divs"]}>
+              <Publishing
+                draftId={draftId}
+                title={draftTitle}
+                storedSteps={realSteps!}
+                saveStep={saveStep}
+                mutateStoredStep={mutateStoredStep}
+                saveStepToBackend={saveStepToBackend}
+                deleteStoredStep={deleteStoredStep}
+                moveStepUp={moveStepUp}
+                moveStepDown={moveStepDown}
+                onTitleChange={onTitleChange}
                 editingStep={editingStep}
-                saveFileCode={saveFileCode}
-                draftCode={codeFiles[selectedFileIndex].code}
-                files={draftFiles}
-                addFile={addFile}
-                removeFile={deleteStepAndFile}
+                changeEditingStep={changeEditingStep}
                 selectedFileIndex={selectedFileIndex}
-                changeCode={changeCode}
-                changeSelectedFile={changeSelectedFileIndex}
-                changeFileLanguage={changeFileLanguage}
-                saveFileName={saveFileName}
-                onNameChange={onNameChange}
-                language={draftFiles[selectedFileIndex].language}
-                changeLines={changeLines}
-                saveLines={saveLines}
                 lines={lines}
+                files={draftFiles}
+                saveLines={saveLines}
+                published={draftPublished}
+                goToPublishedPost={goToPublishedPost}
               />
+              <div className={appStyles.RightPane}>
+                {/* {editingStep !== -1 ? (
+                  <ImageView
+                    draftId={draftId}
+                    steps={realSteps}
+                    editingStep={editingStep}
+                  />
+                ) : (
+                  <div></div>
+                )} */}
+                <CodeEditor
+                  draftId={draftId as string}
+                  editingStep={editingStep}
+                  saveFileCode={saveFileCode}
+                  draftCode={codeFiles[selectedFileIndex].code}
+                  files={draftFiles}
+                  addFile={addFile}
+                  removeFile={deleteStepAndFile}
+                  selectedFileIndex={selectedFileIndex}
+                  changeCode={changeCode}
+                  changeSelectedFile={changeSelectedFileIndex}
+                  changeFileLanguage={changeFileLanguage}
+                  saveFileName={saveFileName}
+                  onNameChange={onNameChange}
+                  language={draftFiles[selectedFileIndex].language}
+                  changeLines={changeLines}
+                  saveLines={saveLines}
+                  lines={lines}
+                />
+              </div>
             </div>
           </div>
         )}

@@ -13,7 +13,7 @@ type PreviewState = {
     upload: boolean;
 };
 
-export default class Preview extends Component<PreviewProps, PreviewState> {
+export default class ImageView extends Component<PreviewProps, PreviewState> {
     constructor(props: PreviewProps) {
         super(props);
         this.state = {

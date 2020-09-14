@@ -53,17 +53,18 @@
 }
 .publishing {
   // min-width: 480px;
-  min-width: 300px;
-  width: 40vw;
-  margin-left: 3vw;
-  margin-right: 3vw;
+  // min-width: 300px;
+  // width: 40vw;
+  width: 440px;
+  // margin-left: 3vw;
+  margin-right: 48px;
   flex-grow: 0.8;
   .header {
     display: flex;
     margin-top: 16px;
 
     font-size: 20px;
-    border-bottom-style: solid;
+    // border-bottom-style: solid;
     border-bottom-width: 1px;
     border-bottom-color: #d0d0d0;
     // padding-bottom: 8px;

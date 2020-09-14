@@ -5,25 +5,18 @@ type NewStepProps = {
   addStep: (e: React.MouseEvent<HTMLButtonElement>) => void;
 };
 
-type NewStepState = {
-};
+type NewStepState = {};
 
 export default class NewStep extends Component<NewStepProps, NewStepState> {
   constructor(props: NewStepProps) {
     super(props);
-    this.state = {
-    };
+    this.state = {};
   }
 
   render() {
     return (
       <div className={newStepStyles.NewStep}>
-        <p>Add New</p>
-        <div className={newStepStyles.Line}></div>
-    
-        <div className={newStepStyles.Buttons}>
-          <button onClick={this.props.addStep}>Step</button>
-        </div>
+        <button onClick={this.props.addStep}>+ Add Step</button>
       </div>
     );
   }

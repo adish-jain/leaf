@@ -185,6 +185,11 @@ export default class Publishing extends Component<
             let myTarget = e.target as HTMLTextAreaElement;
             this.props.onTitleChange(myTarget.value);
           }}
+          style={{
+            fontWeight: "bold",
+            fontSize: "40px",
+            color: "D0D0D0",
+          }}
           name="title"
         />
       </div>
@@ -210,7 +215,7 @@ export default class Publishing extends Component<
     }
     return (
       <div className={publishingStyles.publishing}>
-        <this.PublishingButtons />
+        {/* <this.PublishingButtons /> */}
         <this.PublishingHeader />
         {storedSteps.map((storedStep, index) => {
           return (
@@ -235,7 +240,7 @@ export default class Publishing extends Component<
             />
           );
         })}
-        <NewStep addStep={this.addStep} />
+        {editingStep === -1 ? <NewStep addStep={this.addStep} /> : <div></div>}
       </div>
     );
   }

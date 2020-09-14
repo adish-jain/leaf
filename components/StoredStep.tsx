@@ -32,13 +32,18 @@ type StoredStepProps = {
   attachedFileId: string;
 };
 
+type StoredStepState = {
+  loading: boolean;
+  hovered: boolean;
+};
+
 // timer to make sure that content is saved 3 seconds after user stops typing
 let timer: ReturnType<typeof setTimeout>;
 const WAIT_INTERVAL = 3000;
 
 export default class StoredStep extends Component<
   StoredStepProps,
-  { loading: boolean }
+  StoredStepState
 > {
   constructor(props: StoredStepProps) {
     super(props);
@@ -52,6 +57,7 @@ export default class StoredStep extends Component<
       // loading boolean is to allow an indicator to show up
       // when the step is saving content to backend
       loading: false,
+      hovered: false,
     };
   }
 
@@ -98,6 +104,29 @@ export default class StoredStep extends Component<
     this.props.moveStepDown(this.props.id);
   }
 
+  // Options = () => {
+  //   if (!this.state.hovered) {
+  //     return <div></div>;
+  //   }
+  //   return (
+  //     <div className={StepStyles["options"]}>
+  //       <div className={StepStyles["dot"]}></div>
+  //       <div className={StepStyles["dot"]}></div>
+  //       <div className={StepStyles["dot"]}></div>
+  //     </div>
+  //   );
+  // };
+
+  OptionsBar = () => {
+    return (
+      <div className={StepStyles["options-bar"]}>
+        <button>X</button>
+        <button>Move up</button>
+        <button>Move down</button>
+      </div>
+    );
+  };
+
   render() {
     let {
       saveLines,
@@ -118,7 +147,11 @@ export default class StoredStep extends Component<
     }
 
     return (
-      <div>
+      <div
+        className={StepStyles["step-wrapper"]}
+        onMouseEnter={(e) => this.setState({ hovered: true })}
+        onMouseLeave={(e) => this.setState({ hovered: false })}
+      >
         {editing ? (
           <EditingStoredStep
             onChange={this.onChange}
@@ -142,6 +175,7 @@ export default class StoredStep extends Component<
             index={index}
           />
         )}
+        {/* <this.OptionsBar /> */}
       </div>
     );
   }
