@@ -185,7 +185,7 @@ const DraftView = () => {
             <div className={appStyles.RightPane}>
               {editingStep !== -1 ? 
                 (<Preview 
-                  draftId={draftId}
+                  draftId={draftId as string}
                   steps={realSteps}
                   editingStep={editingStep}
                   addStepImage={addStepImage}

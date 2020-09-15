@@ -11,7 +11,7 @@ type Step = {
   lines?: { start: number; end: number };
   text: any;
   fileId?: string;
-  image?: string;
+  imageURL?: string;
 };
 
 export function useSteps(draftId: string, authenticated: boolean) {
@@ -357,7 +357,7 @@ export function useSteps(draftId: string, authenticated: boolean) {
     });
   }
 
-  async function addStepImage(selectedImage: any, draftId: any, stepId: any) {
+  async function addStepImage(selectedImage: any, draftId: string, stepId: string) {
       const toBase64 = (file: any) => new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
@@ -384,7 +384,7 @@ export function useSteps(draftId: string, authenticated: boolean) {
           let url = resJSON.url;
           
           let optimisticSteps = storedSteps!.slice();
-          optimisticSteps[editingStep].image = url;
+          optimisticSteps[editingStep].imageURL = url;
           mutate(optimisticSteps, false);
         }).catch((error: any) => {
           console.log(error);
@@ -392,7 +392,7 @@ export function useSteps(draftId: string, authenticated: boolean) {
         });
   }
 
-  async function deleteStepImage(draftId: any, stepId: any) {
+  async function deleteStepImage(draftId: string, stepId: string) {
     let data = {
       requestedAPI: "deleteImage",
       draftId: draftId,
@@ -401,7 +401,7 @@ export function useSteps(draftId: string, authenticated: boolean) {
 
     //optimistic mutate
     let optimisticSteps = storedSteps!.slice();
-    optimisticSteps[editingStep].image = undefined;
+    optimisticSteps[editingStep].imageURL = undefined;
     mutate(optimisticSteps, false);
 
     await fetch("/api/endpoint", {

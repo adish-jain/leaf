@@ -8,7 +8,6 @@ initFirebaseAdmin();
 initFirebase();
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  // console.log("in deleteStep");
   return deleteImageHandler(req, res);
 };
 
@@ -30,7 +29,7 @@ async function deleteImageHandler(req: NextApiRequest, res: NextApiResponse) {
     return;
   }
 
-  // delete step from firebase
+  // delete img from firebase
   db.collection("users")
     .doc(uid)
     .collection("drafts")
@@ -38,7 +37,7 @@ async function deleteImageHandler(req: NextApiRequest, res: NextApiResponse) {
     .collection("steps")
     .doc(stepId)
     .update({
-        image: admin.firestore.FieldValue.delete()
+      imageURL: admin.firestore.FieldValue.delete()
     });
 
   res.statusCode = 200;

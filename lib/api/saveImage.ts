@@ -34,11 +34,11 @@ const uploadImage = async(imageName: string) => {
 
 const generateImageURL = async(imageName: string) => {
     let imageURL = `https://storage.googleapis.com/${bucketName}/${imageName}`
-    console.log(imageURL);
+    // console.log(imageURL);
     return imageURL;
 }
 
-const saveImageToStep = async(uid: any, draftId: any, stepId: any, imageURL: string) => {
+const saveImageToStep = async(uid: string, draftId: string, stepId: string, imageURL: string) => {
     await db
     .collection("users")
     .doc(uid)
@@ -46,7 +46,7 @@ const saveImageToStep = async(uid: any, draftId: any, stepId: any, imageURL: str
     .doc(draftId)
     .collection("steps")
     .doc(stepId)
-    .update({ image: imageURL });
+    .update({ imageURL: imageURL });
 }
 
 export default async function handleSaveImage(req: NextApiRequest, res: NextApiResponse) {
