@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import dynamic from "next/dynamic";
 import LanguageBar from "./LanguageBar";
 import FileBar from "./FileBar";
+import ImageOptions from "./ImageOptions";
 import CodeEditorStyles from "../styles/CodeEditor.module.scss";
 
 // import CodeMirror from './DynamicComponent';
@@ -46,6 +47,8 @@ type CodeEditorProps = {
   changeSelectedFile: (fileIndex: number) => void;
   language: string;
   lines: { start: Line; end: Line };
+  // whether or the draft page should display the block side
+  shouldShowBlock: boolean;
 };
 
 type CodeEditorState = {};
@@ -77,9 +80,16 @@ export default class CodeEditor extends Component<
       changeLines,
       saveLines,
       lines,
+      shouldShowBlock,
     } = this.props;
+
+    if (!shouldShowBlock) {
+      return <div></div>;
+    }
+
     return (
       <div className={CodeEditorStyles["CodeEditor"]}>
+        <ImageOptions />
         <FileBar
           draftId={draftId}
           files={files}

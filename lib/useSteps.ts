@@ -1,16 +1,10 @@
 import useSWR, { SWRConfig } from "swr";
 import { useState } from "react";
+import { Step } from "../typescript/types/app_types";
 
 type Line = {
   lineNumber: number;
   char: number;
-};
-
-type Step = {
-  id: string;
-  lines?: { start: number; end: number };
-  text: any;
-  fileId?: string;
 };
 
 export function useSteps(draftId: string, authenticated: boolean) {

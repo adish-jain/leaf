@@ -15,10 +15,12 @@ type EditingStoredStepProps = {
   immediateUpdate: (stepText: string) => void;
   loading: boolean;
   changeEditingStep: (editingStep: number) => void;
+  updateShowBlock: (shouldShowBlock: boolean) => void;
 };
 
 type EditingStoredStepState = {
   remove: boolean;
+  codeEditor: boolean;
 };
 
 export default class Step extends Component<
@@ -27,7 +29,7 @@ export default class Step extends Component<
 > {
   constructor(props: EditingStoredStepProps) {
     super(props);
-    this.state = { remove: false };
+    this.state = { remove: false, codeEditor: false };
 
     this.handleChange = this.handleChange.bind(this);
   }
@@ -43,9 +45,9 @@ export default class Step extends Component<
               <div className={StepStyles["lines-prompt"]}>
                 Highlight code in the editor to attach to this step.
               </div>
-              <div className={StepStyles["lines-selected"]}>
+              {/* <div className={StepStyles["lines-selected"]}>
                 No lines currently selected.
-              </div>
+              </div> */}
             </div>
           ) : (
             <div className={StepStyles["lines-wrapper"]}>
@@ -69,7 +71,51 @@ export default class Step extends Component<
     );
   };
 
-  handleChange(e: React.FormEvent<HTMLSelectElement>) {}
+  BlockOptions = () => {
+    return (
+      <div className={StepStyles["block-options"]}>
+        <div className={StepStyles["title-with-divider"]}>
+          <label>Block Options</label>
+          <div></div>
+        </div>
+        <label className={StepStyles["header"]}>Block type:</label>
+        <select
+          className={StepStyles["change-block"]}
+          onChange={this.handleChange}
+        >
+          <option value="no_block">No Block</option>
+          <option value="code_editor">Code Editor</option>
+        </select>
+      </div>
+    );
+  };
+
+  EndButtons = () => {
+    let { loading, changeEditingStep } = this.props;
+    return (
+      <div className={StepStyles["end-buttons"]}>
+        <button
+          onClick={(e) => {
+            changeEditingStep(-1);
+          }}
+          className={StepStyles["save-button"]}
+        >
+          Done Editing
+        </button>
+        <div className={StepStyles["loading"]}>
+          {loading ? "Saving content..." : "Content Saved."}
+        </div>
+      </div>
+    );
+  };
+
+  handleChange(e: React.FormEvent<HTMLSelectElement>) {
+    // this.setState({
+    //   codeEditor: true
+    // });
+
+    this.props.updateShowBlock(true);
+  }
 
   render() {
     let {
@@ -81,52 +127,32 @@ export default class Step extends Component<
       immediateUpdate,
       loading,
       changeEditingStep,
+      updateShowBlock
     } = this.props;
 
-    const Buttons = () => {
-      return (
-        <div className={StepStyles.Buttons}>
-          <button
-            onClick={(e) => {
-              changeEditingStep(-1);
-            }}
-            className={StepStyles["save-button"]}
-          >
-            Done Editing
-          </button>
-          <div className={StepStyles["loading"]}>
-            {loading ? "Saving content..." : "Content Saved."}
-          </div>
-        </div>
-      );
-    };
-
     return (
-      <div>
-        <div className={StepStyles["step-content"]}>
-          <div className={StepStyles["editing-draft"]}>
-            <DynamicEditor
-              // @ts-ignore
-              onChange={onChange}
-              editorState={editorState}
-              immediateUpdate={immediateUpdate}
-            />
+      <div className={StepStyles["editingstep-wrapper"]}>
+        <div className={StepStyles["step-border"]}>
+          <div className={StepStyles["step-content"]}>
+            <div className={StepStyles["title-with-divider"]}>
+              <label>text</label>
+              <div></div>
+            </div>
+            <div className={StepStyles["editing-draft"]}>
+              <DynamicEditor
+                // @ts-ignore
+                onChange={onChange}
+                editorState={editorState}
+                immediateUpdate={immediateUpdate}
+              />
+            </div>
           </div>
-          <Buttons />
-          {/* <Lines /> */}
+          <this.BlockOptions />
+          <this.Lines />
         </div>
-        <div className={StepStyles["block-options"]}>
-          <label className={StepStyles["title"]}>Block Options</label>
-          <div className={StepStyles["divider"]}></div>
-          <label className={StepStyles["header"]}>Block type:</label>
-          <select
-            className={StepStyles["change-block"]}
-            onChange={this.handleChange}
-          >
-            <option value="no_block">No Block</option>
-            <option value="code_editor">Code Editor</option>
-          </select>
-        </div>
+
+        <this.EndButtons />
+        {/* <div className={StepStyles["divider"]}></div> */}
       </div>
     );
   }

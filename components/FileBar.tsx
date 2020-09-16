@@ -40,20 +40,33 @@ export default class FileBar extends Component<FileBarProps> {
     } = this.props;
 
     return (
-      <div className={fileBarStyles.FileBar}>
-        {files.map((file, index) => (
-          <FileName
-            name={file.name}
-            key={file.id}
-            changeSelectedFile={changeSelectedFile}
-            saveFileName={saveFileName}
-            onNameChange={onNameChange}
-            selected={selectedFileIndex === index}
-            removeFile={removeFile}
-            index={index}
-          />
-        ))}
-        <button  className={fileBarStyles['add-new-file-btn']} onClick={e => addFile()}>Add New file</button>
+      <div className={fileBarStyles["filebar-wrapper"]}>
+        <div className={fileBarStyles["title-with-divider"]}>
+          <label>files</label>
+          <div></div>
+        </div>
+        <div className={fileBarStyles["filebar"]}>
+          <div className={fileBarStyles["files"]}>
+            {files.map((file, index) => (
+              <FileName
+                name={file.name}
+                key={file.id}
+                changeSelectedFile={changeSelectedFile}
+                saveFileName={saveFileName}
+                onNameChange={onNameChange}
+                selected={selectedFileIndex === index}
+                removeFile={removeFile}
+                index={index}
+              />
+            ))}
+          </div>
+          <button
+            className={fileBarStyles["new-file"]}
+            onClick={(e) => addFile()}
+          >
+            +
+          </button>
+        </div>
       </div>
     );
   }

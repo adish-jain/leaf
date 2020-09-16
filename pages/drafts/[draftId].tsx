@@ -108,6 +108,8 @@ const DraftView = () => {
     saveFileCode,
   } = useFiles(draftId, draftFiles, mutate);
 
+  const [shouldShowBlock, updateShowBlock] = useState(false);
+
   async function goToPublishedPost() {
     window.location.href = `/${username}/${postId}`;
   }
@@ -179,6 +181,8 @@ const DraftView = () => {
                 saveLines={saveLines}
                 published={draftPublished}
                 goToPublishedPost={goToPublishedPost}
+                shouldShowBlock={shouldShowBlock}
+                updateShowBlock={updateShowBlock}
               />
               <div className={appStyles.RightPane}>
                 {/* {editingStep !== -1 ? (
@@ -208,6 +212,7 @@ const DraftView = () => {
                   changeLines={changeLines}
                   saveLines={saveLines}
                   lines={lines}
+                  shouldShowBlock={shouldShowBlock}
                 />
               </div>
             </div>

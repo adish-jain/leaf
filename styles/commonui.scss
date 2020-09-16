@@ -1,5 +1,6 @@
 $leaf-light-gray: #edece9;
-$gray-text: #C4C4C4;
+$gray-text: #c4c4c4;
+$light-blue: #D8E7F8;
 
 @mixin line {
   // must specify width
@@ -19,4 +20,17 @@ $gray-text: #C4C4C4;
 
 @mixin draft-button-focused {
   outline: none;
+}
+
+@mixin title-with-divider {
+  label {
+    font-weight: normal;
+    text-transform: uppercase;
+    font-size: 12px;
+  }
+  div {
+    @include line;
+    width: 100%;
+    margin: 2px 0px 8px 0px;
+  }
 }

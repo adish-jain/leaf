@@ -23,40 +23,40 @@ export default class Step extends Component<
     super(props);
   }
 
-  Buttons = () => {
-    let { changeEditingStep, index } = this.props;
-    return (
-      <div className={StepStyles.Buttons}>
-        <div
-          onClick={(e) => {
-            e.stopPropagation();
-            this.props.moveStepUp();
-          }}
-          className={StepStyles.Up}
-        >
-          ↑
-        </div>
-        <div
-          onClick={(e) => {
-            e.stopPropagation();
-            this.props.moveStepDown();
-          }}
-          className={StepStyles.Down}
-        >
-          ↓
-        </div>
-        <div
-          onClick={(e) => {
-            e.stopPropagation();
-            this.props.deleteStoredStep(e);
-          }}
-          className={StepStyles.Close}
-        >
-          X
-        </div>
-      </div>
-    );
-  };
+  // Buttons = () => {
+  //   let { changeEditingStep, index } = this.props;
+  //   return (
+  //     <div className={StepStyles.Buttons}>
+  //       <div
+  //         onClick={(e) => {
+  //           e.stopPropagation();
+  //           this.props.moveStepUp();
+  //         }}
+  //         className={StepStyles.Up}
+  //       >
+  //         ↑
+  //       </div>
+  //       <div
+  //         onClick={(e) => {
+  //           e.stopPropagation();
+  //           this.props.moveStepDown();
+  //         }}
+  //         className={StepStyles.Down}
+  //       >
+  //         ↓
+  //       </div>
+  //       <div
+  //         onClick={(e) => {
+  //           e.stopPropagation();
+  //           this.props.deleteStoredStep(e);
+  //         }}
+  //         className={StepStyles.Close}
+  //       >
+  //         X
+  //       </div>
+  //     </div>
+  //   );
+  // };
 
   LineStatus = () => {
     let { lines, attachedFileName } = this.props;
@@ -86,7 +86,7 @@ export default class Step extends Component<
     return (
       <div
         onClick={(e) => changeEditingStep(index)}
-        className={RenderedStepStyles["step-wrapper"]}
+        className={RenderedStepStyles["renderedstep-wrapper"]}
       >
         <div className={RenderedStepStyles["main-content"]}>
             <Editor

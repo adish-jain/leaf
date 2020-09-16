@@ -33,7 +33,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  
 }
 
 .NameWrapper:hover {
@@ -51,4 +50,74 @@
   border-style: none;
   background-color: gray;
   color: white;
+}
+
+.filename-wrapper {
+  padding: 4px;
+  background: #ffffff;
+  border: 1px solid #edece9;
+  box-sizing: border-box;
+  border-radius: 24px;
+  color: black;
+  font-size: 12px;
+  margin-right: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  position: relative;
+
+  label {
+    max-width: 80px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    display: block;
+    cursor: pointer;
+    transition: max-width 0.2s ease-in-out;
+  }
+}
+
+.filename-wrapper:hover {
+  transition: all 0.2s ease-in-out;
+  background: #349ae9;
+  color: white;
+}
+
+.filename-wrapper-selected {
+  @extend .filename-wrapper;
+  background-color: #349ae9;
+  color: white;
+  transition: all 0.2s ease-in-out;
+
+  label {
+    overflow: visible;
+    max-width: none;
+  }
+}
+
+.filename-wrapper-selected:hover {
+  @extend .filename-wrapper;
+  transition: all 0.2s ease-in-out;
+
+  label {
+    overflow: visible;
+    max-width: none;
+    // transition: max-width 0.2s ease-in-out;
+  }
+}
+
+.close-button {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  border-radius: 16px;
+  border: none;
+  height: 8px;
+  width: 8px;
+  line-height: 8px;
+  text-align: center;
+  outline: none;
+}
+
+.close-button:focus {
+  outline: none;
 }

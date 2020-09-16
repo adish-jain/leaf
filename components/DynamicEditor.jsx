@@ -156,22 +156,24 @@ export default class DynamicEditor extends Component {
               this.editor = element;
             }}
           />
-          <Toolbar>
-            {(externalProps) => (
-              <div>
-                <BoldButton {...externalProps} />
-                <ItalicButton {...externalProps} />
-                <UnderlineButton {...externalProps} />
-                <CodeButton {...externalProps} />
-                <Separator {...externalProps} />
-                <HeadlinesButton {...externalProps} />
-                <UnorderedListButton {...externalProps} />
-                <OrderedListButton {...externalProps} />
-                <BlockquoteButton {...externalProps} />
-                <CodeBlockButton {...externalProps} />
-              </div>
-            )}
-          </Toolbar>
+          <div className={EditorStyles['toolbar-wrapper']}>
+            <Toolbar>
+              {(externalProps) => (
+                <div>
+                  <BoldButton {...externalProps} />
+                  <ItalicButton {...externalProps} />
+                  <UnderlineButton {...externalProps} />
+                  <CodeButton {...externalProps} />
+                  <Separator {...externalProps} />
+                  <HeadlinesButton {...externalProps} />
+                  <UnorderedListButton {...externalProps} />
+                  <OrderedListButton {...externalProps} />
+                  <BlockquoteButton {...externalProps} />
+                  <CodeBlockButton {...externalProps} />
+                </div>
+              )}
+            </Toolbar>
+          </div>
         </div>
       </div>
     );

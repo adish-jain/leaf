@@ -8,6 +8,7 @@ import { getDraftDataFromPostId } from "../../lib/postUtils";
 import DefaultErrorPage from "next/error";
 import { useRouter } from "next/router";
 import ErroredPage from "../404";
+import { File, Step } from "../../typescript/types/app_types";
 
 export async function getStaticPaths() {
   return {
@@ -63,23 +64,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
   }
 };
 
-type StepType = {
-  text: string;
-  id: string;
-  fileName: string;
-  fileId: string;
-  lines: { start: number; end: number };
-};
-
-type File = {
-  id: string;
-  language: string;
-  code: string;
-  name: string;
-};
-
 type PostPageProps = {
-  steps: StepType[];
+  steps: Step[];
   title: string;
   errored: boolean;
   files: File[];

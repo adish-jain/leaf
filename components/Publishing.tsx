@@ -41,6 +41,8 @@ type PublishingProps = {
   files: File[];
   published: boolean;
   goToPublishedPost: () => void;
+  shouldShowBlock: boolean;
+  updateShowBlock: (shouldShowBlock: boolean) => void;
 };
 
 type PublishingState = {
@@ -208,13 +210,19 @@ export default class Publishing extends Component<
       mutateStoredStep,
       saveStepToBackend,
       deleteStoredStep,
+      shouldShowBlock,
+      updateShowBlock
     } = this.props;
 
-    function StoredSteps() {
-      return <div></div>;
-    }
+    let fullWidthStyle;
+    !shouldShowBlock
+      ? (fullWidthStyle = {
+          width: "880px",
+        })
+      : (fullWidthStyle = {});
+
     return (
-      <div className={publishingStyles.publishing}>
+      <div style={fullWidthStyle} className={publishingStyles.publishing}>
         {/* <this.PublishingButtons /> */}
         <this.PublishingHeader />
         {storedSteps.map((storedStep, index) => {
@@ -237,6 +245,7 @@ export default class Publishing extends Component<
               files={files}
               saveLines={saveLines}
               attachedFileId={storedStep.fileId}
+              updateShowBlock={updateShowBlock}
             />
           );
         })}

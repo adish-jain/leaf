@@ -5,23 +5,10 @@ import { useLoggedIn } from "../lib/UseLoggedIn";
 import Header, { HeaderUnAuthenticated } from "../components/Header";
 import PublishedCodeEditor from "./PublishedCodeEditor";
 const appStyles = require("../styles/App.module.scss");
-
-type StepType = {
-  text: string;
-  id: string;
-  lines: { start: number; end: number };
-  fileId: string;
-};
-
-type File = {
-  id: string;
-  language: string;
-  code: string;
-  name: string;
-};
+import { File, Step } from "../typescript/types/app_types";
 
 type FinishedPostProps = {
-  steps: StepType[];
+  steps: Step[];
   title: string;
   files: File[];
   username: string;

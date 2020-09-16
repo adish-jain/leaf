@@ -1,3 +1,5 @@
+@import "commonui";
+
 .FileBar {
   background: #3f4447;
   height: 3vh;
@@ -62,4 +64,39 @@
   border-left-style: solid;
   border-left-color: white;
   border-left-width: 1px;
+}
+
+.filebar {
+  // display: flex;
+  position: relative;
+  margin-top: 16px;
+  margin-bottom: 16px;
+  .new-file {
+    position: absolute;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.files {
+  display: flex;
+  overflow-x: scroll;
+}
+
+.files::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+  opacity: 0; /* make scrollbar transparent */
+  height: 0px;
+}
+
+.title-with-divider {
+  @include title-with-divider;
+}
+
+.filebar-wrapper {
+  button {
+    @include draft-button;
+  }
 }

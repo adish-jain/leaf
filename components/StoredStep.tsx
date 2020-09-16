@@ -30,6 +30,7 @@ type StoredStepProps = {
   saveLines: (fileName: string, remove: boolean) => void;
   files: File[];
   attachedFileId: string;
+  updateShowBlock: (shouldShowBlock: boolean) => void;
 };
 
 type StoredStepState = {
@@ -39,7 +40,7 @@ type StoredStepState = {
 
 // timer to make sure that content is saved 3 seconds after user stops typing
 let timer: ReturnType<typeof setTimeout>;
-const WAIT_INTERVAL = 3000;
+const WAIT_INTERVAL = 500;
 
 export default class StoredStep extends Component<
   StoredStepProps,
@@ -134,6 +135,7 @@ export default class StoredStep extends Component<
       attachedFileId,
       index,
       changeEditingStep,
+      updateShowBlock
     } = this.props;
     const contentState = convertFromRaw(this.props.text);
     const editorState = EditorState.createWithContent(contentState);
@@ -162,6 +164,7 @@ export default class StoredStep extends Component<
             immediateUpdate={this.immediateUpdate}
             loading={this.state.loading}
             changeEditingStep={changeEditingStep}
+            updateShowBlock={updateShowBlock}
           />
         ) : (
           <RenderedStoredStep
