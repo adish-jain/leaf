@@ -20,7 +20,6 @@ export default function About() {
     <div>
       <Head>
         <title>About</title>
-        <script src="https://unpkg.com/ionicons@5.1.2/dist/ionicons.js"></script>
         <script src="https://embed.typeform.com/embed.js"></script>
         <link rel="icon" href="/favicon.ico" />
       </Head>
