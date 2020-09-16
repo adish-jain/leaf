@@ -4,7 +4,7 @@ import LanguageBar from "./LanguageBar";
 import FileBar from "./FileBar";
 import ImageOptions from "./ImageOptions";
 import CodeEditorStyles from "../styles/CodeEditor.module.scss";
-
+import MonacoEditor from "./MonacoEditor";
 // import CodeMirror from './DynamicComponent';
 // const {CodeMirror} = require('./DynamicComponent');
 
@@ -14,7 +14,6 @@ const DynamicCodeEditor = dynamic(
     ssr: false,
   }
 );
-
 type File = {
   id: string;
   name: string;
@@ -100,8 +99,19 @@ export default class CodeEditor extends Component<
           saveFileName={saveFileName}
           onNameChange={onNameChange}
         />
-        <DynamicCodeEditor
+        {/* <DynamicCodeEditor
           // @ts-ignore
+          saveFileCode={saveFileCode}
+          draftCode={draftCode}
+          changeCode={changeCode}
+          language={language}
+          editing={editingStep !== -1}
+          changeLines={changeLines}
+          saveLines={saveLines}
+          lines={lines}
+          selectedFile={files[selectedFileIndex]}
+        /> */}
+        <MonacoEditor
           saveFileCode={saveFileCode}
           draftCode={draftCode}
           changeCode={changeCode}

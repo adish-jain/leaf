@@ -25,14 +25,14 @@ export default function FileName(props: FileNameProps) {
   // }
 
   function renderButton() {
-    if (hovered) {
+    if (hovered && props.selected) {
       return (
-        <button
+        <div
           className={fileNamesStyle["close-button"]}
           onClick={(e) => props.removeFile(props.index)}
         >
           x
-        </button>
+        </div>
       );
     } else {
       return <div></div>;

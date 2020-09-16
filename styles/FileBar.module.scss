@@ -1,21 +1,5 @@
 @import "commonui";
 
-.FileBar {
-  background: #3f4447;
-  height: 3vh;
-  border: 1px solid #4c5153;
-  border-radius: 8px 8px 0px 0px;
-  flex-direction: row;
-  display: flex;
-  overflow-x: scroll;
-  overflow-y: hidden;
-  padding-top: 12px;
-  padding-bottom: 12px;
-  // padding-right: 16px;
-  align-items: center;
-  // padding: 8px;
-}
-
 .add-new-file-btn {
   margin-left: 8px;
   min-width: 94px;
@@ -73,7 +57,8 @@
   margin-bottom: 16px;
   .new-file {
     position: absolute;
-    right: 8px;
+    right: 0px;
+    top: 0px;
     width: 24px;
     height: 24px;
   }
@@ -82,6 +67,7 @@
 .files {
   display: flex;
   overflow-x: scroll;
+  margin-right: 40px;
 }
 
 .files::-webkit-scrollbar {
@@ -99,4 +85,12 @@
   button {
     @include draft-button;
   }
+}
+
+.scrollbar {
+  // width: 100%;
+  height: 2px;
+  background-color: #349ae9;
+  position: relative;
+  margin-top: 8px;
 }
