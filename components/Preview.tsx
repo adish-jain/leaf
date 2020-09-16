@@ -1,16 +1,19 @@
 import React, { useState, Component } from "react";
 const fetch = require("node-fetch");
 const previewStyles = require('../styles/Preview.module.scss');
-let selectedFile: any;
+let selectedImage: any;
 
 type PreviewProps = {
-    draftId: any;
+    draftId: string;
     steps: any;
-    editingStep: any;
+    editingStep: number;
+    addStepImage: (image: any, draftId: string, stepId: string) => void;
+    deleteStepImage: (draftId: string, stepId: string) => void;
 };
 
 type PreviewState = {
     upload: boolean;
+    uploadFailed: boolean;
 };
 
 export default class Preview extends Component<PreviewProps, PreviewState> {
@@ -18,81 +21,129 @@ export default class Preview extends Component<PreviewProps, PreviewState> {
         super(props);
         this.state = {
             upload: false,
+            uploadFailed: false,
         };
-        this.handleFileUpload = this.handleFileUpload.bind(this);
-        this.handleFileSelect = this.handleFileSelect.bind(this);
-        this.handleFileSubmit = this.handleFileSubmit.bind(this);
+        this.handleImageUpload = this.handleImageUpload.bind(this);
+        this.handleImageSelect = this.handleImageSelect.bind(this);
+        this.handleImageSubmit = this.handleImageSubmit.bind(this);
+        this.handleImageDelete = this.handleImageDelete.bind(this);
     }
     
-    handleFileUpload(e: any) {
-        selectedFile = e.target.files[0];
+    handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+        selectedImage = e.target.files![0];
         this.setState({ upload: true });
-        console.log(selectedFile);
+        this.setState({ uploadFailed: false });
     }
 
-    handleFileSelect(e: any) {
+    handleImageSelect() {
+        this.setState({ upload: false });
+        this.setState({ uploadFailed: false });
+    }
+    
+    async handleImageSubmit() {
+        // 5 MB max on image uploads
+        if (selectedImage.size > 5000000) {
+            this.setState({ uploadFailed: true });
+        } else {
+            // optimistic mutate
+            var url = URL.createObjectURL(selectedImage);
+            this.props.steps[this.props.editingStep].imageURL = url;
+            this.setState({ upload: false });
+
+            let stepId = this.props.steps[this.props.editingStep].id;
+            await this.props.addStepImage(selectedImage, this.props.draftId, stepId);
+            // this.setState({ upload: false });
+        }
+    }
+
+    async handleImageDelete() {
+        let stepId = this.props.steps[this.props.editingStep].id;
+        this.props.deleteStepImage(this.props.draftId, stepId);
         this.setState({ upload: false });
     }
-    
-    async handleFileSubmit(e: any) {
-        // console.log(selectedFile);
-    
-        const toBase64 = (file: any) => new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = error => reject(error);
-        });
-    
-        let stepId = this.props.steps[this.props.editingStep].id
 
-        let data = {
-            requestedAPI: "saveImage",
-            draftId: this.props.draftId,
-            stepId: stepId,
-            imageFile: await toBase64(selectedFile),
-        };
-    
-        // console.log(JSON.stringify(data));
-    
-        await fetch("/api/endpoint", {
-            method: "POST",
-            headers: new Headers({ "Content-Type": "application/json" }),
-            body: JSON.stringify(data),
-            }).then(async (res: any) => {
-        });
+    ImageScreen(props: {
+        steps: any;
+        editingStep: number;
+        handleImageDelete: () => void;
+      }) {
+        return (
+            (<div className={previewStyles.imgView}> 
+                <div className={previewStyles.remove} onClick={(e) => props.handleImageDelete()}>X</div>
+                <img src={props.steps[props.editingStep].imageURL}></img>
+            </div>
+            )
+        );
+      }
+
+    UploadScreen(props: {
+        handleImageUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    }) {
+        return (
+            (<div className={previewStyles.preview}> 
+                <label className={previewStyles.previewButtons}>
+                    Upload File 
+                    <input 
+                        type="file" 
+                        id="myFile" 
+                        name="filename" 
+                        accept="image/*" 
+                        onChange={(e) => props.handleImageUpload(e)}
+                    />
+                </label>
+            </div>
+            )
+        );
+    }
+
+    SelectScreen(props: {
+        handleImageSelect: () => void;
+        handleImageSubmit: () => void;
+        uploadFailed: boolean;
+    }) {
+        return (
+            (<div className={previewStyles.preview}>
+                <div className={previewStyles.submit}>
+                    <p>
+                        Selected {selectedImage.name} 
+                    </p>
+                    <div className={previewStyles.submitButtons}>
+                        <button onClick={(e) => props.handleImageSelect()}>
+                            Go Back
+                        </button>
+                        <button onClick={(e) => props.handleImageSubmit()}>
+                            Submit
+                        </button>
+                    </div>
+                    {props.uploadFailed ? <div><br></br>Image size is too big! Select an image size up to 5mb.</div> : <div></div>}
+                </div>
+            </div>
+            )
+        );
     }
 
     render() {
         return (
-            <div className={previewStyles.preview}>
+            <div>
                 { !this.state.upload ? 
-                    (<div> 
-                        <label className={previewStyles.previewButtons}>
-                            Upload File 
-                            <input 
-                                type="file" 
-                                id="myFile" 
-                                name="filename" 
-                                accept="image/*" 
-                                onChange={(e) => this.handleFileUpload(e)}
-                            />
-                        </label>
-                    </div>)
+                    // Image is in display or the upload option is available
+                    (this.props.steps[this.props.editingStep]?.imageURL !== undefined ? 
+                        // Image is in display
+                        <this.ImageScreen 
+                            steps={this.props.steps} 
+                            editingStep={this.props.editingStep}
+                            handleImageDelete={this.handleImageDelete}/>
+                        :
+                        // Upload screen is in display
+                        <this.UploadScreen handleImageUpload={this.handleImageUpload}/>
+                    )
                     : 
-                    (<div className={previewStyles.submit}>
-                        <p>
-                            Selected {selectedFile.name} 
-                        </p>
-                        <div className={previewStyles.submitButtons}>
-                            <button onClick={(e) => this.handleFileSelect(e)}>
-                                Go Back
-                            </button>
-                            <button onClick={(e) => this.handleFileSubmit(e)}>
-                                Submit
-                            </button>
-                        </div>
-                    </div>)
+                    // Image has been selected, and "Go Back" & "Submit" options are available
+                    // If selected file size was too big, error is displayed
+                    <this.SelectScreen 
+                        handleImageSelect={this.handleImageSelect} 
+                        handleImageSubmit={this.handleImageSubmit}
+                        uploadFailed={this.state.uploadFailed}/>
                 }
             </div>
         );

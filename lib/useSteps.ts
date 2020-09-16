@@ -11,6 +11,7 @@ type Step = {
   lines?: { start: number; end: number };
   text: any;
   fileId?: string;
+  imageURL?: string;
 };
 
 export function useSteps(draftId: string, authenticated: boolean) {
@@ -356,6 +357,61 @@ export function useSteps(draftId: string, authenticated: boolean) {
     });
   }
 
+  async function addStepImage(selectedImage: any, draftId: string, stepId: string) {
+      const toBase64 = (file: any) => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
+
+    let data = {
+        requestedAPI: "saveImage",
+        draftId: draftId,
+        stepId: stepId,
+        imageFile: await toBase64(selectedImage),
+    };
+
+
+    await fetch("/api/endpoint", {
+        method: "POST",
+        headers: new Headers({
+          "Content-Type": "application/json"
+       }),
+        body: JSON.stringify(data),
+        }).then(async (res: any) => {
+          let resJSON = await res.json();
+          let url = resJSON.url;
+          
+          let optimisticSteps = storedSteps!.slice();
+          optimisticSteps[editingStep].imageURL = url;
+          mutate(optimisticSteps, false);
+        }).catch((error: any) => {
+          console.log(error);
+          console.log("upload failed.");
+        });
+  }
+
+  async function deleteStepImage(draftId: string, stepId: string) {
+    let data = {
+      requestedAPI: "deleteImage",
+      draftId: draftId,
+      stepId: stepId,
+    };
+
+    //optimistic mutate
+    let optimisticSteps = storedSteps!.slice();
+    optimisticSteps[editingStep].imageURL = undefined;
+    mutate(optimisticSteps, false);
+
+    await fetch("/api/endpoint", {
+        method: "POST",
+        headers: new Headers({ "Content-Type": "application/json" }),
+        body: JSON.stringify(data),
+        }).then(async (res: any) => {
+    });
+  }
+
   return {
     saveStep,
     mutateStoredStep,
@@ -371,5 +427,7 @@ export function useSteps(draftId: string, authenticated: boolean) {
     saveLines,
     removeLines,
     renameStepFileName,
+    addStepImage,
+    deleteStepImage,
   };
 }

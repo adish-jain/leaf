@@ -79,6 +79,7 @@ const DraftView = () => {
     authenticated
   );
 
+
   let {
     saveStep,
     mutateStoredStep,
@@ -93,6 +94,8 @@ const DraftView = () => {
     changeLines,
     saveLines,
     removeLines,
+    addStepImage,
+    deleteStepImage
   } = useSteps(draftId as string, authenticated);
 
   let {
@@ -182,9 +185,11 @@ const DraftView = () => {
             <div className={appStyles.RightPane}>
               {editingStep !== -1 ? 
                 (<Preview 
-                  draftId={draftId}
+                  draftId={draftId as string}
                   steps={realSteps}
                   editingStep={editingStep}
+                  addStepImage={addStepImage}
+                  deleteStepImage={deleteStepImage}
                 />) :
                 (<div></div>)
               } 
