@@ -11,6 +11,7 @@ type StepType = {
   id: string;
   lines: { start: number; end: number };
   fileId: string;
+  imageURL: string;
 };
 
 type File = {
@@ -52,6 +53,7 @@ const FinishedPost = (props: FinishedPostProps) => {
           }
         }
         updateStep(stepIndex);
+        console.log(props.steps[stepIndex]);
 
         // this is the first step in view, so we break
         break;
@@ -72,12 +74,15 @@ const FinishedPost = (props: FinishedPostProps) => {
         changeStep={changeStep}
         steps={props.steps}
       />
-      <PublishedCodeEditor
-        currentFile={props.files[currentFileIndex]}
-        files={props.files}
-        currentStep={props.steps[currentStepIndex]}
-        updateFile={updateFile}
-      />
+      <div className={appStyles.RightPane}>
+        <img src={props.steps[currentStepIndex].imageURL} />
+        <PublishedCodeEditor
+          currentFile={props.files[currentFileIndex]}
+          files={props.files}
+          currentStep={props.steps[currentStepIndex]}
+          updateFile={updateFile}
+        />
+      </div>
     </div>
   );
 };

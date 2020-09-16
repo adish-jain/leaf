@@ -134,3 +134,13 @@
     margin-right: 16px;
   }
 }
+
+.RightPane {
+  display: flex;
+  flex-direction: column;
+
+  img {
+    max-width: 200px;
+    height: auto;
+  }
+}
