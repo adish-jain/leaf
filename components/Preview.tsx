@@ -1,4 +1,4 @@
-import React, { useState, Component } from "react";
+import React, { useEffect, Component } from "react";
 const fetch = require("node-fetch");
 const previewStyles = require('../styles/Preview.module.scss');
 let selectedImage: any;
@@ -28,6 +28,13 @@ export default class Preview extends Component<PreviewProps, PreviewState> {
         this.handleImageSubmit = this.handleImageSubmit.bind(this);
         this.handleImageDelete = this.handleImageDelete.bind(this);
     }
+
+    componentDidUpdate(nextProps: any) {
+        const currStep  = this.props.editingStep;
+        if (nextProps.editingStep !== currStep) {
+            this.setState({ upload: false });
+        }
+       }
     
     handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
         selectedImage = e.target.files![0];
