@@ -394,15 +394,15 @@ export function useSteps(draftId: string, authenticated: boolean) {
 
   async function deleteStepImage(draftId: string, stepId: string) {
     let data = {
-      requestedAPI: "deleteImage",
+      requestedAPI: "getImages",
       draftId: draftId,
-      stepId: stepId,
+      // stepId: stepId,
     };
 
     //optimistic mutate
-    let optimisticSteps = storedSteps!.slice();
-    optimisticSteps[editingStep].imageURL = undefined;
-    mutate(optimisticSteps, false);
+    // let optimisticSteps = storedSteps!.slice();
+    // optimisticSteps[editingStep].imageURL = undefined;
+    // mutate(optimisticSteps, false);
 
     await fetch("/api/endpoint", {
         method: "POST",

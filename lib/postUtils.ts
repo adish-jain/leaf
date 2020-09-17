@@ -93,6 +93,37 @@ export async function getUserStepsForDraft(uid: string, draftId: string) {
     });
 }
 
+export async function getDraftImages(uid: string, draftId: string) {
+  let stepsRef = db
+    .collection("users")
+    .doc(uid)
+    .collection("drafts")
+    .doc(draftId)
+    .collection("steps")
+    .orderBy("order");
+
+  return await stepsRef
+    .get()
+    .then(function (stepsCollection: any) {
+      let results: any[] = [];
+      stepsCollection.forEach(function (result: any) {
+        let resultsJSON = result.data();
+        if (resultsJSON.imageURL !== undefined) {
+          resultsJSON.id = result.id;
+          results.push({
+            id: resultsJSON.id,
+            imageURL: resultsJSON.imageURL,
+          });
+        }
+      });
+      return results;
+    })
+    .catch(function (error: any) {
+      console.log(error);
+      return [];
+    });
+}
+
 export async function getDraftDataFromPostId(username: string, postId: string) {
   let uid = await getUidFromUsername(username);
   let draftId = await db

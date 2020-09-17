@@ -54,6 +54,7 @@ import handleSaveFileName from "../../lib/api/saveFileName";
 // images
 import handleSaveImage from "../../lib/api/saveImage";
 import handleDeleteImage from "../../lib/api/deleteImage";
+import handleGetImages from "../../lib/api/getDraftImages";
 
 // email
 import handlePasswordReset from "../../lib/api/passwordReset";
@@ -238,6 +239,10 @@ export default sentryHandler(
 
       case "deleteImage": {
         return handleDeleteImage(req, res);
+      }
+
+      case "getImages": {
+        return handleGetImages(req, res);
       }
 
       default: 
