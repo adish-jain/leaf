@@ -34,7 +34,7 @@ export default class Preview extends Component<PreviewProps, PreviewState> {
         if (nextProps.editingStep !== currStep) {
             this.setState({ upload: false });
         }
-       }
+    }
     
     handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
         selectedImage = e.target.files![0];
