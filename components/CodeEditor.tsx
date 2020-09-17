@@ -29,7 +29,7 @@ type Line = {
 
 type CodeEditorProps = {
   draftId: string;
-  saveFileCode: (fileName: string) => void;
+  saveFileCode: () => void;
   editingStep: number;
   changeFileLanguage: (language: string, external: boolean) => void;
   saveFileName: (value: string, external: boolean) => void;
