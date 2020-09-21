@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import DraftEditor, { Editor } from "draft-js";
-const RenderedStepStyles = require("../styles/RenderedStep.module.scss");
+import "../styles/renderedstep.scss";
 
 type RenderedStoredStepProps = {
   changeEditingStep: (editingStep: number) => void;
@@ -63,13 +63,13 @@ export default class Step extends Component<
 
     if (lines === undefined || lines === null) {
       return (
-        <div className={RenderedStepStyles["none-selected"]}>
+        <div className={"none-selected"}>
           No lines of code are associated with this step.
         </div>
       );
     } else {
       return (
-        <div className={RenderedStepStyles["none-selected"]}>
+        <div className={"none-selected"}>
           <style jsx>{`
             color: white;
             background-color: #37abda;
@@ -86,19 +86,19 @@ export default class Step extends Component<
     return (
       <div
         onClick={(e) => changeEditingStep(index)}
-        className={RenderedStepStyles["renderedstep-wrapper"]}
+        className={"renderedstep-wrapper"}
       >
-        <div className={RenderedStepStyles["main-content"]}>
-            <Editor
-              editorState={this.props.editorState}
-              readOnly={true}
-              onChange={(e) => null}
-            />
+        <div className={"main-content"}>
+          <Editor
+            editorState={this.props.editorState}
+            readOnly={true}
+            onChange={(e) => null}
+          />
         </div>
-        <label className={RenderedStepStyles["block-status"]}>
+        <label className={"block-status"}>
           Code Editor. No lines selected.
         </label>
-        <div className={RenderedStepStyles["divider"]}></div>
+        <div className={"divider"}></div>
       </div>
     );
   }

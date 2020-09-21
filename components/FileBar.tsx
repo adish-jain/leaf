@@ -1,6 +1,6 @@
 import React, { Component, useEffect, useRef, useState } from "react";
 import FileName from "./FileName";
-const fileBarStyles = require("../styles/FileBar.module.scss");
+import "../styles/filebar.scss";
 
 type File = {
   id: string;
@@ -60,12 +60,8 @@ export default class FileBar extends Component<FileBarProps> {
     } = this.props;
 
     return (
-      <div className={fileBarStyles["filebar"]}>
-        <div
-          ref={FileBarRef}
-          onScroll={handleScroll}
-          className={fileBarStyles["files"]}
-        >
+      <div className={"filebar"}>
+        <div ref={FileBarRef} onScroll={handleScroll} className={"files"}>
           {files.map((file, index) => (
             <FileName
               name={file.name}
@@ -80,10 +76,7 @@ export default class FileBar extends Component<FileBarProps> {
           ))}
         </div>
         <Scrollbar scrollPos={scrollOffset} scrollBarWidth={scrollBarWidth} />
-        <button
-          className={fileBarStyles["new-file"]}
-          onClick={(e) => addFile()}
-        >
+        <button className={"new-file"} onClick={(e) => addFile()}>
           +
         </button>
       </div>
@@ -103,8 +96,8 @@ export default class FileBar extends Component<FileBarProps> {
     } = this.props;
 
     return (
-      <div className={fileBarStyles["filebar-wrapper"]}>
-        <div className={fileBarStyles["title-with-divider"]}>
+      <div className={"filebar-wrapper"}>
+        <div className={"title-with-divider"}>
           <label>files</label>
           <div></div>
         </div>
@@ -120,11 +113,5 @@ function Scrollbar(props: { scrollPos: number; scrollBarWidth: number }) {
     width: props.scrollBarWidth + "px",
     left: props.scrollPos + "px",
   };
-  return (
-    <div
-      style={style}
-      ref={scrollBarRef}
-      className={fileBarStyles["scrollbar"]}
-    ></div>
-  );
+  return <div style={style} ref={scrollBarRef} className={"scrollbar"}></div>;
 }

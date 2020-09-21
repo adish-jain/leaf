@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 import LanguageBar from "./LanguageBar";
 import FileBar from "./FileBar";
 import ImageOptions from "./ImageOptions";
-import CodeEditorStyles from "../styles/CodeEditor.module.scss";
+import "../styles/codeeditor.scss";
 import MonacoEditor from "./MonacoEditor";
 // import CodeMirror from './DynamicComponent';
 // const {CodeMirror} = require('./DynamicComponent');
@@ -87,7 +87,7 @@ export default class CodeEditor extends Component<
     }
 
     return (
-      <div className={CodeEditorStyles["CodeEditor"]}>
+      <div className={"CodeEditor"}>
         <ImageOptions />
         <FileBar
           draftId={draftId}

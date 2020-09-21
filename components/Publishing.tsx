@@ -5,7 +5,7 @@ import StoredStep from "./StoredStep";
 const fetch = require("node-fetch");
 global.Headers = fetch.Headers;
 import Router from "next/router";
-const publishingStyles = require("../styles/Publishing.module.scss");
+import "../styles/publishing.scss";
 
 var shortId = require("shortid");
 
@@ -149,26 +149,20 @@ export default class Publishing extends Component<
 
   PublishingButtons = () => {
     return (
-      <div className={publishingStyles.PublishingButtonsWrapper}>
-        <div className={publishingStyles.publishingButtons}>
-          <button
-            onClick={this.previewDraft}
-            className={publishingStyles.preview}
-          >
+      <div className={"PublishingButtonsWrapper"}>
+        <div className={"publishingButtons"}>
+          <button onClick={this.previewDraft} className={"preview"}>
             {this.state.previewLoading ? "Loading Preview..." : "Preview"}
           </button>
           {this.props.published ? (
             <button
               onClick={(e) => this.props.goToPublishedPost()}
-              className={publishingStyles.publish}
+              className={"publish"}
             >
               Go to Published Post
             </button>
           ) : (
-            <button
-              onClick={this.publishDraft}
-              className={publishingStyles.publish}
-            >
+            <button onClick={this.publishDraft} className={"publish"}>
               Publish
             </button>
           )}
@@ -179,7 +173,7 @@ export default class Publishing extends Component<
 
   PublishingHeader = () => {
     return (
-      <div className={publishingStyles.header}>
+      <div className={"header"}>
         <TextareaAutosize
           placeholder={this.props.title}
           value={this.props.title}
@@ -211,7 +205,7 @@ export default class Publishing extends Component<
       saveStepToBackend,
       deleteStoredStep,
       shouldShowBlock,
-      updateShowBlock
+      updateShowBlock,
     } = this.props;
 
     let fullWidthStyle;
@@ -222,7 +216,7 @@ export default class Publishing extends Component<
       : (fullWidthStyle = {});
 
     return (
-      <div style={fullWidthStyle} className={publishingStyles.publishing}>
+      <div style={fullWidthStyle} className={'publishing'}>
         {/* <this.PublishingButtons /> */}
         <this.PublishingHeader />
         {storedSteps.map((storedStep, index) => {

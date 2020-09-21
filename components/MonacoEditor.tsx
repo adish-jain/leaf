@@ -1,19 +1,11 @@
-import { monaco, ControlledEditorOnChange } from "@monaco-editor/react";
-// import monacoEditor from "@monaco-editor/react";
-import * as monacoEditor from "monaco-editor/esm/vs/editor/editor.api";
-import { ControlledEditor } from "@monaco-editor/react";
+// import * as monacoEditor from "monaco-editor/esm/vs/editor/editor.api";
+// import { ControlledEditor, monaco } from "@monaco-editor/react";
 import { Component, createRef } from "react";
 import { File, Step } from "../typescript/types/app_types";
 import dynamic from "next/dynamic";
 import CodeEditor from "./CodeEditor";
-import CodeEditorStyles from "../styles/CodeEditor.module.scss";
-// const ControlledEditor = dynamic(
-//   () =>
-//     import("@monaco-editor/react").then((mod) => mod.ControlledEditor) as any,
-//   {
-//     ssr: false,
-//   }
-// );
+import "../styles/codeeditor.scss";
+const MonacoEditor = dynamic(import("react-monaco-editor"), { ssr: false });
 
 type Line = {
   lineNumber: number;
@@ -42,7 +34,7 @@ type MonacoEditorProps = {
   selectedFile: File;
 };
 
-export default class MonacoEditor extends Component<
+export default class MonacoEditorWrapper extends Component<
   MonacoEditorProps,
   MonacoEditorState
 > {
@@ -84,6 +76,23 @@ export default class MonacoEditor extends Component<
 
     this.monacoInstance.current!.onDidChangeCursorSelection((e) =>
       this.handleCursor(e)
+    );
+
+    var decorations = editor.deltaDecorations(
+      [],
+      [
+        {
+          range: new monacoEditor.Range(3, 1, 5, 1),
+          options: {
+            isWholeLine: true,
+            linesDecorationsClassName: null,
+          },
+        },
+        {
+          range: new monacoEditor.Range(7, 1, 7, 24),
+          options: { inlineClassName: null },
+        },
+      ]
     );
   }
 
@@ -159,22 +168,26 @@ export default class MonacoEditor extends Component<
     let { draftCode, language } = this.props;
 
     return (
-      <div>
-        <style jsx>{`
-          flex-grow: 100;
-          // overflow-y: scroll;
-          position: relative;
-          background-color: #263238;
-          font-size: 12px;
-          height: 0px;
-        `}</style>
-        <this.LineModal />
-        <ControlledEditor
-          value={draftCode}
-          onChange={this.handleChange}
-          editorDidMount={this.mountEditor}
-        />
-      </div>
+      <MonacoEditor
+        height={"100%"}
+        language="typescript"
+        theme="monakai"
+        value={draftCode}
+        onChange={console.log}
+        options={{
+          selectOnLineNumbers: true,
+        }}
+        editorDidMount={() => {
+          window.MonacoEnvironment.getWorkerUrl = (moduleId, label) => {
+            if (label === "json") return "/_next/static/json.worker.js";
+            if (label === "css") return "/_next/static/css.worker.js";
+            if (label === "html") return "/_next/static/html.worker.js";
+            if (label === "typescript" || label === "javascript")
+              return "/_next/static/ts.worker.js";
+            return "/_next/static/editor.worker.js";
+          };
+        }}
+      />
     );
   }
 }

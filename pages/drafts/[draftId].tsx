@@ -16,7 +16,8 @@ const fetch = require("node-fetch");
 
 global.Headers = fetch.Headers;
 
-const appStyles = require("../../styles/App.module.scss");
+// const appStyles = require("../../styles/App.module.scss");
+import "../../styles/app.scss";
 
 type File = {
   id: string;
@@ -129,7 +130,7 @@ const DraftView = () => {
   return (
     <div className="container">
       <Head>
-        <title>{draftTitle}</title>
+        <title>{"test"}</title>
         <link rel="icon" href="/favicon.ico" />
         <script
           dangerouslySetInnerHTML={{
@@ -146,7 +147,7 @@ const DraftView = () => {
           }}
         />
       </Head>
-      <main className={appStyles.AppWrapper}>
+      <main className={'AppWrapper'}>
         {/* <Header
           username={username}
           logout={false}
@@ -160,8 +161,8 @@ const DraftView = () => {
         {errored ? (
           <DefaultErrorPage statusCode={404} />
         ) : (
-          <div className={appStyles.App}>
-            <div className={appStyles["center-divs"]}>
+          <div className={'App'}>
+            <div className={"center-divs"}>
               <Publishing
                 draftId={draftId}
                 title={draftTitle}
@@ -184,7 +185,7 @@ const DraftView = () => {
                 shouldShowBlock={shouldShowBlock}
                 updateShowBlock={updateShowBlock}
               />
-              <div className={appStyles.RightPane}>
+              <div className={'RightPane'}>
                 {/* {editingStep !== -1 ? (
                   <ImageView
                     draftId={draftId}

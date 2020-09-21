@@ -3,7 +3,7 @@ import { mutate } from "swr";
 import { EditorState, convertFromRaw } from "draft-js";
 import EditingStoredStep from "./EditingStoredStep";
 import RenderedStoredStep from "./RenderedStoredStep";
-const StepStyles = require("../styles/Step.module.scss");
+import "../styles/step.scss";
 const fetch = require("node-fetch");
 
 type File = {
@@ -120,7 +120,7 @@ export default class StoredStep extends Component<
 
   OptionsBar = () => {
     return (
-      <div className={StepStyles["options-bar"]}>
+      <div className={"options-bar"}>
         <button>X</button>
         <button>Move up</button>
         <button>Move down</button>
@@ -135,7 +135,7 @@ export default class StoredStep extends Component<
       attachedFileId,
       index,
       changeEditingStep,
-      updateShowBlock
+      updateShowBlock,
     } = this.props;
     const contentState = convertFromRaw(this.props.text);
     const editorState = EditorState.createWithContent(contentState);
@@ -150,7 +150,7 @@ export default class StoredStep extends Component<
 
     return (
       <div
-        className={StepStyles["step-wrapper"]}
+        className={"step-wrapper"}
         onMouseEnter={(e) => this.setState({ hovered: true })}
         onMouseLeave={(e) => this.setState({ hovered: false })}
       >

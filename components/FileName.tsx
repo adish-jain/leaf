@@ -1,5 +1,5 @@
 import React, { Component, ReactElement, useState } from "react";
-const fileNamesStyle = require("../styles/FileNames.module.scss");
+import "../styles/filenames.scss";
 
 type FileNameProps = {
   selected: boolean;
@@ -28,7 +28,7 @@ export default function FileName(props: FileNameProps) {
     if (hovered && props.selected) {
       return (
         <div
-          className={fileNamesStyle["close-button"]}
+          className={"close-button"}
           onClick={(e) => props.removeFile(props.index)}
         >
           x
@@ -54,7 +54,7 @@ export default function FileName(props: FileNameProps) {
       onMouseEnter={(e) => toggleHover(true)}
       onMouseLeave={(e) => toggleHover(false)}
       // style={style}
-      className={fileNamesStyle[wrapperClass]}
+      className={wrapperClass}
     >
       <div
         onClick={(e) => {
@@ -66,7 +66,7 @@ export default function FileName(props: FileNameProps) {
       >
         {editing ? (
           <input
-            className={fileNamesStyle["filenames"]}
+            className={"filenames"}
             defaultValue={props.name}
             onChange={(e) => props.onNameChange(e.target.value)}
             onBlur={saveFileName}

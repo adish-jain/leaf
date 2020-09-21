@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Controlled as CodeMirror2 } from "react-codemirror2";
-import CodeEditorStyles from "../styles/CodeEditor.module.scss";
+// import CodeEditorStyles from "../styles/CodeEditor.module.scss";
 
 import "codemirror/addon/edit/matchbrackets.js";
 import "codemirror/addon/edit/closebrackets.js";
