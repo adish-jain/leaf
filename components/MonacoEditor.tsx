@@ -1,4 +1,4 @@
-// import * as monacoEditor from "monaco-editor/esm/vs/editor/editor.api";
+// await import("monaco-editor/esm/vs/editor/editor.api");
 // import { ControlledEditor, monaco } from "@monaco-editor/react";
 import { Component, createRef } from "react";
 import { File, Step } from "../typescript/types/app_types";
@@ -6,6 +6,9 @@ import dynamic from "next/dynamic";
 import CodeEditor from "./CodeEditor";
 import "../styles/codeeditor.scss";
 const MonacoEditor = dynamic(import("react-monaco-editor"), { ssr: false });
+// import { editor, Range } from "monaco-editor";
+// import Range from "react-monaco-editor";
+// const monacoTypes = import("monaco-editor");
 
 type Line = {
   lineNumber: number;
@@ -38,9 +41,8 @@ export default class MonacoEditorWrapper extends Component<
   MonacoEditorProps,
   MonacoEditorState
 > {
-  private monacoInstance = createRef<
-    monacoEditor.editor.IStandaloneCodeEditor
-  >();
+  private monacoInstance = createRef<any>();
+  private monacoTypesWrapper: any;
 
   constructor(props: MonacoEditorProps) {
     super(props);
@@ -55,52 +57,29 @@ export default class MonacoEditorWrapper extends Component<
     this.saveLines = this.saveLines.bind(this);
   }
 
-  handleChange(
-    ev: monacoEditor.editor.IModelContentChangedEvent,
-    value: string | undefined
-  ) {
+  handleChange(ev: any, value: string | undefined) {
     this.props.changeCode(value!);
   }
 
-  mountEditor(
-    getEditorValue: () => string,
-    editor: monacoEditor.editor.IStandaloneCodeEditor
-  ) {
-    (this.monacoInstance as React.MutableRefObject<
-      monacoEditor.editor.IStandaloneCodeEditor
-    >).current = editor;
+  mountEditor(editor: any, monaco: any) {
+    (this.monacoInstance as React.MutableRefObject<any>).current = editor;
 
     this.monacoInstance.current!.onDidBlurEditorText(() => {
       this.handleBlur();
     });
 
     this.monacoInstance.current!.onDidChangeCursorSelection((e) =>
-      this.handleCursor(e)
+      this.handleCursor(e, monaco)
     );
 
-    var decorations = editor.deltaDecorations(
-      [],
-      [
-        {
-          range: new monacoEditor.Range(3, 1, 5, 1),
-          options: {
-            isWholeLine: true,
-            linesDecorationsClassName: null,
-          },
-        },
-        {
-          range: new monacoEditor.Range(7, 1, 7, 24),
-          options: { inlineClassName: null },
-        },
-      ]
-    );
+    this.monacoTypesWrapper = monaco;
   }
 
   handleBlur() {
     this.props.saveFileCode();
   }
 
-  handleCursor(e: monacoEditor.editor.ICursorSelectionChangedEvent) {
+  handleCursor(e: any) {
     let newSelection = e.selection;
     console.log(newSelection);
     let { changeLines } = this.props;
@@ -134,6 +113,30 @@ export default class MonacoEditorWrapper extends Component<
       start: { lineNumber: startLineNumber, char: startColumn },
       end: { lineNumber: endLineNumber, char: endColumn },
     });
+
+    // let oldDecorations = this.monacoInstance.current!.deltaDecorations([], [
+    //   { range: new this.monacoTypesWrapper.Range(1, 1, 1, 1), options: {} },
+    // ]);
+
+    var elems = document.querySelectorAll(".myLineDecoration");
+    [].forEach.call(elems, function (el: any) {
+      el.classList.remove("myLineDecoration");
+    });
+
+    let decorations = this.monacoInstance.current!.deltaDecorations(
+      [],
+      [
+        {
+          range: new this.monacoTypesWrapper.Range(
+            startLineNumber,
+            startColumn,
+            endLineNumber,
+            endColumn
+          ),
+          options: { isWholeLine: true, inlineClassName: "myLineDecoration" },
+        },
+      ]
+    );
     this.setState({
       showModal: false,
     });
@@ -147,8 +150,8 @@ export default class MonacoEditorWrapper extends Component<
 
     if (this.state.showModal) {
       return (
-        <div className={CodeEditorStyles["line-modal"]}>
-          <div className={CodeEditorStyles["adjusted"]}>
+        <div className={"line-modal"}>
+          <div className={"adjusted"}>
             <p>
               Highlight lines {start.lineNumber} to {end.lineNumber}?
             </p>
@@ -168,26 +171,38 @@ export default class MonacoEditorWrapper extends Component<
     let { draftCode, language } = this.props;
 
     return (
-      <MonacoEditor
-        height={"100%"}
-        language="typescript"
-        theme="monakai"
-        value={draftCode}
-        onChange={console.log}
-        options={{
-          selectOnLineNumbers: true,
-        }}
-        editorDidMount={() => {
-          window.MonacoEnvironment.getWorkerUrl = (moduleId, label) => {
-            if (label === "json") return "/_next/static/json.worker.js";
-            if (label === "css") return "/_next/static/css.worker.js";
-            if (label === "html") return "/_next/static/html.worker.js";
-            if (label === "typescript" || label === "javascript")
-              return "/_next/static/ts.worker.js";
-            return "/_next/static/editor.worker.js";
-          };
-        }}
-      />
+      <div>
+        <style jsx>{`
+          flex-grow: 100;
+          // overflow-y: scroll;
+          position: relative;
+          background-color: #263238;
+          font-size: 12px;
+          height: 0px;
+        `}</style>
+        <this.LineModal />
+        <MonacoEditor
+          height={"100%"}
+          language="typescript"
+          theme="monakai"
+          value={draftCode}
+          onChange={console.log}
+          options={{
+            selectOnLineNumbers: true,
+          }}
+          editorDidMount={(editor, monaco) => {
+            this.mountEditor(editor, monaco);
+            window.MonacoEnvironment.getWorkerUrl = (moduleId, label) => {
+              if (label === "json") return "/_next/static/json.worker.js";
+              if (label === "css") return "/_next/static/css.worker.js";
+              if (label === "html") return "/_next/static/html.worker.js";
+              if (label === "typescript" || label === "javascript")
+                return "/_next/static/ts.worker.js";
+              return "/_next/static/editor.worker.js";
+            };
+          }}
+        />
+      </div>
     );
   }
 }
