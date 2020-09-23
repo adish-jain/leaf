@@ -5,7 +5,20 @@ import { File, Step } from "../typescript/types/app_types";
 import dynamic from "next/dynamic";
 import CodeEditor from "./CodeEditor";
 import "../styles/codeeditor.scss";
+import { editor } from "monaco-editor";
+// import { editor, Range } from "monaco-editor";
 const MonacoEditor = dynamic(import("react-monaco-editor"), { ssr: false });
+// import ("react-monaco-editor").MonacoEditor;
+// import * as monacoEditor from "react-monaco-editor";
+// import { Range } from "monaco-editor/esm/vs/editor/editor.api";
+// import * as monacoTypes from "monaco-editor/esm/vs/editor/editor.api";
+// import {Range} from 'monaco-editor/esm/vs/editor/editor.api';
+// const monacoEditor = dynamic((import("monaco-editor/esm/vs/editor/editor.api"));
+
+// import * as monacoEditor from "../typescript/types/monaco_types.api.d.ts";
+// const monacoEditor = dynamic(import("monaco-editor/esm/vs/editor/editor.api"), { ssr: false });
+// import { Range, editor } from "../typescript/types/monaco_types.api";
+
 // import { editor, Range } from "monaco-editor";
 // import Range from "react-monaco-editor";
 // const monacoTypes = import("monaco-editor");
@@ -15,13 +28,13 @@ type Line = {
   char: number;
 };
 
-type MonacoEditorState = {
+type MonacoEditorWrapperState = {
   showModal: boolean;
   // startLine?: Line;
   // endLine?: Line;
 };
 
-type MonacoEditorProps = {
+type MonacoEditorWrapperProps = {
   // highlightLines: (start: any, end: any) => void;
   saveFileCode: () => void;
   draftCode: string;
@@ -37,14 +50,16 @@ type MonacoEditorProps = {
   selectedFile: File;
 };
 
-export default class MonacoEditorWrapper extends Component<
-  MonacoEditorProps,
-  MonacoEditorState
-> {
-  private monacoInstance = createRef<any>();
-  private monacoTypesWrapper: any;
+var decorations: string[] = [];
 
-  constructor(props: MonacoEditorProps) {
+export default class MonacoEditorWrapper extends Component<
+  MonacoEditorWrapperProps,
+  MonacoEditorWrapperState
+> {
+  private monacoInstance = createRef<editor.IStandaloneCodeEditor>();
+  private monacoTypesWrapper!: typeof import("monaco-editor");
+
+  constructor(props: MonacoEditorWrapperProps) {
     super(props);
     this.state = {
       showModal: false,
@@ -52,36 +67,69 @@ export default class MonacoEditorWrapper extends Component<
     this.monacoInstance = createRef();
 
     this.mountEditor = this.mountEditor.bind(this);
-    this.handleChange = this.handleChange.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
     this.saveLines = this.saveLines.bind(this);
+    this.updateLines = this.updateLines.bind(this);
   }
 
-  handleChange(ev: any, value: string | undefined) {
-    this.props.changeCode(value!);
+  componentDidUpdate(prevProps: MonacoEditorWrapperProps) {
+    if (prevProps.selectedFile.id !== this.props.selectedFile.id) {
+      this.clearSelections();
+    }
   }
 
-  mountEditor(editor: any, monaco: any) {
-    (this.monacoInstance as React.MutableRefObject<any>).current = editor;
+  updateLines() {
+    let { lines } = this.props;
+    console.log(lines);
+    decorations = this.monacoInstance.current!.deltaDecorations(decorations, [
+      {
+        range: new this.monacoTypesWrapper.Range(
+          lines.start.lineNumber,
+          lines.start.char,
+          lines.end.lineNumber,
+          lines.end.char
+        ),
+        options: { isWholeLine: true, inlineClassName: "myLineDecoration" },
+      },
+    ]);
+  }
+
+  clearSelections() {
+    this.monacoInstance.current!.setSelections([
+      {
+        positionColumn: 0,
+        positionLineNumber: 0,
+        selectionStartColumn: 0,
+        selectionStartLineNumber: 0,
+      },
+    ]);
+  }
+
+  mountEditor(
+    editor: editor.IStandaloneCodeEditor,
+    monaco: typeof import("monaco-editor")
+  ) {
+    (this.monacoInstance as React.MutableRefObject<
+      editor.IStandaloneCodeEditor
+    >).current = editor;
+    this.monacoTypesWrapper = monaco;
+    this.updateLines();
 
     this.monacoInstance.current!.onDidBlurEditorText(() => {
       this.handleBlur();
     });
 
     this.monacoInstance.current!.onDidChangeCursorSelection((e) =>
-      this.handleCursor(e, monaco)
+      this.handleCursor(e)
     );
-
-    this.monacoTypesWrapper = monaco;
   }
 
   handleBlur() {
     this.props.saveFileCode();
   }
 
-  handleCursor(e: any) {
+  handleCursor(e: editor.ICursorSelectionChangedEvent) {
     let newSelection = e.selection;
-    console.log(newSelection);
     let { changeLines } = this.props;
     let {
       startLineNumber,
@@ -114,29 +162,17 @@ export default class MonacoEditorWrapper extends Component<
       end: { lineNumber: endLineNumber, char: endColumn },
     });
 
-    // let oldDecorations = this.monacoInstance.current!.deltaDecorations([], [
-    //   { range: new this.monacoTypesWrapper.Range(1, 1, 1, 1), options: {} },
-    // ]);
-
-    var elems = document.querySelectorAll(".myLineDecoration");
-    [].forEach.call(elems, function (el: any) {
-      el.classList.remove("myLineDecoration");
-    });
-
-    let decorations = this.monacoInstance.current!.deltaDecorations(
-      [],
-      [
-        {
-          range: new this.monacoTypesWrapper.Range(
-            startLineNumber,
-            startColumn,
-            endLineNumber,
-            endColumn
-          ),
-          options: { isWholeLine: true, inlineClassName: "myLineDecoration" },
-        },
-      ]
-    );
+    decorations = this.monacoInstance.current!.deltaDecorations(decorations, [
+      {
+        range: new this.monacoTypesWrapper.Range(
+          startLineNumber,
+          startColumn,
+          endLineNumber,
+          endColumn
+        ),
+        options: { isWholeLine: true, inlineClassName: "myLineDecoration" },
+      },
+    ]);
     this.setState({
       showModal: false,
     });
@@ -186,12 +222,13 @@ export default class MonacoEditorWrapper extends Component<
           language="typescript"
           theme="monakai"
           value={draftCode}
-          onChange={console.log}
+          onChange={(value) => this.props.changeCode(value)}
           options={{
             selectOnLineNumbers: true,
           }}
           editorDidMount={(editor, monaco) => {
             this.mountEditor(editor, monaco);
+            //@ts-ignore
             window.MonacoEnvironment.getWorkerUrl = (moduleId, label) => {
               if (label === "json") return "/_next/static/json.worker.js";
               if (label === "css") return "/_next/static/css.worker.js";
