@@ -9,7 +9,7 @@ const DynamicEditor = dynamic((() => import("./DynamicEditor")) as any, {
 type EditingStoredStepProps = {
   onChange: (stepText: any) => void;
   editorState: any;
-  lines: { start: number; end: number };
+  lines?: { start: number; end: number };
   saveLines: (fileName: string, remove: boolean) => void;
   attachedFileName: string;
   immediateUpdate: (stepText: string) => void;

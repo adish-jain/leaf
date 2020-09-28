@@ -9,17 +9,21 @@ initFirebaseAdmin();
 initFirebase();
 const { Storage } = require('@google-cloud/storage');
 
+// Create envVariables.json to store files in Firebase storage
+const envVar = require("../../createEnvVariablesJson");
+envVar.createEnvVariablesJson();
+
 var fs = require("fs");
 var shortId = require("shortid");
 
 const storage = new Storage({
-    keyFilename: "envVariables.json",
+    keyFilename: "/tmp/" + "envVariables.json",
  });
 
 let bucketName = process.env.STORAGE_BUCKET;
 
-const uploadFile = async(filename: string) => {   
-    await storage.bucket(bucketName).upload(filename, {
+const uploadImage = async(imageName: string) => {   
+    await storage.bucket(bucketName).upload(imageName, {
         public: true,
         metadata: {
             cacheControl: 'public, max-age=31536000',
@@ -28,12 +32,13 @@ const uploadFile = async(filename: string) => {
     // console.log(`${filename} uploaded to ${bucketName}.`);
 }
 
-const generateFileURL = async(filename: string) => {
-    let fileURL = `https://storage.googleapis.com/${bucketName}/${filename}`
-    return fileURL;
+const generateImageURL = async(imageName: string) => {
+    let imageURL = `https://storage.googleapis.com/${bucketName}/${imageName}`
+    // console.log(imageURL);
+    return imageURL;
 }
 
-const saveFileToStep = async(uid: any, draftId: any, stepId: any, fileURL: string) => {
+const saveImageToStep = async(uid: string, draftId: string, stepId: string, imageURL: string) => {
     await db
     .collection("users")
     .doc(uid)
@@ -41,7 +46,7 @@ const saveFileToStep = async(uid: any, draftId: any, stepId: any, fileURL: strin
     .doc(draftId)
     .collection("steps")
     .doc(stepId)
-    .update({ image: fileURL });
+    .update({ imageURL: imageURL });
 }
 
 export default async function handleSaveImage(req: NextApiRequest, res: NextApiResponse) {
@@ -65,7 +70,7 @@ export default async function handleSaveImage(req: NextApiRequest, res: NextApiR
     // console.log(imageName);
 
     // create img file locally temporarily
-    await fs.writeFile(imageName, b64, {encoding: 'base64'}, function(err: any) {
+    await fs.writeFile("/tmp/" + imageName, b64, {encoding: 'base64'}, function(err: any) {
         if (err) {
             console.log(err);
         } else {
@@ -74,27 +79,19 @@ export default async function handleSaveImage(req: NextApiRequest, res: NextApiR
     });
 
     // upload img file to firebase storage 
-    await uploadFile(imageName);
+    await uploadImage("/tmp/" + imageName);
 
     // generate public URL for img file to save to firestore
-    let fileURL = await generateFileURL(imageName);
+    let imageURL = await generateImageURL(imageName);
     // console.log(fileURL);
 
     // save img URL to firestore under relevant step
-    await saveFileToStep(uid, draftId, stepId, fileURL);
+    await saveImageToStep(uid, draftId, stepId, imageURL);
 
     // delete local img 
-    fs.unlinkSync(imageName);
+    fs.unlinkSync("/tmp/" + imageName);
 
-    res.status(200);    
-    res.end();
+    res.statusCode = 200;    
+    res.send({url: imageURL});
     return;
 }
-
-export const config = {
-    api: {
-      bodyParser: {
-        sizeLimit: '2mb',
-      },
-    },
-  }

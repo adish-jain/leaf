@@ -18,7 +18,7 @@ type StoredStepProps = {
   id: string;
   draftId: string;
   text: any;
-  lines: { start: number; end: number };
+  lines?: { start: number; end: number };
   index: number;
   mutateStoredStep: (text: string, stepId: string) => void;
   saveStepToBackend: (stepId: string, text: string) => void;

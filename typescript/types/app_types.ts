@@ -12,10 +12,11 @@ export type Step = {
   id: string;
   lines?: Lines;
   fileId?: string;
-  blockType?: Block
+  blockType?: Block;
+  imageURL?: string;
 };
 
-type Lines = {
+export type Lines = {
   start: number;
   end: number;
 };

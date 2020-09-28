@@ -42,6 +42,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
         steps[i].fileId = null;
         // to be deprecated
       }
+      if (steps[i].imageURL === undefined || steps[i].imageURL === null) {
+        steps[i].imageURL = null;
+      }
       steps[i].fileName = null;
     }
     return {

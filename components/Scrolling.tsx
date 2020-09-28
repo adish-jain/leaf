@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PublishedStep from "./PublishedStep";
-const scrollingStyles = require("../styles/Scrolling.module.scss");
+import "../styles/scrolling.scss";
 import { InView } from "react-intersection-observer";
 import { Step } from "../typescript/types/app_types";
 
@@ -47,8 +47,8 @@ export default class Scrolling extends Component<
     let { steps, currentStepIndex, title } = this.props;
     let { height } = this.state;
     return (
-      <div className={scrollingStyles["scrolling"]}>
-        <h1 className={scrollingStyles["post-title"]}>{title}</h1>
+      <div className={"scrolling"}>
+        <h1 className={"post-title"}>{title}</h1>
         {steps ? (
           steps.map((step, index) => (
             <PublishedStep

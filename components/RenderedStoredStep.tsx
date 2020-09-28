@@ -8,7 +8,7 @@ type RenderedStoredStepProps = {
   moveStepUp: () => void;
   moveStepDown: () => void;
   editorState: any;
-  lines: { start: number; end: number };
+  lines?: { start: number; end: number };
   attachedFileName: string;
   index: number;
 };

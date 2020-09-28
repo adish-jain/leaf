@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-const fileBarStyles = require("../styles/FileBar.module.scss");
+import "../styles/filebar.scss";
 
 type File = {
   id: string;
@@ -16,7 +16,7 @@ type PublishedFileBarProps = {
 
 export default function PublishedFileBar(props: PublishedFileBarProps) {
   return (
-    <div className={fileBarStyles["published-filebar"]}>
+    <div className={"published-filebar"}>
       {props.files.map((file, index) => (
         <File
           key={file.id}
@@ -41,10 +41,7 @@ function File(props: {
     className = "published-file-selected";
   }
   return (
-    <div
-      onClick={(e) => props.updateFile(props.index)}
-      className={fileBarStyles[className]}
-    >
+    <div onClick={(e) => props.updateFile(props.index)} className={className}>
       {props.name}
     </div>
   );

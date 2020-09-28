@@ -5,8 +5,8 @@ import FileBar from "./FileBar";
 import ImageOptions from "./ImageOptions";
 import "../styles/codeeditor.scss";
 import MonacoEditor from "./MonacoEditor";
-// import CodeMirror from './DynamicComponent';
-// const {CodeMirror} = require('./DynamicComponent');
+import ImageView from "./ImageView";
+import { File, Step as StepType, Lines } from "../typescript/types/app_types";
 
 const DynamicCodeEditor = dynamic(
   (() => import("./DynamicCodeEditor")) as any,
@@ -14,18 +14,6 @@ const DynamicCodeEditor = dynamic(
     ssr: false,
   }
 );
-type File = {
-  id: string;
-  name: string;
-  //replace with enum
-  language: string;
-  code: string;
-};
-
-type Line = {
-  lineNumber: number;
-  char: number;
-};
 
 type CodeEditorProps = {
   draftId: string;
@@ -35,7 +23,7 @@ type CodeEditorProps = {
   saveFileName: (value: string, external: boolean) => void;
   onNameChange: (name: string) => void;
   draftCode: string;
-  changeLines: (lines: { start: Line; end: Line }) => void;
+  changeLines: (lines: Lines) => void;
   saveLines: (fileName: string, remove: boolean) => void;
   // filenames map to language
   files: File[];
@@ -45,9 +33,12 @@ type CodeEditorProps = {
   changeCode: (value: string) => void;
   changeSelectedFile: (fileIndex: number) => void;
   language: string;
-  lines: { start: Line; end: Line };
+  lines: Lines;
   // whether or the draft page should display the block side
   shouldShowBlock: boolean;
+  currentlyEditingStep: StepType;
+  deleteStepImage: (stepId: string) => void;
+  addStepImage: (selectedImage: any, stepId: string) => void;
 };
 
 type CodeEditorState = {};
@@ -80,6 +71,9 @@ export default class CodeEditor extends Component<
       saveLines,
       lines,
       shouldShowBlock,
+      currentlyEditingStep,
+      addStepImage,
+      deleteStepImage,
     } = this.props;
 
     if (!shouldShowBlock) {
@@ -98,6 +92,11 @@ export default class CodeEditor extends Component<
           changeSelectedFile={changeSelectedFile}
           saveFileName={saveFileName}
           onNameChange={onNameChange}
+        />
+        <ImageView
+          addStepImage={addStepImage}
+          currentlyEditingStep={currentlyEditingStep}
+          deleteStepImage={deleteStepImage}
         />
         {/* <DynamicCodeEditor
           // @ts-ignore
@@ -121,6 +120,7 @@ export default class CodeEditor extends Component<
           saveLines={saveLines}
           lines={lines}
           selectedFile={files[selectedFileIndex]}
+          currentlyEditingStep={currentlyEditingStep}
         />
         <LanguageBar
           language={language}

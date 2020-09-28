@@ -1,100 +1,140 @@
 import React, { useState, Component } from "react";
 const fetch = require("node-fetch");
-const previewStyles = require('../styles/Preview.module.scss');
-let selectedFile: any;
+import "../styles/imageview.scss";
+let selectedImage: any;
+import { File, Step, Lines } from "../typescript/types/app_types";
 
-type PreviewProps = {
-    draftId: any;
-    steps: any;
-    editingStep: any;
+type ImageViewProps = {
+  addStepImage: (image: any, stepId: string) => void;
+  deleteStepImage: (stepId: string) => void;
+  currentlyEditingStep: Step;
 };
 
-type PreviewState = {
-    upload: boolean;
+type ImageViewState = {
+  upload: boolean;
+  uploadFailed: boolean;
 };
 
-export default class ImageView extends Component<PreviewProps, PreviewState> {
-    constructor(props: PreviewProps) {
-        super(props);
-        this.state = {
-            upload: false,
-        };
-        this.handleFileUpload = this.handleFileUpload.bind(this);
-        this.handleFileSelect = this.handleFileSelect.bind(this);
-        this.handleFileSubmit = this.handleFileSubmit.bind(this);
-    }
-    
-    handleFileUpload(e: any) {
-        selectedFile = e.target.files[0];
-        this.setState({ upload: true });
-        console.log(selectedFile);
-    }
+export default class ImageView extends Component<
+  ImageViewProps,
+  ImageViewState
+> {
+  constructor(props: ImageViewProps) {
+    super(props);
+    this.state = {
+      upload: false,
+      uploadFailed: false,
+    };
 
-    handleFileSelect(e: any) {
-        this.setState({ upload: false });
-    }
-    
-    async handleFileSubmit(e: any) {
-        // console.log(selectedFile);
-    
-        const toBase64 = (file: any) => new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = error => reject(error);
-        });
-    
-        let stepId = this.props.steps[this.props.editingStep].id
+    this.UploadScreen = this.UploadScreen.bind(this);
+    this.SelectScreen = this.SelectScreen.bind(this);
+    this.ImageScreen = this.ImageScreen.bind(this);
 
-        let data = {
-            requestedAPI: "saveImage",
-            draftId: this.props.draftId,
-            stepId: stepId,
-            imageFile: await toBase64(selectedFile),
-        };
-    
-        // console.log(JSON.stringify(data));
-    
-        await fetch("/api/endpoint", {
-            method: "POST",
-            headers: new Headers({ "Content-Type": "application/json" }),
-            body: JSON.stringify(data),
-            }).then(async (res: any) => {
-        });
-    }
+    this.handleImageUpload = this.handleImageUpload.bind(this);
+    this.handleImageSelect = this.handleImageSelect.bind(this);
+    this.handleImageSubmit = this.handleImageSubmit.bind(this);
+    this.handleImageDelete = this.handleImageDelete.bind(this);
+  }
 
-    render() {
-        return (
-            <div className={previewStyles.preview}>
-                { !this.state.upload ? 
-                    (<div> 
-                        <label className={previewStyles.previewButtons}>
-                            Upload File 
-                            <input 
-                                type="file" 
-                                id="myFile" 
-                                name="filename" 
-                                accept="image/*" 
-                                onChange={(e) => this.handleFileUpload(e)}
-                            />
-                        </label>
-                    </div>)
-                    : 
-                    (<div className={previewStyles.submit}>
-                        <p>
-                            Selected {selectedFile.name} 
-                        </p>
-                        <div className={previewStyles.submitButtons}>
-                            <button onClick={(e) => this.handleFileSelect(e)}>
-                                Go Back
-                            </button>
-                            <button onClick={(e) => this.handleFileSubmit(e)}>
-                                Submit
-                            </button>
-                        </div>
-                    </div>)
-                }
+  handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    selectedImage = e.target.files![0];
+    this.setState({ upload: true });
+    this.setState({ uploadFailed: false });
+  }
+
+  handleImageSelect() {
+    this.setState({ upload: false });
+    this.setState({ uploadFailed: false });
+  }
+
+  async handleImageSubmit() {
+    // 5 MB max on image uploads
+    if (selectedImage.size > 5000000) {
+      this.setState({ uploadFailed: true });
+    } else {
+      // optimistic mutate
+      var url = URL.createObjectURL(selectedImage);
+      this.props.currentlyEditingStep.imageURL = url;
+      this.setState({ upload: false });
+      let stepId = this.props.currentlyEditingStep.id;
+      await this.props.addStepImage(selectedImage, stepId);
+      // this.setState({ upload: false });
+    }
+  }
+
+  async handleImageDelete() {
+    let stepId = this.props.currentlyEditingStep.id;
+    this.props.deleteStepImage(stepId);
+    this.setState({ upload: false });
+  }
+
+  ImageScreen() {
+    return (
+      <div className={"imgView"}>
+        <div className={"remove"} onClick={(e) => this.handleImageDelete()}>
+          X
+        </div>
+        <img src={this.props.currentlyEditingStep.imageURL}></img>
+      </div>
+    );
+  }
+
+  UploadScreen() {
+    return (
+      <div className={"preview"}>
+        <label className={"previewButtons"}>
+          Upload File
+          <input
+            type="file"
+            id="myFile"
+            name="filename"
+            accept="image/*"
+            onChange={this.handleImageUpload}
+          />
+        </label>
+      </div>
+    );
+  }
+
+  SelectScreen() {
+    return (
+      <div className={"preview"}>
+        <div className={"submit"}>
+          <p>Selected {"name"}</p>
+          <div className={"submitButtons"}>
+            <button onClick={(e) => this.handleImageSelect()}>Go Back</button>
+            <button onClick={(e) => this.handleImageSubmit()}>Submit</button>
+          </div>
+          {this.state.uploadFailed ? (
+            <div>
+              <br></br>Image size is too big! Select an image size up to 5mb.
             </div>
-        );
-    }
+          ) : (
+            <div></div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  render() {
+    return (
+      <div>
+        {!this.state.upload ? (
+          // Image is in display or the upload option is available
+          this.props.currentlyEditingStep?.imageURL !== undefined ? (
+            // Image is in display
+            <this.ImageScreen />
+          ) : (
+            // Upload screen is in display
+            <this.UploadScreen />
+          )
+        ) : (
+          // Image has been selected, and "Go Back" & "Submit" options are available
+          // If selected file size was too big, error is displayed
+          <this.SelectScreen />
+        )}
+      </div>
+    );
+  }
 }

@@ -6,29 +6,18 @@ const fetch = require("node-fetch");
 global.Headers = fetch.Headers;
 import Router from "next/router";
 import "../styles/publishing.scss";
+import { File, Step, Lines } from "../typescript/types/app_types";
 
 var shortId = require("shortid");
 
-type File = {
-  id: string;
-  language: string; //replace with enum
-  code: string;
-  name: string;
-};
-
-type Line = {
-  lineNumber: number;
-  char: number;
-};
-
 type PublishingProps = {
-  draftId: any;
+  draftId: string;
   title: string;
-  storedSteps: any[];
+  storedSteps: Step[];
   // what step is currently being edited? -1 means no steps being edited
   editingStep: number;
   changeEditingStep: (editingStep: number) => void;
-  saveStep: (stepId: string, text: any) => void;
+  saveStep: (stepId: string, text: string) => void;
   mutateStoredStep: (stepId: string, text: string) => void;
   saveStepToBackend: (stepId: string, text: string) => void;
   deleteStoredStep: (stepId: any) => void;
@@ -36,7 +25,7 @@ type PublishingProps = {
   moveStepDown: (stepId: any) => void;
   onTitleChange: (title: string) => void;
   selectedFileIndex: number;
-  lines: { start: Line; end: Line };
+  lines: Lines;
   saveLines: (fileName: string, remove: boolean) => void;
   files: File[];
   published: boolean;
@@ -216,7 +205,7 @@ export default class Publishing extends Component<
       : (fullWidthStyle = {});
 
     return (
-      <div style={fullWidthStyle} className={'publishing'}>
+      <div style={fullWidthStyle} className={"publishing"}>
         {/* <this.PublishingButtons /> */}
         <this.PublishingHeader />
         {storedSteps.map((storedStep, index) => {
@@ -238,7 +227,7 @@ export default class Publishing extends Component<
               selectedFileIndex={selectedFileIndex}
               files={files}
               saveLines={saveLines}
-              attachedFileId={storedStep.fileId}
+              attachedFileId={storedStep.fileId!}
               updateShowBlock={updateShowBlock}
             />
           );

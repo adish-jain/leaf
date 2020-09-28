@@ -21,8 +21,8 @@ const COMMIT_SHA =
 
 process.env.SENTRY_DSN = SENTRY_DSN;
 
-module.exports = withSASS(
-  withCSS({
+module.exports = withCSS(
+  withSASS({
     webpack: (config, options) => {
       config.module.rules.push({
         test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
@@ -59,7 +59,26 @@ module.exports = withSASS(
       config.plugins.push(
         new MonacoWebpackPlugin({
           // Add languages as needed...
-          languages: ["javascript", "typescript"],
+          languages: [
+            "javascript",
+            "typescript",
+            "go",
+            "ruby",
+            "java",
+            "python",
+            "rust",
+            "yaml",
+            "css",
+            "scss",
+            "html",
+            "markdown",
+            "cpp",
+            "dockerfile",
+            "xml",
+            "swift",
+            "objective-c",
+            "php",
+          ],
           filename: "static/[name].worker.js",
         })
       );

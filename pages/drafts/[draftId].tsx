@@ -13,18 +13,12 @@ import DefaultErrorPage from "next/error";
 import Head from "next/head";
 import { goToPost } from "../../lib/usePosts";
 const fetch = require("node-fetch");
+import { File, Step, Lines } from "../../typescript/types/app_types";
 
 global.Headers = fetch.Headers;
 
 // const appStyles = require("../../styles/App.module.scss");
 import "../../styles/app.scss";
-
-type File = {
-  id: string;
-  language: string; //replace with enum
-  code: string;
-  name: string;
-};
 
 const DraftView = () => {
   const { authenticated, error, loading } = useLoggedIn();
@@ -94,6 +88,8 @@ const DraftView = () => {
     changeLines,
     saveLines,
     removeLines,
+    addStepImage,
+    deleteStepImage,
   } = useSteps(draftId as string, authenticated);
 
   let {
@@ -147,7 +143,7 @@ const DraftView = () => {
           }}
         />
       </Head>
-      <main className={'AppWrapper'}>
+      <main className={"AppWrapper"}>
         {/* <Header
           username={username}
           logout={false}
@@ -161,10 +157,10 @@ const DraftView = () => {
         {errored ? (
           <DefaultErrorPage statusCode={404} />
         ) : (
-          <div className={'App'}>
+          <div className={"App"}>
             <div className={"center-divs"}>
               <Publishing
-                draftId={draftId}
+                draftId={draftId as string}
                 title={draftTitle}
                 storedSteps={realSteps!}
                 saveStep={saveStep}
@@ -185,7 +181,7 @@ const DraftView = () => {
                 shouldShowBlock={shouldShowBlock}
                 updateShowBlock={updateShowBlock}
               />
-              <div className={'RightPane'}>
+              <div className={"RightPane"}>
                 {/* {editingStep !== -1 ? (
                   <ImageView
                     draftId={draftId}
@@ -196,6 +192,8 @@ const DraftView = () => {
                   <div></div>
                 )} */}
                 <CodeEditor
+                  addStepImage={addStepImage}
+                  deleteStepImage={deleteStepImage}
                   draftId={draftId as string}
                   editingStep={editingStep}
                   saveFileCode={saveFileCode}
@@ -214,6 +212,7 @@ const DraftView = () => {
                   saveLines={saveLines}
                   lines={lines}
                   shouldShowBlock={shouldShowBlock}
+                  currentlyEditingStep={realSteps![editingStep]}
                 />
               </div>
             </div>

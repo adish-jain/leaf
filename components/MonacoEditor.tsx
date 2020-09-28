@@ -1,32 +1,9 @@
-// await import("monaco-editor/esm/vs/editor/editor.api");
-// import { ControlledEditor, monaco } from "@monaco-editor/react";
 import { Component, createRef } from "react";
-import { File, Step } from "../typescript/types/app_types";
+import { File, Step, Lines } from "../typescript/types/app_types";
 import dynamic from "next/dynamic";
-import CodeEditor from "./CodeEditor";
 import "../styles/codeeditor.scss";
 import { editor } from "monaco-editor";
-// import { editor, Range } from "monaco-editor";
 const MonacoEditor = dynamic(import("react-monaco-editor"), { ssr: false });
-// import ("react-monaco-editor").MonacoEditor;
-// import * as monacoEditor from "react-monaco-editor";
-// import { Range } from "monaco-editor/esm/vs/editor/editor.api";
-// import * as monacoTypes from "monaco-editor/esm/vs/editor/editor.api";
-// import {Range} from 'monaco-editor/esm/vs/editor/editor.api';
-// const monacoEditor = dynamic((import("monaco-editor/esm/vs/editor/editor.api"));
-
-// import * as monacoEditor from "../typescript/types/monaco_types.api.d.ts";
-// const monacoEditor = dynamic(import("monaco-editor/esm/vs/editor/editor.api"), { ssr: false });
-// import { Range, editor } from "../typescript/types/monaco_types.api";
-
-// import { editor, Range } from "monaco-editor";
-// import Range from "react-monaco-editor";
-// const monacoTypes = import("monaco-editor");
-
-type Line = {
-  lineNumber: number;
-  char: number;
-};
 
 type MonacoEditorWrapperState = {
   showModal: boolean;
@@ -39,15 +16,13 @@ type MonacoEditorWrapperProps = {
   saveFileCode: () => void;
   draftCode: string;
   changeCode: (value: string) => void;
-  changeLines: (lines: { start: Line; end: Line }) => void;
+  changeLines: (lines: Lines) => void;
   saveLines: (fileName: string, remove: boolean) => void;
   language: string;
   editing: boolean;
-  lines: {
-    start: Line;
-    end: Line;
-  };
+  lines: Lines;
   selectedFile: File;
+  currentlyEditingStep: Step;
 };
 
 var decorations: string[] = [];
@@ -73,21 +48,48 @@ export default class MonacoEditorWrapper extends Component<
   }
 
   componentDidUpdate(prevProps: MonacoEditorWrapperProps) {
+    // if selected file is changing, clear selection
     if (prevProps.selectedFile.id !== this.props.selectedFile.id) {
       this.clearSelections();
     }
+
+    // if step or file changes, clear highlights
+    if (
+      prevProps.currentlyEditingStep.id !==
+        this.props.currentlyEditingStep.id ||
+      prevProps.selectedFile.id !== this.props.selectedFile.id
+    ) {
+      this.clearSelections();
+      this.clearLines();
+    }
+
+    let newStepLines = this.props.currentlyEditingStep.lines;
+    let oldStepLines = prevProps.currentlyEditingStep.lines;
+
+    let linesChanged =
+      (newStepLines?.start || 0) !== (oldStepLines?.start || 0) ||
+      (newStepLines?.end || 0) !== (oldStepLines?.end || 0);
+
+    let isOnStepFile =
+      this.props.selectedFile.id === this.props.currentlyEditingStep.fileId;
+
+    if (linesChanged && isOnStepFile) {
+      this.updateLines();
+    }
+
   }
 
   updateLines() {
-    let { lines } = this.props;
-    console.log(lines);
+    console.log("update lines");
+    let { currentlyEditingStep } = this.props;
+    let lines = currentlyEditingStep.lines;
     decorations = this.monacoInstance.current!.deltaDecorations(decorations, [
       {
         range: new this.monacoTypesWrapper.Range(
-          lines.start.lineNumber,
-          lines.start.char,
-          lines.end.lineNumber,
-          lines.end.char
+          lines?.start || 0,
+          0,
+          lines?.end || 0,
+          0
         ),
         options: { isWholeLine: true, inlineClassName: "myLineDecoration" },
       },
@@ -101,6 +103,16 @@ export default class MonacoEditorWrapper extends Component<
         positionLineNumber: 0,
         selectionStartColumn: 0,
         selectionStartLineNumber: 0,
+      },
+    ]);
+  }
+
+  clearLines() {
+    console.log("clear lines");
+    decorations = this.monacoInstance.current!.deltaDecorations(decorations, [
+      {
+        range: new this.monacoTypesWrapper.Range(0, 0, 0, 0),
+        options: { isWholeLine: false, inlineClassName: "myLineDecoration" },
       },
     ]);
   }
@@ -144,8 +156,8 @@ export default class MonacoEditorWrapper extends Component<
         // endLine: { lineNumber: endLineNumber, char: endColumn },
       });
       changeLines({
-        start: { lineNumber: startLineNumber, char: startColumn },
-        end: { lineNumber: endLineNumber, char: endColumn },
+        start: startLineNumber,
+        end: endLineNumber,
       });
     } else {
       this.setState({ showModal: false });
@@ -158,21 +170,21 @@ export default class MonacoEditorWrapper extends Component<
     let selection = this.monacoInstance.current?.getSelection();
     let { startLineNumber, startColumn, endLineNumber, endColumn } = selection!;
     changeLines({
-      start: { lineNumber: startLineNumber, char: startColumn },
-      end: { lineNumber: endLineNumber, char: endColumn },
+      start: startLineNumber,
+      end: endLineNumber,
     });
 
-    decorations = this.monacoInstance.current!.deltaDecorations(decorations, [
-      {
-        range: new this.monacoTypesWrapper.Range(
-          startLineNumber,
-          startColumn,
-          endLineNumber,
-          endColumn
-        ),
-        options: { isWholeLine: true, inlineClassName: "myLineDecoration" },
-      },
-    ]);
+    // decorations = this.monacoInstance.current!.deltaDecorations(decorations, [
+    //   {
+    //     range: new this.monacoTypesWrapper.Range(
+    //       startLineNumber,
+    //       startColumn,
+    //       endLineNumber,
+    //       endColumn
+    //     ),
+    //     options: { isWholeLine: true, inlineClassName: "myLineDecoration" },
+    //   },
+    // ]);
     this.setState({
       showModal: false,
     });
@@ -189,7 +201,7 @@ export default class MonacoEditorWrapper extends Component<
         <div className={"line-modal"}>
           <div className={"adjusted"}>
             <p>
-              Highlight lines {start.lineNumber} to {end.lineNumber}?
+              Highlight lines {start} to {end}?
             </p>
             <button onClick={(e) => this.saveLines()}>
               Attach highlighted lines to step.
@@ -219,7 +231,7 @@ export default class MonacoEditorWrapper extends Component<
         <this.LineModal />
         <MonacoEditor
           height={"100%"}
-          language="typescript"
+          language={language}
           theme="monakai"
           value={draftCode}
           onChange={(value) => this.props.changeCode(value)}
@@ -230,9 +242,19 @@ export default class MonacoEditorWrapper extends Component<
             this.mountEditor(editor, monaco);
             //@ts-ignore
             window.MonacoEnvironment.getWorkerUrl = (moduleId, label) => {
+              console.log(label);
               if (label === "json") return "/_next/static/json.worker.js";
+              if (label === "go") return "/_next/static/go.worker.js";
+              if (label === "java") return "/_next/static/java.worker.js";
+              if (label === "python") return "/_next/static/python.worker.js";
+              if (label === "ruby") return "/_next/static/ruby.worker.js";
+              if (label === "rust") return "/_next/static/rust.worker.js";
+              if (label === "yaml") return "/_next/static/yaml.worker.js";
               if (label === "css") return "/_next/static/css.worker.js";
+              if (label === "scss") return "/_next/static/scss.worker.js";
               if (label === "html") return "/_next/static/html.worker.js";
+              if (label === "markdown")
+                return "/_next/static/markdown.worker.js";
               if (label === "typescript" || label === "javascript")
                 return "/_next/static/ts.worker.js";
               return "/_next/static/editor.worker.js";

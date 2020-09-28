@@ -4,7 +4,7 @@ import animateScrollTo from "animated-scroll-to";
 import { useLoggedIn } from "../lib/UseLoggedIn";
 import Header, { HeaderUnAuthenticated } from "../components/Header";
 import PublishedCodeEditor from "./PublishedCodeEditor";
-const appStyles = require("../styles/App.module.scss");
+import "../styles/app.scss";
 import { File, Step } from "../typescript/types/app_types";
 
 type FinishedPostProps = {
@@ -47,7 +47,7 @@ const FinishedPost = (props: FinishedPostProps) => {
   }
 
   return (
-    <div className={appStyles.App}>
+    <div className={"App"}>
       {authenticated ? (
         <Header settings={true} profile={true} username={props.username} />
       ) : (

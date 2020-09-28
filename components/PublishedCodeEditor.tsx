@@ -2,8 +2,9 @@ import React, { Component } from "react";
 import dynamic from "next/dynamic";
 import PublishedLanguageBar from "./PublishedLanguageBar";
 import PublishedFileBar from "./PublishedFileBar";
-import PublishedCodeEditorStyles from "../styles/PublishedCodeEditor.module.scss";
+import "../styles/publishedcodeeditor.scss";
 import { File, Step } from "../typescript/types/app_types";
+import PublishedMonacoEditor from "./PublishedMonacoEditor";
 // import CodeMirror from './DynamicComponent';
 // const {CodeMirror} = require('./DynamicComponent');
 
@@ -41,14 +42,18 @@ export default class PublishedCodeEditor extends Component<
   render() {
     let { files, currentFile, currentStep, updateFile } = this.props;
     return (
-      <div className={PublishedCodeEditorStyles["editor-wrapper"]}>
+      <div className={"editor-wrapper"}>
         <PublishedFileBar
           updateFile={updateFile}
           files={files}
           currentFile={currentFile}
         />
-        <PublishedCodeMirror
+        {/* <PublishedCodeMirror
           //@ts-ignore
+          currentFile={currentFile}
+          currentStep={currentStep}
+        /> */}
+        <PublishedMonacoEditor
           currentFile={currentFile}
           currentStep={currentStep}
         />
