@@ -37,7 +37,7 @@ async function deleteImageHandler(req: NextApiRequest, res: NextApiResponse) {
     .collection("steps")
     .doc(stepId)
     .update({
-      imageURL: admin.firestore.FieldValue.delete()
+      imageURL: admin.firestore.FieldValue.delete(),
     });
 
   res.statusCode = 200;

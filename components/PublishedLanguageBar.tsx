@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Controlled as CodeMirror2 } from "react-codemirror2";
-const languageBarStyles = require("../styles/LanguageBar.module.scss");
+import "../styles/languagebar.scss";
 
 type PublishedLanguageBarProps = {
   language: string;
@@ -19,7 +19,7 @@ type File = {
 
 export default function PublishedLanguageBar(props: PublishedLanguageBarProps) {
   return (
-    <div className={languageBarStyles["published-language-bar"]}>
+    <div className={"published-language-bar"}>
       <label>Language: {props.language}</label>
     </div>
   );

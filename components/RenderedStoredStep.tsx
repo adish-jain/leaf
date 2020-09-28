@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import DraftEditor, { Editor } from "draft-js";
-const StepStyles = require("../styles/Step.module.scss");
+import "../styles/renderedstep.scss";
 
 type RenderedStoredStepProps = {
   changeEditingStep: (editingStep: number) => void;
@@ -8,7 +8,7 @@ type RenderedStoredStepProps = {
   moveStepUp: () => void;
   moveStepDown: () => void;
   editorState: any;
-  lines: { start: number; end: number };
+  lines?: { start: number; end: number };
   attachedFileName: string;
   index: number;
 };
@@ -23,53 +23,53 @@ export default class Step extends Component<
     super(props);
   }
 
-  Buttons = () => {
-    let { changeEditingStep, index } = this.props;
-    return (
-      <div className={StepStyles.Buttons}>
-        <div
-          onClick={(e) => {
-            e.stopPropagation();
-            this.props.moveStepUp();
-          }}
-          className={StepStyles.Up}
-        >
-          ↑
-        </div>
-        <div
-          onClick={(e) => {
-            e.stopPropagation();
-            this.props.moveStepDown();
-          }}
-          className={StepStyles.Down}
-        >
-          ↓
-        </div>
-        <div
-          onClick={(e) => {
-            e.stopPropagation();
-            this.props.deleteStoredStep(e);
-          }}
-          className={StepStyles.Close}
-        >
-          X
-        </div>
-      </div>
-    );
-  };
+  // Buttons = () => {
+  //   let { changeEditingStep, index } = this.props;
+  //   return (
+  //     <div className={StepStyles.Buttons}>
+  //       <div
+  //         onClick={(e) => {
+  //           e.stopPropagation();
+  //           this.props.moveStepUp();
+  //         }}
+  //         className={StepStyles.Up}
+  //       >
+  //         ↑
+  //       </div>
+  //       <div
+  //         onClick={(e) => {
+  //           e.stopPropagation();
+  //           this.props.moveStepDown();
+  //         }}
+  //         className={StepStyles.Down}
+  //       >
+  //         ↓
+  //       </div>
+  //       <div
+  //         onClick={(e) => {
+  //           e.stopPropagation();
+  //           this.props.deleteStoredStep(e);
+  //         }}
+  //         className={StepStyles.Close}
+  //       >
+  //         X
+  //       </div>
+  //     </div>
+  //   );
+  // };
 
   LineStatus = () => {
     let { lines, attachedFileName } = this.props;
 
     if (lines === undefined || lines === null) {
       return (
-        <div className={StepStyles["none-selected"]}>
+        <div className={"none-selected"}>
           No lines of code are associated with this step.
         </div>
       );
     } else {
       return (
-        <div className={StepStyles["none-selected"]}>
+        <div className={"none-selected"}>
           <style jsx>{`
             color: white;
             background-color: #37abda;
@@ -86,19 +86,19 @@ export default class Step extends Component<
     return (
       <div
         onClick={(e) => changeEditingStep(index)}
-        className={StepStyles.Step}
+        className={"renderedstep-wrapper"}
       >
-        <div className={StepStyles["main-content"]}>
-          <div className={StepStyles.Draft}>
-            <Editor
-              editorState={this.props.editorState}
-              readOnly={true}
-              onChange={(e) => null}
-            />
-          </div>
-          <this.Buttons />
+        <div className={"main-content"}>
+          <Editor
+            editorState={this.props.editorState}
+            readOnly={true}
+            onChange={(e) => null}
+          />
         </div>
-        <this.LineStatus />
+        <label className={"block-status"}>
+          Code Editor. No lines selected.
+        </label>
+        <div className={"divider"}></div>
       </div>
     );
   }

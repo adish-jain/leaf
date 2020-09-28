@@ -16,39 +16,25 @@
 
 /* Extra large devices (large laptops and desktops, 1200px and up) */
 @media only screen and (min-width: 1200px) {
-  .CodeEditor {
-    // min-width: 664px;
-    // max-width: 640px;
+  .editor-wrapper {
+    min-width: 520px;
+    max-width: 520px;
   }
 }
 
-.line-modal {
-  position: absolute;
-  right: 50%;
-  bottom: 40px;
-  // top: 0;
-  // left: 50%;
-
-  .adjusted {
-    position: relative;
-    z-index: 3;
-    background: white;
-    padding: 16px;
-    right: -50%;
-  }
+.file-bar {
 }
 
-.CodeEditor {
-  box-shadow: 0px 4px 16px #edece9;
+.editor-wrapper {
+  // box-shadow: 0px 4px 16px #edece9;
   border-radius: 8px;
-  min-width: 330px;
-  width: 51vw;
-  margin-right: 3vw;
+  // width: 100%;
+  // width: 51vw;
+  // margin-right: 3vw;
+  margin-left: 40px;
   height: 92vh;
   position: sticky;
-  top: 2vh;
-
+  top: 7vh;
   display: flex;
   flex-direction: column;
-  margin-top: 2vh;
 }

@@ -1,0 +1,36 @@
+$leaf-light-gray: #edece9;
+$gray-text: #c4c4c4;
+$light-blue: #D8E7F8;
+
+@mixin line {
+  // must specify width
+  height: 1px;
+  background: $leaf-light-gray;
+}
+
+@mixin draft-button {
+  background: #ffffff;
+  border: 1px solid $leaf-light-gray;
+  box-sizing: border-box;
+  border-radius: 4px;
+  padding: 4px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+@mixin draft-button-focused {
+  outline: none;
+}
+
+@mixin title-with-divider {
+  label {
+    font-weight: normal;
+    text-transform: uppercase;
+    font-size: 12px;
+  }
+  div {
+    @include line;
+    width: 100%;
+    margin: 2px 0px 8px 0px;
+  }
+}

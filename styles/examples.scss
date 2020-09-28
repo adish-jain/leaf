@@ -27,11 +27,12 @@
 
 }
 
-.Title {
+.example-title {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin-bottom: 24px;
   .Text {
     font-style: normal;
     font-weight: bold;
@@ -48,7 +49,7 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  margin-top: 48px;
+  // margin-top: 48px;
   a:link {
     color: #000000;
     text-decoration: none;
@@ -66,7 +67,7 @@
     padding: 16px;
     margin-left: 20px;
     margin-right: 20px;
-    margin-bottom: 30px;
+    // margin-bottom: 30px;
     height: 300px;
     border-radius: 36px;
     border-width: 0px;

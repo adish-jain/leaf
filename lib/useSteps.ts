@@ -1,18 +1,6 @@
 import useSWR, { SWRConfig } from "swr";
 import { useState } from "react";
-
-type Line = {
-  lineNumber: number;
-  char: number;
-};
-
-type Step = {
-  id: string;
-  lines?: { start: number; end: number };
-  text: any;
-  fileId?: string;
-  imageURL?: string;
-};
+import { File, Step, Lines } from "../typescript/types/app_types";
 
 export function useSteps(draftId: string, authenticated: boolean) {
   const myRequest = (requestedAPI: string) => {
@@ -46,9 +34,9 @@ export function useSteps(draftId: string, authenticated: boolean) {
   const [editingStep, changeEditingStep] = useState(-1);
 
   // What lines are currently highlighted?
-  const [lines, changeLines] = useState<{ start: Line; end: Line }>({
-    start: { lineNumber: 0, char: 0 },
-    end: { lineNumber: 0, char: 0 },
+  const [lines, changeLines] = useState<Lines>({
+    start: 0,
+    end: 0,
   });
 
   /*
@@ -181,8 +169,8 @@ export function useSteps(draftId: string, authenticated: boolean) {
   function saveLines(fileId: string, remove: boolean) {
     let stepId = storedSteps![editingStep].id;
     let linesData = {
-      start: lines.start.lineNumber,
-      end: lines.end.lineNumber,
+      start: lines.start,
+      end: lines.end,
     };
 
     // optimistic mutate
@@ -357,42 +345,45 @@ export function useSteps(draftId: string, authenticated: boolean) {
     });
   }
 
-  async function addStepImage(selectedImage: any, draftId: string, stepId: string) {
-      const toBase64 = (file: any) => new Promise((resolve, reject) => {
+  async function addStepImage(selectedImage: any, stepId: string) {
+    const toBase64 = (file: any) =>
+      new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
-    });
+        reader.onerror = (error) => reject(error);
+      });
 
     let data = {
-        requestedAPI: "saveImage",
-        draftId: draftId,
-        stepId: stepId,
-        imageFile: await toBase64(selectedImage),
+      requestedAPI: "saveImage",
+      draftId: draftId,
+      stepId: stepId,
+      imageFile: await toBase64(selectedImage),
     };
 
-
     await fetch("/api/endpoint", {
-        method: "POST",
-        headers: new Headers({
-          "Content-Type": "application/json"
-       }),
-        body: JSON.stringify(data),
-        }).then(async (res: any) => {
-          let resJSON = await res.json();
-          let url = resJSON.url;
-          
-          let optimisticSteps = storedSteps!.slice();
-          optimisticSteps[editingStep].imageURL = url;
-          mutate(optimisticSteps, false);
-        }).catch((error: any) => {
-          console.log(error);
-          console.log("upload failed.");
-        });
+      method: "POST",
+      headers: new Headers({
+        "Content-Type": "application/json",
+      }),
+      body: JSON.stringify(data),
+    })
+      .then(async (res: any) => {
+        let resJSON = await res.json();
+        let url = resJSON.url;
+        console.log("new url is ", url);
+        let optimisticSteps = storedSteps!.slice();
+        optimisticSteps[editingStep].imageURL = url;
+        console.log("updated image");
+        mutate(optimisticSteps, false);
+      })
+      .catch((error: any) => {
+        console.log(error);
+        console.log("upload failed.");
+      });
   }
 
-  async function deleteStepImage(draftId: string, stepId: string) {
+  async function deleteStepImage(stepId: string) {
     let data = {
       requestedAPI: "deleteImage",
       draftId: draftId,
@@ -405,11 +396,10 @@ export function useSteps(draftId: string, authenticated: boolean) {
     mutate(optimisticSteps, false);
 
     await fetch("/api/endpoint", {
-        method: "POST",
-        headers: new Headers({ "Content-Type": "application/json" }),
-        body: JSON.stringify(data),
-        }).then(async (res: any) => {
-    });
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify(data),
+    }).then(async (res: any) => {});
   }
 
   return {

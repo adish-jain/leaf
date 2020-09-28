@@ -1,5 +1,5 @@
 import React, { Component, useEffect } from "react";
-const StepStyles = require("../styles/PublishedStep.module.scss");
+import "../styles/publishedstep.scss";
 import { useInView, InView } from "react-intersection-observer";
 const draftToHtml = require("draftjs-to-html");
 import animateScrollTo from "animated-scroll-to";
@@ -48,7 +48,6 @@ class PublishedStep extends Component<PublishedStepProps, PublishedStepState> {
   }
 
   scrollIntoView() {
-
     let animationOptions = {
       // add offset so scrolled to line isnt exactly at top
       verticalOffset: -65,
@@ -81,14 +80,15 @@ class PublishedStep extends Component<PublishedStepProps, PublishedStepState> {
           onChange={this.handleChange}
         >
           {({ inView, ref, entry }) => (
-            <div ref={ref} className={StepStyles[stepStyle]}>
+            <div ref={ref} className={stepStyle}>
               <div
-                className={StepStyles["InnerHTML"]}
+                className={"InnerHTML"}
                 dangerouslySetInnerHTML={this.renderDraftJS()}
               />
             </div>
           )}
         </InView>
+        <div className={"divider"}></div>
       </div>
     );
   }

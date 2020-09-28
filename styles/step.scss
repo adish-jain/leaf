@@ -1,3 +1,5 @@
+@import "commonui.scss";
+
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
   .none-selected {
@@ -36,25 +38,22 @@
   }
 }
 
-.Step {
-  margin-top: 24px;
-  background: #ffffff;
-  border: 1px solid #edece9;
+.step-content {
+  // background: #ffffff;
+  // padding: 16px;
+  // border: 1px solid #edece9;
   box-sizing: border-box;
-  box-shadow: 0px 4px 16px #edece9;
+  // box-shadow: 0px 4px 16px #edece9;
   border-radius: 8px;
   // padding: 24px 24px 0px 24px;
-  z-index: 3;
+  // z-index: 3;
   position: relative;
-  overflow: auto;
-}
+  z-index: 1;
 
-.Draft {
-  // padding: 24px;
+  // overflow: auto;
 }
 
 .editing-draft {
-  padding: 16px;
 }
 
 .Close {
@@ -72,9 +71,10 @@
   margin-right: 16px;
 }
 
-.Buttons {
+.end-buttons {
   display: flex;
   flex-direction: row-reverse;
+  // justify-content: space-between;
   padding-top: 8px;
   padding-right: 8px;
   padding-bottom: 8px;
@@ -109,17 +109,6 @@
 
     text-align: center;
     margin-right: 16px;
-  }
-
-  .Save {
-    background: #ffffff;
-    border: 1px solid #edece9;
-    box-sizing: border-box;
-    color: #4db6f1;
-    font-size: 14px;
-    line-height: 17px;
-    border-radius: 4px;
-    padding: 4px;
   }
 
   .Highlight {
@@ -159,25 +148,34 @@
   justify-content: center;
 }
 
-.step-wrapper {
+.editingstep-wrapper {
   display: flex;
   flex-direction: column;
   justify-content: center;
   position: relative;
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.step-border {
+  padding-left: 8px;
+  border-left: solid 2px #349ae9;
 }
 
 .center-indicator {
   display: flex;
-  background: #ffffff;
-  box-shadow: 0px 4px 16px #edece9;
-  border-radius: 0px 0px 8px 8px;
+  // background: #ffffff;
+  // box-shadow: 0px 4px 16px #edece9;
+  // border-radius: 0px 0px 8px 8px;
   width: 100%;
 }
 
 .lines-prompt {
-  padding: 12px;
-  flex-grow: 100;
-  text-align: right;
+  // padding: 12px;
+  // flex-grow: 100;
+  // text-align: right;
+  margin-top: 8px;
+  font-size: 12px;
 }
 
 .lines-wrapper {
@@ -210,11 +208,124 @@
   // right: 0;
 }
 
-.main-content {
-  padding: 16px;
-}
+// .main-content {
+//   padding: 16px;
+// }
 
 .loading {
-  color: #898984;
+  color: $gray-text;
   margin-right: 4px;
+  font-size: 12px;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  left: -20px;
+  top: 32px;
+  padding: 8px 8px 8px 8px;
+  // transition: all 0.2s ease-in-out;
+  border-radius: 4px;
+  // border-style: solid;
+  border-width: 1px;
+  cursor: pointer;
+  .dot {
+    $dotSize: 4px;
+    height: $dotSize;
+    width: $dotSize;
+    margin-top: 2px;
+    background-color: #349ae9;
+    border-radius: 12px;
+    // transition: all 0.2s ease-in-out;
+  }
+}
+
+// .options:hover {
+//   // border-radius: 4px;
+//   background-color: #349ae9;
+//   // padding: 4px;
+//   transition: all 0.2s ease-in-out;
+//   .dot {
+//     // transition: all 0.2s ease-in-out;
+//     background-color: white;
+//   }
+// }
+
+.options-bar {
+  margin-top: 8px;
+}
+
+.block-options {
+  // background-color: #ffffff;
+  // box-shadow: 0px 4px 8px rgba(196, 196, 196, 0.46);
+  border-radius: 4px;
+  // padding: 36px 12px 12px 12px;
+  // position: relative;
+  // top: -20px;
+  margin-top: 16px;
+  // margin-bottom: 16px;
+
+  .change-block {
+    background: none;
+    border-style: solid;
+    border-color: #edece9;
+    border-width: 1px;
+    color: #37abda;
+    padding: 4px;
+    border-radius: 4px;
+    font-size: 12px;
+
+    /* for Firefox */
+    -moz-appearance: none;
+    /* for Chrome */
+    -webkit-appearance: none;
+    // margin-right: 4px;
+  }
+
+  .change-block:focus {
+    outline: none;
+  }
+
+  // .title {
+  //   font-weight: normal;
+  //   text-transform: uppercase;
+  //   font-size: 12px;
+  // }
+
+  // .divider {
+  //   @include line;
+  //   width: 100%;
+  //   margin: 2px 0px 8px 0px;
+  // }
+
+  .block-options-header {
+    font-size: 12px;
+    color: black;
+  }
+}
+
+.save-button {
+  // background: #ffffff;
+  // border: 1px solid #edece9;
+  // box-sizing: border-box;
+  // border-radius: 4px;
+  // padding: 4px;
+  // font-size: 12px;
+  @include draft-button;
+}
+
+.save-button:focus {
+  @include draft-button-focused;
+}
+
+.divider {
+  @include line;
+  width: 100%;
+  // margin-top: 16px;
+  // margin-bottom: 16px;
+}
+
+.title-with-divider {
+  @include title-with-divider;
 }

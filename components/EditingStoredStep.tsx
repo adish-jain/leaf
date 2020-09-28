@@ -1,6 +1,6 @@
 import React, { Component, createRef } from "react";
 import dynamic from "next/dynamic";
-const StepStyles = require("../styles/Step.module.scss");
+import "../styles/step.scss";
 
 const DynamicEditor = dynamic((() => import("./DynamicEditor")) as any, {
   ssr: false,
@@ -9,16 +9,18 @@ const DynamicEditor = dynamic((() => import("./DynamicEditor")) as any, {
 type EditingStoredStepProps = {
   onChange: (stepText: any) => void;
   editorState: any;
-  lines: { start: number; end: number };
+  lines?: { start: number; end: number };
   saveLines: (fileName: string, remove: boolean) => void;
   attachedFileName: string;
   immediateUpdate: (stepText: string) => void;
   loading: boolean;
   changeEditingStep: (editingStep: number) => void;
+  updateShowBlock: (shouldShowBlock: boolean) => void;
 };
 
 type EditingStoredStepState = {
   remove: boolean;
+  codeEditor: boolean;
 };
 
 export default class Step extends Component<
@@ -27,7 +29,89 @@ export default class Step extends Component<
 > {
   constructor(props: EditingStoredStepProps) {
     super(props);
-    this.state = { remove: false };
+    this.state = { remove: false, codeEditor: false };
+
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  Lines = () => {
+    let { lines, attachedFileName, saveLines } = this.props;
+
+    return (
+      <div className={"line-indicator"}>
+        <div className={"center-indicator"}>
+          {!lines ? (
+            <div className={"lines-wrapper"}>
+              <div className={"lines-prompt"}>
+                Highlight code in the editor to attach to this step.
+              </div>
+              {/* <div className={StepStyles["lines-selected"]}>
+                No lines currently selected.
+              </div> */}
+            </div>
+          ) : (
+            <div className={"lines-wrapper"}>
+              <div className={"lines-prompt"}></div>
+              <div className={"lines-selected"}>
+                <p>
+                  Selected lines {lines.start} to {lines.end} in{" "}
+                  {attachedFileName}
+                </p>
+                <button
+                  className={"Close"}
+                  onClick={(e) => saveLines("", true)}
+                >
+                  X
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  BlockOptions = () => {
+    return (
+      <div className={"block-options"}>
+        <div className={"title-with-divider"}>
+          <label>Block Options</label>
+          <div></div>
+        </div>
+        <label className={"block-options-header"}>Block type:</label>
+        <select className={"change-block"} onChange={this.handleChange}>
+          <option value="no_block">No Block</option>
+          <option value="code_editor">Code Editor</option>
+        </select>
+      </div>
+    );
+  };
+
+  EndButtons = () => {
+    let { loading, changeEditingStep } = this.props;
+    return (
+      <div className={"end-buttons"}>
+        <button
+          onClick={(e) => {
+            changeEditingStep(-1);
+          }}
+          className={"save-button"}
+        >
+          Done Editing
+        </button>
+        <div className={"loading"}>
+          {loading ? "Saving content..." : "Content Saved."}
+        </div>
+      </div>
+    );
+  };
+
+  handleChange(e: React.FormEvent<HTMLSelectElement>) {
+    // this.setState({
+    //   codeEditor: true
+    // });
+
+    this.props.updateShowBlock(true);
   }
 
   render() {
@@ -40,73 +124,32 @@ export default class Step extends Component<
       immediateUpdate,
       loading,
       changeEditingStep,
+      updateShowBlock,
     } = this.props;
 
-    const Buttons = () => {
-      return (
-        <div className={StepStyles.Buttons}>
-          <button
-            onClick={(e) => {
-              changeEditingStep(-1);
-            }}
-            className={StepStyles.Save}
-          >
-            Done Editing
-          </button>
-          <div className={StepStyles['loading']}>{loading ? "Saving content..." : ""}</div>
-        </div>
-      );
-    };
-
-    const Lines = () => {
-      return (
-        <div className={StepStyles["line-indicator"]}>
-          <div className={StepStyles["center-indicator"]}>
-            {!lines ? (
-              <div className={StepStyles["lines-wrapper"]}>
-                <div className={StepStyles["lines-prompt"]}>
-                  Highlight code in the editor to attach to this step.
-                </div>
-                <div className={StepStyles["lines-selected"]}>
-                  No lines currently selected.
-                </div>
-              </div>
-            ) : (
-              <div className={StepStyles["lines-wrapper"]}>
-                <div className={StepStyles["lines-prompt"]}></div>
-                <div className={StepStyles["lines-selected"]}>
-                  <p>
-                    Selected lines {lines.start} to {lines.end} in{" "}
-                    {attachedFileName}
-                  </p>
-                  <button
-                    className={StepStyles["Close"]}
-                    onClick={(e) => saveLines("", true)}
-                  >
-                    X
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      );
-    };
-
     return (
-      <div>
-        <div className={StepStyles.Step}>
-          <div className={StepStyles["editing-draft"]}>
-            <DynamicEditor
-              // @ts-ignore
-              onChange={onChange}
-              editorState={editorState}
-              immediateUpdate={immediateUpdate}
-            />
+      <div className={"editingstep-wrapper"}>
+        <div className={"step-border"}>
+          <div className={"step-content"}>
+            <div className={"title-with-divider"}>
+              <label>text</label>
+              <div></div>
+            </div>
+            <div className={"editing-draft"}>
+              <DynamicEditor
+                // @ts-ignore
+                onChange={onChange}
+                editorState={editorState}
+                immediateUpdate={immediateUpdate}
+              />
+            </div>
           </div>
-          <Buttons />
-          <Lines />
+          <this.BlockOptions />
+          <this.Lines />
         </div>
+
+        <this.EndButtons />
+        {/* <div className={StepStyles["divider"]}></div> */}
       </div>
     );
   }

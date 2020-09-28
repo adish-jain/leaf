@@ -2,35 +2,14 @@ import React, { Component } from "react";
 import dynamic from "next/dynamic";
 import PublishedLanguageBar from "./PublishedLanguageBar";
 import PublishedFileBar from "./PublishedFileBar";
-import PublishedCodeEditorStyles from "../styles/PublishedCodeEditor.module.scss";
-
-// import CodeMirror from './DynamicComponent';
-// const {CodeMirror} = require('./DynamicComponent');
-
-const PublishedCodeMirror = dynamic(
-  (() => import("./PublishedCodeMirror")) as any,
-  {
-    ssr: false,
-  }
-);
-
-type File = {
-  id: string;
-  language: string;
-  code: string;
-  name: string;
-};
-
-type StepType = {
-  text: string;
-  id: string;
-  fileId: string;
-  lines: { start: number; end: number };
-};
+import "../styles/publishedcodeeditor.scss";
+import { File, Step } from "../typescript/types/app_types";
+import PrismEditor from "./PrismEditor";
+import PublishedImageView from "./PublishedImageView";
 
 type PublishedCodeEditorProps = {
   // changeStep: (newStep: number) => void;
-  currentStep?: StepType;
+  currentStep: Step;
   files: File[];
   currentFile: File;
   updateFile: (fileIndex: number) => void;
@@ -55,17 +34,14 @@ export default class PublishedCodeEditor extends Component<
   render() {
     let { files, currentFile, currentStep, updateFile } = this.props;
     return (
-      <div className={PublishedCodeEditorStyles["editor-wrapper"]}>
+      <div className={"editor-wrapper"}>
+        <PublishedImageView currentStep={currentStep} />
         <PublishedFileBar
           updateFile={updateFile}
           files={files}
           currentFile={currentFile}
         />
-        <PublishedCodeMirror
-          //@ts-ignore
-          currentFile={currentFile}
-          currentStep={currentStep}
-        />
+        <PrismEditor currentFile={currentFile} currentStep={currentStep} />
         <PublishedLanguageBar language={currentFile.language} />
       </div>
     );

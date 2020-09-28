@@ -15,7 +15,7 @@ import {
   BlockquoteButton,
   CodeBlockButton,
 } from "draft-js-buttons";
-import EditorStyles from "../styles/EditorStyles.module.scss";
+import "../styles/editorstyles.scss";
 import "!style-loader!css-loader!draft-js-static-toolbar-plugin/lib/plugin.css";
 
 var shortId = require("shortid");
@@ -57,11 +57,8 @@ class HeadlinesButton extends Component {
 
   render() {
     return (
-      <div className={EditorStyles["headline-button-wrapper"]}>
-        <button
-          onClick={this.onClick}
-          className={EditorStyles["headline-button"]}
-        >
+      <div className={"headline-button-wrapper"}>
+        <button onClick={this.onClick} className={"headline-button"}>
           H
         </button>
       </div>
@@ -156,22 +153,24 @@ export default class DynamicEditor extends Component {
               this.editor = element;
             }}
           />
-          <Toolbar>
-            {(externalProps) => (
-              <div>
-                <BoldButton {...externalProps} />
-                <ItalicButton {...externalProps} />
-                <UnderlineButton {...externalProps} />
-                <CodeButton {...externalProps} />
-                <Separator {...externalProps} />
-                <HeadlinesButton {...externalProps} />
-                <UnorderedListButton {...externalProps} />
-                <OrderedListButton {...externalProps} />
-                <BlockquoteButton {...externalProps} />
-                <CodeBlockButton {...externalProps} />
-              </div>
-            )}
-          </Toolbar>
+          <div className={"toolbar-wrapper"}>
+            <Toolbar>
+              {(externalProps) => (
+                <div>
+                  <BoldButton {...externalProps} />
+                  <ItalicButton {...externalProps} />
+                  <UnderlineButton {...externalProps} />
+                  <CodeButton {...externalProps} />
+                  <Separator {...externalProps} />
+                  <HeadlinesButton {...externalProps} />
+                  <UnorderedListButton {...externalProps} />
+                  <OrderedListButton {...externalProps} />
+                  <BlockquoteButton {...externalProps} />
+                  <CodeBlockButton {...externalProps} />
+                </div>
+              )}
+            </Toolbar>
+          </div>
         </div>
       </div>
     );

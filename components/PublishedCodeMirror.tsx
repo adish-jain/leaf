@@ -15,35 +15,18 @@ import "codemirror/mode/javascript/javascript";
 import "codemirror/mode/jsx/jsx";
 import "codemirror/mode/python/python";
 
+import { File, Step } from "../typescript/types/app_types";
+
 // require('codemirror/mode/xml/xml');
 // require('codemirror/mode/javascript/javascript');
 // require("codemirror/mode/jsx/jsx");
 
 type CodeMirrorProps = {
   currentFile: File;
-  currentStep?: StepType;
-};
-
-type Lines = {
-  start: number;
-  end: number;
-};
-
-type StepType = {
-  text: string;
-  id: string;
-  fileId: string;
-  lines: Lines;
+  currentStep?: Step;
 };
 
 type CodeMirrorState = {};
-
-type File = {
-  id: string;
-  language: string;
-  code: string;
-  name: string;
-};
 
 const ranges = [
   {
@@ -147,9 +130,11 @@ export default class PublishedCodeMirror extends Component<
             this.instance = editor;
             editor.setSize("100%", "100%");
           }}
-          scroll={{
-            // y: 0,
-          }}
+          scroll={
+            {
+              // y: 0,
+            }
+          }
           onBeforeChange={(editor, data, value) => {}}
         />
       </div>

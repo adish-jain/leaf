@@ -5,30 +5,19 @@ import StoredStep from "./StoredStep";
 const fetch = require("node-fetch");
 global.Headers = fetch.Headers;
 import Router from "next/router";
-const publishingStyles = require("../styles/Publishing.module.scss");
+import "../styles/publishing.scss";
+import { File, Step, Lines } from "../typescript/types/app_types";
 
 var shortId = require("shortid");
 
-type File = {
-  id: string;
-  language: string; //replace with enum
-  code: string;
-  name: string;
-};
-
-type Line = {
-  lineNumber: number;
-  char: number;
-};
-
 type PublishingProps = {
-  draftId: any;
+  draftId: string;
   title: string;
-  storedSteps: any[];
+  storedSteps: Step[];
   // what step is currently being edited? -1 means no steps being edited
   editingStep: number;
   changeEditingStep: (editingStep: number) => void;
-  saveStep: (stepId: string, text: any) => void;
+  saveStep: (stepId: string, text: string) => void;
   mutateStoredStep: (stepId: string, text: string) => void;
   saveStepToBackend: (stepId: string, text: string) => void;
   deleteStoredStep: (stepId: any) => void;
@@ -36,11 +25,13 @@ type PublishingProps = {
   moveStepDown: (stepId: any) => void;
   onTitleChange: (title: string) => void;
   selectedFileIndex: number;
-  lines: { start: Line; end: Line };
+  lines: Lines;
   saveLines: (fileName: string, remove: boolean) => void;
   files: File[];
   published: boolean;
   goToPublishedPost: () => void;
+  shouldShowBlock: boolean;
+  updateShowBlock: (shouldShowBlock: boolean) => void;
 };
 
 type PublishingState = {
@@ -147,26 +138,20 @@ export default class Publishing extends Component<
 
   PublishingButtons = () => {
     return (
-      <div className={publishingStyles.PublishingButtonsWrapper}>
-        <div className={publishingStyles.publishingButtons}>
-          <button
-            onClick={this.previewDraft}
-            className={publishingStyles.preview}
-          >
+      <div className={"PublishingButtonsWrapper"}>
+        <div className={"publishingButtons"}>
+          <button onClick={this.previewDraft} className={"preview"}>
             {this.state.previewLoading ? "Loading Preview..." : "Preview"}
           </button>
           {this.props.published ? (
             <button
               onClick={(e) => this.props.goToPublishedPost()}
-              className={publishingStyles.publish}
+              className={"publish"}
             >
               Go to Published Post
             </button>
           ) : (
-            <button
-              onClick={this.publishDraft}
-              className={publishingStyles.publish}
-            >
+            <button onClick={this.publishDraft} className={"publish"}>
               Publish
             </button>
           )}
@@ -177,13 +162,18 @@ export default class Publishing extends Component<
 
   PublishingHeader = () => {
     return (
-      <div className={publishingStyles.header}>
+      <div className={"header"}>
         <TextareaAutosize
           placeholder={this.props.title}
           value={this.props.title}
           onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
             let myTarget = e.target as HTMLTextAreaElement;
             this.props.onTitleChange(myTarget.value);
+          }}
+          style={{
+            fontWeight: "bold",
+            fontSize: "40px",
+            color: "D0D0D0",
           }}
           name="title"
         />
@@ -203,14 +193,20 @@ export default class Publishing extends Component<
       mutateStoredStep,
       saveStepToBackend,
       deleteStoredStep,
+      shouldShowBlock,
+      updateShowBlock,
     } = this.props;
 
-    function StoredSteps() {
-      return <div></div>;
-    }
+    let fullWidthStyle;
+    !shouldShowBlock
+      ? (fullWidthStyle = {
+          width: "880px",
+        })
+      : (fullWidthStyle = {});
+
     return (
-      <div className={publishingStyles.publishing}>
-        <this.PublishingButtons />
+      <div style={fullWidthStyle} className={"publishing"}>
+        {/* <this.PublishingButtons /> */}
         <this.PublishingHeader />
         {storedSteps.map((storedStep, index) => {
           return (
@@ -231,11 +227,12 @@ export default class Publishing extends Component<
               selectedFileIndex={selectedFileIndex}
               files={files}
               saveLines={saveLines}
-              attachedFileId={storedStep.fileId}
+              attachedFileId={storedStep.fileId!}
+              updateShowBlock={updateShowBlock}
             />
           );
         })}
-        <NewStep addStep={this.addStep} />
+        {editingStep === -1 ? <NewStep addStep={this.addStep} /> : <div></div>}
       </div>
     );
   }

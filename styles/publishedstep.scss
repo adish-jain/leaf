@@ -1,3 +1,4 @@
+@import "commonui.scss";
 .Buttons {
   display: flex;
   flex-direction: row-reverse;
@@ -5,27 +6,38 @@
 
 .Step {
   margin-top: 24px;
-  padding: 24px;
-  border: 1px solid #edece9;
+  // padding: 24px;
+  // border: 1px solid #edece9;
   border-radius: 8px;
   box-sizing: border-box;
   color: #a1a19c;
+  transition: color 0.2s ease-in-out;
 
   cursor: pointer;
 
   &--Selected {
     @extend .Step;
-    box-shadow: 0px 4px 16px #edece9;
-    background: #ffffff;
+    // box-shadow: 0px 4px 16px #edece9;
+    // background: #ffffff;
     color: #000000;
+    
   }
 }
+
+.divider {
+  @include line;
+}
+
+.Step:hover {
+  color: #000000;
+  transition: color 0.2s ease-in-out;
+}
+
 
 .InnerHTML {
   word-break: break-word;
   p {
     // white-space: pre;
     // word-break: break-all;
-
   }
 }
