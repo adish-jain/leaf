@@ -6,7 +6,7 @@ import { useLoggedIn, logOut } from "../lib/UseLoggedIn";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-// import indexStyles from "../styles/index.scss";
+// let indexStyles = require("../styles/index.scss");
 import "../styles/index.scss";
 
 export default function Pages() {
@@ -58,7 +58,7 @@ Header Components
 */
 function Header(props: { goToIndex: any }) {
   return (
-    <div className={"index-header"}>
+    <div className={"Header"}>
       <NavBar goToIndex={props.goToIndex} />
     </div>
   );
