@@ -32,6 +32,11 @@
   height: 100%;
 }
 
+.center-divs {
+  margin: auto;
+  display: flex;
+}
+
 .App {
   // margin-left: 6vh;
   // margin-right: 6vh;
@@ -42,7 +47,14 @@
   display: flex;
   flex-direction: row;
   margin-top: 48px;
+  // width: 1300px;
+  // width: auto;
   // height: 100vh;
+}
+
+.RightPane {
+  display: flex;
+  flex-direction: column;
 }
 
 .Logo {
@@ -51,36 +63,55 @@
   // margin-bottom: 30px;
   margin-left: 3%;
   img {
-      max-width: 50%;
-      height: auto;
-      width: 250px; 
-      // border-radius: 20px;
+    max-width: 50%;
+    height: auto;
+    width: 250px;
+    // border-radius: 20px;
   }
 
   img:hover {
-      /* Start the shake animation and make the animation last for 0.5 seconds */
-      animation: shake 0.5s;
-    
-      /* When the animation is finished, start again */
-      animation-iteration-count: infinite;
-    }
-    
-    @keyframes shake {
-      0% { transform: translate(1px, 1px) rotate(0deg); }
-      10% { transform: translate(-1px, -2px) rotate(-1deg); }
-      20% { transform: translate(-3px, 0px) rotate(1deg); }
-      30% { transform: translate(3px, 2px) rotate(0deg); }
-      40% { transform: translate(1px, -1px) rotate(1deg); }
-      50% { transform: translate(-1px, 2px) rotate(-1deg); }
-      60% { transform: translate(-3px, 1px) rotate(0deg); }
-      70% { transform: translate(3px, 1px) rotate(-1deg); }
-      80% { transform: translate(-1px, -1px) rotate(1deg); }
-      90% { transform: translate(1px, 2px) rotate(0deg); }
-      100% { transform: translate(1px, -2px) rotate(-1deg); }
-    }
-    
+    /* Start the shake animation and make the animation last for 0.5 seconds */
+    animation: shake 0.5s;
 
-  
+    /* When the animation is finished, start again */
+    animation-iteration-count: infinite;
+  }
+
+  @keyframes shake {
+    0% {
+      transform: translate(1px, 1px) rotate(0deg);
+    }
+    10% {
+      transform: translate(-1px, -2px) rotate(-1deg);
+    }
+    20% {
+      transform: translate(-3px, 0px) rotate(1deg);
+    }
+    30% {
+      transform: translate(3px, 2px) rotate(0deg);
+    }
+    40% {
+      transform: translate(1px, -1px) rotate(1deg);
+    }
+    50% {
+      transform: translate(-1px, 2px) rotate(-1deg);
+    }
+    60% {
+      transform: translate(-3px, 1px) rotate(0deg);
+    }
+    70% {
+      transform: translate(3px, 1px) rotate(-1deg);
+    }
+    80% {
+      transform: translate(-1px, -1px) rotate(1deg);
+    }
+    90% {
+      transform: translate(1px, 2px) rotate(0deg);
+    }
+    100% {
+      transform: translate(1px, -2px) rotate(-1deg);
+    }
+  }
 
   // font-family: Arial rounded MT bold;
   // font-style: normal;

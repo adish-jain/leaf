@@ -5,6 +5,7 @@ import { getDraftDataHandler, getUserStepsForDraft } from "../lib/postUtils";
 import { getUsernameFromUid } from "../lib/userUtils";
 import FinishedPost from "../components/FinishedPost";
 import DefaultErrorPage from "next/error";
+import { Step, File } from "../typescript/types/app_types";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   if (context.preview) {
@@ -49,22 +50,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
   }
 };
 
-type StepType = {
-  text: string;
-  id: string;
-  fileId: string;
-  lines: { start: number; end: number };
-};
-
-type File = {
-  id: string;
-  language: string;
-  code: string;
-  name: string;
-};
-
 type DraftPreviewProps = {
-  steps: StepType[];
+  steps: Step[];
   title: string;
   files: File[];
   errored: boolean;

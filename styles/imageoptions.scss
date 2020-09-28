@@ -1,0 +1,17 @@
+@import "commonui";
+
+.options-wrapper {
+  button {
+    @include draft-button;
+    margin-right: 16px;
+  }
+
+  .buttons {
+    display: flex;
+    margin-bottom: 16px;
+  }
+}
+
+.title-with-divider {
+  @include title-with-divider;
+}

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Link from "next/link";
-const headerStyles = require("../styles/Header.module.scss");
+import "../styles/header.scss";
 import { goToIndex, goToLanding, logOut } from "../lib/UseLoggedIn";
 
 type HeaderProps = {
@@ -22,10 +22,10 @@ export class HeaderUnAuthenticated extends Component<HeaderProps> {
   render() {
     const { signup, login, about, examples } = this.props;
     return (
-      <div className={headerStyles["header"]}>
-        <div className={headerStyles["navbar"]}>
+      <div className={"header"}>
+        <div className={"navbar"}>
           <Logo goTo={goToIndex} />
-          <div className={headerStyles["menu-items"]}>
+          <div className={"menu-items"}>
             {signup ? (
               <Link href="/signup">
                 <a>Signup</a>
@@ -70,10 +70,10 @@ export default class Header extends Component<HeaderProps> {
   render() {
     let { username, profile, settings, logout } = this.props;
     return (
-      <div className={headerStyles["header"]}>
-        <div className={headerStyles["navbar"]}>
+      <div className={"header"}>
+        <div className={"navbar"}>
           <Logo goTo={goToLanding} />
-          <div className={headerStyles["menu-items"]}>
+          <div className={"menu-items"}>
             {profile ? (
               <Link href={`/${username}`}>
                 <a>Profile</a>
@@ -98,7 +98,7 @@ export default class Header extends Component<HeaderProps> {
 
 function Logo(props: { goTo: () => void }) {
   return (
-    <div className={headerStyles.logo} onClick={props.goTo}>
+    <div className={'logo'} onClick={props.goTo}>
       <img src="/images/LeafLogo.svg" />
     </div>
   );
@@ -106,7 +106,7 @@ function Logo(props: { goTo: () => void }) {
 
 function Logout() {
   return (
-    <div className={headerStyles["menu-item"]} onClick={logOut}>
+    <div className={"menu-item"} onClick={logOut}>
       Logout
     </div>
   );

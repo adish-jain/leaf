@@ -4,24 +4,11 @@ import animateScrollTo from "animated-scroll-to";
 import { useLoggedIn } from "../lib/UseLoggedIn";
 import Header, { HeaderUnAuthenticated } from "../components/Header";
 import PublishedCodeEditor from "./PublishedCodeEditor";
-const appStyles = require("../styles/App.module.scss");
-
-type StepType = {
-  text: string;
-  id: string;
-  lines: { start: number; end: number };
-  fileId: string;
-};
-
-type File = {
-  id: string;
-  language: string;
-  code: string;
-  name: string;
-};
+import "../styles/app.scss";
+import { File, Step } from "../typescript/types/app_types";
 
 type FinishedPostProps = {
-  steps: StepType[];
+  steps: Step[];
   title: string;
   files: File[];
   username: string;
@@ -60,24 +47,26 @@ const FinishedPost = (props: FinishedPostProps) => {
   }
 
   return (
-    <div className={appStyles.App}>
+    <div className={"App"}>
       {authenticated ? (
         <Header settings={true} profile={true} username={props.username} />
       ) : (
         <HeaderUnAuthenticated about={true} login={true} signup={true} />
       )}
-      <Scrolling
-        title={props.title}
-        currentStepIndex={currentStepIndex}
-        changeStep={changeStep}
-        steps={props.steps}
-      />
-      <PublishedCodeEditor
-        currentFile={props.files[currentFileIndex]}
-        files={props.files}
-        currentStep={props.steps[currentStepIndex]}
-        updateFile={updateFile}
-      />
+      <div className={"center-divs"}>
+        <Scrolling
+          title={props.title}
+          currentStepIndex={currentStepIndex}
+          changeStep={changeStep}
+          steps={props.steps}
+        />
+        <PublishedCodeEditor
+          currentFile={props.files[currentFileIndex]}
+          files={props.files}
+          currentStep={props.steps[currentStepIndex]}
+          updateFile={updateFile}
+        />
+      </div>
     </div>
   );
 };

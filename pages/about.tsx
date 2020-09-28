@@ -6,7 +6,7 @@ import * as typeformEmbed from "@typeform/embed";
 import { usePosts } from "../lib/usePosts";
 import { HeaderUnAuthenticated } from "../components/Header";
 
-const aboutStyles = require("../styles/About.module.scss");
+import "../styles/about.scss";
 
 export default function About() {
   const router = useRouter();
@@ -26,7 +26,7 @@ export default function About() {
       <main>
         <HeaderUnAuthenticated examples={true} signup={true} login={true} />
         <div>
-          <div className={aboutStyles.container}>
+          <div className={"about-container"}>
             <AboutLeaf />
             <FAQ />
             <Team />
@@ -40,8 +40,8 @@ export default function About() {
 
 function SectionHeader(props: { title: string }) {
   return (
-    <div className={aboutStyles["section-container"]}>
-      <h1 className={aboutStyles["section-header"]}>{props.title}</h1>
+    <div className={"section-container"}>
+      <h1 className={"section-header"}>{props.title}</h1>
       <hr />
     </div>
   );
@@ -49,7 +49,7 @@ function SectionHeader(props: { title: string }) {
 
 function AboutLeaf() {
   return (
-    <div className={aboutStyles.aboutLeaf}>
+    <div className={"aboutLeaf"}>
       <SectionHeader title={"About"} />
       <p>
         Leaf is a platform designed to reshape the way learners interact with
@@ -81,14 +81,14 @@ function AboutLeaf() {
 function Dropdown(props: { title: string; children: any }) {
   const [opened, toggleOpen] = useState(false);
   return (
-    <div className={aboutStyles["dropdown"]}>
-      <div className={aboutStyles["header"]}>
+    <div className={"dropdown"}>
+      <div className={"about-header"}>
         <button onClick={(e) => toggleOpen(!opened)}>
           {opened ? "▾" : "▸"}
         </button>
         <p>{props.title}</p>
       </div>
-      <div className={aboutStyles["dropdown-content"]}>
+      <div className={"dropdown-content"}>
         {opened ? props.children : <div></div>}
       </div>
     </div>
@@ -111,10 +111,7 @@ function FAQ() {
           below!
         </p>
 
-        <img
-          className={aboutStyles.animatedGif}
-          src="/images/languagetoggle.gif"
-        ></img>
+        <img className={"animatedGif"} src="/images/languagetoggle.gif"></img>
       </Dropdown>
       <Dropdown title={"How do I associate my tutorial's steps with code?"}>
         <p>
@@ -123,10 +120,7 @@ function FAQ() {
           to select and you should be able to link the code to the step you're
           on.
         </p>
-        <img
-          className={aboutStyles.animatedGif}
-          src="/images/associatecode.gif"
-        ></img>
+        <img className={"animatedGif"} src="/images/associatecode.gif"></img>
       </Dropdown>
       <Dropdown
         title={
@@ -149,10 +143,7 @@ function FAQ() {
           <b> Edit</b> under <b>Your Published Posts. </b>
           This will allow you to edit any post you've already published.
         </p>
-        <img
-          className={aboutStyles.animatedGif}
-          src="/images/editingposts.gif"
-        ></img>
+        <img className={"animatedGif"} src="/images/editingposts.gif"></img>
       </Dropdown>
       <Dropdown title={"O.K. I've published my first post. Now what?"}>
         <p>
@@ -174,18 +165,15 @@ function PersonCard(props: {
 }) {
   const { name, username } = props;
   return (
-    <div className={aboutStyles["person-card"]}>
-      <div className={aboutStyles["img-header"]}>
-        <img
-          className={aboutStyles["profile-pic"]}
-          src={`/images/${props.img}.png`}
-        ></img>
-        <div className={aboutStyles["bio"]}>
+    <div className={"person-card"}>
+      <div className={"img-header"}>
+        <img className={"profile-pic"} src={`/images/${props.img}.png`}></img>
+        <div className={"bio"}>
           <div>
             <h3>{name}</h3>
             {props.children}
           </div>
-          <div className={aboutStyles.icons}>
+          <div className={"icons"}>
             <a href={`https://twitter.com/${username}`} target="_blank">
               <img src="images/twitter.svg" />
             </a>
@@ -198,11 +186,11 @@ function PersonCard(props: {
 
 function Team() {
   return (
-    <div className={aboutStyles["team"]}>
+    <div className={"team"}>
       <SectionHeader title={"The Team"} />
-      <div className={aboutStyles["people"]}>
+      <div className={"people"}>
         <PersonCard img={"rah"} name={"Rahul Sarathy"} username={"outofthebot"}>
-          <p className={aboutStyles.img__description}>
+          <p className={"img__description"}>
             I previously created <a href="https://getpulp.io">getpulp.io</a>{" "}
             where I was trying to figure out how to improve the experience of
             reading things online. I’m endlessly curious about how people can
@@ -212,7 +200,7 @@ function Team() {
           </p>
         </PersonCard>
         <PersonCard img={"adi"} name={"Adish Jain"} username={"_adishj"}>
-          <p className={aboutStyles.img__description}>
+          <p className={"img__description"}>
             I am really interested in problems having to do with educational
             systems. Tech can be used to foster better learning and improve the
             transfer of knowledge, and as a computer science teacher of 3 years,
@@ -227,7 +215,7 @@ function Team() {
 
 function Feedback() {
   return (
-    <div className={aboutStyles.feedback}>
+    <div className={"feedback"}>
       <SectionHeader title={"Feedback"} />
       <p>
         Leaf is still in a very early-development stage as a tool, so we
@@ -266,7 +254,7 @@ class TypeForm extends Component {
 
   render() {
     return (
-      <div className={aboutStyles.popupButton}>
+      <div className={"popupButton"}>
         <button id="bt-popup">Give us some feedback</button>
       </div>
     );

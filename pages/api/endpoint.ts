@@ -51,6 +51,10 @@ import handleGetFiles from "../../lib/api/getFiles";
 import handleSaveFileCode from "../../lib/api/saveFileCode";
 import handleSaveFileName from "../../lib/api/saveFileName";
 
+// images
+import handleSaveImage from "../../lib/api/saveImage";
+import handleDeleteImage from "../../lib/api/deleteImage";
+
 // email
 import handlePasswordReset from "../../lib/api/passwordReset";
 
@@ -58,6 +62,14 @@ import sentryHandler from "../../lib/sentryHandler";
 
 const firebase = require("firebase/app");
 initFirebase();
+
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "5mb",
+    },
+  },
+};
 
 export default sentryHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {
@@ -219,10 +231,18 @@ export default sentryHandler(
         return handlePasswordReset(req, res);
       }
 
-      default: {
+      // images
+      case "saveImage": {
+        return handleSaveImage(req, res);
+      }
+
+      case "deleteImage": {
+        return handleDeleteImage(req, res);
+      }
+
+      default: 
         res.statusCode = 403;
         res.end();
-      }
     }
   }
 );

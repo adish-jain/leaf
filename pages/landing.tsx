@@ -1,15 +1,13 @@
 import Head from "next/head";
-import Link from "next/link";
 const moment = require("moment");
 const fetch = require("node-fetch");
 global.Headers = fetch.Headers;
-const landingStyles = require("../styles/Landing.module.scss");
-const headerStyles = require("../styles/Header.module.scss");
+import "../styles/landing.scss";
+import "../styles/header.scss";
 import { useLoggedIn, logOut, goToIndex } from "../lib/UseLoggedIn";
 import { useDrafts } from "../lib/useDrafts";
 import { useUserInfo } from "../lib/useUserInfo";
 import { usePosts, goToPost } from "../lib/usePosts";
-import { userInfo } from "os";
 import Header from "../components/Header";
 
 type DraftType = {
@@ -97,7 +95,7 @@ export default function Landing() {
           settings={true}
           logout={true}
         />
-        <div className={landingStyles.landing}>
+        <div className={"landing"}>
           <YourDrafts
             deleteDraft={deleteDraft}
             openDraft={openDraft}
@@ -177,7 +175,7 @@ function YourPosts(props: {
       return <div></div>;
     }
     return (
-      <div className={landingStyles["DraftButtons"]}>
+      <div className={"DraftButtons"}>
         <button onClick={togglePostsEdit}>
           {postsEditClicked ? "Done" : "Edit"}
         </button>
@@ -186,7 +184,7 @@ function YourPosts(props: {
   };
 
   return (
-    <div className={`${landingStyles.right} ${landingStyles.Section}`}>
+    <div className={`${"right"} ${"Section"}`}>
       <h1>Your Published Posts</h1>
       <hr />
       <EditButton />
@@ -211,15 +209,12 @@ function Post(props: {
 
   const Editbuttons = () => {
     return (
-      <div className={landingStyles["EditButtons"]}>
-        <button
-          onClick={(e) => props.deletePost(postUid)}
-          className={landingStyles["Edit"]}
-        >
+      <div className={"EditButtons"}>
+        <button onClick={(e) => props.deletePost(postUid)} className={"Edit"}>
           X
         </button>
         <button
-          className={landingStyles["edit-post-button"]}
+          className={"edit-post-button"}
           onClick={(e) => goToDraft(props.draftId)}
         >
           Edit Post
@@ -229,13 +224,13 @@ function Post(props: {
   };
 
   return (
-    <div className={landingStyles["DraftWrapper"]}>
+    <div className={"DraftWrapper"}>
       {props.postsEditClicked ? <Editbuttons /> : <div></div>}
       <div
         onClick={(e) => props.goToPost(username, postId)}
-        className={landingStyles["draft"]}
+        className={"draft"}
       >
-        <p className={landingStyles["Draft-Title"]}>{props.title}</p>
+        <p className={"Draft-Title"}>{props.title}</p>
         <p>Published on {props.formattedDate}</p>
       </div>
     </div>
@@ -256,10 +251,7 @@ function YourDrafts(props: {
       return (
         <div>
           <p>You have no drafts.</p>
-          <button
-            className={landingStyles["create-button"]}
-            onClick={createNewDraft}
-          >
+          <button className={"create-button"} onClick={createNewDraft}>
             Create New Draft
           </button>
         </div>
@@ -286,7 +278,7 @@ function YourDrafts(props: {
     toggleDraftsEdit,
   } = props;
   return (
-    <div className={`${landingStyles.left} ${landingStyles.Section}`}>
+    <div className={`left Section`}>
       <YourDraftsHeader
         toggleDraftsEdit={toggleDraftsEdit}
         draftsEditClicked={draftsEditClicked}
@@ -307,16 +299,13 @@ function YourDraftsHeader(props: {
   let { createNewDraft, drafts, toggleDraftsEdit, draftsEditClicked } = props;
   return (
     <div>
-      <div className={landingStyles["left-header"]}>
+      <div className={"left-header"}>
         <h1>Your Drafts</h1>
       </div>
       {drafts ? <div></div> : <div></div>}
       <hr />
-      <div className={landingStyles["DraftButtons"]}>
-        <button
-          className={landingStyles["CreateButton"]}
-          onClick={(e) => createNewDraft()}
-        >
+      <div className={"DraftButtons"}>
+        <button className={"CreateButton"} onClick={(e) => createNewDraft()}>
           Create New Post
         </button>
         <button onClick={toggleDraftsEdit}>
@@ -338,23 +327,17 @@ type DraftProps = {
 
 function Draft(props: DraftProps) {
   return (
-    <div className={landingStyles["DraftWrapper"]}>
+    <div className={"DraftWrapper"}>
       {props.draftsEditClicked ? (
-        <button
-          onClick={(e) => props.deleteDraft(props.id)}
-          className={landingStyles["Edit"]}
-        >
+        <button onClick={(e) => props.deleteDraft(props.id)} className={"Edit"}>
           X
         </button>
       ) : (
         <div></div>
       )}
 
-      <div
-        onClick={(e) => props.openDraft(props.id)}
-        className={landingStyles["draft"]}
-      >
-        <p className={landingStyles["Draft-Title"]}>{props.title}</p>
+      <div onClick={(e) => props.openDraft(props.id)} className={"draft"}>
+        <p className={"Draft-Title"}>{props.title}</p>
       </div>
     </div>
   );

@@ -1,13 +1,12 @@
 import React, { Component } from "react";
-const languageBarStyles = require("../styles/LanguageBar.module.scss");
+import "../styles/languagebar.scss";
 
 type LanguageBarProps = {
   language: string;
   changeFileLanguage: (language: string, external: boolean) => void;
 };
 
-type LanguageBarState = {
-};
+type LanguageBarState = {};
 
 export default class CodeMirror extends Component<
   LanguageBarProps,
@@ -24,23 +23,28 @@ export default class CodeMirror extends Component<
 
   render() {
     return (
-      <div className={languageBarStyles.LanguageBar}>
+      <div className={"LanguageBar"}>
         <label>
           Language:
-          <select onChange={this.handleChange} value={this.props.language}>
+          <select
+            onChange={this.handleChange}
+            value={
+              this.props.language !== "textile"
+                ? this.props.language
+                : "plaintext"
+            }
+          >
             <option value="xml">HTML</option>
             <option value="css">CSS</option>
             <option value="jsx">JSX</option>
+            <option value="typescript">Typescript</option>
             <option value="javascript">Javascript</option>
             <option value="python">Python</option>
-            <option value="text/x-csrc">C</option>
-            <option value="text/x-c++src">C++</option>
-            <option value="text/x-java">Java</option>
+            <option value="java">Java</option>
             <option value="go">Go</option>
             <option value="php">PHP</option>
             <option value="ruby">Ruby</option>
-            <option value="textile">Text</option>
-
+            <option value="plaintext">Text</option>
           </select>
         </label>
       </div>

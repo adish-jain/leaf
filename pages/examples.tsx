@@ -5,7 +5,7 @@ import { useLoggedIn, logOut } from "../lib/UseLoggedIn";
 import Header, { HeaderUnAuthenticated } from "../components/Header";
 import { useRouter } from "next/router";
 
-const exampleStyles = require("../styles/Examples.module.scss");
+import "../styles/examples.scss";
 
 export default function Pages() {
   const router = useRouter();
@@ -36,7 +36,7 @@ export default function Pages() {
           }}
         />
       </Head>
-      <main className={exampleStyles.MainWrapper}>
+      <main className={"MainWrapper"}>
         <HeaderUnAuthenticated login={true} signup={true} about={true} />
         <TitleText />
         <Tutorials />
@@ -47,34 +47,32 @@ export default function Pages() {
 
 function TitleText() {
   return (
-    <div className={exampleStyles.Title}>
-      <div className={exampleStyles.Text}>Example Tutorials</div>
+    <div className={"example-title"}>
+      <div className={"Text"}>Example Tutorials</div>
     </div>
   );
 }
 
 function Tutorials() {
   return (
-    <div className={exampleStyles.Tutorials}>
+    <div className={"Tutorials"}>
       <a
         href="https://getleaf.app/dsps301/binarysearch-58opqzc9"
         target="_blank"
       >
-        <div className={exampleStyles.Tutorial}>Binary Search</div>
+        <div className={"Tutorial"}>Binary Search</div>
       </a>
       <a
         href="https://getleaf.app/outofthebot/howdostepsandscrollingworkintheleafcodebase-y4qrlau9"
         target="_blank"
       >
-        <div className={exampleStyles.Tutorial}>
-          Steps & Scrolling in the Leaf Codebase
-        </div>
+        <div className={"Tutorial"}>Steps & Scrolling in the Leaf Codebase</div>
       </a>
       <a
         href="https://getleaf.app/dsps301/kanyewestspower-pm6ne39l"
         target="_blank"
       >
-        <div className={exampleStyles.Tutorial}>Kanye West's 'Power'</div>
+        <div className={"Tutorial"}>Kanye West's 'Power'</div>
       </a>
     </div>
   );
