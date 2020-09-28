@@ -4,7 +4,6 @@ import PublishedLanguageBar from "./PublishedLanguageBar";
 import PublishedFileBar from "./PublishedFileBar";
 import "../styles/publishedcodeeditor.scss";
 import { File, Step } from "../typescript/types/app_types";
-import PublishedMonacoEditor from "./PublishedMonacoEditor";
 import PrismEditor from "./PrismEditor";
 import PublishedImageView from "./PublishedImageView";
 

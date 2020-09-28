@@ -104,9 +104,6 @@ export default class PrismEditor extends Component<
       verticalOffset: -50,
     };
 
-    let test = document.getElementsByClassName(" line-highlight")[0] as Element;
-    console.log(document.getElementsByClassName(" line-highlight"));
-
     let lineCalc = currentStep?.lines?.start! * 18;
     animateScrollTo(lineCalc, animationOptions);
   }

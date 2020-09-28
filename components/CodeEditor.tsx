@@ -8,13 +8,6 @@ import MonacoEditor from "./MonacoEditor";
 import ImageView from "./ImageView";
 import { File, Step as StepType, Lines } from "../typescript/types/app_types";
 
-const DynamicCodeEditor = dynamic(
-  (() => import("./DynamicCodeEditor")) as any,
-  {
-    ssr: false,
-  }
-);
-
 type CodeEditorProps = {
   draftId: string;
   saveFileCode: () => void;

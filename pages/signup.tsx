@@ -6,8 +6,8 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { HeaderUnAuthenticated } from "../components/Header";
 
-const headerStyles = require("../styles/Header.module.scss");
-const loginStyles = require("../styles/Login.module.scss");
+import "../styles/header.scss";
+import "../styles/login.scss";
 
 export default function SignUp() {
   const router = useRouter();
@@ -108,7 +108,7 @@ export default function SignUp() {
           }}
         />
       </Head>
-      <main className={loginStyles.LoginMain}>
+      <main className={"LoginMain"}>
         <HeaderUnAuthenticated
           examples={true}
           login={true}
@@ -120,15 +120,15 @@ export default function SignUp() {
             height: 100%;
           }
         `}</style>
-        <div className={loginStyles.Login}>
-          <div className={loginStyles.LoginBox}>
+        <div className={"Login"}>
+          <div className={"LoginBox"}>
             <h1>Sign Up</h1>
-            <div className={loginStyles.FormWrapper}>
-              <div className={loginStyles.InputBox}>
+            <div className={"FormWrapper"}>
+              <div className={"InputBox"}>
                 <label>Email</label>
                 <input id="email" value={email} onChange={handleChangeEmail} />
               </div>
-              <div className={loginStyles.InputBox}>
+              <div className={"InputBox"}>
                 <label>Username</label>
                 <input
                   id="username"
@@ -136,7 +136,7 @@ export default function SignUp() {
                   onChange={handleChangeUsername}
                 />
               </div>
-              <div className={loginStyles.InputBox}>
+              <div className={"InputBox"}>
                 <label>Password</label>
                 <input
                   onChange={handleChangePassword}
@@ -144,7 +144,7 @@ export default function SignUp() {
                   id="password"
                 ></input>
               </div>
-              <div className={loginStyles.InputBox}>
+              <div className={"InputBox"}>
                 <label>Confirm Password</label>
                 <input
                   onChange={handleChangeVerifyPassword}
@@ -155,9 +155,9 @@ export default function SignUp() {
               {!errored ? (
                 <div></div>
               ) : (
-                <p className={loginStyles.ErrorMessage}>{errorMsg}</p>
+                <p className={"ErrorMessage"}>{errorMsg}</p>
               )}
-              <button className={loginStyles.LoginButton} onClick={handleClick}>
+              <button className={"LoginButton"} onClick={handleClick}>
                 {signingUp ? "Signing Up..." : "Signup"}
               </button>
             </div>
@@ -170,49 +170,8 @@ export default function SignUp() {
 
 function Logo(props: { goToIndex: any }) {
   return (
-    <div className={headerStyles.Logo} onClick={props.goToIndex}>
+    <div className={"Logo"} onClick={props.goToIndex}>
       <img src="/images/LeafLogo.svg" />
-    </div>
-  );
-}
-
-/*
-Header Components
-*/
-function Header(props: { goToIndex: any }) {
-  return (
-    <div className={headerStyles.Header}>
-      <NavBar goToIndex={props.goToIndex} />
-    </div>
-  );
-}
-
-function NavBar(props: { goToIndex: any }) {
-  return (
-    <div className={headerStyles.NavBar}>
-      <Logo goToIndex={props.goToIndex} />
-      <About />
-      <Login />
-    </div>
-  );
-}
-
-function Login() {
-  return (
-    <div className={headerStyles.Login}>
-      <Link href="/login">
-        <a>Login</a>
-      </Link>
-    </div>
-  );
-}
-
-function About() {
-  return (
-    <div className={headerStyles.Login}>
-      <Link href="/about">
-        <a>About</a>
-      </Link>
     </div>
   );
 }

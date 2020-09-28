@@ -5,7 +5,8 @@ import { useLoggedIn, logOut } from "../lib/UseLoggedIn";
 
 import { useRouter } from "next/router";
 
-const indexStyles = require("../styles/Index.module.scss");
+// import indexStyles from "index.scss";
+import "../styles/index.scss";
 
 export default function Pages() {
   const router = useRouter();
@@ -36,7 +37,7 @@ export default function Pages() {
           }}
         />
       </Head>
-      <main className={indexStyles.MainWrapper}>
+      <main className={"MainWrapper"}>
         <Header goToIndex={goToIndex} />
         <Stripe1 />
         <Title />
@@ -55,7 +56,7 @@ Header Components
 */
 function Header(props: { goToIndex: any }) {
   return (
-    <div className={indexStyles.Header}>
+    <div className={"index-header"}>
       <NavBar goToIndex={props.goToIndex} />
     </div>
   );
@@ -63,7 +64,7 @@ function Header(props: { goToIndex: any }) {
 
 function NavBar(props: { goToIndex: any }) {
   return (
-    <div className={indexStyles.NavBar}>
+    <div className={"NavBar"}>
       <Logo goToIndex={props.goToIndex} />
       <Signup />
       <Login />
@@ -75,7 +76,7 @@ function NavBar(props: { goToIndex: any }) {
 
 function Logo(props: { goToIndex: any }) {
   return (
-    <div className={indexStyles.Logo} onClick={props.goToIndex}>
+    <div className={"Logo"} onClick={props.goToIndex}>
       <img src="/images/logo.svg" />
     </div>
   );
@@ -83,7 +84,7 @@ function Logo(props: { goToIndex: any }) {
 
 function Login() {
   return (
-    <div className={indexStyles.Login}>
+    <div className={"Login"}>
       <Link href="/login">
         <a>Login</a>
       </Link>
@@ -93,7 +94,7 @@ function Login() {
 
 function Signup() {
   return (
-    <div className={indexStyles.Login}>
+    <div className={'Login'}>
       <Link href="/signup">
         <a>Signup</a>
       </Link>
@@ -103,7 +104,7 @@ function Signup() {
 
 function Examples() {
   return (
-    <div className={indexStyles.Login}>
+    <div className={"Login"}>
       <Link href="/examples">
         <a>Examples</a>
       </Link>
@@ -113,7 +114,7 @@ function Examples() {
 
 function About() {
   return (
-    <div className={indexStyles.Login}>
+    <div className={"Login"}>
       <Link href="/about">
         <a>About</a>
       </Link>
@@ -123,7 +124,7 @@ function About() {
 
 function Title() {
   return (
-    <div className={indexStyles.Title}>
+    <div className={"Title"}>
       <TitleText />
     </div>
   );
@@ -131,25 +132,25 @@ function Title() {
 
 function TitleText() {
   return (
-    <div className={indexStyles.Title}>
-      <div className={indexStyles.Banner}>
-        <div className={indexStyles.Text}>
-          <div className={indexStyles.h1Text}>A new way to convey</div>
-          <div className={indexStyles.h2Text}>
+    <div className={"Title"}>
+      <div className={"Banner"}>
+        <div className={"Text"}>
+          <div className={"h1Text"}>A new way to convey</div>
+          <div className={"h2Text"}>
             Leaf is a platform built from the ground up, for coding tutorials
           </div>
-          <div className={indexStyles.TitleButtons}>
+          <div className={"TitleButtons"}>
             <Link href="/signup">
-              <div className={indexStyles.GetStarted}>
-                <div className={indexStyles.button}>
+              <div className={"GetStarted"}>
+                <div className={"button"}>
                   Get Started
                   <img src="/images/warrow.svg" />
                 </div>
               </div>
             </Link>
             <Link href="/examples">
-              <div className={indexStyles.Examples}>
-                <div className={indexStyles.button}>
+              <div className={"Examples"}>
+                <div className={"button"}>
                   Learn More
                   <img src="/images/arrow.svg" />
                 </div>
@@ -157,10 +158,10 @@ function TitleText() {
             </Link>
           </div>
         </div>
-        <div className={indexStyles.computer}>
+        <div className={"computer"}>
           <img src="/images/laptop3.svg" />
-          <div className={indexStyles["screen"]}>
-            <video className={indexStyles["demo"]} autoPlay muted loop>
+          <div className={"screen"}>
+            <video className={"demo"} autoPlay muted loop>
               <source src={"/videos/frontpage.mp4"} />
             </video>
           </div>
@@ -173,8 +174,8 @@ function TitleText() {
 function GetStarted2() {
   return (
     <Link href="/signup">
-      <div className={indexStyles.GetStarted2}>
-        <div className={indexStyles.button}>Sign Up</div>
+      <div className={"GetStarted2"}>
+        <div className={"button"}>Sign Up</div>
       </div>
     </Link>
   );
@@ -182,12 +183,12 @@ function GetStarted2() {
 
 function Row1() {
   return (
-    <div className={indexStyles.Row1}>
-      <div className={indexStyles.RowHeader}>
+    <div className={"Row1"}>
+      <div className={"RowHeader"}>
         <img src="/images/steps.svg" />
       </div>
-      <div className={indexStyles.Screen}>
-        <video className={indexStyles.Demo} autoPlay muted loop>
+      <div className={"Screen"}>
+        <video className={"Demo"} autoPlay muted loop>
           <source src={"/videos/steps.mp4"} />
         </video>
       </div>
@@ -197,13 +198,13 @@ function Row1() {
 
 function Row2() {
   return (
-    <div className={indexStyles.Row2}>
+    <div className={"Row2"}>
       <Stripe2 />
-      <div className={indexStyles.Row2Header}>
+      <div className={"Row2Header"}>
         <img src="/images/code.svg" />
       </div>
-      <div className={indexStyles.Screen}>
-        <video className={indexStyles.Demo} autoPlay muted loop>
+      <div className={"Screen"}>
+        <video className={"Demo"} autoPlay muted loop>
           <source src={"/videos/code.mp4"} />
         </video>
       </div>
@@ -213,12 +214,12 @@ function Row2() {
 
 function Row3() {
   return (
-    <div className={indexStyles.Row3}>
-      <div className={indexStyles.RowHeader}>
+    <div className={"Row3"}>
+      <div className={"RowHeader"}>
         <img src="/images/publish.svg" />
       </div>
-      <div className={indexStyles.Screen}>
-        <video className={indexStyles.Demo} autoPlay muted loop>
+      <div className={"Screen"}>
+        <video className={"Demo"} autoPlay muted loop>
           <source src={"/videos/scroll.mp4"} />
         </video>
       </div>
@@ -228,9 +229,9 @@ function Row3() {
 
 function Row4() {
   return (
-    <div className={indexStyles.Row4}>
+    <div className={"Row4"}>
       <Stripe3 />
-      <div className={indexStyles.Row4Text}>
+      <div className={"Row4Text"}>
         Say goodbye to publishing code snippets on Medium
       </div>
       <GetStarted2 />
@@ -240,20 +241,20 @@ function Row4() {
 
 function Footer(props: { goToIndex: any }) {
   return (
-    <div className={indexStyles.Footer}>
+    <div className={"Footer"}>
       <NavBar goToIndex={props.goToIndex} />
     </div>
   );
 }
 
 function Stripe1() {
-  return <div className={indexStyles.Stripe1}></div>;
+  return <div className={"Stripe1"}></div>;
 }
 
 function Stripe2() {
-  return <div className={indexStyles.Stripe2}></div>;
+  return <div className={"Stripe2"}></div>;
 }
 
 function Stripe3() {
-  return <div className={indexStyles.Stripe3}></div>;
+  return <div className={"Stripe3"}></div>;
 }

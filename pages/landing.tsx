@@ -1,5 +1,4 @@
 import Head from "next/head";
-import Link from "next/link";
 const moment = require("moment");
 const fetch = require("node-fetch");
 global.Headers = fetch.Headers;
@@ -9,7 +8,6 @@ import { useLoggedIn, logOut, goToIndex } from "../lib/UseLoggedIn";
 import { useDrafts } from "../lib/useDrafts";
 import { useUserInfo } from "../lib/useUserInfo";
 import { usePosts, goToPost } from "../lib/usePosts";
-import { userInfo } from "os";
 import Header from "../components/Header";
 
 type DraftType = {
