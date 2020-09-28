@@ -56,7 +56,8 @@
     "read-env": "^2.0.0",
     "shortid": "^2.2.15",
     "swr": "^0.3.0",
-    "url-loader": "^4.1.0"
+    "url-loader": "^4.1.0",
+    "webpack": "^4.44.2"
   },
   "devDependencies": {
     "@types/file-saver": "^2.0.1",

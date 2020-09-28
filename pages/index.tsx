@@ -171,9 +171,9 @@ function TitleText() {
     <div className={"Title"}>
       <div className={"Banner"}>
         <div className={"Text"}>
-          <div className={"h1Text"}>A new way to convey</div>
+          <div className={"h1Text"}>Leaf is a platform built from the ground up, for coding tutorials</div>
           <div className={"h2Text"}>
-            Leaf is a platform built from the ground up, for coding tutorials
+            Say goodbye to publishing code snippets on Medium
           </div>
           <div className={"TitleButtons"}>
             <Link href="/signup">
@@ -268,7 +268,7 @@ function Row4() {
     <div className={"Row4"}>
       <Stripe3 />
       <div className={"Row4Text"}>
-        Say goodbye to publishing code snippets on Medium
+        Get started making beautiful tutorials with Leaf
       </div>
       <GetStarted2 />
     </div>
