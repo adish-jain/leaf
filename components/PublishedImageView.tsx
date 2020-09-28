@@ -3,7 +3,7 @@ import "../styles/imageview.scss";
 import { File, Step } from "../typescript/types/app_types";
 
 type PublishedImageViewProps = {
-  currentStep: Step;
+  currentStep?: Step;
 };
 
 type PublishedImageViewState = {};
@@ -20,6 +20,9 @@ export default class PublishedImageView extends Component<
 
   render() {
     let { currentStep } = this.props;
+    if (!currentStep) {
+      return <div></div>;
+    }
     return (
       <div className={"published-img"}>
         {currentStep.imageURL ? (

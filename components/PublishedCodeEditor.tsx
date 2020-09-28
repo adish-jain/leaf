@@ -9,7 +9,7 @@ import PublishedImageView from "./PublishedImageView";
 
 type PublishedCodeEditorProps = {
   // changeStep: (newStep: number) => void;
-  currentStep: Step;
+  currentStep?: Step;
   files: File[];
   currentFile: File;
   updateFile: (fileIndex: number) => void;

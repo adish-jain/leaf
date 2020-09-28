@@ -1,11 +1,4 @@
 import Head from "next/head";
-import fetch from "isomorphic-unfetch";
-import InferGetStaticPropsType from "next";
-import Link from "next/link";
-
-import { useLoggedIn, logOut } from "../lib/UseLoggedIn";
-
-import { useRouter } from "next/router";
 
 export default function ErroredPage() {
   return (

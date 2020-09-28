@@ -76,7 +76,7 @@ class PublishedStep extends Component<PublishedStepProps, PublishedStepState> {
       <div ref={this.myRef} onClick={this.scrollIntoView}>
         <InView
           threshold={this.calculateThreshold()}
-          rootMargin={"0% 0% 0% 0%"}
+          rootMargin={"-60px 0% 0% 0%"}
           onChange={this.handleChange}
         >
           {({ inView, ref, entry }) => (
