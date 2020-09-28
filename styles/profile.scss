@@ -1,4 +1,4 @@
-.Post {
+.user-post {
   height: 270px;
   margin-bottom: 24px;
   background: #1f1c21;
@@ -8,7 +8,7 @@
   color: white;
   cursor: pointer;
 
-  .Title {
+  .user-title {
     background: white;
     border-radius: 8px 8px 0px 0px;
     padding-top: 12px;
@@ -23,7 +23,7 @@
   }
 }
 
-.Header {
+.profile-header {
   font-size: 60px;
 }
 
@@ -40,7 +40,7 @@
   cursor: pointer;
 }
 
-.Content {
+.profile-content {
   max-width: 800px;
   margin: auto;
   margin-top: 64px;

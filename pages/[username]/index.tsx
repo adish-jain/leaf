@@ -1,12 +1,10 @@
 import React, { useState, Component } from "react";
-import { GetStaticProps, GetStaticPaths, GetServerSideProps } from "next";
+import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import Scrolling from "../../components/Scrolling";
 import { getUserPosts, getUidFromUsername } from "../../lib/userUtils";
-import { goToLanding, useLoggedIn } from "../../lib/UseLoggedIn";
-import getUsernames from "../../lib/api/getUsernames";
-const profileStyles = require("../../styles/Profile.module.scss");
+import { useLoggedIn } from "../../lib/UseLoggedIn";
+import "../../styles/profile.scss";
 import Header, { HeaderUnAuthenticated } from "../../components/Header";
 import ErroredPage from "../404";
 
@@ -103,8 +101,8 @@ const UserPage = (props: UserPageProps) => {
         ) : (
           <HeaderUnAuthenticated />
         )}
-        <div className={profileStyles["Content"]}>
-          <h1 className={profileStyles["Header"]}>{props.username}</h1>
+        <div className={"profile-content"}>
+          <h1 className={"profile-header"}>{props.username}</h1>
           {posts.length === 0 ? (
             <p>This user has not published anything yet.</p>
           ) : (
@@ -128,7 +126,6 @@ function Post(props: { title: string; postId: string; username: string }) {
   let router = useRouter();
 
   function goToPost() {
-    console.log("called");
     router.push(
       "/[username]/[postId]",
       "/" + props.username + "/" + props.postId
@@ -136,8 +133,8 @@ function Post(props: { title: string; postId: string; username: string }) {
   }
 
   return (
-    <div onClick={goToPost} className={profileStyles["Post"]}>
-      <div className={profileStyles["Title"]}>
+    <div onClick={goToPost} className={"user-post"}>
+      <div className={"user-title"}>
         <h1>{props.title}</h1>
       </div>
     </div>
