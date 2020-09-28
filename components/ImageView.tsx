@@ -70,7 +70,7 @@ export default class ImageView extends Component<
 
   ImageScreen() {
     return (
-      <div className={"imgView"}>
+      <div className={"img-view"}>
         <div className={"remove"} onClick={(e) => this.handleImageDelete()}>
           X
         </div>
@@ -79,11 +79,28 @@ export default class ImageView extends Component<
     );
   }
 
+  //   UploadScreen() {
+  //     return (
+  //       <div className={"preview"}>
+  //         <label className={"previewButtons"}>
+  //           Upload File
+  //           <input
+  //             type="file"
+  //             id="myFile"
+  //             name="filename"
+  //             accept="image/*"
+  //             onChange={this.handleImageUpload}
+  //           />
+  //         </label>
+  //       </div>
+  //     );
+  //   }
+
   UploadScreen() {
     return (
-      <div className={"preview"}>
-        <label className={"previewButtons"}>
-          Upload File
+      <div>
+        <label className={"add-image"}>
+          + Add Image
           <input
             type="file"
             id="myFile"

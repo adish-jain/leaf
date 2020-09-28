@@ -22,7 +22,7 @@ type MonacoEditorWrapperProps = {
   editing: boolean;
   lines: Lines;
   selectedFile: File;
-  currentlyEditingStep: Step;
+  currentlyEditingStep?: Step;
 };
 
 var decorations: string[] = [];
@@ -55,7 +55,8 @@ export default class MonacoEditorWrapper extends Component<
 
     // if step or file changes, clear highlights
     if (
-      prevProps.currentlyEditingStep.id !==
+      this.props.currentlyEditingStep === undefined || 
+      prevProps.currentlyEditingStep?.id !==
         this.props.currentlyEditingStep.id ||
       prevProps.selectedFile.id !== this.props.selectedFile.id
     ) {
@@ -63,26 +64,27 @@ export default class MonacoEditorWrapper extends Component<
       this.clearLines();
     }
 
-    let newStepLines = this.props.currentlyEditingStep.lines;
-    let oldStepLines = prevProps.currentlyEditingStep.lines;
+    if (this.props.currentlyEditingStep !== undefined) {
+      let newStepLines = this.props.currentlyEditingStep.lines;
+      let oldStepLines = prevProps.currentlyEditingStep?.lines;
 
-    let linesChanged =
-      (newStepLines?.start || 0) !== (oldStepLines?.start || 0) ||
-      (newStepLines?.end || 0) !== (oldStepLines?.end || 0);
+      let linesChanged =
+        (newStepLines?.start || 0) !== (oldStepLines?.start || 0) ||
+        (newStepLines?.end || 0) !== (oldStepLines?.end || 0);
 
-    let isOnStepFile =
-      this.props.selectedFile.id === this.props.currentlyEditingStep.fileId;
+      let isOnStepFile =
+        this.props.selectedFile.id === this.props.currentlyEditingStep.fileId;
 
-    if (linesChanged && isOnStepFile) {
-      this.updateLines();
+      if (linesChanged && isOnStepFile) {
+        this.updateLines();
+      }
     }
-
   }
 
   updateLines() {
     console.log("update lines");
     let { currentlyEditingStep } = this.props;
-    let lines = currentlyEditingStep.lines;
+    let lines = currentlyEditingStep?.lines;
     decorations = this.monacoInstance.current!.deltaDecorations(decorations, [
       {
         range: new this.monacoTypesWrapper.Range(
@@ -232,7 +234,6 @@ export default class MonacoEditorWrapper extends Component<
         <MonacoEditor
           height={"100%"}
           language={language}
-          theme="monakai"
           value={draftCode}
           onChange={(value) => this.props.changeCode(value)}
           options={{

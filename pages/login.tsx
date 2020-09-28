@@ -6,12 +6,12 @@ import React, { useState } from "react";
 import { HeaderUnAuthenticated } from "../components/Header";
 import { useRouter } from "next/router";
 
-const headerStyles = require("../styles/Header.module.scss");
-const loginStyles = require("../styles/Login.module.scss");
+import "../styles/header.scss";
+import "../styles/login.scss";
 
 function About() {
   return (
-    <div className={headerStyles.Login}>
+    <div className={'Login'}>
       <Link href="/about">
         <a>About</a>
       </Link>
@@ -148,14 +148,14 @@ export default function Login() {
           }}
         />
       </Head>
-      <main className={loginStyles.LoginMain}>
+      <main className={"LoginMain"}>
         <HeaderUnAuthenticated
           signup={true}
           about={true}
           examples={true}
           login={false}
         />
-        <div className={loginStyles.Login}>
+        <div className={"Login"}>
           {forgotPassword ? (
             <ForgotPassword
               handleChangeEmail={handleChangeEmail}
@@ -191,28 +191,22 @@ function ForgotPassword(props: {
   handleBackToLogin: any;
 }) {
   return (
-    <div className={loginStyles.LoginBox}>
+    <div className={"LoginBox"}>
       <h1>Password Reset</h1>
-      <div className={loginStyles.FormWrapper}>
-        <div className={loginStyles.InputBox}>
+      <div className={"FormWrapper"}>
+        <div className={"InputBox"}>
           <label>Email</label>
           <input onChange={props.handleChangeEmail}></input>
         </div>
         {!props.errored ? (
           <div></div>
         ) : (
-          <p className={loginStyles.ErrorMessage}>{props.errorMessage}</p>
+          <p className={"ErrorMessage"}>{props.errorMessage}</p>
         )}
-        <button
-          className={loginStyles.LoginButton}
-          onClick={props.handleResetClick}
-        >
+        <button className={"LoginButton"} onClick={props.handleResetClick}>
           {props.resetting ? "Reset Email Sent" : "Reset Password"}
         </button>
-        <div
-          className={loginStyles.ForgotPassword}
-          onClick={props.handleBackToLogin}
-        >
+        <div className={"ForgotPassword"} onClick={props.handleBackToLogin}>
           <br></br>Back to Login
         </div>
       </div>
@@ -230,32 +224,26 @@ function LoginScreen(props: {
   handleForgotPassword: any;
 }) {
   return (
-    <div className={loginStyles.LoginBox}>
+    <div className={"LoginBox"}>
       <h1>Login</h1>
-      <div className={loginStyles.FormWrapper}>
-        <div className={loginStyles.InputBox}>
+      <div className={"FormWrapper"}>
+        <div className={"InputBox"}>
           <label>Email</label>
           <input onChange={props.handleChangeEmail}></input>
         </div>
-        <div className={loginStyles.InputBox}>
+        <div className={"InputBox"}>
           <label>Password</label>
           <input type="password" onChange={props.handleChangePassword}></input>
         </div>
         {!props.errored ? (
           <div></div>
         ) : (
-          <p className={loginStyles.ErrorMessage}>{props.errorMessage}</p>
+          <p className={"ErrorMessage"}>{props.errorMessage}</p>
         )}
-        <button
-          className={loginStyles.LoginButton}
-          onClick={props.handleLoginClick}
-        >
+        <button className={"LoginButton"} onClick={props.handleLoginClick}>
           {props.loggingIn ? "Logging In..." : "Login"}
         </button>
-        <div
-          className={loginStyles.ForgotPassword}
-          onClick={props.handleForgotPassword}
-        >
+        <div className={"ForgotPassword"} onClick={props.handleForgotPassword}>
           <br></br>Forgot Password?
         </div>
       </div>

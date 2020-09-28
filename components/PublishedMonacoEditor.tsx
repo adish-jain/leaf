@@ -87,7 +87,10 @@ export default class PublishedMonacoEditor extends Component<
       { scrollTop: 0 },
       this.monacoTypesWrapper.editor.ScrollType.Immediate
     );
-    animateScrollTo(60, animationOptions);
+    animateScrollTo(
+      document.getElementsByClassName(" line-highlight")[0],
+      animationOptions
+    );
     // this.monacoInstance.current?.revealLine(
     //   currentStep?.lines?.start!,
     //   this.monacoTypesWrapper.editor.ScrollType.Smooth

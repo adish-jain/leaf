@@ -53,18 +53,20 @@ const FinishedPost = (props: FinishedPostProps) => {
       ) : (
         <HeaderUnAuthenticated about={true} login={true} signup={true} />
       )}
-      <Scrolling
-        title={props.title}
-        currentStepIndex={currentStepIndex}
-        changeStep={changeStep}
-        steps={props.steps}
-      />
-      <PublishedCodeEditor
-        currentFile={props.files[currentFileIndex]}
-        files={props.files}
-        currentStep={props.steps[currentStepIndex]}
-        updateFile={updateFile}
-      />
+      <div className={"center-divs"}>
+        <Scrolling
+          title={props.title}
+          currentStepIndex={currentStepIndex}
+          changeStep={changeStep}
+          steps={props.steps}
+        />
+        <PublishedCodeEditor
+          currentFile={props.files[currentFileIndex]}
+          files={props.files}
+          currentStep={props.steps[currentStepIndex]}
+          updateFile={updateFile}
+        />
+      </div>
     </div>
   );
 };

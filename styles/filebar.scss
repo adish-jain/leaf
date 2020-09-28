@@ -7,17 +7,9 @@
 }
 
 .published-filebar {
-  display: flex;
-  height: 3vh;
-  flex-direction: row;
-  background: #3f4447;
-  border-radius: 8px 8px 0px 0px;
-  overflow-x: scroll;
-  overflow-y: hidden;
-  padding-top: 12px;
-  padding-bottom: 12px;
-  padding-right: 16px;
-  align-items: center;
+  position: relative;
+  margin-top: 16px;
+  margin-bottom: 16px;
 }
 
 .published-file {
@@ -54,7 +46,6 @@
   // display: flex;
   position: relative;
   margin-top: 16px;
-  margin-bottom: 16px;
   .new-file {
     position: absolute;
     right: 0px;
@@ -62,6 +53,12 @@
     width: 24px;
     height: 24px;
   }
+}
+
+.published-filebar {
+  position: relative;
+  margin-top: 16px;
+  margin-bottom: 16px;
 }
 
 .files {

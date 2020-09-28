@@ -88,6 +88,7 @@ class PublishedStep extends Component<PublishedStepProps, PublishedStepState> {
             </div>
           )}
         </InView>
+        <div className={"divider"}></div>
       </div>
     );
   }

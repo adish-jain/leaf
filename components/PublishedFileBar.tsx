@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "../styles/filebar.scss";
+import "../styles/filenames.scss";
 
 type File = {
   id: string;
@@ -17,15 +18,21 @@ type PublishedFileBarProps = {
 export default function PublishedFileBar(props: PublishedFileBarProps) {
   return (
     <div className={"published-filebar"}>
-      {props.files.map((file, index) => (
-        <File
-          key={file.id}
-          index={index}
-          name={file.name}
-          updateFile={props.updateFile}
-          selected={file.name === props.currentFile.name}
-        />
-      ))}
+      <div className={"title-with-divider"}>
+        <label>files</label>
+        <div></div>
+      </div>
+      <div className={"files"}>
+        {props.files.map((file, index) => (
+          <File
+            key={file.id}
+            index={index}
+            name={file.name}
+            updateFile={props.updateFile}
+            selected={file.name === props.currentFile.name}
+          />
+        ))}
+      </div>
     </div>
   );
 }
@@ -36,12 +43,16 @@ function File(props: {
   selected: boolean;
   updateFile: (fileIndex: number) => void;
 }) {
-  let className = "published-file";
-  if (props.selected) {
-    className = "published-file-selected";
-  }
+  let wrapperClass;
+  props.selected
+    ? (wrapperClass = "filename-wrapper-selected")
+    : (wrapperClass = "filename-wrapper");
+
   return (
-    <div onClick={(e) => props.updateFile(props.index)} className={className}>
+    <div
+      onClick={(e) => props.updateFile(props.index)}
+      className={wrapperClass}
+    >
       {props.name}
     </div>
   );

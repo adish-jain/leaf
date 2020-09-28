@@ -83,6 +83,11 @@ export default class CodeEditor extends Component<
     return (
       <div className={"CodeEditor"}>
         <ImageOptions />
+        <ImageView
+          addStepImage={addStepImage}
+          currentlyEditingStep={currentlyEditingStep}
+          deleteStepImage={deleteStepImage}
+        />
         <FileBar
           draftId={draftId}
           files={files}
@@ -93,23 +98,6 @@ export default class CodeEditor extends Component<
           saveFileName={saveFileName}
           onNameChange={onNameChange}
         />
-        <ImageView
-          addStepImage={addStepImage}
-          currentlyEditingStep={currentlyEditingStep}
-          deleteStepImage={deleteStepImage}
-        />
-        {/* <DynamicCodeEditor
-          // @ts-ignore
-          saveFileCode={saveFileCode}
-          draftCode={draftCode}
-          changeCode={changeCode}
-          language={language}
-          editing={editingStep !== -1}
-          changeLines={changeLines}
-          saveLines={saveLines}
-          lines={lines}
-          selectedFile={files[selectedFileIndex]}
-        /> */}
         <MonacoEditor
           saveFileCode={saveFileCode}
           draftCode={draftCode}
