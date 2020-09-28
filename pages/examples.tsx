@@ -36,7 +36,7 @@ export default function Pages() {
           }}
         />
       </Head>
-      <main className={"MainWrapper"}>
+      <main className={"ExampleMainWrapper"}>
         <HeaderUnAuthenticated login={true} signup={true} about={true} />
         <TitleText />
         <Tutorials />
