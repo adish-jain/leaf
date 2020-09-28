@@ -1,5 +1,5 @@
 import React, { Component, ReactElement, useState } from "react";
-const fileNamesStyle = require("../styles/FileNames.module.scss");
+import "../styles/filenames.scss";
 
 type FileNameProps = {
   selected: boolean;
@@ -11,27 +11,28 @@ type FileNameProps = {
   index: number;
 };
 
-
 export default function FileName(props: FileNameProps) {
   let [hovered, toggleHover] = useState(false);
   let [editing, dblClick] = useState(false);
 
-  let style = {
-    color: "white",
-  };
-  if (!props.selected) {
-    style.color = "#898984";
-  }
+  // let style = {
+  //   color: "white",
+  //   backgroundColor: "#349AE9",
+  // };
+  // if (!props.selected) {
+  //   style.color = "black";
+  //   style.backgroundColor = "white";
+  // }
 
   function renderButton() {
-    if (hovered) {
+    if (hovered && props.selected) {
       return (
-        <button
-          className={fileNamesStyle["Close"]}
+        <div
+          className={"close-button"}
           onClick={(e) => props.removeFile(props.index)}
         >
-          X
-        </button>
+          x
+        </div>
       );
     } else {
       return <div></div>;
@@ -43,36 +44,38 @@ export default function FileName(props: FileNameProps) {
     dblClick(false);
   }
 
+  let wrapperClass;
+  props.selected
+    ? (wrapperClass = "filename-wrapper-selected")
+    : (wrapperClass = "filename-wrapper");
+
   return (
     <div
       onMouseEnter={(e) => toggleHover(true)}
       onMouseLeave={(e) => toggleHover(false)}
-      style={style}
-      className={fileNamesStyle["NameWrapper"]}
+      // style={style}
+      className={wrapperClass}
     >
       <div
         onClick={(e) => {
           props.changeSelectedFile(props.index);
         }}
-      >
-
-      <div
         onDoubleClick={(e) => {
           dblClick(true);
         }}
       >
-        {editing ? 
-          (<input
-            className={fileNamesStyle["filenames"]}
+        {editing ? (
+          <input
+            className={"filenames"}
             defaultValue={props.name}
             onChange={(e) => props.onNameChange(e.target.value)}
             onBlur={saveFileName}
             name="fileName"
             autoFocus={true}
-          />) 
-          : props.name
-        }        
-      </div>
+          />
+        ) : (
+          <label>{props.name}</label>
+        )}
       </div>
       {renderButton()}
     </div>

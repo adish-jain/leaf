@@ -30,8 +30,7 @@ export function useFiles(draftId: any, draftFiles: any, mutate: any) {
     */
   var [codeFiles, updateFiles] = useState<File[]>(files.slice());
   if (
-    files.length != 0 &&
-    files[0]["id"] !== codeFiles[0]["id"] ||
+    (files.length != 0 && files[0]["id"] !== codeFiles[0]["id"]) ||
     files.length !== codeFiles.length
   ) {
     updateFiles(files.slice());
@@ -60,18 +59,18 @@ export function useFiles(draftId: any, draftFiles: any, mutate: any) {
     */
   const extToName: tExtToName = {
     py: "python",
-    jsx: "jsx",
+    jsx: "javascript",
     js: "javascript",
-    html: "xml",
+    tsx: "typescript",
+    ts: "typescript",
+    html: "html",
     go: "go",
     css: "css",
-    c: "text/x-csrc",
-    h: "text/x-csrc",
-    cpp: "text/x-c++src",
-    java: "text/x-java",
+    java: "java",
     php: "php",
     rb: "ruby",
-    txt: "textile",
+    txt: "plaintext",
+    xml: "xml",
   };
   Object.freeze(extToName);
 
@@ -83,16 +82,18 @@ export function useFiles(draftId: any, draftFiles: any, mutate: any) {
     python: "py",
     jsx: "jsx",
     javascript: "js",
-    xml: "html",
+    typescript: "ts",
+    html: "html",
+    java: "java",
+    xml: "xml",
     go: "go",
     css: "css",
-    "text/x-csrc": "c",
-    "text/x-c++src": "cpp",
-    "text/x-java": "java",
     php: "php",
     ruby: "rb",
+    plaintext: "txt",
     textile: "txt",
   };
+
   Object.freeze(nameToExt);
 
   /*
@@ -283,7 +284,7 @@ export function useFiles(draftId: any, draftFiles: any, mutate: any) {
     } else {
       let extIdx = fileName.lastIndexOf(".");
       let beforeExt = fileName.slice(0, extIdx);
-      if (value == "textile") {
+      if (value == "textile" || value == "plaintext") {
         newName = beforeExt;
       } else {
         newName = beforeExt + "." + extension;
@@ -304,7 +305,7 @@ export function useFiles(draftId: any, draftFiles: any, mutate: any) {
     numOfUntitleds++;
     let newFileName = getNewFileName();
     let newFileCode = "// Write some code here ...";
-    let newFileLang = "textile";
+    let newFileLang = "plaintext";
     let newFileId = shortId.generate();
 
     files.push({

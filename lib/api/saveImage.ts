@@ -95,4 +95,3 @@ export default async function handleSaveImage(req: NextApiRequest, res: NextApiR
     res.send({url: imageURL});
     return;
 }
-

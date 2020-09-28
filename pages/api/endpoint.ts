@@ -64,12 +64,12 @@ const firebase = require("firebase/app");
 initFirebase();
 
 export const config = {
-    api: {
-      bodyParser: {
-        sizeLimit: '5mb',
-      },
+  api: {
+    bodyParser: {
+      sizeLimit: "5mb",
     },
-  }
+  },
+};
 
 export default sentryHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {
@@ -243,6 +243,6 @@ export default sentryHandler(
       default: 
         res.statusCode = 403;
         res.end();
-      }
+    }
   }
 );

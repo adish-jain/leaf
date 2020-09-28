@@ -1,0 +1,93 @@
+@import "commonui";
+
+.add-new-file-btn {
+  margin-left: 8px;
+  min-width: 94px;
+  text-align: left;
+}
+
+.published-filebar {
+  position: relative;
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.published-file {
+  // margin-right: 16px;
+  cursor: pointer;
+  padding: 8px;
+
+  border-right-style: solid;
+  border-right-color: #4c5153;
+  border-right-width: 1px;
+  color: rgb(137, 137, 132);
+}
+
+.published-file-selected {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px;
+
+  // padding: 4px;
+  // margin-right: 4px;
+  cursor: pointer;
+  border-right-style: solid;
+  border-right-color: white;
+  border-right-width: 1px;
+  color: white;
+
+  border-left-style: solid;
+  border-left-color: white;
+  border-left-width: 1px;
+}
+
+.filebar {
+  // display: flex;
+  position: relative;
+  margin-top: 16px;
+  .new-file {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.published-filebar {
+  position: relative;
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.files {
+  display: flex;
+  overflow-x: scroll;
+  margin-right: 40px;
+}
+
+.files::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+  opacity: 0; /* make scrollbar transparent */
+  height: 0px;
+}
+
+.title-with-divider {
+  @include title-with-divider;
+}
+
+.filebar-wrapper {
+  button {
+    @include draft-button;
+  }
+}
+
+.scrollbar {
+  // width: 100%;
+  height: 2px;
+  background-color: #349ae9;
+  position: relative;
+  margin-top: 8px;
+}
