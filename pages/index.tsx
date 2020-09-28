@@ -58,7 +58,7 @@ Header Components
 */
 function Header(props: { goToIndex: any }) {
   return (
-    <div className={"Header"}>
+    <div className={"IndexHeader"}>
       <NavBar goToIndex={props.goToIndex} />
     </div>
   );
@@ -66,7 +66,7 @@ function Header(props: { goToIndex: any }) {
 
 function NavBar(props: { goToIndex: any }) {
   return (
-    <div className={"NavBar"}>
+    <div className={"IndexNavBar"}>
       <Logo goToIndex={props.goToIndex} />
       <Signup />
       <Login />
@@ -277,8 +277,14 @@ function Row4() {
 
 function Footer(props: { goToIndex: any }) {
   return (
-    <div className={"Footer"}>
-      <NavBar goToIndex={props.goToIndex} />
+    <div className={"IndexFooter"}>
+      <div className={"FooterNavBar"}>
+        <Logo goToIndex={props.goToIndex} />
+        <Signup />
+        <Login />
+        <Examples />
+        <About />
+      </div>
     </div>
   );
 }

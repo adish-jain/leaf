@@ -1,5 +1,5 @@
 @media only screen and (max-width: 400px) {
-  .Header {
+  .IndexHeader {
     display: none !important;
   }
   .HeaderDropDown {
@@ -90,8 +90,8 @@
     margin-top: 50px;
   }
 
-  .Footer {
-    .NavBar {
+  .IndexFooter {
+    .FooterNavBar {
       .Logo {
         display: none !important;
       }
@@ -108,7 +108,7 @@
 
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (min-width: 400px ) and (max-width: 600px) { 
-  .Header {
+  .IndexHeader {
     display: none !important;
   }
   .HeaderDropDown {
@@ -191,8 +191,8 @@
     margin-top: 50px;
   }
 
-  .Footer {
-    .NavBar {
+  .IndexFooter {
+    .FooterNavBar {
       .Logo {
         display: none !important;
       }
@@ -408,7 +408,7 @@
   justify-content: center;
 }
 
-.Header {
+.IndexHeader {
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -424,7 +424,7 @@
   align-items: center;
 }
 
-.NavBar {
+.IndexNavBar {
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -482,6 +482,7 @@
 .HeaderDropDown {
   display: none;
   flex-direction: row;
+  align-self: flex-start;
   width: 100%;
   height: 70px;
   left: 0px;
@@ -857,7 +858,7 @@
   }
 }
 
-.Footer {
+.IndexFooter {
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -871,7 +872,7 @@
   justify-content: bottom;
   align-items: bottom;
 
-  .NavBar {
+  .FooterNavBar {
     display: flex;
     flex-direction: row;
     width: 100%;
