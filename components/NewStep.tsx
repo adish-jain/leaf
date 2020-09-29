@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-const newStepStyles = require("../styles/NewStep.module.scss");
+import "../styles/newstep.scss";
 
 type NewStepProps = {
   addStep: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -15,7 +15,7 @@ export default class NewStep extends Component<NewStepProps, NewStepState> {
 
   render() {
     return (
-      <div className={newStepStyles.NewStep}>
+      <div className={"NewStep"}>
         <button onClick={this.props.addStep}>+ Add Step</button>
       </div>
     );

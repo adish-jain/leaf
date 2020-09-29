@@ -1,6 +1,7 @@
 import React, { useState, Component } from "react";
 const fetch = require("node-fetch");
 import "../styles/imageview.scss";
+import "../styles/imageoptions.scss";
 let selectedImage: any;
 import { File, Step, Lines } from "../typescript/types/app_types";
 
@@ -136,7 +137,11 @@ export default class ImageView extends Component<
 
   render() {
     return (
-      <div>
+      <div className={"options-wrapper"}>
+        <div className={"title-with-divider"}>
+          <label>Image Options</label>
+          <div></div>
+        </div>
         {!this.state.upload ? (
           // Image is in display or the upload option is available
           this.props.currentlyEditingStep?.imageURL !== undefined ? (

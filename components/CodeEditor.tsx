@@ -69,18 +69,23 @@ export default class CodeEditor extends Component<
       deleteStepImage,
     } = this.props;
 
-    if (!shouldShowBlock) {
-      return <div></div>;
-    }
+    // if (!shouldShowBlock) {
+    //   return <div></div>;
+    // }
+
+    console.log("currently editing step is ", currentlyEditingStep);
 
     return (
       <div className={"CodeEditor"}>
-        <ImageOptions />
-        <ImageView
-          addStepImage={addStepImage}
-          currentlyEditingStep={currentlyEditingStep}
-          deleteStepImage={deleteStepImage}
-        />
+        {currentlyEditingStep === undefined ? (
+          <div></div>
+        ) : (
+          <ImageView
+            addStepImage={addStepImage}
+            currentlyEditingStep={currentlyEditingStep}
+            deleteStepImage={deleteStepImage}
+          />
+        )}
         <FileBar
           draftId={draftId}
           files={files}

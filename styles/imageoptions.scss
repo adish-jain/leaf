@@ -1,6 +1,7 @@
 @import "commonui";
 
 .options-wrapper {
+  margin-bottom: 16px;
   button {
     @include draft-button;
     margin-right: 16px;

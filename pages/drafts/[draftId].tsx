@@ -183,15 +183,6 @@ const DraftView = () => {
                 updateShowBlock={updateShowBlock}
               />
               <div className={"RightPane"}>
-                {/* {editingStep !== -1 ? (
-                  <ImageView
-                    draftId={draftId}
-                    steps={realSteps}
-                    editingStep={editingStep}
-                  />
-                ) : (
-                  <div></div>
-                )} */}
                 <CodeEditor
                   addStepImage={addStepImage}
                   deleteStepImage={deleteStepImage}

@@ -162,7 +162,7 @@ export default class Publishing extends Component<
 
   PublishingHeader = () => {
     return (
-      <div className={"header"}>
+      <div className={"publishing-header"}>
         <TextareaAutosize
           placeholder={this.props.title}
           value={this.props.title}

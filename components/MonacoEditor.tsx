@@ -48,6 +48,9 @@ export default class MonacoEditorWrapper extends Component<
   }
 
   componentDidUpdate(prevProps: MonacoEditorWrapperProps) {
+    if (this.monacoInstance.current === null) {
+      return;
+    }
     // if selected file is changing, clear selection
     if (prevProps.selectedFile.id !== this.props.selectedFile.id) {
       this.clearSelections();
@@ -55,7 +58,7 @@ export default class MonacoEditorWrapper extends Component<
 
     // if step or file changes, clear highlights
     if (
-      this.props.currentlyEditingStep === undefined || 
+      this.props.currentlyEditingStep === undefined ||
       prevProps.currentlyEditingStep?.id !==
         this.props.currentlyEditingStep.id ||
       prevProps.selectedFile.id !== this.props.selectedFile.id
@@ -136,6 +139,12 @@ export default class MonacoEditorWrapper extends Component<
     this.monacoInstance.current!.onDidChangeCursorSelection((e) =>
       this.handleCursor(e)
     );
+    
+    monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
+      noSemanticValidation: true,
+      noSyntaxValidation: true,
+    });
+
   }
 
   handleBlur() {
