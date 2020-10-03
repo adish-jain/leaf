@@ -98,7 +98,7 @@ export default class Step extends Component<
         <label className={"block-status"}>
           Code Editor. No lines selected.
         </label>
-        <div className={"divider"}></div>
+        {/* <div className={"divider"}></div> */}
       </div>
     );
   }

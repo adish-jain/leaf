@@ -34,7 +34,9 @@ type CodeEditorProps = {
   addStepImage: (selectedImage: any, stepId: string) => void;
 };
 
-type CodeEditorState = {};
+type CodeEditorState = {
+  monacoKey: number;
+};
 
 export default class CodeEditor extends Component<
   CodeEditorProps,
@@ -42,6 +44,21 @@ export default class CodeEditor extends Component<
 > {
   constructor(props: CodeEditorProps) {
     super(props);
+
+    this.state = {
+      monacoKey: 0,
+    };
+  }
+
+  componentDidUpdate(prevProps: CodeEditorProps) {
+    if (
+      prevProps.currentlyEditingStep?.id !== this.props.currentlyEditingStep?.id
+    ) {
+      console.log("update key");
+      this.setState({
+        monacoKey: this.state.monacoKey + 1,
+      });
+    }
   }
 
   render() {
@@ -69,11 +86,11 @@ export default class CodeEditor extends Component<
       deleteStepImage,
     } = this.props;
 
+    let { monacoKey } = this.state;
+
     // if (!shouldShowBlock) {
     //   return <div></div>;
     // }
-
-    console.log("currently editing step is ", currentlyEditingStep);
 
     return (
       <div className={"CodeEditor"}>
@@ -107,6 +124,8 @@ export default class CodeEditor extends Component<
           lines={lines}
           selectedFile={files[selectedFileIndex]}
           currentlyEditingStep={currentlyEditingStep}
+          monacoKey={monacoKey}
+          key={monacoKey}
         />
         <LanguageBar
           language={language}

@@ -55,6 +55,8 @@
 .RightPane {
   display: flex;
   flex-direction: column;
+  height: 92vh;
+  // overflow: auto;
 }
 
 // .Logo {

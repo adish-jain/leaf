@@ -74,7 +74,6 @@ const DraftView = () => {
     authenticated
   );
 
-
   let {
     saveStep,
     mutateStoredStep,
@@ -127,7 +126,7 @@ const DraftView = () => {
   return (
     <div className="container">
       <Head>
-        <title>{"test"}</title>
+        <title>{draftTitle}</title>
         <link rel="icon" href="/favicon.ico" />
         <script
           dangerouslySetInnerHTML={{

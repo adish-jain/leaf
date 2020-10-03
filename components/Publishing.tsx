@@ -197,15 +197,15 @@ export default class Publishing extends Component<
       updateShowBlock,
     } = this.props;
 
-    let fullWidthStyle;
-    !shouldShowBlock
-      ? (fullWidthStyle = {
-          width: "880px",
-        })
-      : (fullWidthStyle = {});
+    // let fullWidthStyle;
+    // !shouldShowBlock
+    //   ? (fullWidthStyle = {
+    //       width: "880px",
+    //     })
+    //   : (fullWidthStyle = {});
 
     return (
-      <div style={fullWidthStyle} className={"publishing"}>
+      <div className={"publishing"}>
         {/* <this.PublishingButtons /> */}
         <this.PublishingHeader />
         {storedSteps.map((storedStep, index) => {

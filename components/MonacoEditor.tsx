@@ -23,6 +23,7 @@ type MonacoEditorWrapperProps = {
   lines: Lines;
   selectedFile: File;
   currentlyEditingStep?: Step;
+  monacoKey: number;
 };
 
 var decorations: string[] = [];
@@ -46,7 +47,7 @@ export default class MonacoEditorWrapper extends Component<
     this.saveLines = this.saveLines.bind(this);
     this.updateLines = this.updateLines.bind(this);
   }
-
+  
   componentDidUpdate(prevProps: MonacoEditorWrapperProps) {
     if (this.monacoInstance.current === null) {
       return;
@@ -54,6 +55,14 @@ export default class MonacoEditorWrapper extends Component<
     // if selected file is changing, clear selection
     if (prevProps.selectedFile.id !== this.props.selectedFile.id) {
       this.clearSelections();
+    }
+
+    // if selected step changes
+    if (
+      this.props.currentlyEditingStep === undefined ||
+      prevProps.currentlyEditingStep?.id !== this.props.currentlyEditingStep.id
+    ) {
+      // refresh code editor
     }
 
     // if step or file changes, clear highlights
@@ -85,7 +94,6 @@ export default class MonacoEditorWrapper extends Component<
   }
 
   updateLines() {
-    console.log("update lines");
     let { currentlyEditingStep } = this.props;
     let lines = currentlyEditingStep?.lines;
     decorations = this.monacoInstance.current!.deltaDecorations(decorations, [
@@ -113,7 +121,6 @@ export default class MonacoEditorWrapper extends Component<
   }
 
   clearLines() {
-    console.log("clear lines");
     decorations = this.monacoInstance.current!.deltaDecorations(decorations, [
       {
         range: new this.monacoTypesWrapper.Range(0, 0, 0, 0),
@@ -139,12 +146,11 @@ export default class MonacoEditorWrapper extends Component<
     this.monacoInstance.current!.onDidChangeCursorSelection((e) =>
       this.handleCursor(e)
     );
-    
+
     monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
       noSemanticValidation: true,
       noSyntaxValidation: true,
     });
-
   }
 
   handleBlur() {
@@ -232,21 +238,26 @@ export default class MonacoEditorWrapper extends Component<
     return (
       <div>
         <style jsx>{`
-          flex-grow: 100;
+          // flex-grow: 100;
           // overflow-y: scroll;
           position: relative;
           background-color: #263238;
           font-size: 12px;
-          height: 0px;
+          // height: 0px;
+          height: 100%;
         `}</style>
         <this.LineModal />
         <MonacoEditor
-          height={"100%"}
+          // key={this.props.monacoKey}
+          // height={"100%"}
           language={language}
           value={draftCode}
           onChange={(value) => this.props.changeCode(value)}
           options={{
             selectOnLineNumbers: true,
+            minimap: {
+              enabled: false,
+            },
           }}
           editorDidMount={(editor, monaco) => {
             this.mountEditor(editor, monaco);
