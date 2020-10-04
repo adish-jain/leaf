@@ -46,67 +46,95 @@ export default class MonacoEditorWrapper extends Component<
     this.handleBlur = this.handleBlur.bind(this);
     this.saveLines = this.saveLines.bind(this);
     this.updateLines = this.updateLines.bind(this);
+    this.handleResize = this.handleResize.bind(this);
   }
-  
+
+  componentDidMount() {
+    window.onresize = this.handleResize;
+  }
+
+  handleResize() {
+    this.monacoInstance.current?.layout();
+  }
+
   componentDidUpdate(prevProps: MonacoEditorWrapperProps) {
     if (this.monacoInstance.current === null) {
       return;
     }
-    // if selected file is changing, clear selection
+
+    this.handleResize();
+
+    // if selected file changes
     if (prevProps.selectedFile.id !== this.props.selectedFile.id) {
-      this.clearSelections();
-    }
+      // clear selections
 
-    // if selected step changes
-    if (
-      this.props.currentlyEditingStep === undefined ||
-      prevProps.currentlyEditingStep?.id !== this.props.currentlyEditingStep.id
-    ) {
-      // refresh code editor
-    }
-
-    // if step or file changes, clear highlights
-    if (
-      this.props.currentlyEditingStep === undefined ||
-      prevProps.currentlyEditingStep?.id !==
-        this.props.currentlyEditingStep.id ||
-      prevProps.selectedFile.id !== this.props.selectedFile.id
-    ) {
-      this.clearSelections();
       this.clearLines();
-    }
-
-    if (this.props.currentlyEditingStep !== undefined) {
-      let newStepLines = this.props.currentlyEditingStep.lines;
-      let oldStepLines = prevProps.currentlyEditingStep?.lines;
-
-      let linesChanged =
-        (newStepLines?.start || 0) !== (oldStepLines?.start || 0) ||
-        (newStepLines?.end || 0) !== (oldStepLines?.end || 0);
-
-      let isOnStepFile =
-        this.props.selectedFile.id === this.props.currentlyEditingStep.fileId;
-
-      if (linesChanged && isOnStepFile) {
+      if (
+        this.props.selectedFile.id === this.props.currentlyEditingStep?.fileId
+      ) {
         this.updateLines();
       }
+
+      this.clearSelections();
+      return;
+    }
+
+    // if no step is selected
+    if (this.props.currentlyEditingStep === undefined) {
+      this.clearLines();
+      return;
+    }
+
+    // if current step changes
+    if (
+      prevProps.currentlyEditingStep?.id !== this.props.currentlyEditingStep.id
+    ) {
+      this.clearLines();
+      this.updateLines();
+      return;
+    }
+
+    // if current file is not the step file, clear lines
+    if (this.props.currentlyEditingStep.fileId !== this.props.selectedFile.id) {
+      // this.clearLines();
+      return;
+    }
+
+    // if lines update
+    let oldLines = prevProps.currentlyEditingStep.lines;
+    let oldStart = oldLines?.start;
+    let oldEnd = oldLines?.end;
+
+    let currentLines = this.props.currentlyEditingStep.lines;
+    let currentStart = currentLines?.start;
+    let currentEnd = currentLines?.end;
+
+    if (oldStart !== currentStart || oldEnd !== currentStart) {
+      this.clearLines();
+      this.updateLines();
+      return;
     }
   }
 
   updateLines() {
     let { currentlyEditingStep } = this.props;
-    let lines = currentlyEditingStep?.lines;
-    decorations = this.monacoInstance.current!.deltaDecorations(decorations, [
-      {
-        range: new this.monacoTypesWrapper.Range(
-          lines?.start || 0,
-          0,
-          lines?.end || 0,
-          0
-        ),
-        options: { isWholeLine: true, inlineClassName: "myLineDecoration" },
-      },
-    ]);
+    if (!currentlyEditingStep) {
+      return;
+    }
+    let lines = currentlyEditingStep.lines;
+    if (lines) {
+      decorations = this.monacoInstance.current!.deltaDecorations(decorations, [
+        {
+          range: new this.monacoTypesWrapper.Range(
+            lines.start,
+            0,
+            lines.end,
+            0
+          ),
+          options: { isWholeLine: true, inlineClassName: "myLineDecoration" },
+        },
+      ]);
+    }
   }
 
   clearSelections() {
@@ -166,6 +194,7 @@ export default class MonacoEditorWrapper extends Component<
       startColumn,
       endColumn,
     } = newSelection;
+    // update lines for modal
     if (!(startLineNumber === endLineNumber && startColumn === endColumn)) {
       this.setState({
         showModal: true,
@@ -249,7 +278,7 @@ export default class MonacoEditorWrapper extends Component<
         <this.LineModal />
         <MonacoEditor
           // key={this.props.monacoKey}
-          // height={"100%"}
+          height={"100%"}
           language={language}
           value={draftCode}
           onChange={(value) => this.props.changeCode(value)}
@@ -258,12 +287,12 @@ export default class MonacoEditorWrapper extends Component<
             minimap: {
               enabled: false,
             },
+            automaticLayout: true,
           }}
           editorDidMount={(editor, monaco) => {
             this.mountEditor(editor, monaco);
             //@ts-ignore
             window.MonacoEnvironment.getWorkerUrl = (moduleId, label) => {
-              console.log(label);
               if (label === "json") return "/_next/static/json.worker.js";
               if (label === "go") return "/_next/static/go.worker.js";
               if (label === "java") return "/_next/static/java.worker.js";

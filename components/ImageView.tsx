@@ -1,7 +1,6 @@
 import React, { useState, Component } from "react";
 const fetch = require("node-fetch");
 import "../styles/imageview.scss";
-import "../styles/imageoptions.scss";
 let selectedImage: any;
 import { File, Step, Lines } from "../typescript/types/app_types";
 
@@ -72,9 +71,9 @@ export default class ImageView extends Component<
   ImageScreen() {
     return (
       <div className={"img-view"}>
-        <div className={"remove"} onClick={(e) => this.handleImageDelete()}>
+        <button className={"remove-button"} onClick={(e) => this.handleImageDelete()}>
           X
-        </div>
+        </button>
         <img src={this.props.currentlyEditingStep.imageURL}></img>
       </div>
     );

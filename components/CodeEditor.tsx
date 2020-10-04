@@ -51,10 +51,20 @@ export default class CodeEditor extends Component<
   }
 
   componentDidUpdate(prevProps: CodeEditorProps) {
+    // if currently editing step changes, resize editor
     if (
       prevProps.currentlyEditingStep?.id !== this.props.currentlyEditingStep?.id
     ) {
-      console.log("update key");
+      this.setState({
+        monacoKey: this.state.monacoKey + 1,
+      });
+    }
+
+    // if currently editing step image changes, resize editor
+    if (
+      prevProps.currentlyEditingStep?.imageURL !==
+      this.props.currentlyEditingStep?.imageURL
+    ) {
       this.setState({
         monacoKey: this.state.monacoKey + 1,
       });

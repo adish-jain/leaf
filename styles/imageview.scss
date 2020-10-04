@@ -9,9 +9,19 @@
   }
 }
 
+.remove-button {
+  position: absolute;
+  left: 0;
+  border-style: none;
+}
+
 .img-view {
   width: 100%;
   height: 240px;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  // flex-direction: column;
 
   img {
     max-width: 100%;

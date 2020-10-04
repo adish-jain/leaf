@@ -1,3 +1,5 @@
+@import "commonui.scss";
+
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
 }
@@ -42,7 +44,7 @@
   // box-shadow: 0px 4px 16px #edece9;
   border-radius: 8px;
   // min-width: 330px;
-  width: 480px;
+  width: 580px;
   // width: 51vw;
   // margin-right: 3vw;
   // height: 92vh;
@@ -60,14 +62,14 @@
 .myInlineDecoration {
   color: red !important;
   background-color: red !important;
-	cursor: pointer;
-	text-decoration: underline;
-	font-weight: bold;
-	font-style: oblique;
+  cursor: pointer;
+  text-decoration: underline;
+  font-weight: bold;
+  font-style: oblique;
 }
 
 .myLineDecoration {
-	background: yellow;
-	width: 5px !important;
-	margin-left: 3px;
+  background: $highlighter-yellow;
+  width: 5px !important;
+  margin-left: 3px;
 }

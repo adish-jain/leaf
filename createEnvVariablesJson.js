@@ -17,7 +17,6 @@ module.exports.createEnvVariablesJson = function() {
         if (err) {
             console.log(err);
         } else {
-            console.log("file created");
         }
     });
 }
