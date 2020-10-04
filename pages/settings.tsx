@@ -3,8 +3,9 @@ import React, { useState } from "react";
 import { useLoggedIn } from "../lib/UseLoggedIn";
 import useSWR, { SWRConfig } from "swr";
 import { useUserInfo } from "../lib/useUserInfo";
-const settingStyles = require("../styles/Settings.module.scss");
 import Header from "../components/Header";
+import "../styles/Settings.module.scss";
+
 
 export default function SignUp() {
   const initialData: any = {};
@@ -58,8 +59,8 @@ export default function SignUp() {
           logout={true}
           username={username}
         />
-        <div className={settingStyles["settings"]}>
-          <h1 className={settingStyles["title"]}>Settings</h1>
+        <div className={"settings"}>
+          <h1 className={"title"}>Settings</h1>
           <hr />
           <Username
             changeNewUsername={changeNewUsername}
@@ -102,17 +103,17 @@ function Username(props: {
   userNameError: string;
 }) {
   return (
-    <div className={settingStyles["username-section"]}>
+    <div className={"username-section"}>
       <div>
         <h2>Username</h2>
         <p>Your username is {props.username}</p>
         <input
-          className={settingStyles["default-input"]}
+          className={"default-input"}
           value={props.newUsername}
           onChange={(e) => props.changeNewUsername(e.target.value)}
         ></input>
         <button
-          className={settingStyles["input-button"]}
+          className={"input-button"}
           onClick={props.saveNewUsername}
         >
           Change username
@@ -136,19 +137,19 @@ function Password(props: {
       <div>
         <h2>Password</h2>
         <input
-          className={settingStyles["round-input"]}
+          className={"round-input"}
           value={props.password}
           placeholder={"current password"}
           onChange={(e) => props.updatePassword(e.target.value)}
         ></input>
         <input
-          className={settingStyles["default-input"]}
+          className={"default-input"}
           value={props.newPassword}
           placeholder={"new password"}
           onChange={(e) => props.changeNewPassword(e.target.value)}
         ></input>
         <button
-          className={settingStyles["input-button"]}
+          className={"input-button"}
           onClick={props.saveNewPassword}
         >
           Change password
@@ -175,12 +176,12 @@ function Email(props: {
         <h2>Email</h2>
         <p>Your email is {props.email}</p>
         <input
-          className={settingStyles["default-input"]}
+          className={"default-input"}
           value={props.newEmail}
           onChange={(e) => props.changeNewEmail(e.target.value)}
         ></input>
         <button
-          className={settingStyles["input-button"]}
+          className={"input-button"}
           onClick={props.saveNewEmail}
         >
           Change email
@@ -188,7 +189,7 @@ function Email(props: {
         <EmailError emailError={props.emailError} />
         <p>Your email is {props.emailVerified ? "verified" : "unverified"}</p>
         <button
-          className={settingStyles["rounded-button"]}
+          className={"rounded-button"}
           onClick={(e) => props.sendEmailVerification()}
         >
           Send email verification
