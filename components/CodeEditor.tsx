@@ -48,6 +48,8 @@ export default class CodeEditor extends Component<
     this.state = {
       monacoKey: 0,
     };
+
+    this.addStepImageWrapper = this.addStepImageWrapper.bind(this);
   }
 
   componentDidUpdate(prevProps: CodeEditorProps) {
@@ -69,6 +71,13 @@ export default class CodeEditor extends Component<
         monacoKey: this.state.monacoKey + 1,
       });
     }
+  }
+
+  addStepImageWrapper(selectedImage: any, stepId: string) {
+    this.props.addStepImage(selectedImage, stepId);
+    this.setState({
+      monacoKey: this.state.monacoKey + 1,
+    });
   }
 
   render() {
@@ -108,7 +117,7 @@ export default class CodeEditor extends Component<
           <div></div>
         ) : (
           <ImageView
-            addStepImage={addStepImage}
+            addStepImage={this.addStepImageWrapper}
             currentlyEditingStep={currentlyEditingStep}
             deleteStepImage={deleteStepImage}
           />
