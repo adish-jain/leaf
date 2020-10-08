@@ -96,7 +96,6 @@ export default class MonacoEditorWrapper extends Component<
 
     // if current file is not the step file, clear lines
     if (this.props.currentlyEditingStep.fileId !== this.props.selectedFile.id) {
-      // this.clearLines();
       return;
     }
 

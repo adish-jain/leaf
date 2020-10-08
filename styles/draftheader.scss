@@ -1,0 +1,55 @@
+@import "commonui.scss";
+
+.draft-header {
+  // position: absolute;
+  // top: 0;
+
+  width: 100%;
+  // padding-left: 80px;
+  // padding-right: 80px;
+  padding-top: 16px;
+  position: absolute;
+  top: 0;
+  background-color: $leaf-background;
+  z-index: 4;
+
+  .header-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-left: 8vw;
+    margin-right: 8vw;
+    padding-bottom: 8px;
+    // border-bottom: 1px solid $leaf-light-gray;
+  }
+
+  .links {
+    a {
+      margin-left: 8px;
+    }
+
+    @include link-item;
+  }
+
+  .buttons {
+    button {
+      margin-left: 8px;
+      padding: 8px;
+
+      border-radius: 4px;
+      font-size: 14px;
+    }
+  }
+}
+
+.preview-button {
+  background: $leaf-dark-blue;
+  border: 1px solid #329bc5;
+  color: white;
+}
+
+.publish-button {
+  background: #ffffff;
+  border: 1px solid #edece9;
+  color: black;
+}

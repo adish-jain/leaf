@@ -5,14 +5,10 @@ import { useLoggedIn } from "../lib/UseLoggedIn";
 import Header, { HeaderUnAuthenticated } from "../components/Header";
 import PublishedCodeEditor from "./PublishedCodeEditor";
 import "../styles/app.scss";
-import { File, Step } from "../typescript/types/app_types";
-
-type FinishedPostProps = {
-  steps: Step[];
-  title: string;
-  files: File[];
-  username: string;
-};
+import "../styles/draftheader.scss";
+import { File, Step, FinishedPostProps } from "../typescript/types/app_types";
+import Link from "next/link";
+import { FinishedPostHeader } from "../components/Headers";
 
 const stepsInView: { [stepIndex: number]: boolean } = {};
 
@@ -47,25 +43,30 @@ const FinishedPost = (props: FinishedPostProps) => {
   }
 
   return (
-    <div className={"App"}>
-      {authenticated ? (
-        <Header settings={true} profile={true} username={props.username} />
-      ) : (
-        <HeaderUnAuthenticated about={true} login={true} signup={true} />
-      )}
-      <div className={"center-divs"}>
-        <Scrolling
-          title={props.title}
-          currentStepIndex={currentStepIndex}
-          changeStep={changeStep}
-          steps={props.steps}
-        />
-        <PublishedCodeEditor
-          currentFile={props.files[currentFileIndex]}
-          files={props.files}
-          currentStep={props.steps[currentStepIndex]}
-          updateFile={updateFile}
-        />
+    <div>
+      <FinishedPostHeader
+        updateShowPreview={props.updateShowPreview}
+        previewMode={props.previewMode}
+        authenticated={authenticated}
+        goToPublishedPost={props.goToPublishedPost!}
+        publishPost={props.publishPost!}
+        username={props.username}
+      />
+      <div className={"App"}>
+        <div className={"center-divs"}>
+          <Scrolling
+            title={props.title}
+            currentStepIndex={currentStepIndex}
+            changeStep={changeStep}
+            steps={props.steps}
+          />
+          <PublishedCodeEditor
+            currentFile={props.files[currentFileIndex]}
+            files={props.files}
+            currentStep={props.steps[currentStepIndex]}
+            updateFile={updateFile}
+          />
+        </div>
       </div>
     </div>
   );

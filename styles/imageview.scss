@@ -95,3 +95,15 @@
     max-height: 240px;
   }
 }
+
+.options-wrapper {
+  padding-bottom: 16px;
+}
+
+.add-image {
+  margin-top: 16px;
+}
+
+.title-with-divider {
+  @include title-with-divider;
+}

@@ -55,8 +55,6 @@ export default class Publishing extends Component<
 
     this.addStep = this.addStep.bind(this);
     this.closeStep = this.closeStep.bind(this);
-    this.previewDraft = this.previewDraft.bind(this);
-    this.publishDraft = this.publishDraft.bind(this);
 
     this.state = {
       previewLoading: false,
@@ -88,77 +86,6 @@ export default class Publishing extends Component<
     this.props.saveStep(stepId, JSON.stringify(emptyJSON));
   }
 
-  publishDraft(e: React.MouseEvent<HTMLButtonElement>) {
-    let { draftId } = this.props;
-    fetch("/api/endpoint", {
-      method: "POST",
-      redirect: "follow",
-      headers: new Headers({ "Content-Type": "application/json" }),
-      body: JSON.stringify({ requestedAPI: "publishPost", draftId: draftId }),
-    })
-      .then(async (res: any) => {
-        let resJson = await res.json();
-        let newUrl = resJson.newURL;
-        if (newUrl === "unverified") {
-          alert("Please verify your email before publishing.");
-        } else {
-          Router.push(newUrl);
-        }
-        // Router.push(newUrl);
-      })
-      .catch(function (err: any) {
-        console.log(err);
-      });
-  }
-
-  previewDraft(e: React.MouseEvent<HTMLButtonElement>) {
-    let { draftId } = this.props;
-    let url = `/api/preview?draftId=${draftId}`;
-    // window.location.href = url;
-
-    this.setState({
-      previewLoading: true,
-    });
-
-    fetch(url, {
-      method: "POST",
-      // redirect: "follow",
-      headers: new Headers({ "Content-Type": "application/json" }),
-    })
-      .then((res: any) => {
-        if (res.redirected) {
-          window.location.href = "/preview";
-        }
-        // HTTP 301 response
-      })
-      .catch(function (err: any) {
-        console.info(err + " url: " + url);
-      });
-  }
-
-  PublishingButtons = () => {
-    return (
-      <div className={"PublishingButtonsWrapper"}>
-        <div className={"publishingButtons"}>
-          <button onClick={this.previewDraft} className={"preview"}>
-            {this.state.previewLoading ? "Loading Preview..." : "Preview"}
-          </button>
-          {this.props.published ? (
-            <button
-              onClick={(e) => this.props.goToPublishedPost()}
-              className={"publish"}
-            >
-              Go to Published Post
-            </button>
-          ) : (
-            <button onClick={this.publishDraft} className={"publish"}>
-              Publish
-            </button>
-          )}
-        </div>
-      </div>
-    );
-  };
 
   PublishingHeader = () => {
     return (
