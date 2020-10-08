@@ -152,7 +152,7 @@ export default function Login() {
         <HeaderUnAuthenticated
           signup={true}
           about={true}
-          examples={true}
+          explore={true}
           login={false}
         />
         <div className={"Login"}>

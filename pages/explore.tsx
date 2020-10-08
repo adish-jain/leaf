@@ -5,7 +5,7 @@ import { useLoggedIn, logOut } from "../lib/UseLoggedIn";
 import Header, { HeaderUnAuthenticated } from "../components/Header";
 import { useRouter } from "next/router";
 
-import "../styles/examples.scss";
+import "../styles/explore.scss";
 
 export default function Pages() {
   const router = useRouter();
@@ -24,7 +24,7 @@ export default function Pages() {
   return (
     <div className="container">
       <Head>
-        <title>Examples</title>
+        <title>Explore</title>
         <link rel="icon" href="/favicon.ico" />
         <script
           dangerouslySetInnerHTML={{
@@ -36,7 +36,7 @@ export default function Pages() {
           }}
         />
       </Head>
-      <main className={"ExampleMainWrapper"}>
+      <main className={"ExploreMainWrapper"}>
         <HeaderUnAuthenticated login={true} signup={true} about={true} />
         <TitleText />
         <Tutorials />
@@ -47,7 +47,7 @@ export default function Pages() {
 
 function TitleText() {
   return (
-    <div className={"example-title"}>
+    <div className={"explore-title"}>
       <div className={"Text"}>Example Tutorials</div>
     </div>
   );

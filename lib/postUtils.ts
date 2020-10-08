@@ -35,6 +35,7 @@ export async function getDraftDataHandler(uid: string, draftId: string) {
     let title = draftData.data().title;
     let published = draftData.data().published;
     let postId = draftData.data().postId;
+    let tags = draftData.data().tags;
     let files = await getFilesForDraft(uid, draftId);
     let username = await getUsernameFromUid(uid);
     let results = {
@@ -43,6 +44,7 @@ export async function getDraftDataHandler(uid: string, draftId: string) {
       errored: false,
       published,
       postId,
+      tags,
       username,
     };
     return results;
@@ -142,6 +144,39 @@ export async function getDraftImages(uid: string, draftId: string) {
       console.log(error);
       return [];
     });
+}
+
+export async function getPostsFilteredByTags(tags: Array<String>) {
+  // let postsRef = db
+  //   .collection("users")
+  //   .doc(uid)
+  //   .collection("drafts")
+  //   .doc(draftId)
+  //   .collection("steps")
+  //   .orderBy("order");
+
+  // return await stepsRef
+  //   .get()
+  //   .then(function (stepsCollection: any) {
+  //     let results: any[] = [];
+  //     stepsCollection.forEach(function (result: any) {
+  //       let resultsJSON = result.data();
+  //       resultsJSON.id = result.id;
+  //       results.push({
+  //         text: resultsJSON.text,
+  //         lines: resultsJSON.lines,
+  //         fileName: resultsJSON.fileName,
+  //         id: resultsJSON.id,
+  //         fileId: resultsJSON.fileId,
+  //         imageURL: resultsJSON.imageURL,
+  //       });
+  //     });
+  //     return results;
+  //   })
+  //   .catch(function (error: any) {
+  //     console.log(error);
+  //     return [];
+  //   });
 }
 
 type File = {

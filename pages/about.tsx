@@ -24,7 +24,7 @@ export default function About() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <HeaderUnAuthenticated examples={true} signup={true} login={true} />
+        <HeaderUnAuthenticated explore={true} signup={true} login={true} />
         <div>
           <div className={"about-container"}>
             <AboutLeaf />

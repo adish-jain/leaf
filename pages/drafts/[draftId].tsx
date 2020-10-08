@@ -54,6 +54,7 @@ const DraftView = () => {
     errored: false,
     published: false,
     postId: "",
+    tags: [],
     username: "",
   };
 
@@ -67,6 +68,7 @@ const DraftView = () => {
   let errored = draftData["errored"];
   const draftPublished = draftData["published"];
   const postId = draftData["postId"];
+  const tags = draftData["tags"];
   const username = draftData["username"];
 
   let { onTitleChange, draftTitle } = useDraftTitle(
