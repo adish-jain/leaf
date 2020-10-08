@@ -167,9 +167,6 @@ const DraftView = () => {
         files={draftFiles}
         updateShowPreview={updateShowPreview}
         previewMode={true}
-        published={draftPublished}
-        goToPublishedPost={goToPublishedPost}
-        publishPost={publishDraft}
       />
     );
   }

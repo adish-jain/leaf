@@ -28,8 +28,5 @@ export type FinishedPostProps = {
   files: File[];
   username: string;
   previewMode: boolean;
-  published: boolean;
   updateShowPreview?: (value: SetStateAction<boolean>) => void;
-  goToPublishedPost?: () => void;
-  publishPost?: () => void;
 };

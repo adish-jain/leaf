@@ -48,8 +48,6 @@ const FinishedPost = (props: FinishedPostProps) => {
         updateShowPreview={props.updateShowPreview}
         previewMode={props.previewMode}
         authenticated={authenticated}
-        goToPublishedPost={props.goToPublishedPost!}
-        publishPost={props.publishPost!}
         username={props.username}
       />
       <div className={"App"}>
