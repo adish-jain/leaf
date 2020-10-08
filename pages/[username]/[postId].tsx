@@ -97,6 +97,7 @@ const Post = (props: PostPageProps) => {
             steps={props.steps}
             files={props.files}
             title={props.title}
+            previewMode={false}
           />
         )}
       </main>

@@ -11,7 +11,7 @@ import "../styles/login.scss";
 
 function About() {
   return (
-    <div className={'Login'}>
+    <div className={"Login"}>
       <Link href="/about">
         <a>About</a>
       </Link>
@@ -229,11 +229,11 @@ function LoginScreen(props: {
       <div className={"FormWrapper"}>
         <div className={"InputBox"}>
           <label>Email</label>
-          <input onChange={props.handleChangeEmail}></input>
+          <input autoComplete={"username email"} name={"email"} type={"text"} onChange={props.handleChangeEmail}></input>
         </div>
         <div className={"InputBox"}>
           <label>Password</label>
-          <input type="password" onChange={props.handleChangePassword}></input>
+          <input name={"password"} autoComplete={"new-password"} type="password" onChange={props.handleChangePassword}></input>
         </div>
         {!props.errored ? (
           <div></div>

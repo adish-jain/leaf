@@ -71,9 +71,9 @@ export default class ImageView extends Component<
   ImageScreen() {
     return (
       <div className={"img-view"}>
-        <div className={"remove"} onClick={(e) => this.handleImageDelete()}>
+        <button className={"remove-button"} onClick={(e) => this.handleImageDelete()}>
           X
-        </div>
+        </button>
         <img src={this.props.currentlyEditingStep.imageURL}></img>
       </div>
     );
@@ -136,7 +136,11 @@ export default class ImageView extends Component<
 
   render() {
     return (
-      <div>
+      <div className={"options-wrapper"}>
+        <div className={"title-with-divider"}>
+          <label>Image Options</label>
+          <div></div>
+        </div>
         {!this.state.upload ? (
           // Image is in display or the upload option is available
           this.props.currentlyEditingStep?.imageURL !== undefined ? (
