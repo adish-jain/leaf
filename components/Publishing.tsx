@@ -124,13 +124,6 @@ export default class Publishing extends Component<
       updateShowBlock,
     } = this.props;
 
-    // let fullWidthStyle;
-    // !shouldShowBlock
-    //   ? (fullWidthStyle = {
-    //       width: "880px",
-    //     })
-    //   : (fullWidthStyle = {});
-
     return (
       <div className={"publishing"}>
         {/* <this.PublishingButtons /> */}

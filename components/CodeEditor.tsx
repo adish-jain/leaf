@@ -46,6 +46,7 @@ export default class CodeEditor extends Component<
     super(props);
 
     this.state = {
+      // everytime we need to remount the monaco editor for resizing, we increment this key
       monacoKey: 0,
     };
 
@@ -73,6 +74,7 @@ export default class CodeEditor extends Component<
     }
   }
 
+  // after an image is added, resize the code editor
   addStepImageWrapper(selectedImage: any, stepId: string) {
     this.props.addStepImage(selectedImage, stepId);
     this.setState({
@@ -107,10 +109,6 @@ export default class CodeEditor extends Component<
 
     let { monacoKey } = this.state;
 
-    // if (!shouldShowBlock) {
-    //   return <div></div>;
-    // }
-
     return (
       <div className={"CodeEditor"}>
         {currentlyEditingStep === undefined ? (
@@ -143,7 +141,6 @@ export default class CodeEditor extends Component<
           lines={lines}
           selectedFile={files[selectedFileIndex]}
           currentlyEditingStep={currentlyEditingStep}
-          monacoKey={monacoKey}
           key={monacoKey}
         />
         <LanguageBar

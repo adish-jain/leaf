@@ -23,7 +23,6 @@ type MonacoEditorWrapperProps = {
   lines: Lines;
   selectedFile: File;
   currentlyEditingStep?: Step;
-  monacoKey: number;
 };
 
 var decorations: string[] = [];
@@ -174,6 +173,7 @@ export default class MonacoEditorWrapper extends Component<
       this.handleCursor(e)
     );
 
+    //disables typescript type checking
     monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
       noSemanticValidation: true,
       noSyntaxValidation: true,
@@ -197,8 +197,6 @@ export default class MonacoEditorWrapper extends Component<
     if (!(startLineNumber === endLineNumber && startColumn === endColumn)) {
       this.setState({
         showModal: true,
-        // startLine: { lineNumber: startLineNumber, char: startColumn },
-        // endLine: { lineNumber: endLineNumber, char: endColumn },
       });
       changeLines({
         start: startLineNumber,
@@ -219,17 +217,6 @@ export default class MonacoEditorWrapper extends Component<
       end: endLineNumber,
     });
 
-    // decorations = this.monacoInstance.current!.deltaDecorations(decorations, [
-    //   {
-    //     range: new this.monacoTypesWrapper.Range(
-    //       startLineNumber,
-    //       startColumn,
-    //       endLineNumber,
-    //       endColumn
-    //     ),
-    //     options: { isWholeLine: true, inlineClassName: "myLineDecoration" },
-    //   },
-    // ]);
     this.setState({
       showModal: false,
     });
@@ -266,17 +253,13 @@ export default class MonacoEditorWrapper extends Component<
     return (
       <div>
         <style jsx>{`
-          // flex-grow: 100;
-          // overflow-y: scroll;
           position: relative;
           background-color: #263238;
           font-size: 12px;
-          // height: 0px;
           height: 100%;
         `}</style>
         <this.LineModal />
         <MonacoEditor
-          // key={this.props.monacoKey}
           height={"100%"}
           language={language}
           value={draftCode}
