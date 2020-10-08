@@ -37,35 +37,36 @@ export default class Step extends Component<
   Lines = () => {
     let { lines, attachedFileName, saveLines } = this.props;
 
+    const LinesSelected = () => {
+      return (
+        <div className={"lines-selected"}>
+          <p>
+            Selected lines {lines?.start || ""} to {lines?.end || ""} in{" "}
+            {attachedFileName}
+          </p>
+          <button className={"Close"} onClick={(e) => saveLines("", true)}>
+            Clear selected lines
+          </button>
+        </div>
+      );
+    };
+
     return (
       <div className={"line-indicator"}>
         <div className={"center-indicator"}>
-          {!lines ? (
-            <div className={"lines-wrapper"}>
+          <div className={"lines-wrapper"}>
+            <div className={"title-with-divider"}>
+              <label>Line Options</label>
+              <div></div>
+            </div>
+            {!lines ? (
               <div className={"lines-prompt"}>
                 Highlight code in the editor to attach to this step.
               </div>
-              {/* <div className={StepStyles["lines-selected"]}>
-                No lines currently selected.
-              </div> */}
-            </div>
-          ) : (
-            <div className={"lines-wrapper"}>
-              <div className={"lines-prompt"}></div>
-              <div className={"lines-selected"}>
-                <p>
-                  Selected lines {lines.start} to {lines.end} in{" "}
-                  {attachedFileName}
-                </p>
-                <button
-                  className={"Close"}
-                  onClick={(e) => saveLines("", true)}
-                >
-                  X
-                </button>
-              </div>
-            </div>
-          )}
+            ) : (
+              <LinesSelected />
+            )}
+          </div>
         </div>
       </div>
     );
@@ -144,12 +145,10 @@ export default class Step extends Component<
               />
             </div>
           </div>
-          <this.BlockOptions />
+          {/* <this.BlockOptions /> */}
           <this.Lines />
         </div>
-
         <this.EndButtons />
-        {/* <div className={StepStyles["divider"]}></div> */}
       </div>
     );
   }

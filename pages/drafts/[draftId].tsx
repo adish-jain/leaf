@@ -1,4 +1,4 @@
-import { useRouter, Router } from "next/router";
+import { useRouter } from "next/router";
 import { useState, useCallback } from "react";
 import { useLoggedIn, logOut } from "../../lib/UseLoggedIn";
 import { useFiles } from "../../lib/useFiles";
@@ -7,18 +7,18 @@ import { useDraftTitle } from "../../lib/useDraftTitle";
 import useSWR from "swr";
 import Publishing from "../../components/Publishing";
 import CodeEditor from "../../components/CodeEditor";
-import ImageView from "../../components/ImageView";
-import Header from "../../components/Header";
 import DefaultErrorPage from "next/error";
 import Head from "next/head";
+import FinishedPost from "../../components/FinishedPost";
 import { goToPost } from "../../lib/usePosts";
 const fetch = require("node-fetch");
 import { File, Step, Lines } from "../../typescript/types/app_types";
-
 global.Headers = fetch.Headers;
-
-// const appStyles = require("../../styles/App.module.scss");
+import Router from "next/router";
+import Link from "next/link";
 import "../../styles/app.scss";
+import "../../styles/draftheader.scss";
+import { DraftHeader } from "../../components/Headers";
 
 const DraftView = () => {
   const { authenticated, error, loading } = useLoggedIn();
@@ -74,7 +74,6 @@ const DraftView = () => {
     authenticated
   );
 
-
   let {
     saveStep,
     mutateStoredStep,
@@ -107,6 +106,7 @@ const DraftView = () => {
   } = useFiles(draftId, draftFiles, mutate);
 
   const [shouldShowBlock, updateShowBlock] = useState(false);
+  const [showPreview, updateShowPreview] = useState(false);
 
   async function goToPublishedPost() {
     window.location.href = `/${username}/${postId}`;
@@ -124,10 +124,57 @@ const DraftView = () => {
     removeFile(toDeleteIndex);
   }
 
+  function PublishButton() {
+    if (draftPublished) {
+      <button onClick={publishDraft} className={"publish-button"}>
+        Publish Post
+      </button>;
+    } else {
+      <button onClick={goToPublishedPost} className={"publish-button"}>
+        Go To Published Post
+      </button>;
+    }
+  }
+
+  function publishDraft() {
+    fetch("/api/endpoint", {
+      method: "POST",
+      redirect: "follow",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify({ requestedAPI: "publishPost", draftId: draftId }),
+    })
+      .then(async (res: any) => {
+        let resJson = await res.json();
+        let newUrl = resJson.newURL;
+        if (newUrl === "unverified") {
+          alert("Please verify your email before publishing.");
+        } else {
+          Router.push(newUrl);
+        }
+        // Router.push(newUrl);
+      })
+      .catch(function (err: any) {
+        console.log(err);
+      });
+  }
+
+  if (showPreview) {
+    return (
+      <FinishedPost
+        steps={realSteps!}
+        title={draftTitle}
+        username={username}
+        files={draftFiles}
+        updateShowPreview={updateShowPreview}
+        previewMode={true}
+      />
+    );
+  }
+
   return (
     <div className="container">
       <Head>
-        <title>{"test"}</title>
+        <title>{draftTitle}</title>
         <link rel="icon" href="/favicon.ico" />
         <script
           dangerouslySetInnerHTML={{
@@ -158,63 +205,63 @@ const DraftView = () => {
         {errored ? (
           <DefaultErrorPage statusCode={404} />
         ) : (
-          <div className={"App"}>
-            <div className={"center-divs"}>
-              <Publishing
-                draftId={draftId as string}
-                title={draftTitle}
-                storedSteps={realSteps!}
-                saveStep={saveStep}
-                mutateStoredStep={mutateStoredStep}
-                saveStepToBackend={saveStepToBackend}
-                deleteStoredStep={deleteStoredStep}
-                moveStepUp={moveStepUp}
-                moveStepDown={moveStepDown}
-                onTitleChange={onTitleChange}
-                editingStep={editingStep}
-                changeEditingStep={changeEditingStep}
-                selectedFileIndex={selectedFileIndex}
-                lines={lines}
-                files={draftFiles}
-                saveLines={saveLines}
-                published={draftPublished}
-                goToPublishedPost={goToPublishedPost}
-                shouldShowBlock={shouldShowBlock}
-                updateShowBlock={updateShowBlock}
-              />
-              <div className={"RightPane"}>
-                {/* {editingStep !== -1 ? (
-                  <ImageView
-                    draftId={draftId}
-                    steps={realSteps}
-                    editingStep={editingStep}
-                  />
-                ) : (
-                  <div></div>
-                )} */}
-                <CodeEditor
-                  addStepImage={addStepImage}
-                  deleteStepImage={deleteStepImage}
+          <div>
+            <DraftHeader
+              username={username}
+              updateShowPreview={updateShowPreview}
+              goToPublishedPost={goToPublishedPost}
+              published={draftPublished}
+              publishPost={publishDraft}
+            />
+            <div className={"App"}>
+              <div className={"center-divs"}>
+                <Publishing
                   draftId={draftId as string}
+                  title={draftTitle}
+                  storedSteps={realSteps!}
+                  saveStep={saveStep}
+                  mutateStoredStep={mutateStoredStep}
+                  saveStepToBackend={saveStepToBackend}
+                  deleteStoredStep={deleteStoredStep}
+                  moveStepUp={moveStepUp}
+                  moveStepDown={moveStepDown}
+                  onTitleChange={onTitleChange}
                   editingStep={editingStep}
-                  saveFileCode={saveFileCode}
-                  draftCode={codeFiles[selectedFileIndex].code}
-                  files={draftFiles}
-                  addFile={addFile}
-                  removeFile={deleteStepAndFile}
+                  changeEditingStep={changeEditingStep}
                   selectedFileIndex={selectedFileIndex}
-                  changeCode={changeCode}
-                  changeSelectedFile={changeSelectedFileIndex}
-                  changeFileLanguage={changeFileLanguage}
-                  saveFileName={saveFileName}
-                  onNameChange={onNameChange}
-                  language={draftFiles[selectedFileIndex].language}
-                  changeLines={changeLines}
-                  saveLines={saveLines}
                   lines={lines}
+                  files={draftFiles}
+                  saveLines={saveLines}
+                  published={draftPublished}
+                  goToPublishedPost={goToPublishedPost}
                   shouldShowBlock={shouldShowBlock}
-                  currentlyEditingStep={realSteps![editingStep]}
+                  updateShowBlock={updateShowBlock}
                 />
+                <div className={"RightPane"}>
+                  <CodeEditor
+                    addStepImage={addStepImage}
+                    deleteStepImage={deleteStepImage}
+                    draftId={draftId as string}
+                    editingStep={editingStep}
+                    saveFileCode={saveFileCode}
+                    draftCode={codeFiles[selectedFileIndex].code}
+                    files={draftFiles}
+                    addFile={addFile}
+                    removeFile={deleteStepAndFile}
+                    selectedFileIndex={selectedFileIndex}
+                    changeCode={changeCode}
+                    changeSelectedFile={changeSelectedFileIndex}
+                    changeFileLanguage={changeFileLanguage}
+                    saveFileName={saveFileName}
+                    onNameChange={onNameChange}
+                    language={draftFiles[selectedFileIndex].language}
+                    changeLines={changeLines}
+                    saveLines={saveLines}
+                    lines={lines}
+                    shouldShowBlock={shouldShowBlock}
+                    currentlyEditingStep={realSteps![editingStep]}
+                  />
+                </div>
               </div>
             </div>
           </div>
