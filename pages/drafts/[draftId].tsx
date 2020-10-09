@@ -7,6 +7,7 @@ import { useDraftTitle } from "../../lib/useDraftTitle";
 import useSWR from "swr";
 import Publishing from "../../components/Publishing";
 import CodeEditor from "../../components/CodeEditor";
+import Tags from "../../components/Tags";
 import DefaultErrorPage from "next/error";
 import Head from "next/head";
 import FinishedPost from "../../components/FinishedPost";
@@ -109,6 +110,7 @@ const DraftView = () => {
 
   const [shouldShowBlock, updateShowBlock] = useState(false);
   const [showPreview, updateShowPreview] = useState(false);
+  const [showTags, updateShowTags] = useState(false);
 
   async function goToPublishedPost() {
     window.location.href = `/${username}/${postId}`;
@@ -126,17 +128,19 @@ const DraftView = () => {
     removeFile(toDeleteIndex);
   }
 
-  function PublishButton() {
-    if (draftPublished) {
-      <button onClick={publishDraft} className={"publish-button"}>
-        Publish Post
-      </button>;
-    } else {
-      <button onClick={goToPublishedPost} className={"publish-button"}>
-        Go To Published Post
-      </button>;
-    }
-  }
+  // function PublishButton() {
+  //   if (draftPublished) {
+  //     <button onClick={publishDraft} className={"publish-button"}>
+  //       Publish Post
+  //     </button>;
+  //   } else {
+  //     <button onClick={goToPublishedPost} className={"publish-button"}>
+  //       Go To Published Post
+  //     </button>;
+  //   }
+  // }
+
+  
 
   function publishDraft() {
     fetch("/api/endpoint", {
@@ -160,6 +164,61 @@ const DraftView = () => {
       });
   }
 
+  function toggleTag(tag: string) {
+    if (typeof tags === "undefined") {
+      var data = {
+        requestedAPI: "updateTags",
+        draftId: draftId,
+        tags: [tag],
+      };
+
+      // TODO optimistic mutate 
+    
+      fetch("/api/endpoint", {
+        method: "POST",
+        headers: new Headers({ "Content-Type": "application/json" }),
+        body: JSON.stringify(data),
+      }).then(async (res: any) => {
+        let resJSON = await res.json();
+      });
+
+    } else {
+      if (!tags.includes(tag) && tags.length >= 3) {
+        console.log("too many tags selected");
+      } else {
+        if (tags.includes(tag)) {
+          var selectedTags: string[] = tags.filter((element: string) => element != tag)
+          var button = document.getElementById(tag);
+          button!.style.color = "black";
+          button!.style.background = "#F5F5F5"
+          console.log(selectedTags);
+          console.log(tag);
+        } else {
+          var selectedTags: string[] = [...tags, tag];
+          var button = document.getElementById(tag);
+          button!.style.color = "white";
+          button!.style.background = "#349AE9"
+        }
+        // update tags in firebase
+        var data = {
+          requestedAPI: "updateTags",
+          draftId: draftId,
+          tags: selectedTags,
+        };
+  
+        // TODO optimistic mutate 
+      
+        fetch("/api/endpoint", {
+          method: "POST",
+          headers: new Headers({ "Content-Type": "application/json" }),
+          body: JSON.stringify(data),
+        }).then(async (res: any) => {
+          let resJSON = await res.json();
+        });
+      }
+    }
+  }
+
   if (showPreview) {
     return (
       <FinishedPost
@@ -169,6 +228,18 @@ const DraftView = () => {
         files={draftFiles}
         updateShowPreview={updateShowPreview}
         previewMode={true}
+      />
+    );
+  }
+
+  if (showTags) {
+    return (
+      <Tags 
+        showTags={showTags}
+        updateShowTags={updateShowTags}
+        title={draftTitle}
+        selectedTags={tags}
+        toggleTag={toggleTag}
       />
     );
   }
@@ -212,6 +283,7 @@ const DraftView = () => {
               username={username}
               updateShowPreview={updateShowPreview}
               goToPublishedPost={goToPublishedPost}
+              updateShowTags={updateShowTags}
               published={draftPublished}
               publishPost={publishDraft}
             />

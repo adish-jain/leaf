@@ -5,6 +5,7 @@ import Link from "next/link";
 type DraftHeaderProps = {
   username: string;
   updateShowPreview: (value: SetStateAction<boolean>) => void;
+  updateShowTags: (value: SetStateAction<boolean>) => void;
   goToPublishedPost: () => void;
   publishPost: () => void;
   published: boolean;
@@ -39,6 +40,14 @@ export function DraftHeader(props: DraftHeaderProps) {
     }
   }
 
+  function TagsButton() {
+    return (
+      <button onClick={() => props.updateShowTags(true)} className={"publish-button"}>
+        Tags
+      </button>
+    );
+  }
+
   function Buttons() {
     return (
       <div className={"buttons"}>
@@ -51,6 +60,7 @@ export function DraftHeader(props: DraftHeaderProps) {
           Preview Post
         </button>
         <PublishButtonChoice />
+        <TagsButton />
       </div>
     );
   }
@@ -64,6 +74,7 @@ export function DraftHeader(props: DraftHeaderProps) {
     </div>
   );
 }
+
 type FinishedPostHeaderProps = {
   previewMode: boolean;
   authenticated: boolean;
@@ -112,6 +123,53 @@ function ExitPreview(props: {
       }}
     >
       Exit Preview
+    </button>
+  );
+}
+
+type TagsHeaderProps = {
+  showTags: boolean;
+  updateShowTags?: (value: SetStateAction<boolean>) => void;
+};
+
+export function TagsHeader(props: TagsHeaderProps) {
+  function Links() {
+    return (
+      <div className={"links"}>
+        <Link href="/landing">
+          <a>Home</a>
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className={"draft-header"}>
+      <div className={"header-wrapper"}>
+        <Links />
+        <div className={"buttons"}>
+          {props.showTags ? (
+            <ExitTags updateShowTags={props.updateShowTags} />
+          ) : (
+            <div></div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ExitTags(props: {
+  updateShowTags?: (value: SetStateAction<boolean>) => void;
+}) {
+  return (
+    <button
+      className={"preview-button"}
+      onClick={(e) => {
+        props.updateShowTags!(false);
+      }}
+    >
+      Continue Drafting
     </button>
   );
 }
