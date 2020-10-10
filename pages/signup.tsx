@@ -121,16 +121,23 @@ export default function SignUp() {
           }
         `}</style>
         <div className={"Login"}>
-          <div className={"LoginBox"}>
+          <form className={"LoginBox"}>
             <h1>Sign Up</h1>
             <div className={"FormWrapper"}>
               <div className={"InputBox"}>
                 <label>Email</label>
-                <input id="email" value={email} onChange={handleChangeEmail} />
+                <input
+                  id="email"
+                  autoComplete="chrome-off"
+                  value={email}
+                  name={"email username"}
+                  onChange={handleChangeEmail}
+                />
               </div>
               <div className={"InputBox"}>
                 <label>Username</label>
                 <input
+                  autoComplete="chrome-off"
                   id="username"
                   value={username}
                   onChange={handleChangeUsername}
@@ -142,6 +149,7 @@ export default function SignUp() {
                   onChange={handleChangePassword}
                   type="password"
                   id="password"
+                  name={"password"}
                 ></input>
               </div>
               <div className={"InputBox"}>
@@ -161,7 +169,7 @@ export default function SignUp() {
                 {signingUp ? "Signing Up..." : "Signup"}
               </button>
             </div>
-          </div>
+          </form>
         </div>
       </main>
     </div>

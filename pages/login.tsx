@@ -40,6 +40,7 @@ export default function Login() {
   };
 
   const handleLoginClick = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
     if (email === "") {
       updateErrorMessage("Invalid Email");
       updateErrored(true);
@@ -224,16 +225,26 @@ function LoginScreen(props: {
   handleForgotPassword: any;
 }) {
   return (
-    <div className={"LoginBox"}>
+    <form className={"LoginBox"}>
       <h1>Login</h1>
       <div className={"FormWrapper"}>
         <div className={"InputBox"}>
           <label>Email</label>
-          <input autoComplete={"username email"} name={"email"} type={"text"} onChange={props.handleChangeEmail}></input>
+          <input
+            autoComplete={"username email"}
+            name={"email"}
+            type={"text"}
+            onChange={props.handleChangeEmail}
+          ></input>
         </div>
         <div className={"InputBox"}>
           <label>Password</label>
-          <input name={"password"} autoComplete={"new-password"} type="password" onChange={props.handleChangePassword}></input>
+          <input
+            name={"password"}
+            autoComplete={"new-password"}
+            type="password"
+            onChange={props.handleChangePassword}
+          ></input>
         </div>
         {!props.errored ? (
           <div></div>
@@ -247,6 +258,6 @@ function LoginScreen(props: {
           <br></br>Forgot Password?
         </div>
       </div>
-    </div>
+    </form>
   );
 }
