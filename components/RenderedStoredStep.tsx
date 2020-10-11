@@ -13,7 +13,9 @@ type RenderedStoredStepProps = {
   index: number;
 };
 
-type RenderedStoredStepState = {};
+type RenderedStoredStepState = {
+  hovered: boolean;
+};
 
 export default class Step extends Component<
   RenderedStoredStepProps,
@@ -21,6 +23,12 @@ export default class Step extends Component<
 > {
   constructor(props: RenderedStoredStepProps) {
     super(props);
+
+    this.state = {
+      hovered: false,
+    };
+
+    this.sideButtons = this.sideButtons.bind(this);
   }
 
   LineStatus = () => {
@@ -40,12 +48,39 @@ export default class Step extends Component<
     );
   }
 
+  sideButtons() {
+    if (!this.state.hovered) {
+      return <div></div>;
+    }
+    return (
+      <div className={"side-buttons-wrapper"}>
+        <div className={"side-buttons"}>
+          <button className={"up"}>
+            <span>↑</span>
+          </button>
+          <button className={"down"}>
+            <span>↓</span>
+          </button>
+          <button className={"close"}>
+            <span>X</span>
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     let { lines, attachedFileName, index, changeEditingStep } = this.props;
     return (
       <div
         onClick={(e) => changeEditingStep(index)}
         className={"renderedstep-wrapper"}
+        onMouseEnter={(e) => {
+          this.setState({ hovered: true });
+        }}
+        onMouseLeave={(e) => {
+          this.setState({ hovered: false });
+        }}
       >
         <div className={"main-content"}>
           <Editor
@@ -56,6 +91,7 @@ export default class Step extends Component<
         </div>
         {lines === undefined ? <this.NoLines /> : <this.LineStatus />}
         {/* <div className={"divider"}></div> */}
+        <this.sideButtons />
       </div>
     );
   }

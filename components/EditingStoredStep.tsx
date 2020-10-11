@@ -44,7 +44,7 @@ export default class Step extends Component<
             Selected lines {lines?.start || ""} to {lines?.end || ""} in{" "}
             {attachedFileName}
           </p>
-          <button className={"Close"} onClick={(e) => saveLines("", true)}>
+          <button className={"clear-lines"} onClick={(e) => saveLines("", true)}>
             Clear selected lines
           </button>
         </div>
