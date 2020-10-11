@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import DraftEditor, { Editor } from "draft-js";
 import "../styles/renderedstep.scss";
+import { motion, AnimatePresence } from "framer-motion";
 
 type RenderedStoredStepProps = {
   changeEditingStep: (editingStep: number) => void;
@@ -49,23 +50,44 @@ export default class Step extends Component<
   }
 
   sideButtons() {
-    if (!this.state.hovered) {
-      return <div></div>;
-    }
+    let { hovered } = this.state;
     return (
-      <div className={"side-buttons-wrapper"}>
-        <div className={"side-buttons"}>
-          <button className={"up"}>
-            <span>↑</span>
-          </button>
-          <button className={"down"}>
-            <span>↓</span>
-          </button>
-          <button className={"close"}>
-            <span>X</span>
-          </button>
-        </div>
-      </div>
+      <AnimatePresence>
+        {hovered && (
+          <motion.div
+            initial={
+              {
+                opacity: 0,
+                position: "relative",
+                left: "-100px",
+                top: "-60px",
+              } as any
+            }
+            animate={
+              { opacity: 1, position: "relative", left: "-128px" } as any
+            }
+            exit={{ 
+              opacity: 0, 
+              // left: "-100px" 
+            }}
+            transition={{ duration: 0.25 }}
+          >
+            <div className={"side-buttons-wrapper"}>
+              <div className={"side-buttons"}>
+                <button className={"up"}>
+                  <span>↑</span>
+                </button>
+                <button className={"down"}>
+                  <span>↓</span>
+                </button>
+                <button className={"close"}>
+                  <span>X</span>
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     );
   }
 

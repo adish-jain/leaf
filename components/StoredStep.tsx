@@ -5,6 +5,7 @@ import EditingStoredStep from "./EditingStoredStep";
 import RenderedStoredStep from "./RenderedStoredStep";
 import "../styles/step.scss";
 const fetch = require("node-fetch");
+import { motion, AnimatePresence } from "framer-motion";
 
 type File = {
   id: string;
