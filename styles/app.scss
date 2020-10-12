@@ -30,13 +30,20 @@
   }
 }
 
-.AppWrapper {
-  height: 100%;
-}
-
 .center-divs {
   margin: auto;
   display: flex;
+  width: fit-content;
+}
+
+.finishedpost-wrapper {
+  margin-top: 56px;
+  width: 100%;
+}
+
+.draft-wrapper {
+  @extend .center-divs;
+  margin-top: 56px;
 }
 
 .App {
