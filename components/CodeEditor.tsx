@@ -50,8 +50,6 @@ export default class CodeEditor extends Component<
 
   }
 
-  componentDidUpdate(prevProps: CodeEditorProps) {}
-
   render() {
     let {
       draftId,

@@ -118,24 +118,6 @@ export default class Step extends Component<
       editing,
     } = this.props;
     return (
-      // <AnimatePresence>
-      //   {!editing && (
-      //     <motion.div
-      //       // initial={{ opacity: 0 }}
-      //       // animate={{ opacity: 1 }}
-      //       // exit={{ opacity: 0 }}
-      //       // transition={{ duration: 0.3 }}
-      //       style={{ overflow: "hidden" }}
-      //       initial={{ height: 0 }}
-      //       animate={{ height: "auto" }}
-      //       exit={{ height: 0 }}
-      //       transition={{ duration: 0.3 }}
-
-      //       // style={{position: "relative"}}
-      //       // initial={{ right: "100%"}}
-      //       // animate={{ right: 0}}
-      //       // exit={{right: "100%"}}
-      //     >
       !editing && (
         <div
           onClick={(e) => changeEditingStep(index)}
@@ -155,13 +137,9 @@ export default class Step extends Component<
             />
           </div>
           {lines === undefined ? <this.NoLines /> : <this.LineStatus />}
-          {/* <div className={"divider"}></div> */}
           <this.sideButtons />
         </div>
       )
-      //     </motion.div>
-      //   )}
-      // </AnimatePresence>
     );
   }
 }

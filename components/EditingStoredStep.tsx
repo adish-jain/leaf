@@ -139,16 +139,9 @@ export default class Step extends Component<
         {editing && (
           <motion.div
             style={{ overflow: "hidden" }}
-            // style={{position: "relative"}}
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            // initial={{ right: "80%", opacity: 0}}
-            // animate={{ right: 0, opacity: 1}}
-            // exit={{right: "80%", opacity: 0}}
-            // initial={{ opacity: 0 }}
-            // animate={{ opacity: 1 }}
-            // exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
             <div className={"editingstep-wrapper"}>
