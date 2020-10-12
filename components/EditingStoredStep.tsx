@@ -16,7 +16,6 @@ type EditingStoredStepProps = {
   immediateUpdate: (stepText: string) => void;
   loading: boolean;
   changeEditingStep: (editingStep: number) => void;
-  updateShowBlock: (shouldShowBlock: boolean) => void;
   editing: boolean;
 };
 
@@ -117,7 +116,7 @@ export default class Step extends Component<
     //   codeEditor: true
     // });
 
-    this.props.updateShowBlock(true);
+    // this.props.updateShowBlock(true);
   }
 
   render() {
@@ -130,7 +129,6 @@ export default class Step extends Component<
       immediateUpdate,
       loading,
       changeEditingStep,
-      updateShowBlock,
       editing,
     } = this.props;
 

@@ -31,7 +31,6 @@ type StoredStepProps = {
   saveLines: (fileName: string, remove: boolean) => void;
   files: File[];
   attachedFileId: string;
-  updateShowBlock: (shouldShowBlock: boolean) => void;
 };
 
 type StoredStepState = {
@@ -121,7 +120,6 @@ export default class StoredStep extends Component<
       attachedFileId,
       index,
       changeEditingStep,
-      updateShowBlock,
     } = this.props;
     const contentState = convertFromRaw(this.props.text);
     const editorState = EditorState.createWithContent(contentState);
@@ -147,7 +145,6 @@ export default class StoredStep extends Component<
           immediateUpdate={this.immediateUpdate}
           loading={this.state.loading}
           changeEditingStep={changeEditingStep}
-          updateShowBlock={updateShowBlock}
           editing={editing}
         />
         <RenderedStoredStep

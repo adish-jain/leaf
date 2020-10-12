@@ -1,5 +1,11 @@
 import { useRouter } from "next/router";
-import { useState, useCallback } from "react";
+import {
+  useState,
+  useCallback,
+  Component,
+  Dispatch,
+  SetStateAction,
+} from "react";
 import { useLoggedIn, logOut } from "../../lib/UseLoggedIn";
 import { useFiles } from "../../lib/useFiles";
 import { useSteps } from "../../lib/useSteps";
@@ -19,6 +25,7 @@ import Link from "next/link";
 import "../../styles/app.scss";
 import "../../styles/draftheader.scss";
 import { DraftHeader } from "../../components/Headers";
+import { DraftJsButtonProps } from "draft-js-buttons";
 
 const DraftView = () => {
   const { authenticated, error, loading } = useLoggedIn();
@@ -108,10 +115,6 @@ const DraftView = () => {
   const [shouldShowBlock, updateShowBlock] = useState(false);
   const [showPreview, updateShowPreview] = useState(false);
 
-  async function goToPublishedPost() {
-    window.location.href = `/${username}/${postId}`;
-  }
-
   // wrapper function for deleting a file.
   // when a file is deleted, make sure all associated steps remove that file
   function deleteStepAndFile(toDeleteIndex: number) {
@@ -122,40 +125,6 @@ const DraftView = () => {
       }
     }
     removeFile(toDeleteIndex);
-  }
-
-  function PublishButton() {
-    if (draftPublished) {
-      <button onClick={publishDraft} className={"publish-button"}>
-        Publish Post
-      </button>;
-    } else {
-      <button onClick={goToPublishedPost} className={"publish-button"}>
-        Go To Published Post
-      </button>;
-    }
-  }
-
-  function publishDraft() {
-    fetch("/api/endpoint", {
-      method: "POST",
-      redirect: "follow",
-      headers: new Headers({ "Content-Type": "application/json" }),
-      body: JSON.stringify({ requestedAPI: "publishPost", draftId: draftId }),
-    })
-      .then(async (res: any) => {
-        let resJson = await res.json();
-        let newUrl = resJson.newURL;
-        if (newUrl === "unverified") {
-          alert("Please verify your email before publishing.");
-        } else {
-          Router.push(newUrl);
-        }
-        // Router.push(newUrl);
-      })
-      .catch(function (err: any) {
-        console.log(err);
-      });
   }
 
   if (showPreview) {
@@ -169,6 +138,10 @@ const DraftView = () => {
         previewMode={true}
       />
     );
+  }
+
+  if (errored) {
+    return <DefaultErrorPage statusCode={404} />;
   }
 
   return (
@@ -192,80 +165,226 @@ const DraftView = () => {
         />
       </Head>
       <main className={"AppWrapper"}>
-     
-        {/* <Header
+        <DraftContent
           username={username}
-          logout={false}
-          settings={true}
-          profile={true}
-        /> */}
-        {errored ? (
-          <DefaultErrorPage statusCode={404} />
-        ) : (
-          <div>
-            <DraftHeader
-              username={username}
-              updateShowPreview={updateShowPreview}
-              goToPublishedPost={goToPublishedPost}
-              published={draftPublished}
-              publishPost={publishDraft}
-            />
-            <div className={"App"}>
-              <div className={"center-divs"}>
-                <Publishing
-                  draftId={draftId as string}
-                  title={draftTitle}
-                  storedSteps={realSteps!}
-                  saveStep={saveStep}
-                  mutateStoredStep={mutateStoredStep}
-                  saveStepToBackend={saveStepToBackend}
-                  deleteStoredStep={deleteStoredStep}
-                  moveStepUp={moveStepUp}
-                  moveStepDown={moveStepDown}
-                  onTitleChange={onTitleChange}
-                  editingStep={editingStep}
-                  changeEditingStep={changeEditingStep}
-                  selectedFileIndex={selectedFileIndex}
-                  lines={lines}
-                  files={draftFiles}
-                  saveLines={saveLines}
-                  published={draftPublished}
-                  goToPublishedPost={goToPublishedPost}
-                  shouldShowBlock={shouldShowBlock}
-                  updateShowBlock={updateShowBlock}
-                />
-                <div className={"RightPane"}>
-                  <CodeEditor
-                    addStepImage={addStepImage}
-                    deleteStepImage={deleteStepImage}
-                    draftId={draftId as string}
-                    editingStep={editingStep}
-                    saveFileCode={saveFileCode}
-                    draftCode={codeFiles[selectedFileIndex].code}
-                    files={draftFiles}
-                    addFile={addFile}
-                    removeFile={deleteStepAndFile}
-                    selectedFileIndex={selectedFileIndex}
-                    changeCode={changeCode}
-                    changeSelectedFile={changeSelectedFileIndex}
-                    changeFileLanguage={changeFileLanguage}
-                    saveFileName={saveFileName}
-                    onNameChange={onNameChange}
-                    language={draftFiles[selectedFileIndex].language}
-                    changeLines={changeLines}
-                    saveLines={saveLines}
-                    lines={lines}
-                    shouldShowBlock={shouldShowBlock}
-                    currentlyEditingStep={realSteps![editingStep]}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+          postId={postId}
+          codeFiles={codeFiles}
+          selectedFileIndex={selectedFileIndex}
+          draftFiles={draftFiles}
+          realSteps={realSteps}
+          editingStep={editingStep}
+          lines={lines}
+          changeEditingStep={changeEditingStep}
+          mutateStoredStep={mutateStoredStep}
+          changeLines={changeLines}
+          saveStepToBackend={saveStepToBackend}
+          deleteStoredStep={deleteStoredStep}
+          moveStepDown={moveStepUp}
+          onTitleChange={onTitleChange}
+          deleteStepAndFile={deleteStepAndFile}
+          draftPublished={draftPublished}
+          draftTitle={draftTitle}
+          saveFileCode={saveFileCode}
+          onNameChange={onNameChange}
+          saveFileName={saveFileName}
+          changeFileLanguage={changeFileLanguage}
+          changeSelectedFileIndex={changeSelectedFileIndex}
+          changeCode={changeCode}
+          removeFile={removeFile}
+          addFile={addFile}
+          draftId={draftId as string}
+          saveStep={saveStep}
+          moveStepUp={moveStepUp}
+          saveLines={saveLines}
+          removeLines={removeLines}
+          addStepImage={addStepImage}
+          deleteStepImage={deleteStepImage}
+        />
       </main>
     </div>
   );
 };
+
+type DraftContentProps = {
+  username: string;
+  postId: string;
+  draftId: string;
+  saveStep: (stepId: string, text: string) => void;
+  mutateStoredStep: (stepId: any, text: any) => void;
+  saveStepToBackend: (stepId: string, text: string) => Promise<void>;
+  deleteStoredStep: (stepId: any) => void;
+  moveStepUp: (stepId: any) => void;
+  moveStepDown: (stepId: any) => void;
+  realSteps: Step[] | undefined;
+  editingStep: number;
+  changeEditingStep: Dispatch<SetStateAction<number>>;
+  lines: Lines;
+  changeLines: Dispatch<SetStateAction<Lines>>;
+  saveLines: (fileId: string, remove: boolean) => void;
+  removeLines: (stepIndex: number) => void;
+  addStepImage: (selectedImage: any, stepId: string) => Promise<void>;
+  deleteStepImage: (stepId: string) => Promise<void>;
+  selectedFileIndex: number;
+  codeFiles: File[];
+  addFile: () => void;
+  removeFile: (toDeleteIndex: number) => void;
+  changeCode: (value: string) => void;
+  changeSelectedFileIndex: Dispatch<SetStateAction<number>>;
+  changeFileLanguage: (language: string, external: boolean) => void;
+  saveFileName: (value: string, external: boolean) => void;
+  onNameChange: (name: string) => void;
+  saveFileCode: () => void;
+  draftTitle: string;
+  draftPublished: boolean;
+  deleteStepAndFile: (toDeleteIndex: number) => void;
+  draftFiles: File[];
+  onTitleChange: (updatedtitle: string) => Promise<void>;
+};
+
+type DraftContentState = {
+  showPreview: boolean;
+};
+
+class DraftContent extends Component<DraftContentProps, DraftContentState> {
+  constructor(props: DraftContentProps) {
+    super(props);
+
+    this.state = {
+      showPreview: false,
+    };
+
+    this.goToPublishedPost = this.goToPublishedPost.bind(this);
+    this.updateShowPreview = this.updateShowPreview.bind(this);
+    this.publishDraft = this.publishDraft.bind(this);
+  }
+
+  updateShowPreview(shouldShowPreview: boolean) {
+    this.setState({
+      showPreview: shouldShowPreview,
+    });
+  }
+
+  publishDraft() {
+    let { draftId } = this.props;
+    fetch("/api/endpoint", {
+      method: "POST",
+      redirect: "follow",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify({ requestedAPI: "publishPost", draftId: draftId }),
+    })
+      .then(async (res: any) => {
+        let resJson = await res.json();
+        let newUrl = resJson.newURL;
+        if (newUrl === "unverified") {
+          alert("Please verify your email before publishing.");
+        } else {
+          Router.push(newUrl);
+        }
+        // Router.push(newUrl);
+      })
+      .catch(function (err: any) {
+        console.log(err);
+      });
+  }
+
+  async goToPublishedPost() {
+    let { username, postId } = this.props;
+    window.location.href = `/${username}/${postId}`;
+  }
+
+  render() {
+    let {
+      username,
+      draftPublished,
+      draftId,
+      draftTitle,
+      realSteps,
+      saveStep,
+      mutateStoredStep,
+      saveStepToBackend,
+      deleteStoredStep,
+      moveStepUp,
+      onTitleChange,
+      editingStep,
+      changeEditingStep,
+      selectedFileIndex,
+      lines,
+      draftFiles,
+      saveLines,
+      addStepImage,
+      deleteStepImage,
+      saveFileCode,
+      codeFiles,
+      addFile,
+      deleteStepAndFile,
+      changeCode,
+      changeSelectedFileIndex,
+      changeFileLanguage,
+      saveFileName,
+      onNameChange,
+      changeLines,
+      moveStepDown,
+    } = this.props;
+    return (
+      <div>
+        <DraftHeader
+          username={username}
+          updateShowPreview={this.updateShowPreview}
+          goToPublishedPost={this.goToPublishedPost}
+          published={draftPublished}
+          publishPost={this.publishDraft}
+        />
+        <div className={"App"}>
+          <div className={"center-divs"}>
+            <Publishing
+              draftId={draftId as string}
+              title={draftTitle}
+              storedSteps={realSteps!}
+              saveStep={saveStep}
+              mutateStoredStep={mutateStoredStep}
+              saveStepToBackend={saveStepToBackend}
+              deleteStoredStep={deleteStoredStep}
+              moveStepUp={moveStepUp}
+              moveStepDown={moveStepDown}
+              onTitleChange={onTitleChange}
+              editingStep={editingStep}
+              changeEditingStep={changeEditingStep}
+              selectedFileIndex={selectedFileIndex}
+              lines={lines}
+              files={draftFiles}
+              saveLines={saveLines}
+              published={draftPublished}
+              goToPublishedPost={this.goToPublishedPost}
+            />
+            <div className={"RightPane"}>
+              <CodeEditor
+                addStepImage={addStepImage}
+                deleteStepImage={deleteStepImage}
+                draftId={draftId as string}
+                editingStep={editingStep}
+                saveFileCode={saveFileCode}
+                draftCode={codeFiles[selectedFileIndex].code}
+                files={draftFiles}
+                addFile={addFile}
+                removeFile={deleteStepAndFile}
+                selectedFileIndex={selectedFileIndex}
+                changeCode={changeCode}
+                changeSelectedFile={changeSelectedFileIndex}
+                changeFileLanguage={changeFileLanguage}
+                saveFileName={saveFileName}
+                onNameChange={onNameChange}
+                language={draftFiles[selectedFileIndex].language}
+                changeLines={changeLines}
+                saveLines={saveLines}
+                lines={lines}
+                currentlyEditingStep={realSteps![editingStep]}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
 
 export default DraftView;
