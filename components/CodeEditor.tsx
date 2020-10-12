@@ -27,8 +27,6 @@ type CodeEditorProps = {
   changeSelectedFile: (fileIndex: number) => void;
   language: string;
   lines: Lines;
-  // whether or the draft page should display the block side
-  shouldShowBlock: boolean;
   currentlyEditingStep: StepType;
   deleteStepImage: (stepId: string) => void;
   addStepImage: (selectedImage: any, stepId: string) => void;
@@ -69,7 +67,6 @@ export default class CodeEditor extends Component<
       changeLines,
       saveLines,
       lines,
-      shouldShowBlock,
       currentlyEditingStep,
       addStepImage,
       deleteStepImage,
