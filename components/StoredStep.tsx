@@ -155,31 +155,30 @@ export default class StoredStep extends Component<
         // onMouseEnter={(e) => this.setState({ hovered: true })}
         // onMouseLeave={(e) => this.setState({ hovered: false })}
       >
-        {editing ? (
-          <EditingStoredStep
-            onChange={this.onChange}
-            editorState={editorState}
-            lines={this.props.lines}
-            saveLines={saveLines}
-            attachedFileName={name}
-            immediateUpdate={this.immediateUpdate}
-            loading={this.state.loading}
-            changeEditingStep={changeEditingStep}
-            updateShowBlock={updateShowBlock}
-          />
-        ) : (
-          <RenderedStoredStep
-            changeEditingStep={changeEditingStep}
-            deleteStoredStep={this.deleteStoredStep}
-            moveStepUp={this.moveStepUp}
-            moveStepDown={this.moveStepDown}
-            lines={this.props.lines}
-            editorState={editorState}
-            attachedFileName={name}
-            index={index}
-          />
-        )}
-        {/* <this.OptionsBar /> */}
+        <EditingStoredStep
+          onChange={this.onChange}
+          editorState={editorState}
+          lines={this.props.lines}
+          saveLines={saveLines}
+          attachedFileName={name}
+          immediateUpdate={this.immediateUpdate}
+          loading={this.state.loading}
+          changeEditingStep={changeEditingStep}
+          updateShowBlock={updateShowBlock}
+          editing={editing}
+        />
+        <RenderedStoredStep
+          changeEditingStep={changeEditingStep}
+          deleteStoredStep={this.deleteStoredStep}
+          moveStepUp={this.moveStepUp}
+          moveStepDown={this.moveStepDown}
+          lines={this.props.lines}
+          editorState={editorState}
+          attachedFileName={name}
+          index={index}
+          editing={editing}
+        />
+        
       </div>
     );
   }

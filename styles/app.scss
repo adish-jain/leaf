@@ -59,6 +59,8 @@
   display: flex;
   flex-direction: column;
   height: 92vh;
+  position: sticky;
+  top: 2vh;
   // overflow: auto;
 }
 

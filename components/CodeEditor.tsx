@@ -34,9 +34,7 @@ type CodeEditorProps = {
   addStepImage: (selectedImage: any, stepId: string) => void;
 };
 
-type CodeEditorState = {
-  monacoKey: number;
-};
+type CodeEditorState = {};
 
 export default class CodeEditor extends Component<
   CodeEditorProps,
@@ -50,40 +48,9 @@ export default class CodeEditor extends Component<
       monacoKey: 0,
     };
 
-    this.addStepImageWrapper = this.addStepImageWrapper.bind(this);
   }
 
-
-  componentDidUpdate(prevProps: CodeEditorProps) {
-    // if currently editing step changes, resize editor
-    if (
-      prevProps.currentlyEditingStep?.id !== this.props.currentlyEditingStep?.id
-    ) {
-      this.setState({
-        monacoKey: this.state.monacoKey + 1,
-      });
-    }
-
-    // if currently editing step image changes, resize editor
-    if (
-      prevProps.currentlyEditingStep?.imageURL !==
-      this.props.currentlyEditingStep?.imageURL
-    ) {
-      this.setState({
-        monacoKey: this.state.monacoKey + 1,
-      });
-    }
-  }
-  
-
-  // after an image is added, resize the code editor
-  addStepImageWrapper(selectedImage: any, stepId: string) {
-    this.props.addStepImage(selectedImage, stepId);
-    this.setState({
-      monacoKey: this.state.monacoKey + 1,
-    });
-  }
-  
+  componentDidUpdate(prevProps: CodeEditorProps) {}
 
   render() {
     let {
@@ -110,12 +77,10 @@ export default class CodeEditor extends Component<
       deleteStepImage,
     } = this.props;
 
-    let { monacoKey } = this.state;
-
     return (
       <div className={"CodeEditor"}>
         <ImageView
-          addStepImage={this.addStepImageWrapper}
+          addStepImage={addStepImage}
           currentlyEditingStep={currentlyEditingStep}
           deleteStepImage={deleteStepImage}
         />
@@ -140,7 +105,6 @@ export default class CodeEditor extends Component<
           lines={lines}
           selectedFile={files[selectedFileIndex]}
           currentlyEditingStep={currentlyEditingStep}
-          key={monacoKey}
         />
         <LanguageBar
           language={language}
