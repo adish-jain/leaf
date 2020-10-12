@@ -50,6 +50,7 @@ export default class MonacoEditorWrapper extends Component<
 
   componentDidMount() {
     window.onresize = this.handleResize;
+    this.handleResize();
   }
 
   handleResize() {
@@ -159,10 +160,12 @@ export default class MonacoEditorWrapper extends Component<
     editor: editor.IStandaloneCodeEditor,
     monaco: typeof import("monaco-editor")
   ) {
+    console.log("mounting editor");
     (this.monacoInstance as React.MutableRefObject<
       editor.IStandaloneCodeEditor
     >).current = editor;
     this.monacoTypesWrapper = monaco;
+    this.handleResize();
     this.updateLines();
 
     this.monacoInstance.current!.onDidBlurEditorText(() => {

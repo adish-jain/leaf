@@ -53,7 +53,7 @@ export default class CodeEditor extends Component<
     this.addStepImageWrapper = this.addStepImageWrapper.bind(this);
   }
 
-/*
+
   componentDidUpdate(prevProps: CodeEditorProps) {
     // if currently editing step changes, resize editor
     if (
@@ -74,7 +74,7 @@ export default class CodeEditor extends Component<
       });
     }
   }
-  */
+  
 
   // after an image is added, resize the code editor
   addStepImageWrapper(selectedImage: any, stepId: string) {
