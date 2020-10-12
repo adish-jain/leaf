@@ -203,11 +203,6 @@ const DraftView = () => {
           <DefaultErrorPage statusCode={404} />
         ) : (
           <div>
-            <style jsx>{`
-               {
-                height: 100%;
-              }
-            `}</style>
             <DraftHeader
               username={username}
               updateShowPreview={updateShowPreview}
