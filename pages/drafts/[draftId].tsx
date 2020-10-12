@@ -18,6 +18,8 @@ import Router from "next/router";
 import Link from "next/link";
 import "../../styles/app.scss";
 import "../../styles/draftheader.scss";
+import { motion, AnimatePresence } from "framer-motion";
+
 import { DraftHeader } from "../../components/Headers";
 
 const DraftView = () => {
@@ -158,16 +160,61 @@ const DraftView = () => {
       });
   }
 
-  if (showPreview) {
+  if (errored) {
+    return <DefaultErrorPage statusCode={404} />;
+  }
+
+  function DraftContent() {
     return (
-      <FinishedPost
-        steps={realSteps!}
-        title={draftTitle}
-        username={username}
-        files={draftFiles}
-        updateShowPreview={updateShowPreview}
-        previewMode={true}
-      />
+      <div className={"draft-wrapper"}>
+        <Publishing
+          draftId={draftId as string}
+          title={draftTitle}
+          storedSteps={realSteps!}
+          saveStep={saveStep}
+          mutateStoredStep={mutateStoredStep}
+          saveStepToBackend={saveStepToBackend}
+          deleteStoredStep={deleteStoredStep}
+          moveStepUp={moveStepUp}
+          moveStepDown={moveStepDown}
+          onTitleChange={onTitleChange}
+          editingStep={editingStep}
+          changeEditingStep={changeEditingStep}
+          selectedFileIndex={selectedFileIndex}
+          lines={lines}
+          files={draftFiles}
+          saveLines={saveLines}
+          published={draftPublished}
+          goToPublishedPost={goToPublishedPost}
+          shouldShowBlock={shouldShowBlock}
+          updateShowBlock={updateShowBlock}
+        />
+        <div className={"RightPane"}>
+          <CodeEditor
+            addStepImage={addStepImage}
+            deleteStepImage={deleteStepImage}
+            draftId={draftId as string}
+            editingStep={editingStep}
+            saveFileCode={saveFileCode}
+            draftCode={codeFiles[selectedFileIndex].code}
+            files={draftFiles}
+            addFile={addFile}
+            removeFile={deleteStepAndFile}
+            selectedFileIndex={selectedFileIndex}
+            changeCode={changeCode}
+            changeSelectedFile={changeSelectedFileIndex}
+            changeFileLanguage={changeFileLanguage}
+            saveFileName={saveFileName}
+            onNameChange={onNameChange}
+            language={draftFiles[selectedFileIndex].language}
+            changeLines={changeLines}
+            saveLines={saveLines}
+            lines={lines}
+            shouldShowBlock={shouldShowBlock}
+            currentlyEditingStep={realSteps![editingStep]}
+          />
+        </div>
+      </div>
     );
   }
 
@@ -191,78 +238,48 @@ const DraftView = () => {
           }}
         />
       </Head>
-      <main className={"AppWrapper"}>
-     
-        {/* <Header
-          username={username}
-          logout={false}
-          settings={true}
-          profile={true}
-        /> */}
-        {errored ? (
-          <DefaultErrorPage statusCode={404} />
-        ) : (
-          <div>
-            <DraftHeader
-              username={username}
-              updateShowPreview={updateShowPreview}
-              goToPublishedPost={goToPublishedPost}
-              published={draftPublished}
-              publishPost={publishDraft}
-            />
-            <div className={"App"}>
-              <div className={"center-divs"}>
-                <Publishing
-                  draftId={draftId as string}
+      <main>
+          <AnimatePresence>
+            {showPreview && (
+              <motion.div
+                style={{ margin: "auto", display: "flex" }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <FinishedPost
+                  steps={realSteps!}
                   title={draftTitle}
-                  storedSteps={realSteps!}
-                  saveStep={saveStep}
-                  mutateStoredStep={mutateStoredStep}
-                  saveStepToBackend={saveStepToBackend}
-                  deleteStoredStep={deleteStoredStep}
-                  moveStepUp={moveStepUp}
-                  moveStepDown={moveStepDown}
-                  onTitleChange={onTitleChange}
-                  editingStep={editingStep}
-                  changeEditingStep={changeEditingStep}
-                  selectedFileIndex={selectedFileIndex}
-                  lines={lines}
+                  username={username}
                   files={draftFiles}
-                  saveLines={saveLines}
-                  published={draftPublished}
-                  goToPublishedPost={goToPublishedPost}
-                  shouldShowBlock={shouldShowBlock}
-                  updateShowBlock={updateShowBlock}
+                  updateShowPreview={updateShowPreview}
+                  previewMode={true}
                 />
-                <div className={"RightPane"}>
-                  <CodeEditor
-                    addStepImage={addStepImage}
-                    deleteStepImage={deleteStepImage}
-                    draftId={draftId as string}
-                    editingStep={editingStep}
-                    saveFileCode={saveFileCode}
-                    draftCode={codeFiles[selectedFileIndex].code}
-                    files={draftFiles}
-                    addFile={addFile}
-                    removeFile={deleteStepAndFile}
-                    selectedFileIndex={selectedFileIndex}
-                    changeCode={changeCode}
-                    changeSelectedFile={changeSelectedFileIndex}
-                    changeFileLanguage={changeFileLanguage}
-                    saveFileName={saveFileName}
-                    onNameChange={onNameChange}
-                    language={draftFiles[selectedFileIndex].language}
-                    changeLines={changeLines}
-                    saveLines={saveLines}
-                    lines={lines}
-                    shouldShowBlock={shouldShowBlock}
-                    currentlyEditingStep={realSteps![editingStep]}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+          <AnimatePresence>
+            {!showPreview && (
+              <motion.div
+                style={{width: '100%', display: "flex"}}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <DraftHeader
+                  username={username}
+                  updateShowPreview={updateShowPreview}
+                  goToPublishedPost={goToPublishedPost}
+                  published={draftPublished}
+                  publishPost={publishDraft}
+                />
+                <DraftContent />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        {/* </div> */}
       </main>
     </div>
   );
