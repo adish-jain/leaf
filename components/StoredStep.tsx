@@ -152,8 +152,8 @@ export default class StoredStep extends Component<
     return (
       <div
         className={"step-wrapper"}
-        onMouseEnter={(e) => this.setState({ hovered: true })}
-        onMouseLeave={(e) => this.setState({ hovered: false })}
+        // onMouseEnter={(e) => this.setState({ hovered: true })}
+        // onMouseLeave={(e) => this.setState({ hovered: false })}
       >
         {editing ? (
           <EditingStoredStep

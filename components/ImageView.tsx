@@ -3,6 +3,7 @@ const fetch = require("node-fetch");
 import "../styles/imageview.scss";
 let selectedImage: any;
 import { File, Step, Lines } from "../typescript/types/app_types";
+import { motion, AnimatePresence } from "framer-motion";
 
 type ImageViewProps = {
   addStepImage: (image: any, stepId: string) => void;
@@ -71,7 +72,10 @@ export default class ImageView extends Component<
   ImageScreen() {
     return (
       <div className={"img-view"}>
-        <button className={"remove-button"} onClick={(e) => this.handleImageDelete()}>
+        <button
+          className={"remove-button"}
+          onClick={(e) => this.handleImageDelete()}
+        >
           X
         </button>
         <img src={this.props.currentlyEditingStep.imageURL}></img>
@@ -135,26 +139,47 @@ export default class ImageView extends Component<
   }
 
   render() {
+    let { currentlyEditingStep } = this.props;
     return (
       <div className={"options-wrapper"}>
-        <div className={"title-with-divider"}>
-          <label>Image Options</label>
-          <div></div>
-        </div>
-        {!this.state.upload ? (
-          // Image is in display or the upload option is available
-          this.props.currentlyEditingStep?.imageURL !== undefined ? (
-            // Image is in display
-            <this.ImageScreen />
-          ) : (
-            // Upload screen is in display
-            <this.UploadScreen />
-          )
-        ) : (
-          // Image has been selected, and "Go Back" & "Submit" options are available
-          // If selected file size was too big, error is displayed
-          <this.SelectScreen />
-        )}
+        <AnimatePresence>
+          {currentlyEditingStep !== undefined && (
+            <motion.div
+              style={{ overflow: "hidden" }}
+              initial={
+                {
+                  height: 0,
+                  opacity: 0,
+                } as any
+              }
+              animate={{ height: "auto", opacity: 1 } as any}
+              exit={{
+                height: 0,
+                opacity: 0,
+              }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className={"title-with-divider"}>
+                <label>Image Options</label>
+                <div></div>
+              </div>
+              {!this.state.upload ? (
+                // Image is in display or the upload option is available
+                this.props.currentlyEditingStep?.imageURL !== undefined ? (
+                  // Image is in display
+                  <this.ImageScreen />
+                ) : (
+                  // Upload screen is in display
+                  <this.UploadScreen />
+                )
+              ) : (
+                // Image has been selected, and "Go Back" & "Submit" options are available
+                // If selected file size was too big, error is displayed
+                <this.SelectScreen />
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     );
   }

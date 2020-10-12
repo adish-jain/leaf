@@ -49,6 +49,7 @@
   display: flex;
   flex-direction: row;
   margin-top: 56px;
+  height: 100%;
   // width: 1300px;
   // width: auto;
   // height: 100vh;
@@ -135,6 +136,10 @@
   }
 }
 
+.container {
+  height: 100%;
+}
+
 .Preview {
   border-style: solid;
   width: 400px;
@@ -163,4 +168,8 @@
   a {
     margin-right: 16px;
   }
+}
+
+.center-divs {
+  height: 100%;
 }

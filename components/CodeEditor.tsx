@@ -53,6 +53,7 @@ export default class CodeEditor extends Component<
     this.addStepImageWrapper = this.addStepImageWrapper.bind(this);
   }
 
+/*
   componentDidUpdate(prevProps: CodeEditorProps) {
     // if currently editing step changes, resize editor
     if (
@@ -73,6 +74,7 @@ export default class CodeEditor extends Component<
       });
     }
   }
+  */
 
   // after an image is added, resize the code editor
   addStepImageWrapper(selectedImage: any, stepId: string) {
@@ -81,6 +83,7 @@ export default class CodeEditor extends Component<
       monacoKey: this.state.monacoKey + 1,
     });
   }
+  
 
   render() {
     let {
@@ -111,15 +114,11 @@ export default class CodeEditor extends Component<
 
     return (
       <div className={"CodeEditor"}>
-        {currentlyEditingStep === undefined ? (
-          <div></div>
-        ) : (
-          <ImageView
-            addStepImage={this.addStepImageWrapper}
-            currentlyEditingStep={currentlyEditingStep}
-            deleteStepImage={deleteStepImage}
-          />
-        )}
+        <ImageView
+          addStepImage={this.addStepImageWrapper}
+          currentlyEditingStep={currentlyEditingStep}
+          deleteStepImage={deleteStepImage}
+        />
         <FileBar
           draftId={draftId}
           files={files}

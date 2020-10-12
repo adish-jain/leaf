@@ -192,20 +192,22 @@ const DraftView = () => {
         />
       </Head>
       <main className={"AppWrapper"}>
+     
         {/* <Header
           username={username}
           logout={false}
           settings={true}
           profile={true}
         /> */}
-        <style>{`
-        div {
-       }
-      `}</style>
         {errored ? (
           <DefaultErrorPage statusCode={404} />
         ) : (
           <div>
+            <style jsx>{`
+               {
+                height: 100%;
+              }
+            `}</style>
             <DraftHeader
               username={username}
               updateShowPreview={updateShowPreview}
