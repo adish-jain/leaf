@@ -86,10 +86,14 @@ export default class Publishing extends Component<
     this.props.saveStep(stepId, JSON.stringify(emptyJSON));
   }
 
+  TitleLabel() {
+    return <label className={"title-label"}>Title</label>;
+  }
 
   PublishingHeader = () => {
     return (
       <div className={"publishing-header"}>
+        <this.TitleLabel />
         <TextareaAutosize
           placeholder={this.props.title}
           value={this.props.title}
