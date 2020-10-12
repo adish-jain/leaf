@@ -26,6 +26,7 @@ import "../../styles/app.scss";
 import "../../styles/draftheader.scss";
 import { DraftHeader } from "../../components/Headers";
 import { DraftJsButtonProps } from "draft-js-buttons";
+import { motion, AnimatePresence } from "framer-motion";
 
 const DraftView = () => {
   const { authenticated, error, loading } = useLoggedIn();
@@ -127,19 +128,6 @@ const DraftView = () => {
     removeFile(toDeleteIndex);
   }
 
-  if (showPreview) {
-    return (
-      <FinishedPost
-        steps={realSteps!}
-        title={draftTitle}
-        username={username}
-        files={draftFiles}
-        updateShowPreview={updateShowPreview}
-        previewMode={true}
-      />
-    );
-  }
-
   if (errored) {
     return <DefaultErrorPage statusCode={404} />;
   }
@@ -165,7 +153,35 @@ const DraftView = () => {
         />
       </Head>
       <main className={"AppWrapper"}>
+        <AnimatePresence>
+          {showPreview && (
+            <motion.div
+              initial={{
+                opacity: 0,
+              }}
+              animate={{
+                opacity: 1,
+              }}
+              exit={{
+                opacity: 0,
+              }}
+              transition={{
+                duration: 0.4,
+              }}
+            >
+              <FinishedPost
+                steps={realSteps!}
+                title={draftTitle}
+                username={username}
+                files={draftFiles}
+                updateShowPreview={updateShowPreview}
+                previewMode={true}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
         <DraftContent
+          showPreview={showPreview}
           username={username}
           postId={postId}
           codeFiles={codeFiles}
@@ -199,6 +215,7 @@ const DraftView = () => {
           removeLines={removeLines}
           addStepImage={addStepImage}
           deleteStepImage={deleteStepImage}
+          updateShowPreview={updateShowPreview}
         />
       </main>
     </div>
@@ -206,6 +223,7 @@ const DraftView = () => {
 };
 
 type DraftContentProps = {
+  showPreview: boolean;
   username: string;
   postId: string;
   draftId: string;
@@ -239,6 +257,7 @@ type DraftContentProps = {
   deleteStepAndFile: (toDeleteIndex: number) => void;
   draftFiles: File[];
   onTitleChange: (updatedtitle: string) => Promise<void>;
+  updateShowPreview: Dispatch<SetStateAction<boolean>>;
 };
 
 type DraftContentState = {
@@ -254,14 +273,8 @@ class DraftContent extends Component<DraftContentProps, DraftContentState> {
     };
 
     this.goToPublishedPost = this.goToPublishedPost.bind(this);
-    this.updateShowPreview = this.updateShowPreview.bind(this);
     this.publishDraft = this.publishDraft.bind(this);
-  }
-
-  updateShowPreview(shouldShowPreview: boolean) {
-    this.setState({
-      showPreview: shouldShowPreview,
-    });
+    this.DraftComponent = this.DraftComponent.bind(this);
   }
 
   publishDraft() {
@@ -292,7 +305,7 @@ class DraftContent extends Component<DraftContentProps, DraftContentState> {
     window.location.href = `/${username}/${postId}`;
   }
 
-  render() {
+  DraftComponent() {
     let {
       username,
       draftPublished,
@@ -324,12 +337,13 @@ class DraftContent extends Component<DraftContentProps, DraftContentState> {
       onNameChange,
       changeLines,
       moveStepDown,
+      updateShowPreview,
     } = this.props;
     return (
       <div>
         <DraftHeader
           username={username}
-          updateShowPreview={this.updateShowPreview}
+          updateShowPreview={updateShowPreview}
           goToPublishedPost={this.goToPublishedPost}
           published={draftPublished}
           publishPost={this.publishDraft}
@@ -383,6 +397,33 @@ class DraftContent extends Component<DraftContentProps, DraftContentState> {
           </div>
         </div>
       </div>
+    );
+  }
+
+  render() {
+    let { showPreview } = this.props;
+
+    return (
+      <AnimatePresence>
+        {!showPreview && (
+          <motion.div
+            initial={{
+              opacity: 0,
+            }}
+            animate={{
+              opacity: 1,
+            }}
+            exit={{
+              opacity: 0,
+            }}
+            transition={{
+              duration: 0.4,
+            }}
+          >
+            <this.DraftComponent />
+          </motion.div>
+        )}
+      </AnimatePresence>
     );
   }
 }
