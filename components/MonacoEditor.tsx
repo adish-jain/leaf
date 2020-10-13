@@ -253,11 +253,11 @@ export default class MonacoEditorWrapper extends Component<
       <div>
         <style jsx>{`
           position: relative;
-          background-color: #263238;
+          // background-color: #263238;
           font-size: 12px;
           height: 100%;
           resize: vertical;
-          overflow: auto;
+          overflow: hidden;
         `}</style>
         <this.LineModal />
         <MonacoEditor
