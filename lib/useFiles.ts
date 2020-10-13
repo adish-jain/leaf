@@ -204,7 +204,6 @@ export function useFiles(draftId: any, draftFiles: any, mutate: any) {
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify(data),
     }).then(async (res: any) => {
-      console.log(res);
     });
   }
 
@@ -240,7 +239,6 @@ export function useFiles(draftId: any, draftFiles: any, mutate: any) {
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify(data),
     }).then(async (res: any) => {
-      console.log(res);
     });
   }
 
@@ -434,7 +432,6 @@ export function useFiles(draftId: any, draftFiles: any, mutate: any) {
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify(data),
     }).then(async (res: any) => {
-      console.log(res);
     });
   }
 

@@ -30,13 +30,20 @@
   }
 }
 
-.AppWrapper {
-  height: 100%;
-}
-
 .center-divs {
   margin: auto;
   display: flex;
+  width: fit-content;
+}
+
+.finishedpost-wrapper {
+  margin-top: 56px;
+  width: 100%;
+}
+
+.draft-wrapper {
+  @extend .center-divs;
+  margin-top: 56px;
 }
 
 .App {
@@ -48,7 +55,8 @@
   width: inherit;
   display: flex;
   flex-direction: row;
-  margin-top: 56px;
+  margin-top: 60px;
+  height: 100%;
   // width: 1300px;
   // width: auto;
   // height: 100vh;
@@ -58,6 +66,8 @@
   display: flex;
   flex-direction: column;
   height: 92vh;
+  position: sticky;
+  top: 4vh;
   // overflow: auto;
 }
 
@@ -135,6 +145,10 @@
   }
 }
 
+.container {
+  height: 100%;
+}
+
 .Preview {
   border-style: solid;
   width: 400px;
@@ -163,4 +177,8 @@
   a {
     margin-right: 16px;
   }
+}
+
+.center-divs {
+  height: 100%;
 }

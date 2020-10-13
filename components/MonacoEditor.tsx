@@ -50,6 +50,7 @@ export default class MonacoEditorWrapper extends Component<
 
   componentDidMount() {
     window.onresize = this.handleResize;
+    // this.handleResize();
   }
 
   handleResize() {
@@ -60,8 +61,6 @@ export default class MonacoEditorWrapper extends Component<
     if (this.monacoInstance.current === null) {
       return;
     }
-
-    this.handleResize();
 
     // if selected file changes
     if (prevProps.selectedFile.id !== this.props.selectedFile.id) {
@@ -254,9 +253,11 @@ export default class MonacoEditorWrapper extends Component<
       <div>
         <style jsx>{`
           position: relative;
-          background-color: #263238;
+          // background-color: #263238;
           font-size: 12px;
           height: 100%;
+          resize: vertical;
+          overflow: hidden;
         `}</style>
         <this.LineModal />
         <MonacoEditor

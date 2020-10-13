@@ -43,28 +43,26 @@ const FinishedPost = (props: FinishedPostProps) => {
   }
 
   return (
-    <div>
+    <div className={"finishedpost-wrapper"}>
       <FinishedPostHeader
         updateShowPreview={props.updateShowPreview}
         previewMode={props.previewMode}
         authenticated={authenticated}
         username={props.username}
       />
-      <div className={"App"}>
-        <div className={"center-divs"}>
-          <Scrolling
-            title={props.title}
-            currentStepIndex={currentStepIndex}
-            changeStep={changeStep}
-            steps={props.steps}
-          />
-          <PublishedCodeEditor
-            currentFile={props.files[currentFileIndex]}
-            files={props.files}
-            currentStep={props.steps[currentStepIndex]}
-            updateFile={updateFile}
-          />
-        </div>
+      <div className={"center-divs"}>
+        <Scrolling
+          title={props.title}
+          currentStepIndex={currentStepIndex}
+          changeStep={changeStep}
+          steps={props.steps}
+        />
+        <PublishedCodeEditor
+          currentFile={props.files[currentFileIndex]}
+          files={props.files}
+          currentStep={props.steps[currentStepIndex]}
+          updateFile={updateFile}
+        />
       </div>
     </div>
   );

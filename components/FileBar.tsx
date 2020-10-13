@@ -1,6 +1,7 @@
 import React, { Component, useEffect, useRef, useState } from "react";
 import FileName from "./FileName";
 import "../styles/filebar.scss";
+import { AnimatePresence, motion } from "framer-motion";
 
 type File = {
   id: string;
@@ -39,7 +40,9 @@ export default class FileBar extends Component<FileBarProps> {
       let scrollPos = FileBarRef.current?.scrollLeft!;
       let width = FileBarRef.current?.offsetWidth!;
       let totalWidth = FileBarRef.current?.scrollWidth!;
-      let newScrollBarWidth = (width / totalWidth) * width;
+      // hide scroll bar if there are too few files
+      let newScrollBarWidth =
+        width / totalWidth === 1 ? 0 : (width / totalWidth) * width;
       let newScroll = (width / totalWidth) * scrollPos;
       updateScroll(newScroll);
       updateScrollBarWidth(newScrollBarWidth);
