@@ -58,6 +58,7 @@ import handleGetImages from "../../lib/api/getDraftImages";
 
 // tags
 import handleUpdateTags from "../../lib/api/updateTags";
+import handleGetAllPostsData from "../../lib/api/getAllPostsData";
 
 // email
 import handlePasswordReset from "../../lib/api/passwordReset";
@@ -251,6 +252,10 @@ export default sentryHandler(
       // tags
       case "updateTags": {
         return handleUpdateTags(req, res);
+      }
+
+      case "getAllPostsData": {
+        return handleGetAllPostsData(req, res);
       }
 
       default: 
