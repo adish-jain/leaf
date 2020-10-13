@@ -58,17 +58,20 @@ export default async function publishPost(
   let deduplicationId = Math.random().toString(36).substring(2, 10);
   let postId = titleWithDashes + "-" + deduplicationId;
 
+  let username = await getUsernameFromUid(uid);
+  let newURL = "/" + username + "/" + postId;
+
   db.collection("users").doc(uid).collection("drafts").doc(draftId).update({
     published: true,
     publishedAt: admin.firestore.FieldValue.serverTimestamp(),
     postId: postId,
+    postURL: newURL
   });
-
-  let username = await getUsernameFromUid(uid);
-  let newURL = "/" + username + "/" + postId;
+  
   res.send({
     newURL: newURL,
   });
+
   return;
 }
 

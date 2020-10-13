@@ -156,8 +156,10 @@ export async function getAllPostsHandler() {
         let resultsJSON = doc.data();
         results.push({
           postId: resultsJSON.postId,
+          postURL: resultsJSON.postURL,
           title: resultsJSON.title,
-          publishedAt: resultsJSON.publishedAt,
+          publishedAt: resultsJSON.publishedAt.toDate(),
+          tags: resultsJSON.tags,
         });
         // console.log(doc.id, " => ", doc.data());
       });

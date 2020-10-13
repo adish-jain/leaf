@@ -28,8 +28,10 @@ export default function Pages() {
     posts: [
       {
         postId: "",
+        postURL: "",
         title: "",
         publishedAt: "",
+        tags: [],
       },
     ],
   };
@@ -89,15 +91,28 @@ function TitleText() {
 }
 
 function AllPosts(props: {posts: any}) {
-  return (
-      <div>
-        {props.posts.map((arr: any) => (
-            <div>
-              {arr["title"] + " published at " + arr["publishedAt"] + " with post ID " + arr["postId"]}
-            </div>
-        ))}
-      </div>
-  );
+  try {
+    return (
+        <div>
+          {props.posts.map((arr: any) => (
+            <a href={"https://getleaf.app" + arr["postURL"]} className={"post-link"}>
+              <div className={"post"}>
+                <div className={"post-title"}>
+                  {arr["title"]}
+                </div>
+                <div className={"post-date"}>
+                  {new Date(arr["publishedAt"]).toString()}
+                </div>
+                {arr["title"] + " published at " + arr["publishedAt"] + " with post ID " + arr["postId"]}
+              </div>
+            </a>
+          ))}
+        </div>
+    );
+  } catch {
+    console.log("error fetching posts");
+    return (<div></div>);
+  }
 }
 
 
