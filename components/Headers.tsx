@@ -4,7 +4,7 @@ import Link from "next/link";
 
 type DraftHeaderProps = {
   username: string;
-  updateShowPreview: (value: SetStateAction<boolean>) => void;
+  updateShowPreview: (shouldShowPreview: boolean) => void;
   goToPublishedPost: () => void;
   publishPost: () => void;
   published: boolean;

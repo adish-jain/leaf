@@ -82,6 +82,10 @@ const Post = (props: PostPageProps) => {
     return <div>Loading...</div>;
   }
 
+  if (props.errored) {
+    return <DefaultErrorPage statusCode={404} />;
+  }
+
   return (
     <div className="container">
       <Head>
@@ -89,17 +93,13 @@ const Post = (props: PostPageProps) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        {props.errored ? (
-          <DefaultErrorPage statusCode={404} />
-        ) : (
-          <FinishedPost
-            username={props.username}
-            steps={props.steps}
-            files={props.files}
-            title={props.title}
-            previewMode={false}
-          />
-        )}
+        <FinishedPost
+          username={props.username}
+          steps={props.steps}
+          files={props.files}
+          title={props.title}
+          previewMode={false}
+        />
       </main>
     </div>
   );

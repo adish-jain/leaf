@@ -35,7 +35,7 @@ export default class PublishedCodeEditor extends Component<
     let { files, currentFile, currentStep, updateFile } = this.props;
     return (
       <div className={"editor-wrapper"}>
-        <PublishedImageView currentStep={currentStep} />
+        {/* <PublishedImageView currentStep={currentStep} /> */}
         <PublishedFileBar
           updateFile={updateFile}
           files={files}

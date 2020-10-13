@@ -42,7 +42,6 @@ export function usePosts(authenticated: boolean) {
     }
   );
 
-  console.log(posts);
 
   // Deletes a published post.
   function deletePost(postUid: string) {

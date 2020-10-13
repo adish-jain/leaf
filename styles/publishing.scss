@@ -1,5 +1,7 @@
+@import "commonui.scss";
+
 /* Extra small devices (phones, 600px and down) */
-@media only screen and (max-width: 600px) {
+  @media only screen and (max-width: 600px) {
 }
 
 /* Small devices (portrait tablets and large phones, 600px and up) */
@@ -58,62 +60,79 @@
   width: 440px;
   // margin-left: 3vw;
   margin-right: 48px;
+  height: 100%;
+  // margin-right: 48px;
+  // border-right: 1px solid $leaf-light-gray;
   // flex-grow: 0.8;
-  .publishing-header {
-    display: flex;
-    margin-top: 16px;
+}
 
-    font-size: 20px;
-    // border-bottom-style: solid;
-    border-bottom-width: 1px;
-    border-bottom-color: #d0d0d0;
-    // padding-bottom: 8px;
+.publishing-header {
+  display: flex;
+  // margin-top: 16px;
+
+  font-size: 20px;
+  // border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: $leaf-light-gray;
+  border-bottom-style: solid;
+  margin-bottom: 16px;
+  // padding-bottom: 8px;
+  width: 100%;
+  margin-right: 16px;
+
+  position: relative;
+  // position: fixed;
+
+  .title-label {
+    position: absolute;
+    bottom: 8px;
+    left: -40px;
+    font-size: 14px;
+
+    color: $gray-text;
+  }
+
+  h1 {
+    margin-top: 0px;
+    margin-bottom: 8px;
     width: 100%;
-    position: sticky;
-    // position: fixed;
 
-    h1 {
-      margin-top: 0px;
-      margin-bottom: 8px;
-      width: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 40px;
+    line-height: 48px;
+    /* identical to box height */
 
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      font-style: normal;
-      font-weight: normal;
-      font-size: 40px;
-      line-height: 48px;
-      /* identical to box height */
+    display: flex;
+    align-items: center;
 
-      display: flex;
-      align-items: center;
+    color: #898984;
+  }
 
-      color: #898984;
-    }
+  form {
+    width: 100%;
+    height: auto;
+  }
 
-    form {
-      width: 100%;
-      height: auto;
-    }
+  textarea {
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    outline: 0;
+    box-shadow: none;
+    border: none;
+    border-radius: 0;
+    box-sizing: content-box;
+    background-color: transparent;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 40px;
+    width: 100%;
+    // line-height: 48px;
+    // min-height: 50px;
+    // height: auto; // padding: 1.5rem 0;
+    resize: none;
+  }
 
-    textarea {
-      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-      outline: 0;
-      box-shadow: none;
-      border: none;
-      border-radius: 0;
-      box-sizing: content-box;
-      background-color: transparent;
-      font-family: Arial, Helvetica, sans-serif;
-      font-size: 40px;
-      width: 100%;
-      // line-height: 48px;
-      // min-height: 50px;
-      // height: auto; // padding: 1.5rem 0;
-      resize: none;
-    }
-
-    .titleName {
-      color: #27a4eb;
-    }
+  .titleName {
+    color: #27a4eb;
   }
 }

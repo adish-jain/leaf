@@ -1,8 +1,9 @@
-import React, { useState, Component } from "react";
+import React, { useState, Component, ReactElement } from "react";
 const fetch = require("node-fetch");
 import "../styles/imageview.scss";
 let selectedImage: any;
 import { File, Step, Lines } from "../typescript/types/app_types";
+import { motion, AnimatePresence } from "framer-motion";
 
 type ImageViewProps = {
   addStepImage: (image: any, stepId: string) => void;
@@ -34,6 +35,7 @@ export default class ImageView extends Component<
     this.handleImageSelect = this.handleImageSelect.bind(this);
     this.handleImageSubmit = this.handleImageSubmit.bind(this);
     this.handleImageDelete = this.handleImageDelete.bind(this);
+    this.chooseScreen = this.chooseScreen.bind(this);
   }
 
   handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
@@ -71,7 +73,10 @@ export default class ImageView extends Component<
   ImageScreen() {
     return (
       <div className={"img-view"}>
-        <button className={"remove-button"} onClick={(e) => this.handleImageDelete()}>
+        <button
+          className={"remove-button"}
+          onClick={(e) => this.handleImageDelete()}
+        >
           X
         </button>
         <img src={this.props.currentlyEditingStep.imageURL}></img>
@@ -134,28 +139,64 @@ export default class ImageView extends Component<
     );
   }
 
+  chooseScreen() {
+    let { upload } = this.state;
+    let { currentlyEditingStep } = this.props;
+
+    let imageUrlPresent = currentlyEditingStep?.imageURL !== undefined;
+
+    if (!upload) {
+      // Image is in display or the upload option is available
+      if (imageUrlPresent) {
+        // Image is in display
+        return <this.ImageScreen />;
+      } else {
+        // Upload screen is in display
+        return <this.UploadScreen />;
+      }
+    }
+    // Image has been selected, and "Go Back" & "Submit" options are available
+    // If selected file size was too big, error is displayed
+    return <this.SelectScreen />;
+  }
+
   render() {
+    let { currentlyEditingStep } = this.props;
+    let show = currentlyEditingStep !== undefined;
     return (
       <div className={"options-wrapper"}>
-        <div className={"title-with-divider"}>
-          <label>Image Options</label>
-          <div></div>
-        </div>
-        {!this.state.upload ? (
-          // Image is in display or the upload option is available
-          this.props.currentlyEditingStep?.imageURL !== undefined ? (
-            // Image is in display
-            <this.ImageScreen />
-          ) : (
-            // Upload screen is in display
-            <this.UploadScreen />
-          )
-        ) : (
-          // Image has been selected, and "Go Back" & "Submit" options are available
-          // If selected file size was too big, error is displayed
-          <this.SelectScreen />
-        )}
+        <AnimatePresence>
+          {show && (
+            <motion.div
+              style={{ overflow: "hidden", paddingBottom: "8px" }}
+              initial={
+                {
+                  height: 0,
+                  opacity: 0,
+                } as any
+              }
+              animate={{ isOpen: show, height: "auto", opacity: 1 } as any}
+              exit={{
+                height: 0,
+                opacity: 0,
+              }}
+              transition={{ duration: 0.3 }}
+            >
+              <TitleAndDivider />
+              <this.chooseScreen />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     );
   }
+}
+
+function TitleAndDivider() {
+  return (
+    <div className={"title-with-divider"}>
+      <label>Image Options</label>
+      <div></div>
+    </div>
+  );
 }

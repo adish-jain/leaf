@@ -1,6 +1,7 @@
 import React, { Component, createRef } from "react";
 import dynamic from "next/dynamic";
 import "../styles/step.scss";
+import { motion, AnimatePresence } from "framer-motion";
 
 const DynamicEditor = dynamic((() => import("./DynamicEditor")) as any, {
   ssr: false,
@@ -15,7 +16,7 @@ type EditingStoredStepProps = {
   immediateUpdate: (stepText: string) => void;
   loading: boolean;
   changeEditingStep: (editingStep: number) => void;
-  updateShowBlock: (shouldShowBlock: boolean) => void;
+  editing: boolean;
 };
 
 type EditingStoredStepState = {
@@ -44,7 +45,10 @@ export default class Step extends Component<
             Selected lines {lines?.start || ""} to {lines?.end || ""} in{" "}
             {attachedFileName}
           </p>
-          <button className={"Close"} onClick={(e) => saveLines("", true)}>
+          <button
+            className={"clear-lines"}
+            onClick={(e) => saveLines("", true)}
+          >
             Clear selected lines
           </button>
         </div>
@@ -112,7 +116,7 @@ export default class Step extends Component<
     //   codeEditor: true
     // });
 
-    this.props.updateShowBlock(true);
+    // this.props.updateShowBlock(true);
   }
 
   render() {
@@ -125,31 +129,43 @@ export default class Step extends Component<
       immediateUpdate,
       loading,
       changeEditingStep,
-      updateShowBlock,
+      editing,
     } = this.props;
 
     return (
-      <div className={"editingstep-wrapper"}>
-        <div className={"step-border"}>
-          <div className={"step-content"}>
-            <div className={"title-with-divider"}>
-              <label>text</label>
-              <div></div>
+      <AnimatePresence>
+        {editing && (
+          <motion.div
+            style={{ overflow: "hidden" }}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className={"editingstep-wrapper"}>
+              <div className={"step-border"}>
+                <div className={"step-content"}>
+                  <div className={"title-with-divider"}>
+                    <label>text</label>
+                    <div></div>
+                  </div>
+                  <div className={"editing-draft"}>
+                    <DynamicEditor
+                      // @ts-ignore
+                      onChange={onChange}
+                      editorState={editorState}
+                      immediateUpdate={immediateUpdate}
+                    />
+                  </div>
+                </div>
+                {/* <this.BlockOptions /> */}
+                <this.Lines />
+              </div>
+              <this.EndButtons />
             </div>
-            <div className={"editing-draft"}>
-              <DynamicEditor
-                // @ts-ignore
-                onChange={onChange}
-                editorState={editorState}
-                immediateUpdate={immediateUpdate}
-              />
-            </div>
-          </div>
-          {/* <this.BlockOptions /> */}
-          <this.Lines />
-        </div>
-        <this.EndButtons />
-      </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     );
   }
 }
