@@ -148,6 +148,8 @@ export default class Publishing extends Component<
               files={files}
               saveLines={saveLines}
               attachedFileId={storedStep.fileId!}
+              lastStep={index === storedSteps.length - 1}
+              firstStep={index === 0}
             />
           );
         })}

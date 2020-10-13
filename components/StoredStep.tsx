@@ -31,6 +31,8 @@ type StoredStepProps = {
   saveLines: (fileName: string, remove: boolean) => void;
   files: File[];
   attachedFileId: string;
+  lastStep: boolean;
+  firstStep: boolean;
 };
 
 type StoredStepState = {
@@ -103,16 +105,6 @@ export default class StoredStep extends Component<
     this.props.moveStepDown(this.props.id);
   }
 
-  OptionsBar = () => {
-    return (
-      <div className={"options-bar"}>
-        <button>X</button>
-        <button>Move up</button>
-        <button>Move down</button>
-      </div>
-    );
-  };
-
   render() {
     let {
       saveLines,
@@ -120,6 +112,8 @@ export default class StoredStep extends Component<
       attachedFileId,
       index,
       changeEditingStep,
+      lastStep,
+      firstStep,
     } = this.props;
     const contentState = convertFromRaw(this.props.text);
     const editorState = EditorState.createWithContent(contentState);
@@ -133,9 +127,7 @@ export default class StoredStep extends Component<
     }
 
     return (
-      <div
-        className={"step-wrapper"}
-      >
+      <div className={"step-wrapper"}>
         <EditingStoredStep
           onChange={this.onChange}
           editorState={editorState}
@@ -157,8 +149,9 @@ export default class StoredStep extends Component<
           attachedFileName={name}
           index={index}
           editing={editing}
+          lastStep={lastStep}
+          firstStep={firstStep}
         />
-        
       </div>
     );
   }

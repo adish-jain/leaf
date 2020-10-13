@@ -195,7 +195,7 @@ const DraftView = () => {
           changeLines={changeLines}
           saveStepToBackend={saveStepToBackend}
           deleteStoredStep={deleteStoredStep}
-          moveStepDown={moveStepUp}
+          moveStepDown={moveStepDown}
           onTitleChange={onTitleChange}
           deleteStepAndFile={deleteStepAndFile}
           draftPublished={draftPublished}

@@ -12,6 +12,8 @@
 .side-buttons {
   position: relative;
   top: 12px;
+  display: flex;
+  flex-direction: row-reverse;
 }
 
 .side-buttons-wrapper {

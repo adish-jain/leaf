@@ -13,13 +13,15 @@ type RenderedStoredStepProps = {
   attachedFileName: string;
   index: number;
   editing: boolean;
+  lastStep: boolean;
+  firstStep: boolean;
 };
 
 type RenderedStoredStepState = {
   hovered: boolean;
 };
 
-export default class Step extends Component<
+export default class RenderedStoredStep extends Component<
   RenderedStoredStepProps,
   RenderedStoredStepState
 > {
@@ -50,25 +52,26 @@ export default class Step extends Component<
 
   sideButtons() {
     let { hovered } = this.state;
-    let { deleteStoredStep, moveStepUp, moveStepDown } = this.props;
+    let {
+      deleteStoredStep,
+      moveStepUp,
+      moveStepDown,
+      lastStep,
+      firstStep,
+    } = this.props;
     return (
       <AnimatePresence>
         {hovered && (
           <motion.div
-            initial={
-              {
-                opacity: 0,
-                position: "relative",
-                left: "-100px",
-                top: "-60px",
-              } as any
-            }
-            animate={
-              { opacity: 1, position: "relative", left: "-128px" } as any
-            }
+            initial={{
+              opacity: 0,
+              position: "relative",
+              left: "-100px",
+              top: "-60px",
+            }}
+            animate={{ opacity: 1, position: "relative", left: "-128px" }}
             exit={{
               opacity: 0,
-              // left: "-100px"
             }}
             transition={{ duration: 0.25 }}
           >
@@ -83,24 +86,28 @@ export default class Step extends Component<
                 >
                   <span>X</span>
                 </button>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    moveStepUp();
-                  }}
-                  className={"up"}
-                >
-                  <span>↑</span>
-                </button>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    moveStepDown();
-                  }}
-                  className={"down"}
-                >
-                  <span>↓</span>
-                </button>
+                {!firstStep && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      moveStepUp();
+                    }}
+                    className={"up"}
+                  >
+                    <span>↑</span>
+                  </button>
+                )}
+                {!lastStep && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      moveStepDown();
+                    }}
+                    className={"down"}
+                  >
+                    <span>↓</span>
+                  </button>
+                )}
               </div>
             </div>
           </motion.div>
