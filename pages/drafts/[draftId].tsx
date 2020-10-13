@@ -206,7 +206,14 @@ const DraftView = () => {
           tags: selectedTags,
         };
   
-        // TODO optimistic mutate 
+        // optimistic mutate 
+        mutate({
+          files: draftFiles, 
+          errored: errored, 
+          published: draftPublished, 
+          postId: postId, 
+          tags: selectedTags, 
+          username: username}, false);
       
         fetch("/api/endpoint", {
           method: "POST",

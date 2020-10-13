@@ -56,7 +56,9 @@ export default class TagsView extends Component<
       return (
           <div className={"tags"}>
             {tagsList.map((tag: string) => (
-                <button id={tag} className={"tag-buttons"} onClick={() => this.toggleTag(tag)}>{tag}</button>
+                this.props.selectedTags.includes(tag) ? 
+                <button id={tag} className={"selected-tag-button"} onClick={() => this.toggleTag(tag)}>{tag}</button> :
+                <button id={tag} className={"tag-button"} onClick={() => this.toggleTag(tag)}>{tag}</button>
             ))}
           </div>
       );
