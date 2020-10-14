@@ -14,6 +14,8 @@ import "prismjs/components/prism-jsx.min";
 import "prismjs/components/prism-tsx.min";
 import "prismjs/components/prism-typescript.min";
 
+import "../styles/prismeditor.scss";
+
 import animateScrollTo from "animated-scroll-to";
 
 type PrismEditorProps = {
@@ -114,13 +116,7 @@ export default class PrismEditor extends Component<
     let lineString = `${this.state.startHighlightLine}-${this.state.endHighlightLine}`;
 
     return (
-      <div ref={this.PrismWrapper}>
-        <style jsx>{`
-          flex-grow: 100;
-          overflow-y: scroll;
-          position: relative;
-          // height: 0px;
-        `}</style>
+      <div className={"prism-editor"} ref={this.PrismWrapper}>
         <pre
           data-line={this.state.hideLines ? " " : lineString}
           className="line-numbers"
