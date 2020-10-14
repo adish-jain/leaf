@@ -1,3 +1,5 @@
+@import 'commonui.scss';
+
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
 }
@@ -37,4 +39,5 @@
   top: 7vh;
   display: flex;
   flex-direction: column;
+  border: 1px solid $leaf-light-gray;
 }

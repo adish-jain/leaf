@@ -1,0 +1,7 @@
+@import 'commonui.scss';
+
+.prism-editor {
+  flex-grow: 100;
+  overflow-y: scroll;
+  position: relative;
+}
