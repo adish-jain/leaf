@@ -49,8 +49,15 @@
   display: flex;
   flex-direction: row;
   background-color: #FFFFFF;
+  position: relative;
+
+  img {
+    position: absolute;
+    margin: 6px;
+  }
 
   .search-bar {
+    padding-left: 40px;
     left: 0%;
     right: 0%;
     top: 0%;
@@ -62,68 +69,68 @@
     width: 569px;
     left: 0px;
     top: 0px;
-    border-radius: 4px;
+    border-radius: 20px;
     border: none;
     margin-bottom: 20px;
+    margin-left: 2px;
     font-size: 18px;
     outline-width: 0;
-    
   }
 }
 
 
 
-.Tutorials {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  // margin-top: 48px;
-  a:link {
-    color: #000000;
-    text-decoration: none;
-  }
+// .Tutorials {
+//   display: flex;
+//   flex-direction: row;
+//   flex-wrap: wrap;
+//   align-items: center;
+//   justify-content: center;
+//   // margin-top: 48px;
+//   a:link {
+//     color: #000000;
+//     text-decoration: none;
+//   }
 
-  a:visited {
-    color: #000000;
-  }
+//   a:visited {
+//     color: #000000;
+//   }
 
-  a:hover {
-    color: #1db954;
-  }
-  .Tutorial {
-    width: 350px;
-    padding: 16px;
-    margin-left: 20px;
-    margin-right: 20px;
-    // margin-bottom: 30px;
-    height: 300px;
-    border-radius: 36px;
-    border-width: 0px;
-    box-shadow: 0px 4px 32px rgba(0.25, 0.25, 0.25, 0.25);
-    cursor: pointer;
+//   a:hover {
+//     color: #1db954;
+//   }
+//   .Tutorial {
+//     width: 350px;
+//     padding: 16px;
+//     margin-left: 20px;
+//     margin-right: 20px;
+//     // margin-bottom: 30px;
+//     height: 300px;
+//     border-radius: 36px;
+//     border-width: 0px;
+//     box-shadow: 0px 4px 32px rgba(0.25, 0.25, 0.25, 0.25);
+//     cursor: pointer;
 
-    font-family: Arial;
-    font-style: normal;
-    font-size: 35px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+//     font-family: Arial;
+//     font-style: normal;
+//     font-size: 35px;
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+//     text-align: center;
 
-    color: #ffffff;
-    background-color: rgb(10, 164, 235);
-    opacity: 0.35;
+//     color: #ffffff;
+//     background-color: rgb(10, 164, 235);
+//     opacity: 0.35;
 
-    transition: box-shadow ease-in-out 0.2s;
-  }
+//     transition: box-shadow ease-in-out 0.2s;
+//   }
 
-  .Tutorial:hover {
-    box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.7);
-    transition: box-shadow ease-in-out 0.2s;
-  }
-}
+//   .Tutorial:hover {
+//     box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.7);
+//     transition: box-shadow ease-in-out 0.2s;
+//   }
+// }
 
 .post-link {
   cursor: pointer;
@@ -133,7 +140,7 @@
 
 .post {
   width: 811px;
-  height: 144px;
+  height: 130px;
   left: 315px;
   top: 306px;
   margin: 10px;
@@ -144,11 +151,14 @@
 }
 
 .post-title {
-  width: 100%;
+  width: 98%;
   height: 46px;
   margin-left: 10px;
   margin-top: 10px;
-  overflow: auto;
+  overflow: scroll;
+  white-space: nowrap; 
+  text-overflow: ellipsis;
+  // overflow: hidden;
   // left: 331px;
   // top: 322px;
   
@@ -187,7 +197,7 @@
   display: flex;
   flex-direction: row;
   margin-left: 10px;
-  margin-top: 30px;
+  margin-top: 20px;
 
   .post-tag {
     background: #F5F5F5;

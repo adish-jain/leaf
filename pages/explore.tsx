@@ -96,21 +96,20 @@ function TitleText() {
 }
 
 function filter(value: any, filterPosts: any, allPosts: any) {
-  const newPosts = Array.from(allPosts).filter((post: any) => post["title"].includes(value));
+  const newPosts = Array.from(allPosts).filter((post: any) => post["title"].toLowerCase().includes(value.toLowerCase()));
   filterPosts(newPosts);
 }
 
+// want to implement google-search like suggestions for tags 
 function SearchBar(props: {filterPosts: any, allPosts: any}) {
   return (
     <div className={"search"}>
-      <div>
-        <img src="images/search.svg" />
-      </div>
       <input 
         className={"search-bar"} 
-        placeholder="Search for titles or #tags"
+        // placeholder="  Search for titles or #tags"
         onChange={(e) => filter(e.target.value, props.filterPosts, props.allPosts)}
       />
+      <img src="images/search.svg" />
     </div>
   );
 }
