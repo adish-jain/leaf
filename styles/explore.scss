@@ -45,6 +45,34 @@
   }
 }
 
+.search {
+  display: flex;
+  flex-direction: row;
+  background-color: #FFFFFF;
+
+  .search-bar {
+    left: 0%;
+    right: 0%;
+    top: 0%;
+    bottom: 0%;
+    
+    background: #FFFFFF;
+    box-shadow: 0px 4px 16px #EDECE9;
+    height: 40px;
+    width: 569px;
+    left: 0px;
+    top: 0px;
+    border-radius: 4px;
+    border: none;
+    margin-bottom: 20px;
+    font-size: 18px;
+    outline-width: 0;
+    
+  }
+}
+
+
+
 .Tutorials {
   display: flex;
   flex-direction: row;

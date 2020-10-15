@@ -75,6 +75,7 @@ export default function Pages() {
       <main className={"ExploreMainWrapper"}>
         <HeaderUnAuthenticated login={true} signup={true} about={true} />
         <TitleText />
+        <SearchBar />
         <AllPosts posts={postsData} />
 
         {/* <Tutorials /> */}
@@ -87,6 +88,18 @@ function TitleText() {
   return (
     <div className={"explore-title"}>
       <div className={"Text"}>Discover Library</div>
+    </div>
+  );
+}
+
+function SearchBar() {
+  return (
+    <div className={"search"}>
+      <div>
+        <img src="images/search.svg" />
+      </div>
+      <input className={"search-bar"} placeholder="Search for titles or #tags">
+      </input>
     </div>
   );
 }
@@ -115,7 +128,7 @@ function AllPosts(props: {posts: any}) {
                         );
                       })) : (<div></div>)}
                   </div>
-                  {arr["username"]}
+                  {/* {arr["username"].then(function(result: any){console.log(result);})} */}
                 </div>
               </a>
             );
