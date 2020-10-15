@@ -152,18 +152,28 @@ export async function getAllPostsHandler() {
     .get()
     .then(function (querySnapshot: any){
       let results: any[] = [];
+      // console.log(querySnapshot.docs[0].ref.parent.parent);
       querySnapshot.forEach(function (doc: any) {
         let resultsJSON = doc.data();
+        let username = doc.ref.parent.parent.get().then(async (docSnapshot: any) => {
+          // console.log(docSnapshot.data().username);
+          return docSnapshot.data().username;
+          // return username;
+        });
+        console.log(username);
+        console.log("hi");
         results.push({
           postId: resultsJSON.postId,
           postURL: resultsJSON.postURL,
           title: resultsJSON.title,
           publishedAt: resultsJSON.publishedAt.toDate(),
           tags: resultsJSON.tags,
+          username: username,
         });
+        console.log(results);
         // console.log(doc.id, " => ", doc.data());
       });
-      // console.log("the results are", results);
+      console.log("the results are", results);
       return results; 
   });
   return results;

@@ -32,6 +32,7 @@ export default function Pages() {
         title: "",
         publishedAt: "",
         tags: [],
+        username: "",
       },
     ],
   };
@@ -94,19 +95,31 @@ function AllPosts(props: {posts: any}) {
   try {
     return (
         <div>
-          {props.posts.map((arr: any) => (
-            <a href={"https://getleaf.app" + arr["postURL"]} className={"post-link"}>
-              <div className={"post"}>
-                <div className={"post-title"}>
-                  {arr["title"]}
+          {props.posts.map((arr: any) => {
+            return (
+              <a href={"https://getleaf.app" + arr["postURL"]} className={"post-link"}>
+                <div className={"post"}>
+                  <div className={"post-title"}>
+                    {arr["title"]}
+                  </div>
+                  <div className={"post-date"}>
+                    {new Date(arr["publishedAt"]).toDateString()}
+                  </div>
+                  <div className={"post-tags"}>
+                    {arr["tags"] !== undefined ? 
+                      (arr["tags"].map((tag: string) => {
+                        return (
+                        <div className={"post-tag"}>
+                          {tag}
+                        </div>
+                        );
+                      })) : (<div></div>)}
+                  </div>
+                  {arr["username"]}
                 </div>
-                <div className={"post-date"}>
-                  {new Date(arr["publishedAt"]).toString()}
-                </div>
-                {arr["title"] + " published at " + arr["publishedAt"] + " with post ID " + arr["postId"]}
-              </div>
-            </a>
-          ))}
+              </a>
+            );
+          })}
         </div>
     );
   } catch {
