@@ -7,6 +7,8 @@ import { useRouter } from "next/router";
 
 import "../styles/explore.scss";
 import useSWR from "swr";
+import { useState } from "react";
+import { isNullOrUndefined } from "util";
 
 export default function Pages() {
   const router = useRouter();
@@ -44,7 +46,8 @@ export default function Pages() {
   );
 
   // const posts = postsData["posts"];
-  console.log(postsData);
+  // console.log(postsData);
+  const [filteredPosts, filterPosts] = useState(postsData);
 
   const { authenticated, error, loading } = useLoggedIn();
 
@@ -75,8 +78,8 @@ export default function Pages() {
       <main className={"ExploreMainWrapper"}>
         <HeaderUnAuthenticated login={true} signup={true} about={true} />
         <TitleText />
-        <SearchBar />
-        <AllPosts posts={postsData} />
+        <SearchBar filterPosts={filterPosts} allPosts={postsData}/>
+        <DisplayPosts posts={filteredPosts} />
 
         {/* <Tutorials /> */}
       </main>
@@ -92,23 +95,31 @@ function TitleText() {
   );
 }
 
-function SearchBar() {
+function filter(value: any, filterPosts: any, allPosts: any) {
+  const newPosts = Array.from(allPosts).filter((post: any) => post["title"].includes(value));
+  filterPosts(newPosts);
+}
+
+function SearchBar(props: {filterPosts: any, allPosts: any}) {
   return (
     <div className={"search"}>
       <div>
         <img src="images/search.svg" />
       </div>
-      <input className={"search-bar"} placeholder="Search for titles or #tags">
-      </input>
+      <input 
+        className={"search-bar"} 
+        placeholder="Search for titles or #tags"
+        onChange={(e) => filter(e.target.value, props.filterPosts, props.allPosts)}
+      />
     </div>
   );
 }
 
-function AllPosts(props: {posts: any}) {
+function DisplayPosts(props: {posts: any}) {
   try {
     return (
         <div>
-          {props.posts.map((arr: any) => {
+          {Array.from(props.posts).map((arr: any) => {
             return (
               <a href={"https://getleaf.app" + arr["postURL"]} className={"post-link"}>
                 <div className={"post"}>
