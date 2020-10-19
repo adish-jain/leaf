@@ -128,7 +128,7 @@ function DisplayPosts(props: {posts: any}) {
                   <div className={"post-date"}>
                     {new Date(arr["publishedAt"]).toDateString()}
                   </div>
-                  <div className={"post-tags"}>
+                  <div className={"post-tags-author"}>
                     {arr["tags"] !== undefined ? 
                       (arr["tags"].map((tag: string) => {
                         return (
@@ -137,8 +137,10 @@ function DisplayPosts(props: {posts: any}) {
                         </div>
                         );
                       })) : (<div></div>)}
+                     <div className={"post-author"}>
+                      {arr["username"]}
+                    </div>
                   </div>
-                  {/* {arr["username"].then(function(result: any){console.log(result);})} */}
                 </div>
               </a>
             );

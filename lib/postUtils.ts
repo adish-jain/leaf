@@ -147,35 +147,24 @@ export async function getDraftImages(uid: string, draftId: string) {
 }
 
 export async function getAllPostsHandler() {
-  let results = await db.collectionGroup("drafts")
-    .where("published", "==", true)
-    .get()
-    .then(function (querySnapshot: any){
-      let results: any[] = [];
-      // console.log(querySnapshot.docs[0].ref.parent.parent);
-      querySnapshot.forEach(function (doc: any) {
-        let resultsJSON = doc.data();
-        let username = doc.ref.parent.parent.get().then((docSnapshot: any) => {
-          // console.log(docSnapshot.data().username);
-          return docSnapshot.data().username;
-          // return username;
-        });
-        // console.log(username);
-        // console.log("hi");
-        results.push({
-          postId: resultsJSON.postId,
-          postURL: resultsJSON.postURL,
-          title: resultsJSON.title,
-          publishedAt: resultsJSON.publishedAt.toDate(),
-          tags: resultsJSON.tags,
-          username: username,
-        });
-        console.log(results);
-        console.log(doc.id, " => ", doc.data());
-      })
-      console.log("the results are", results);
-      return results; 
-  });
+  let activeRef = await db.collectionGroup("drafts").where("published", "==", true).get();
+  const arr: any[] = [];
+  activeRef.forEach((child: any) => arr.push(child));
+  var results: any[] = [];
+  for(const doc of arr) {
+    let username = await doc.ref.parent.parent.get().then((docSnapshot: any) => {
+      return docSnapshot.data().username;
+    });
+    let resultsJSON = doc.data();
+    results.push({
+      postId: resultsJSON.postId,
+      postURL: resultsJSON.postURL,
+      title: resultsJSON.title,
+      publishedAt: resultsJSON.publishedAt.toDate(),
+      tags: resultsJSON.tags,
+      username: username,
+    });
+  }
   // sort by published date
   results.sort(function(a: any, b: any) {
     var keyA = new Date(a.publishedAt),
@@ -186,6 +175,51 @@ export async function getAllPostsHandler() {
   });
   return results;
 }
+
+// export async function getAllPostsHandler() {
+//   let results = await db.collectionGroup("drafts")
+//     .where("published", "==", true)
+//     .get()
+//     .then(function (querySnapshot: any){
+//       var results: any[] = [];
+//       console.log("hello");
+//       // console.log(querySnapshot.docs[0].ref.parent.parent);
+//       querySnapshot.forEach(function wrapper() {async (doc: any) => {
+//         await console.log("world");
+//         let resultsJSON = doc.data();
+//         let username = await doc.ref.parent.parent.get().then((docSnapshot: any) => {
+//           // await console.log(docSnapshot.data());
+//           return docSnapshot.data().username;
+//           // return username;
+//         });
+//         console.log(username);
+//         // console.log(username);
+//         // console.log("hi");
+//         // console.log(resultsJSON);
+//         results.push({
+//           postId: resultsJSON.postId,
+//           postURL: resultsJSON.postURL,
+//           title: resultsJSON.title,
+//           publishedAt: resultsJSON.publishedAt.toDate(),
+//           tags: resultsJSON.tags,
+//           username: username,
+//         });
+//         console.log(results);
+//         // console.log(doc.id, " => ", doc.data());
+//       }})
+//       // console.log("the results are", results);
+//       return results; 
+//   });
+//   // sort by published date
+//   results.sort(function(a: any, b: any) {
+//     var keyA = new Date(a.publishedAt),
+//       keyB = new Date(b.publishedAt);
+//     if (keyA < keyB) return -1;
+//     if (keyA > keyB) return 1;
+//     return 0;
+//   });
+//   return results;
+// }
 
 type File = {
   id: string;

@@ -193,7 +193,7 @@
   
   color: #C4C4C4;
 }
-.post-tags {
+.post-tags-author {
   display: flex;
   flex-direction: row;
   margin-left: 10px;
@@ -206,7 +206,8 @@
     left: 331px;
     top: 408px;
     border-radius: 3.195876121520996px;
-    margin: 5px;
+    // margin: 5px;
+    margin-right: 10px;
     
     font-family: Arial;
     font-style: normal;
@@ -216,8 +217,20 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    // margin-left: auto;
     
     color: #000000;
   }
+
+  .post-author {
+    color: black;
+    text-align: right;
+    margin-left: auto;
+    margin-right: 10px;
+    // padding: 15px;
+    // align-self: baseline;
+  }
 }
+
+
 
