@@ -176,6 +176,14 @@ export async function getAllPostsHandler() {
       console.log("the results are", results);
       return results; 
   });
+  // sort by published date
+  results.sort(function(a: any, b: any) {
+    var keyA = new Date(a.publishedAt),
+      keyB = new Date(b.publishedAt);
+    if (keyA < keyB) return -1;
+    if (keyA > keyB) return 1;
+    return 0;
+  });
   return results;
 }
 
