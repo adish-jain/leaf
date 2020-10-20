@@ -22,9 +22,10 @@ const FinishedPost = (props: FinishedPostProps) => {
   function changeStep(newStep: number, yPos: number, entered: boolean) {
     // stepsInView keeps track of what steps are inside the viewport
     stepsInView[newStep] = entered;
-
+    // updateStep(newStep);
     /* whichever step is the closest to the top of the viewport 
         AND is inside the viewport becomes the selected step */
+
     for (let step in stepsInView) {
       if (stepsInView[step]) {
         let stepIndex = Number(step);
@@ -43,7 +44,9 @@ const FinishedPost = (props: FinishedPostProps) => {
   }
 
   return (
-    <div className={"finishedpost-wrapper"}>
+    <div
+      className={"finishedpost-wrapper"}
+    >
       <FinishedPostHeader
         updateShowPreview={props.updateShowPreview}
         previewMode={props.previewMode}
@@ -56,6 +59,9 @@ const FinishedPost = (props: FinishedPostProps) => {
           currentStepIndex={currentStepIndex}
           changeStep={changeStep}
           steps={props.steps}
+          updateStep={updateStep}
+          username={props.username}
+          publishedAtSeconds={props.publishedAtSeconds}
         />
         <PublishedCodeEditor
           currentFile={props.files[currentFileIndex]}

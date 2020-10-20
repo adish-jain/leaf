@@ -27,6 +27,7 @@ import "../../styles/draftheader.scss";
 import { DraftHeader } from "../../components/Headers";
 import { DraftJsButtonProps } from "draft-js-buttons";
 import { motion, AnimatePresence } from "framer-motion";
+const moment = require("moment");
 
 const DraftView = () => {
   const { authenticated, error, loading } = useLoggedIn();
@@ -63,6 +64,10 @@ const DraftView = () => {
     published: false,
     postId: "",
     username: "",
+    createdAt: {
+      _nanoseconds: 0,
+      _seconds: 0,
+    },
   };
 
   let { data: draftData, mutate } = useSWR(
@@ -76,6 +81,7 @@ const DraftView = () => {
   const draftPublished = draftData["published"];
   const postId = draftData["postId"];
   const username = draftData["username"];
+  const createdAt = draftData["createdAt"];
 
   let { onTitleChange, draftTitle } = useDraftTitle(
     draftId as string,
@@ -136,6 +142,7 @@ const DraftView = () => {
     <div className="container">
       <Head>
         <title>{draftTitle}</title>
+        {/* <script src="https://unpkg.com/intersection-observer-debugger"></script> */}
         <link rel="icon" href="/favicon.ico" />
         <script
           dangerouslySetInnerHTML={{
@@ -176,6 +183,7 @@ const DraftView = () => {
                 files={draftFiles}
                 updateShowPreview={updateShowPreview}
                 previewMode={true}
+                publishedAtSeconds={createdAt._seconds}
               />
             </motion.div>
           )}

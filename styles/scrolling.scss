@@ -16,6 +16,13 @@
   padding: 16px;
 }
 
+.intersection-zone {
+  position: fixed;
+  height: 1px;
+  background-color: black;
+  width: 100%;
+}
+
 .post-title {
   overflow-wrap: break-word;
   font-size: 40px;
