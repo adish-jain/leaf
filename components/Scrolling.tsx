@@ -6,13 +6,14 @@ import { Step, timeStamp } from "../typescript/types/app_types";
 const moment = require("moment");
 
 type ScrollingProps = {
-  changeStep: (newStep: number, yPos: number, entered: boolean) => void;
+  // changeStep: (newStep: number, yPos: number, entered: boolean) => void;
   steps: Step[];
   currentStepIndex: number;
   title: string;
   updateStep: React.Dispatch<React.SetStateAction<number>>;
   username: string;
   publishedAtSeconds: number;
+  scrollingRef: React.RefObject<HTMLDivElement>;
 };
 
 type ScrollingState = {
@@ -32,13 +33,10 @@ export default class Scrolling extends Component<
   ScrollingProps,
   ScrollingState
 > {
-  private intersectionRef = React.createRef<HTMLDivElement>();
   private scrollingRef = React.createRef<HTMLDivElement>();
 
   constructor(props: any) {
     super(props);
-
-    this.intersectionRef = React.createRef();
 
     this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
     this.updateScrollPosition = this.updateScrollPosition.bind(this);
@@ -57,25 +55,28 @@ export default class Scrolling extends Component<
   componentDidMount() {
     this.updateWindowDimensions();
     window.addEventListener("resize", this.updateWindowDimensions);
-    this.findSteps();
-    console.log(stepCoords);
+    // this.findSteps();
+    // console.log(stepCoords);
 
-    window.addEventListener("scroll", this.updateScrollPosition);
+    // window.addEventListener("scroll", this.updateScrollPosition);
   }
 
   componentWillUnmount() {
     window.removeEventListener("resize", this.updateWindowDimensions);
-    window.removeEventListener("scroll", this.updateScrollPosition);
+    // window.removeEventListener("scroll", this.updateScrollPosition);
   }
 
   updateScrollPosition() {
-    console.log("update scroll");
+    let selectedStepIndex = this.selectStep(
+      window.pageYOffset + this.state.height / 2
+    );
     this.setState({
       pageYOffset: window.pageYOffset,
       selectedStepIndex: this.selectStep(
         window.pageYOffset + this.state.height / 2
       ),
     });
+    this.props.updateStep(selectedStepIndex);
   }
 
   findSteps() {
@@ -86,7 +87,7 @@ export default class Scrolling extends Component<
     for (let i = 0; i < children.length; i++) {
       let child = children[i];
       let coords = child.getBoundingClientRect();
-      console.log(coords);
+      // console.log(coords);
       // let centerCoord = coords.top + coords.height / 2;
       // stepCoords.push(centerCoord);
       stepCoords.push({
@@ -98,7 +99,7 @@ export default class Scrolling extends Component<
 
   selectStep(pos: number) {
     for (let i = 0; i < stepCoords.length; i++) {
-      if (pos >= stepCoords[i].topY && pos <= stepCoords[i].bottomY) {
+      if (pos >= stepCoords[i].topY - 32 && pos <= stepCoords[i].bottomY) {
         return i;
       }
     }
@@ -113,11 +114,11 @@ export default class Scrolling extends Component<
 
   handleScroll(event: React.UIEvent<HTMLDivElement, UIEvent>) {
     console.log("scrolling");
-    console.log(event);
+    // console.log(event);
   }
 
   handleChange(inView: boolean, entry: IntersectionObserverEntry) {
-    console.log(entry);
+    // console.log(entry);
   }
 
   calculateDividerHeight() {
@@ -129,47 +130,56 @@ export default class Scrolling extends Component<
   }
 
   TitleSection() {
+    function ScrollDown(props: { pageYOffset: number }) {
+      let style = { opacity: 1 };
+      if (pageYOffset > 10) {
+        style = {
+          opacity: 0,
+        };
+      }
+      return (
+        <div style={style} className={"scroll-down"}>
+          <p> Scroll down to begin</p>
+          <span>↓</span>
+        </div>
+      );
+    }
     let { username, title, publishedAtSeconds } = this.props;
+    let { pageYOffset } = this.state;
     let day = moment.unix(publishedAtSeconds);
     let formattedDate = day.format("MMMM Do YYYY");
     return (
       <div>
         <h1 className={"post-title"}>{title}</h1>
-        <p>
+        <p className={"published-by"}>
           Published by {username} on {formattedDate}
         </p>
-        <p>Scroll down to begin</p> <span>↓</span>
+        <ScrollDown pageYOffset={pageYOffset} />
       </div>
     );
   }
 
   render() {
-    let { steps, currentStepIndex, title } = this.props;
+    let { steps, currentStepIndex, title, scrollingRef } = this.props;
     let { height, pageYOffset, selectedStepIndex } = this.state;
 
     return (
       <div className={"scrolling"}>
         <this.TitleSection />
-        <div
-          ref={this.intersectionRef}
+        {/* <div
           style={{ top: `${height / 2}px` }}
           className={"intersection-zone"}
-        ></div>
+        ></div> */}
         {steps ? (
-          <div
-            // style={{ marginTop: `${height / 2 - 180}px` }}
-            ref={this.scrollingRef}
-          >
+          <div ref={scrollingRef}>
             {steps.map((step, index) => (
               <PublishedStep
                 index={index}
                 key={step.id}
-                changeStep={this.props.changeStep}
+                // changeStep={this.props.changeStep}
                 text={step.text}
-                selected={index === selectedStepIndex}
+                selected={index === currentStepIndex}
                 height={height}
-                pageYOffset={pageYOffset}
-                intersectionRef={this.intersectionRef}
               />
             ))}
           </div>

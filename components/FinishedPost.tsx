@@ -1,4 +1,4 @@
-import React, { useState, Component } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import Scrolling from "./Scrolling";
 import animateScrollTo from "animated-scroll-to";
 import { useLoggedIn } from "../lib/UseLoggedIn";
@@ -12,41 +12,73 @@ import { FinishedPostHeader } from "../components/Headers";
 
 const stepsInView: { [stepIndex: number]: boolean } = {};
 
+type StepDimensions = {
+  topY: number;
+  bottomY: number;
+};
+
+var stepCoords: StepDimensions[] = [];
+
 const FinishedPost = (props: FinishedPostProps) => {
   const [currentStepIndex, updateStep] = useState(0);
   const [currentFileIndex, updateFile] = useState(0);
+  const [scrollPosition, updateScrollPosition] = useState(0);
+  const scrollingRef = React.useRef<HTMLDivElement>(null);
   const { authenticated, error, loading } = useLoggedIn();
   let editorInstance: CodeMirror.Editor | undefined = undefined;
   const markers: CodeMirror.TextMarker[] = [];
 
-  function changeStep(newStep: number, yPos: number, entered: boolean) {
-    // stepsInView keeps track of what steps are inside the viewport
-    stepsInView[newStep] = entered;
-    // updateStep(newStep);
-    /* whichever step is the closest to the top of the viewport 
-        AND is inside the viewport becomes the selected step */
+  const handleScroll = useCallback((event) => {
+    // updateScrollPosition(window.pageYOffset);
+    selectStep();
+  }, []);
 
-    for (let step in stepsInView) {
-      if (stepsInView[step]) {
-        let stepIndex = Number(step);
-        let newFileId = props.steps[stepIndex].fileId;
-        for (let i = 0; i < props.files.length; i++) {
-          if (props.files[i].id === newFileId) {
-            updateFile(i);
-          }
-        }
-        updateStep(stepIndex);
+  function findSelectedStep() {}
 
-        // this is the first step in view, so we break
-        break;
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [handleScroll]);
+
+  useEffect(() => {
+    findSteps();
+  }, []);
+
+  function selectStep() {
+    let pos = window.pageYOffset + window.innerHeight / 2;
+    for (let i = 0; i < stepCoords.length; i++) {
+      if (pos >= stepCoords[i].topY - 32 && pos <= stepCoords[i].bottomY) {
+        updateStep(i);
+        return;
       }
+    }
+    updateStep(stepCoords.length - 1);
+    return;
+  }
+
+  function findSteps() {
+    let children = scrollingRef.current?.children;
+    if (children === undefined) {
+      return;
+    }
+    for (let i = 0; i < children.length; i++) {
+      let child = children[i];
+      let coords = child.getBoundingClientRect();
+      console.log(coords);
+      // let centerCoord = coords.top + coords.height / 2;
+      // stepCoords.push(centerCoord);
+      stepCoords.push({
+        topY: coords.top,
+        bottomY: coords.bottom,
+      });
     }
   }
 
   return (
-    <div
-      className={"finishedpost-wrapper"}
-    >
+    <div className={"finishedpost-wrapper"}>
       <FinishedPostHeader
         updateShowPreview={props.updateShowPreview}
         previewMode={props.previewMode}
@@ -57,10 +89,11 @@ const FinishedPost = (props: FinishedPostProps) => {
         <Scrolling
           title={props.title}
           currentStepIndex={currentStepIndex}
-          changeStep={changeStep}
+          // changeStep={changeStep}
           steps={props.steps}
           updateStep={updateStep}
           username={props.username}
+          scrollingRef={scrollingRef}
           publishedAtSeconds={props.publishedAtSeconds}
         />
         <PublishedCodeEditor

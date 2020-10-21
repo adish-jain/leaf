@@ -5,23 +5,29 @@
 }
 
 .Step {
-  // margin-top: 24px;
+  margin-top: 32px;
   padding: 24px;
-  border: 1px solid $leaf-light-gray;
-  border-radius: 8px;
-  box-sizing: border-box;
-  color: #a1a19c;
-  transition: all 0.2s ease-in-out;
+  // border: 1px solid $leaf-light-gray;
+  border-left: 2px solid $leaf-light-gray;
 
+  // border-radius: 8px;
+  box-sizing: border-box;
+  color: $leaf-light-gray;
+  transition: all 0.2s ease-in-out;
+  // transform: scale(0.97);
   cursor: pointer;
 
   &--Selected {
     @extend .Step;
     transition: all 0.2s ease-in-out;
 
-    // box-shadow: 0px 4px 16px #edece9;
+    box-shadow: 0px 4px 16px #edece9;
     background: #ffffff;
     color: #000000;
+    border-radius: 0px;
+    border: 0px;
+    border-left: 2px solid $leaf-dark-blue;
+    // transform: scale(1.0);
   }
 }
 

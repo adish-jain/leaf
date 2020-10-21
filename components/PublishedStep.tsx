@@ -7,12 +7,10 @@ import { motion, AnimatePresence } from "framer-motion";
 
 type PublishedStepProps = {
   index: number;
-  changeStep: (newStep: number, yPos: number, entered: boolean) => void;
+  // changeStep: (newStep: number, yPos: number, entered: boolean) => void;
   text: string;
   selected: boolean;
   height: number;
-  intersectionRef: React.RefObject<HTMLDivElement>;
-  pageYOffset: number;
 };
 
 type PublishedStepState = {
@@ -24,10 +22,7 @@ class PublishedStep extends Component<PublishedStepProps, PublishedStepState> {
 
   constructor(props: PublishedStepProps) {
     super(props);
-    this.handleChange = this.handleChange.bind(this);
     this.scrollIntoView = this.scrollIntoView.bind(this);
-    this.calculateThreshold = this.calculateThreshold.bind(this);
-    this.calculateRootMargin = this.calculateRootMargin.bind(this);
 
     this.myRef = React.createRef();
 
@@ -48,59 +43,23 @@ class PublishedStep extends Component<PublishedStepProps, PublishedStepState> {
     return { __html: markup };
   }
 
-  handleChange(inView: boolean, entry: IntersectionObserverEntry) {
-    this.props.changeStep(this.props.index, 0, inView);
-  }
-
   scrollIntoView() {
+    let { height } = this.props;
     let animationOptions = {
       // add offset so scrolled to line isnt exactly at top
-      verticalOffset: -65,
+      verticalOffset: (-1 * height) / 2,
     };
 
     animateScrollTo(this.myRef.current!, animationOptions);
   }
 
-  calculateThreshold() {
-    let { stepHeight } = this.state;
-    let { height } = this.props;
-    let intersectionHeight = height * 0.02;
-    // handle case where a step is larger than viewport
-    // if (stepHeight / intersectionHeight >= 1) {
-    //   console.log("step is larger");
-    //   return intersectionHeight / stepHeight;
-    // }
-    // return 1;
-
-    // 1 percent
-    if (stepHeight === 0) {
-      return 0;
-    }
-    return 1.0 / stepHeight;
-  }
-
-  calculateRootMargin() {
-    // let { pageYOffset, height } = this.props;
-    // if (pageYOffset < height / 2) {
-    //   return "0% 0% 0% 0%";
-    // }
-    return "-49% 0% -49% 0%";
-  }
-
   render() {
-    let { selected, index, intersectionRef } = this.props;
+    let { selected, index } = this.props;
 
     let stepStyle = selected ? "Step--Selected" : "Step";
 
     return (
       <div ref={this.myRef}>
-        {/* <InView
-          threshold={this.calculateThreshold()}
-          rootMargin={this.calculateRootMargin()}
-          onChange={this.handleChange}
-          // root={intersectionRef.current}
-        >
-          {({ inView, ref, entry }) => ( */}
         <div onClick={this.scrollIntoView} className={stepStyle}>
           <div>
             <div
@@ -108,10 +67,8 @@ class PublishedStep extends Component<PublishedStepProps, PublishedStepState> {
               dangerouslySetInnerHTML={this.renderDraftJS()}
             />
           </div>
-          <div className={"divider"}></div>
+          {/* <div className={"divider"}></div> */}
         </div>
-        {/* )} */}
-        {/* </InView> */}
       </div>
     );
   }
