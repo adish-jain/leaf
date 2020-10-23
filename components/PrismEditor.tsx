@@ -43,6 +43,7 @@ export default class PrismEditor extends Component<
     this.updateLines = this.updateLines.bind(this);
     this.animateLines = this.animateLines.bind(this);
     this.renderFiles = this.renderFiles.bind(this);
+    this.highlightedLines = this.highlightedLines.bind(this);
 
     this.state = {
       hideLines: false,
@@ -144,11 +145,29 @@ export default class PrismEditor extends Component<
               style={style}
             >
               <code className="language-tsx">{file.code}</code>
+              <this.highlightedLines />
             </pre>
           );
         })}
       </div>
     );
+  }
+
+  highlightedLines() {
+    let { currentStepIndex, steps } = this.props;
+    let currentStep = steps[currentStepIndex];
+    let lines = currentStep.lines;
+    if (lines == null) {
+      return <div></div>;
+    }
+    console.log(lines);
+    let height = 1.5 * (Math.abs(lines.start - lines.end) + 1);
+    let top = 1.5 * (lines.start - 1);
+    let lineStyles = {
+      height: `${height}em`,
+      top: `${top}em`,
+    };
+    return <div style={lineStyles} className={"highlighted-lines"}></div>;
   }
 
   render() {
@@ -159,7 +178,7 @@ export default class PrismEditor extends Component<
     let { language } = currentFile;
 
     return (
-      <div className={"prism-editor"} ref={this.PrismWrapper}>
+      <div ref={this.PrismWrapper} className={"prism-editor"}>
         <this.renderFiles />
       </div>
     );

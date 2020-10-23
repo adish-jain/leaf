@@ -1,7 +1,21 @@
-@import 'commonui.scss';
+@import "commonui.scss";
 
 .prism-editor {
   flex-grow: 100;
   overflow-y: scroll;
   position: relative;
+}
+
+.highlighted-lines {
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: inherit 0;
+  margin-top: 1em;
+  background: #f7ebc6;
+  box-shadow: inset 5px 0 0 #f7d87c;
+  z-index: 0;
+  pointer-events: none;
+  line-height: inherit;
+  white-space: pre;
 }
