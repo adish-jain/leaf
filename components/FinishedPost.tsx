@@ -50,8 +50,14 @@ const FinishedPost = (props: FinishedPostProps) => {
   function selectStep() {
     let pos = window.pageYOffset + window.innerHeight / 2;
     for (let i = 0; i < stepCoords.length; i++) {
-      if (pos >= stepCoords[i].topY - 32 && pos <= stepCoords[i].bottomY) {
+      if (pos >= stepCoords[i].topY - 64 && pos <= stepCoords[i].bottomY) {
         updateStep(i);
+        let newFileId = props.steps[i].fileId;
+        for (let j = 0; j < props.files.length; j++) {
+          if (props.files[j].id === newFileId) {
+            updateFile(j);
+          }
+        }
         return;
       }
     }
@@ -67,7 +73,6 @@ const FinishedPost = (props: FinishedPostProps) => {
     for (let i = 0; i < children.length; i++) {
       let child = children[i];
       let coords = child.getBoundingClientRect();
-      console.log(coords);
       // let centerCoord = coords.top + coords.height / 2;
       // stepCoords.push(centerCoord);
       stepCoords.push({
@@ -97,9 +102,10 @@ const FinishedPost = (props: FinishedPostProps) => {
           publishedAtSeconds={props.publishedAtSeconds}
         />
         <PublishedCodeEditor
-          currentFile={props.files[currentFileIndex]}
+          currentFileIndex={currentFileIndex}
           files={props.files}
-          currentStep={props.steps[currentStepIndex]}
+          steps={props.steps}
+          currentStepIndex={currentStepIndex}
           updateFile={updateFile}
         />
       </div>

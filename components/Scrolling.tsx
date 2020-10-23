@@ -55,7 +55,7 @@ export default class Scrolling extends Component<
   componentDidMount() {
     this.updateWindowDimensions();
     window.addEventListener("resize", this.updateWindowDimensions);
-    // this.findSteps();
+    this.findSteps();
     // console.log(stepCoords);
 
     // window.addEventListener("scroll", this.updateScrollPosition);
@@ -76,7 +76,7 @@ export default class Scrolling extends Component<
         window.pageYOffset + this.state.height / 2
       ),
     });
-    this.props.updateStep(selectedStepIndex);
+    // this.props.updateStep(selectedStepIndex);
   }
 
   findSteps() {
@@ -162,7 +162,7 @@ export default class Scrolling extends Component<
   render() {
     let { steps, currentStepIndex, title, scrollingRef } = this.props;
     let { height, pageYOffset, selectedStepIndex } = this.state;
-
+    // console.log("render scrolling");
     return (
       <div className={"scrolling"}>
         <this.TitleSection />

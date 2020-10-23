@@ -31,11 +31,11 @@ class PublishedStep extends Component<PublishedStepProps, PublishedStepState> {
     };
   }
 
-  componentDidMount() {
-    this.setState({
-      stepHeight: this.myRef.current!.clientHeight,
-    });
-  }
+  // componentDidMount() {
+  //   this.setState({
+  //     stepHeight: this.myRef.current!.clientHeight,
+  //   });
+  // }
 
   renderDraftJS() {
     let rawContentState = JSON.parse(this.props.text);
@@ -57,7 +57,6 @@ class PublishedStep extends Component<PublishedStepProps, PublishedStepState> {
     let { selected, index } = this.props;
 
     let stepStyle = selected ? "Step--Selected" : "Step";
-
     return (
       <div ref={this.myRef}>
         <div onClick={this.scrollIntoView} className={stepStyle}>

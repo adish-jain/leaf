@@ -9,9 +9,10 @@ import PublishedImageView from "./PublishedImageView";
 
 type PublishedCodeEditorProps = {
   // changeStep: (newStep: number) => void;
-  currentStep?: Step;
+  currentStepIndex: number;
+  steps: Step[];
   files: File[];
-  currentFile: File;
+  currentFileIndex: number;
   updateFile: (fileIndex: number) => void;
 };
 
@@ -32,16 +33,30 @@ export default class PublishedCodeEditor extends Component<
   }
 
   render() {
-    let { files, currentFile, currentStep, updateFile } = this.props;
+    let {
+      files,
+      currentStepIndex,
+      steps,
+      updateFile,
+      currentFileIndex,
+    } = this.props;
+    let currentStep = steps[currentStepIndex];
+    let currentFile = files[currentFileIndex];
     return (
       <div className={"editor-wrapper"}>
-        <PublishedImageView currentStep={currentStep} />
+        <PublishedImageView steps={steps} currentStepIndex={currentStepIndex} />
         <PublishedFileBar
           updateFile={updateFile}
           files={files}
           currentFile={currentFile}
         />
-        <PrismEditor currentFile={currentFile} currentStep={currentStep} />
+        <PrismEditor
+          steps={steps}
+          currentStepIndex={currentStepIndex}
+          files={files}
+          currentFileIndex={currentFileIndex}
+        />
+
         <PublishedLanguageBar language={currentFile.language} />
       </div>
     );

@@ -1,6 +1,6 @@
 import Prism from "prismjs";
 import React, { Component, createRef } from "react";
-// import "../styles/prism.css";
+import "../styles/prism.css";
 import "../styles/prism-white.css";
 import { File, Step } from "../typescript/types/app_types";
 
@@ -19,8 +19,10 @@ import "../styles/prismeditor.scss";
 import animateScrollTo from "animated-scroll-to";
 
 type PrismEditorProps = {
-  currentFile: File;
-  currentStep?: Step;
+  steps: Step[];
+  currentStepIndex: number;
+  files: File[];
+  currentFileIndex: number;
 };
 
 type PrismEditorState = {
@@ -40,6 +42,7 @@ export default class PrismEditor extends Component<
 
     this.updateLines = this.updateLines.bind(this);
     this.animateLines = this.animateLines.bind(this);
+    this.renderFiles = this.renderFiles.bind(this);
 
     this.state = {
       hideLines: false,
@@ -47,18 +50,23 @@ export default class PrismEditor extends Component<
   }
 
   componentDidUpdate(prevProps: PrismEditorProps) {
+    let { steps, currentStepIndex, files, currentFileIndex } = this.props;
+    let currentFile = files[currentFileIndex];
+    let currentStep = steps[currentStepIndex];
+    let previousStep = steps[prevProps.currentStepIndex];
+    let previousFile = files[prevProps.currentFileIndex];
     // if step changes
-    if (prevProps.currentStep?.id !== this.props.currentStep?.id) {
+    if (previousStep.id !== currentStep?.id) {
       this.updateLines();
     }
 
     // if file changes
-    if (prevProps.currentFile.id !== this.props.currentFile.id) {
+    if (currentFile.id !== currentFile.id) {
       // reset scroll position
       this.PrismWrapper.current!.scrollTop = 0;
 
       // if file is different from current step file, then hide the lines
-      if (this.props.currentFile.id !== this.props.currentStep?.fileId) {
+      if (currentFile.id !== currentStep?.fileId) {
         this.setState({
           hideLines: true,
         });
@@ -69,7 +77,7 @@ export default class PrismEditor extends Component<
       }
     }
 
-    Prism.highlightAll();
+    // Prism.highlightAll();
   }
 
   componentDidMount() {
@@ -78,7 +86,10 @@ export default class PrismEditor extends Component<
   }
 
   updateLines() {
-    let { currentStep, currentFile } = this.props;
+    let { files, currentFileIndex } = this.props;
+    let currentFile = files[currentFileIndex];
+    let { steps, currentStepIndex } = this.props;
+    let currentStep = steps[currentStepIndex];
     if (
       currentStep &&
       currentStep.lines !== null &&
@@ -98,7 +109,8 @@ export default class PrismEditor extends Component<
   }
 
   animateLines() {
-    let { currentStep, currentFile } = this.props;
+    let { steps, currentStepIndex, files, currentFileIndex } = this.props;
+    let currentStep = steps[currentStepIndex];
 
     let animationOptions = {
       elementToScroll: this.PrismWrapper.current!,
@@ -110,19 +122,45 @@ export default class PrismEditor extends Component<
     animateScrollTo(lineCalc, animationOptions);
   }
 
-  render() {
-    let { language } = this.props.currentFile;
-
+  renderFiles() {
+    let { steps, currentStepIndex, files, currentFileIndex } = this.props;
     let lineString = `${this.state.startHighlightLine}-${this.state.endHighlightLine}`;
 
     return (
+      <div>
+        {files.map((file, index) => {
+          let style = {
+            display: "none",
+          };
+          if (index === currentFileIndex) {
+            style = {
+              display: "block",
+            };
+          }
+          return (
+            <pre
+              data-line={this.state.hideLines ? " " : lineString}
+              className="line-numbers"
+              style={style}
+            >
+              <code className="language-tsx">{file.code}</code>
+            </pre>
+          );
+        })}
+      </div>
+    );
+  }
+
+  render() {
+    let { steps, currentStepIndex, files, currentFileIndex } = this.props;
+
+    let currentStep = steps[currentStepIndex];
+    let currentFile = files[currentFileIndex];
+    let { language } = currentFile;
+
+    return (
       <div className={"prism-editor"} ref={this.PrismWrapper}>
-        <pre
-          data-line={this.state.hideLines ? " " : lineString}
-          className="line-numbers"
-        >
-          <code className="language-tsx">{this.props.currentFile.code}</code>
-        </pre>
+        <this.renderFiles />
       </div>
     );
   }

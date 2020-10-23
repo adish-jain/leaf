@@ -4,7 +4,8 @@ import { File, Step } from "../typescript/types/app_types";
 import { motion, AnimatePresence } from "framer-motion";
 
 type PublishedImageViewProps = {
-  currentStep?: Step;
+  steps: Step[];
+  currentStepIndex: number;
 };
 
 type PublishedImageViewState = {};
@@ -20,23 +21,31 @@ export default class PublishedImageView extends Component<
   }
 
   render() {
-    let { currentStep } = this.props;
-
+    let { currentStepIndex, steps } = this.props;
+    let currentStep = steps[currentStepIndex];
     return (
       <AnimatePresence>
         {currentStep?.imageURL && (
           <motion.div
             initial={{
-              opacity: 0,
-              height: 0,
+              // opacity: 0,
+              maxHeight: '0px',
+              // transform: "scaleY(0)"
+            }}
+            style={{
+              height: "auto",
+              // overflow: "hidden",
+              maxHeight: "600px",
             }}
             animate={{
-              opacity: 1,
-              height: "auto",
+              // opacity: 1,
+              // transform: "scaleY(1)"
+              maxHeight: "600px",
             }}
             exit={{
-              opacity: 0,
-              height: 0,
+              // opacity: 0,
+              // transform: "scaleY(0)"
+              maxHeight: '0px',
             }}
             transition={{
               duration: 0.4,
