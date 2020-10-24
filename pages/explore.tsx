@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useLoggedIn, logOut } from "../lib/UseLoggedIn";
 import Header, { HeaderUnAuthenticated } from "../components/Header";
 import { useRouter } from "next/router";
+// import Router from "next/router";
 
 import "../styles/explore.scss";
 import useSWR from "swr";
@@ -47,7 +48,9 @@ export default function Pages() {
 
   // const posts = postsData["posts"];
   // console.log(postsData);
-  const [filteredPosts, filterPosts] = useState(postsData);
+  const [filteredPosts, filterPosts] = useState([]);
+  // console.log(filteredPosts);
+  // filterPosts(postsData);
 
   const { authenticated, error, loading } = useLoggedIn();
 
@@ -79,7 +82,11 @@ export default function Pages() {
         <HeaderUnAuthenticated login={true} signup={true} about={true} />
         <TitleText />
         <SearchBar filterPosts={filterPosts} allPosts={postsData}/>
-        <DisplayPosts posts={filteredPosts} />
+        <div className={"selections"}>
+          <TagSelect filterPosts={filterPosts} allPosts={filteredPosts.length === 0 ? postsData : filteredPosts}/>
+          <SortSelect filterPosts={filterPosts} filteredPosts={filteredPosts.length === 0 ? postsData : filteredPosts}/>
+        </div>
+        <DisplayPosts posts={filteredPosts.length === 0 ? postsData : filteredPosts} router={router}/>
 
         {/* <Tutorials /> */}
       </main>
@@ -100,6 +107,60 @@ function filter(value: any, filterPosts: any, allPosts: any) {
   filterPosts(newPosts);
 }
 
+function sort(value: any, filterPosts: any, filteredPosts: any) {
+  const newPosts = Array.from(filteredPosts);
+  console.log("entered sort");
+  console.log(value);
+  switch (value) {
+    case "date": {
+      newPosts.sort(function(a: any, b: any) {
+        var keyA = new Date(a.publishedAt),
+          keyB = new Date(b.publishedAt);
+        if (keyA < keyB) return -1;
+        if (keyA > keyB) return 1;
+        return 0;
+      });
+      filterPosts(newPosts);
+      break;
+    }
+    case "recent": {
+      newPosts.sort(function(a: any, b: any) {
+        var keyA = new Date(a.publishedAt),
+          keyB = new Date(b.publishedAt);
+        if (keyA > keyB) return -1;
+        if (keyA < keyB) return 1;
+        return 0;
+      });
+      filterPosts(newPosts);
+      break;
+    }
+    case "title": {
+      newPosts.sort(function(a: any, b: any) {
+        var keyA = a.title.toLowerCase(),
+          keyB = b.title.toLowerCase();
+        if (keyA < keyB) return -1;
+        if (keyA > keyB) return 1;
+        return 0;
+      });
+      console.log(newPosts);
+      filterPosts(newPosts);
+      break;
+    }
+    // for when we add likes 
+    // case "popular": {
+    //   newPosts.sort(function(a: any, b: any) {
+    //     var keyA = new Date(a.publishedAt),
+    //       keyB = new Date(b.publishedAt);
+    //     if (keyA > keyB) return -1;
+    //     if (keyA < keyB) return 1;
+    //     return 0;
+    //   });
+    //   filterPosts(newPosts);
+    //   break;
+    // }
+  }
+}
+
 // want to implement google-search like suggestions for tags 
 function SearchBar(props: {filterPosts: any, allPosts: any}) {
   return (
@@ -114,35 +175,55 @@ function SearchBar(props: {filterPosts: any, allPosts: any}) {
   );
 }
 
-function DisplayPosts(props: {posts: any}) {
+function TagSelect(props: {filterPosts: any, allPosts: any}) {
+  return (
+    <select className={"select-dropdown"}>
+      <option value="volvo">Volvo</option>
+      <option value="saab">Saab</option>
+      <option value="mercedes">Mercedes</option>
+      <option value="audi">Audi</option>
+    </select>
+  )
+}
+
+function SortSelect(props: {filterPosts: any, filteredPosts: any}) {
+  return (
+    <select className={"select-dropdown"} onChange={(e) => sort(e.target.value, props.filterPosts, props.filteredPosts)}>
+      <option value="date">Date</option>
+      <option value="recent">Most Recent</option>
+      {/* <option value="popular">Most Popular</option> */}
+      <option value="title">Title</option>
+    </select>
+  )
+}
+
+function DisplayPosts(props: {posts: any, router: any}) {
   try {
     return (
         <div>
           {Array.from(props.posts).map((arr: any) => {
             return (
-              <a href={"https://getleaf.app" + arr["postURL"]} className={"post-link"}>
-                <div className={"post"}>
-                  <div className={"post-title"}>
-                    {arr["title"]}
-                  </div>
-                  <div className={"post-date"}>
-                    {new Date(arr["publishedAt"]).toDateString()}
-                  </div>
-                  <div className={"post-tags-author"}>
-                    {arr["tags"] !== undefined ? 
-                      (arr["tags"].map((tag: string) => {
-                        return (
-                        <div className={"post-tag"}>
-                          {tag}
-                        </div>
-                        );
-                      })) : (<div></div>)}
-                     <div className={"post-author"}>
-                      {arr["username"]}
-                    </div>
+              <div className={"post"} onClick={() => props.router.push(arr["postURL"])}>
+                <div className={"post-title-explore"}>
+                  {arr["title"]}
+                </div>
+                <div className={"post-date"}>
+                  {new Date(arr["publishedAt"]).toDateString()}
+                </div>
+                <div className={"post-tags-author"}>
+                  {arr["tags"] !== undefined ? 
+                    (arr["tags"].map((tag: string) => {
+                      return (
+                      <div className={"post-tag"}>
+                        {tag}
+                      </div>
+                      );
+                    })) : (<div></div>)}
+                    <div className={"post-author"}>
+                    {arr["username"]}
                   </div>
                 </div>
-              </a>
+              </div>
             );
           })}
         </div>

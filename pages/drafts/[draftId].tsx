@@ -132,6 +132,7 @@ const DraftView = () => {
     removeFile(toDeleteIndex);
   }
 
+  // TODO need to refactor the logic here
   function toggleTag(tag: string) {
     // let { tags, draftId, mutate } = this.props;
     if (typeof tags === "undefined") {
@@ -141,7 +142,19 @@ const DraftView = () => {
         tags: [tag],
       };
 
-      // TODO optimistic mutate 
+      var selectedTags: string[] = [tag];
+      var button = document.getElementById(tag);
+      button!.style.color = "white";
+      button!.style.background = "#349AE9"
+
+      // optimistic mutate 
+      mutate({
+        files: draftFiles, 
+        errored: errored, 
+        published: draftPublished, 
+        postId: postId, 
+        tags: selectedTags, 
+        username: username}, false);
     
       fetch("/api/endpoint", {
         method: "POST",
@@ -239,6 +252,7 @@ const DraftView = () => {
               <FinishedPost
                 steps={realSteps!}
                 title={draftTitle}
+                tags={tags}
                 username={username}
                 files={draftFiles}
                 updateShowPreview={updateShowPreview}

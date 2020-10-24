@@ -53,6 +53,7 @@ export async function getDraftDataHandler(uid: string, draftId: string) {
     let results = {
       title: "",
       files: [],
+      tags: [],
       errored: true,
       published: false,
       postId: "",
@@ -156,9 +157,10 @@ export async function getAllPostsHandler() {
       return docSnapshot.data().username;
     });
     let resultsJSON = doc.data();
+    let postURL = "/" + username + "/" + resultsJSON.postId;
     results.push({
       postId: resultsJSON.postId,
-      postURL: resultsJSON.postURL,
+      postURL: postURL,
       title: resultsJSON.title,
       publishedAt: resultsJSON.publishedAt.toDate(),
       tags: resultsJSON.tags,

@@ -7,6 +7,7 @@ import { Step } from "../typescript/types/app_types";
 type ScrollingProps = {
   changeStep: (newStep: number, yPos: number, entered: boolean) => void;
   steps: Step[];
+  tags: string[];
   currentStepIndex: number;
   title: string;
 };
@@ -44,11 +45,16 @@ export default class Scrolling extends Component<
   }
 
   render() {
-    let { steps, currentStepIndex, title } = this.props;
+    let { steps, currentStepIndex, title, tags } = this.props;
     let { height } = this.state;
     return (
       <div className={"scrolling"}>
         <h1 className={"post-title"}>{title}</h1>
+        <div className={"post-tags"}>
+          {tags.map((tag: string) => (
+            <div className={"post-tag"}>{tag}</div>))
+          }
+        </div>
         {steps ? (
           steps.map((step, index) => (
             <PublishedStep

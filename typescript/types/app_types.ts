@@ -25,6 +25,7 @@ export type Lines = {
 export type FinishedPostProps = {
   steps: Step[];
   title: string;
+  tags: string[];
   files: File[];
   username: string;
   previewMode: boolean;

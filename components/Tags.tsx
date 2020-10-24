@@ -55,11 +55,15 @@ export default class TagsView extends Component<
       "Java", "Javascript", "Machine Learning", "NextJS", "PHP", "Python", "React", "Ruby", "Web Dev", "Other"];
       return (
           <div className={"tags"}>
-            {tagsList.map((tag: string) => (
-                this.props.selectedTags.includes(tag) ? 
-                <button id={tag} className={"selected-tag-button"} onClick={() => this.toggleTag(tag)}>{tag}</button> :
-                <button id={tag} className={"tag-button"} onClick={() => this.toggleTag(tag)}>{tag}</button>
-            ))}
+            {(typeof this.props.selectedTags === "undefined") ? (
+                tagsList.map((tag: string) => (
+                    <button id={tag} className={"tag-button"} onClick={() => this.toggleTag(tag)}>{tag}</button>
+                ))) : (
+                tagsList.map((tag: string) => (
+                    this.props.selectedTags.includes(tag) ? 
+                    <button id={tag} className={"selected-tag-button"} onClick={() => this.toggleTag(tag)}>{tag}</button> :
+                    <button id={tag} className={"tag-button"} onClick={() => this.toggleTag(tag)}>{tag}</button>
+                )))}
           </div>
       );
   }

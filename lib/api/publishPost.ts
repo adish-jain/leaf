@@ -64,8 +64,7 @@ export default async function publishPost(
   db.collection("users").doc(uid).collection("drafts").doc(draftId).update({
     published: true,
     publishedAt: admin.firestore.FieldValue.serverTimestamp(),
-    postId: postId,
-    postURL: newURL
+    postId: postId
   });
   
   res.send({

@@ -78,6 +78,16 @@
   }
 }
 
+.selections {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  .select-dropdown  {
+    margin-right: 50px;
+  }
+}
+
 
 
 // .Tutorials {
@@ -132,12 +142,6 @@
 //   }
 // }
 
-.post-link {
-  cursor: pointer;
-  color: none;
-  text-decoration: none;
-}
-
 .post {
   width: 811px;
   height: 130px;
@@ -148,9 +152,10 @@
   background: #FFFFFF;
   box-shadow: 0px 4px 16px #EDECE9;
   border-radius: 8px;
+  cursor: pointer;
 }
 
-.post-title {
+.post-title-explore {
   width: 98%;
   height: 46px;
   margin-left: 10px;
@@ -231,6 +236,8 @@
     // align-self: baseline;
   }
 }
+
+
 
 
 

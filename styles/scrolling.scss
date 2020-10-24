@@ -20,6 +20,35 @@
   overflow-wrap: break-word;
 }
 
+.post-tags {
+  display: flex;
+  flex-direction: row;
+  margin-right: 10px;
+
+  .post-tag {
+    background: #F5F5F5;
+    height: 28.12371063232422px;
+    width: 70px;
+    left: 331px;
+    top: 408px;
+    border-radius: 3.195876121520996px;
+    // margin: 5px;
+    margin-right: 10px;
+    
+    font-family: Arial;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 11px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    // margin-left: auto;
+    
+    color: #000000;
+  }
+}
+
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
   .scrolling {

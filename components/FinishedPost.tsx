@@ -53,6 +53,7 @@ const FinishedPost = (props: FinishedPostProps) => {
       <div className={"center-divs"}>
         <Scrolling
           title={props.title}
+          tags={props.tags}
           currentStepIndex={currentStepIndex}
           changeStep={changeStep}
           steps={props.steps}
