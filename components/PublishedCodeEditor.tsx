@@ -44,7 +44,11 @@ export default class PublishedCodeEditor extends Component<
     let currentFile = files[currentFileIndex];
     return (
       <div className={"editor-wrapper"}>
-        <PublishedImageView steps={steps} currentStepIndex={currentStepIndex} />
+        <PublishedImageView
+          // key={1}
+          steps={steps}
+          currentStepIndex={currentStepIndex}
+        />
         <PublishedFileBar
           updateFile={updateFile}
           files={files}
