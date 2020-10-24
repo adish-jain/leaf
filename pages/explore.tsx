@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 
 import "../styles/explore.scss";
 import useSWR from "swr";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Pages() {
   const router = useRouter();
@@ -47,7 +47,10 @@ export default function Pages() {
 
   // const posts = postsData["posts"];
   // console.log(postsData);
-  const [filteredPosts, filterPosts] = useState([]);
+  const [filteredPosts, filterPosts] = useState(postsData);
+  const [searchFilter, updateSearchFilter] = useState("");
+  const [tagFilter, updateTagFilter] = useState("All");
+  const [sortFilter, updateSortFilter] = useState("date");
   // console.log(filteredPosts);
   // filterPosts(postsData);
 
@@ -61,6 +64,10 @@ export default function Pages() {
     e.preventDefault();
     router.push("/");
   };
+
+  useEffect(() => {
+    searchAndFilterPosts(filterPosts, postsData, searchFilter, tagFilter, sortFilter);
+  }, [searchFilter, tagFilter, sortFilter]);
 
   return (
     <div className="container">
@@ -80,14 +87,12 @@ export default function Pages() {
       <main className={"ExploreMainWrapper"}>
         <HeaderUnAuthenticated login={true} signup={true} about={true} />
         <TitleText />
-        <SearchBar filterPosts={filterPosts} allPosts={postsData}/>
+        <SearchBar updateSearchFilter={updateSearchFilter}/>
         <div className={"selections"}>
-          <TagSelect filterPosts={filterPosts} allPosts={postsData}/>
-          <SortSelect filterPosts={filterPosts} filteredPosts={filteredPosts}/>
+          <TagSelect updateTagFilter={updateTagFilter}/>
+          <SortSelect updateSortFilter={updateSortFilter}/>
         </div>
         <DisplayPosts posts={filteredPosts} router={router}/>
-
-        {/* <Tutorials /> */}
       </main>
     </div>
   );
@@ -101,26 +106,14 @@ function TitleText() {
   );
 }
 
-function searchFilter(value: any, filterPosts: any, allPosts: any) {
-  const newPosts = Array.from(allPosts).filter((post: any) => post["title"].toLowerCase().includes(value.toLowerCase()));
-  filterPosts(newPosts);
-}
-
-function tagFilter(value: any, filterPosts: any, allPosts: any) {
-  if (value == "All") {
-    filterPosts(allPosts);
-    return;
+// this will combine searchFilter, tagFilter, and sort 
+function searchAndFilterPosts(filterPosts: any, allPosts: any, searchFilter: string, tagFilter: string, sortFilter: string) {
+  var newPosts = Array.from(allPosts).filter((post: any) => post["title"].toLowerCase().includes(searchFilter.toLowerCase()));
+  if (tagFilter !== "All") {
+    newPosts = Array.from(newPosts).filter((post: any) => typeof post["tags"] !== "undefined");
+    newPosts = newPosts.filter((post: any) => post["tags"].includes(tagFilter));
   }
-  var newPosts = Array.from(allPosts).filter((post: any) => typeof post["tags"] !== "undefined");
-  console.log(newPosts);
-  newPosts = newPosts.filter((post: any) => post["tags"].includes(value))
-  console.log(newPosts);
-  filterPosts(newPosts);
-}
-
-function sort(value: any, filterPosts: any, filteredPosts: any) {
-  const newPosts = Array.from(filteredPosts);
-  switch (value) {
+  switch (sortFilter) {
     case "date": {
       newPosts.sort(function(a: any, b: any) {
         var keyA = new Date(a.publishedAt),
@@ -155,41 +148,31 @@ function sort(value: any, filterPosts: any, filteredPosts: any) {
       filterPosts(newPosts);
       break;
     }
-    // for when we add likes 
-    // case "popular": {
-    //   newPosts.sort(function(a: any, b: any) {
-    //     var keyA = new Date(a.publishedAt),
-    //       keyB = new Date(b.publishedAt);
-    //     if (keyA > keyB) return -1;
-    //     if (keyA < keyB) return 1;
-    //     return 0;
-    //   });
-    //   filterPosts(newPosts);
-    //   break;
-    // }
   }
 }
 
 // want to implement google-search like suggestions for tags 
-function SearchBar(props: {filterPosts: any, allPosts: any}) {
+function SearchBar(props: {updateSearchFilter: any}) {
   return (
     <div className={"search"}>
       <input 
         className={"search-bar"} 
-        // placeholder="  Search for titles or #tags"
-        onChange={(e) => searchFilter(e.target.value, props.filterPosts, props.allPosts)}
+        onChange={(e) => props.updateSearchFilter(e.target.value)}
       />
       <img src="images/search.svg" />
     </div>
   );
 }
 
-function TagSelect(props: {filterPosts: any, allPosts: any}) {
+function TagSelect(props: {updateTagFilter: any}) {
   const tagsList = ["All", "Algorithms", "Android", "Angular", "APIs", "AWS", 
       "Back End", "Data Science", "Design", "Django", "Documentation", "Front End", "Go", "Google Cloud", "HTML", "iOS", 
       "Java", "Javascript", "Machine Learning", "NextJS", "PHP", "Python", "React", "Ruby", "Web Dev", "Other"];
   return (
-    <select className={"select-dropdown"} onChange={(e) => tagFilter(e.target.value, props.filterPosts, props.allPosts)}>
+    <select 
+      className={"select-dropdown"} 
+      onChange={(e) => props.updateTagFilter(e.target.value)}
+    >
       {tagsList.map((tag: string) => (
           <option value={tag}>{tag}</option>
       ))}
@@ -197,12 +180,14 @@ function TagSelect(props: {filterPosts: any, allPosts: any}) {
    );
 }
 
-function SortSelect(props: {filterPosts: any, filteredPosts: any}) {
+function SortSelect(props: {updateSortFilter: any}) {
   return (
-    <select className={"select-dropdown"} onChange={(e) => sort(e.target.value, props.filterPosts, props.filteredPosts)}>
+    <select 
+      className={"select-dropdown"} 
+      onChange={(e) => props.updateSortFilter(e.target.value)}
+    >
       <option value="date">Date</option>
       <option value="recent">Most Recent</option>
-      {/* <option value="popular">Most Popular</option> */}
       <option value="title">Title</option>
     </select>
   )
@@ -244,29 +229,3 @@ function DisplayPosts(props: {posts: any, router: any}) {
     return (<div></div>);
   }
 }
-
-
-// function Tutorials() {
-//   return (
-//     <div className={"Tutorials"}>
-//       <a
-//         href="https://getleaf.app/dsps301/binarysearch-58opqzc9"
-//         target="_blank"
-//       >
-//         <div className={"Tutorial"}>Binary Search</div>
-//       </a>
-//       <a
-//         href="https://getleaf.app/outofthebot/howdostepsandscrollingworkintheleafcodebase-y4qrlau9"
-//         target="_blank"
-//       >
-//         <div className={"Tutorial"}>Steps & Scrolling in the Leaf Codebase</div>
-//       </a>
-//       <a
-//         href="https://getleaf.app/dsps301/kanyewestspower-pm6ne39l"
-//         target="_blank"
-//       >
-//         <div className={"Tutorial"}>Kanye West's 'Power'</div>
-//       </a>
-//     </div>
-//   );
-// }
