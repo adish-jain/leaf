@@ -106,7 +106,7 @@ function TitleText() {
   );
 }
 
-// this will combine searchFilter, tagFilter, and sort 
+// this will combine searchFilter, tagFilter, and sortFilter to give filtered results 
 function searchAndFilterPosts(filterPosts: any, allPosts: any, searchFilter: string, tagFilter: string, sortFilter: string) {
   var newPosts = Array.from(allPosts).filter((post: any) => post["title"].toLowerCase().includes(searchFilter.toLowerCase()));
   if (tagFilter !== "All") {
@@ -148,6 +148,18 @@ function searchAndFilterPosts(filterPosts: any, allPosts: any, searchFilter: str
       filterPosts(newPosts);
       break;
     }
+    case "username": {
+      newPosts.sort(function(a: any, b: any) {
+        var keyA = a.username.toLowerCase(),
+          keyB = b.username.toLowerCase();
+        if (keyA < keyB) return -1;
+        if (keyA > keyB) return 1;
+        return 0;
+      });
+      console.log(newPosts);
+      filterPosts(newPosts);
+      break;
+    }
   }
 }
 
@@ -165,32 +177,80 @@ function SearchBar(props: {updateSearchFilter: any}) {
 }
 
 function TagSelect(props: {updateTagFilter: any}) {
+  const [opened, toggleOpen] = useState(false);
   const tagsList = ["All", "Algorithms", "Android", "Angular", "APIs", "AWS", 
       "Back End", "Data Science", "Design", "Django", "Documentation", "Front End", "Go", "Google Cloud", "HTML", "iOS", 
       "Java", "Javascript", "Machine Learning", "NextJS", "PHP", "Python", "React", "Ruby", "Web Dev", "Other"];
   return (
-    <select 
-      className={"select-dropdown"} 
-      onChange={(e) => props.updateTagFilter(e.target.value)}
-    >
-      {tagsList.map((tag: string) => (
-          <option value={tag}>{tag}</option>
-      ))}
-    </select>
-   );
+    <div className={"NavBarDropDown"}>
+      <div className={"dropdown"}>
+        <button onClick={(e) => toggleOpen(!opened)} className={"dropbtn"}>
+          tag
+        </button>
+        <div className={"dropdownContent"}>
+          {opened ? (
+            <div>
+              {tagsList.map((tag: string) => (
+                  <option value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
+              ))}
+            </div>
+          ) : (
+            <div></div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 }
+  // const tagsList = ["All", "Algorithms", "Android", "Angular", "APIs", "AWS", 
+  //     "Back End", "Data Science", "Design", "Django", "Documentation", "Front End", "Go", "Google Cloud", "HTML", "iOS", 
+  //     "Java", "Javascript", "Machine Learning", "NextJS", "PHP", "Python", "React", "Ruby", "Web Dev", "Other"];
+  // return (
+  //   <select 
+  //     className={"select-dropdown"} 
+  //     onChange={(e) => props.updateTagFilter(e.target.value)}
+  //   >
+      // {tagsList.map((tag: string) => (
+      //     <option value={tag}>{tag}</option>
+      // ))}
+  //   </select>
+  //  );
+
 
 function SortSelect(props: {updateSortFilter: any}) {
+  const [opened, toggleOpen] = useState(false);
   return (
-    <select 
-      className={"select-dropdown"} 
-      onChange={(e) => props.updateSortFilter(e.target.value)}
-    >
-      <option value="date">Date</option>
-      <option value="recent">Most Recent</option>
-      <option value="title">Title</option>
-    </select>
-  )
+    <div className={"NavBarDropDown"}>
+      <div className={"dropdown"}>
+        <button onClick={(e) => toggleOpen(!opened)} className={"dropbtn"}>
+          ☰
+        </button>
+        <div className={"dropdownContent"}>
+          {opened ? (
+            <div>
+              <option value="date" onClick={(e) => props.updateSortFilter("date")}>Date</option>
+              <option value="recent" onClick={(e) => props.updateSortFilter("recent")}>Most Recent</option>
+              <option value="title" onClick={(e) => props.updateSortFilter("title")}>Title</option>
+              <option value="username" onClick={(e) => props.updateSortFilter("username")}>Author</option>
+            </div>
+          ) : (
+            <div></div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+  // return (
+  //   <select 
+  //     className={"select-dropdown"} 
+  //     onChange={(e) => props.updateSortFilter(e.target.value)}
+  //   >
+  //     <option value="date">Date</option>
+  //     <option value="recent">Most Recent</option>
+  //     <option value="title">Title</option>
+  //     <option value="username">Author</option>
+  //   </select>
+  // )
 }
 
 function DisplayPosts(props: {posts: any, router: any}) {
