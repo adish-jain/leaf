@@ -9,7 +9,6 @@ import { useRouter } from "next/router";
 import "../styles/explore.scss";
 import useSWR from "swr";
 import { useState } from "react";
-import { isNullOrUndefined } from "util";
 
 export default function Pages() {
   const router = useRouter();
@@ -83,10 +82,10 @@ export default function Pages() {
         <TitleText />
         <SearchBar filterPosts={filterPosts} allPosts={postsData}/>
         <div className={"selections"}>
-          <TagSelect filterPosts={filterPosts} allPosts={filteredPosts.length === 0 ? postsData : filteredPosts}/>
-          <SortSelect filterPosts={filterPosts} filteredPosts={filteredPosts.length === 0 ? postsData : filteredPosts}/>
+          <TagSelect filterPosts={filterPosts} allPosts={postsData}/>
+          <SortSelect filterPosts={filterPosts} filteredPosts={filteredPosts}/>
         </div>
-        <DisplayPosts posts={filteredPosts.length === 0 ? postsData : filteredPosts} router={router}/>
+        <DisplayPosts posts={filteredPosts} router={router}/>
 
         {/* <Tutorials /> */}
       </main>
@@ -102,15 +101,25 @@ function TitleText() {
   );
 }
 
-function filter(value: any, filterPosts: any, allPosts: any) {
+function searchFilter(value: any, filterPosts: any, allPosts: any) {
   const newPosts = Array.from(allPosts).filter((post: any) => post["title"].toLowerCase().includes(value.toLowerCase()));
+  filterPosts(newPosts);
+}
+
+function tagFilter(value: any, filterPosts: any, allPosts: any) {
+  if (value == "All") {
+    filterPosts(allPosts);
+    return;
+  }
+  var newPosts = Array.from(allPosts).filter((post: any) => typeof post["tags"] !== "undefined");
+  console.log(newPosts);
+  newPosts = newPosts.filter((post: any) => post["tags"].includes(value))
+  console.log(newPosts);
   filterPosts(newPosts);
 }
 
 function sort(value: any, filterPosts: any, filteredPosts: any) {
   const newPosts = Array.from(filteredPosts);
-  console.log("entered sort");
-  console.log(value);
   switch (value) {
     case "date": {
       newPosts.sort(function(a: any, b: any) {
@@ -168,7 +177,7 @@ function SearchBar(props: {filterPosts: any, allPosts: any}) {
       <input 
         className={"search-bar"} 
         // placeholder="  Search for titles or #tags"
-        onChange={(e) => filter(e.target.value, props.filterPosts, props.allPosts)}
+        onChange={(e) => searchFilter(e.target.value, props.filterPosts, props.allPosts)}
       />
       <img src="images/search.svg" />
     </div>
@@ -176,14 +185,16 @@ function SearchBar(props: {filterPosts: any, allPosts: any}) {
 }
 
 function TagSelect(props: {filterPosts: any, allPosts: any}) {
+  const tagsList = ["All", "Algorithms", "Android", "Angular", "APIs", "AWS", 
+      "Back End", "Data Science", "Design", "Django", "Documentation", "Front End", "Go", "Google Cloud", "HTML", "iOS", 
+      "Java", "Javascript", "Machine Learning", "NextJS", "PHP", "Python", "React", "Ruby", "Web Dev", "Other"];
   return (
-    <select className={"select-dropdown"}>
-      <option value="volvo">Volvo</option>
-      <option value="saab">Saab</option>
-      <option value="mercedes">Mercedes</option>
-      <option value="audi">Audi</option>
+    <select className={"select-dropdown"} onChange={(e) => tagFilter(e.target.value, props.filterPosts, props.allPosts)}>
+      {tagsList.map((tag: string) => (
+          <option value={tag}>{tag}</option>
+      ))}
     </select>
-  )
+   );
 }
 
 function SortSelect(props: {filterPosts: any, filteredPosts: any}) {

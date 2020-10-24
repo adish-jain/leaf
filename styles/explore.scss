@@ -81,12 +81,77 @@
 .selections {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
 
   .select-dropdown  {
     margin-right: 50px;
   }
 }
+
+// .NavBarDropDown {
+//   display: flex;
+//   z-index: 1;
+//   flex-direction: row;
+//   width: 100%;
+//   align-items: center;
+
+//   .dropdown {
+//     z-index: 1;
+//     margin-right: 3rem;
+//     overflow: hidden;
+//   }
+  
+//   /* Dropdown button */
+//   .dropdown .dropbtn {
+//     z-index: 2;
+//     transform: scale(1.8);
+//     font-size: 16px;
+//     border: none;
+//     outline: none;
+//     color: black;
+//     padding: 14px 16px;
+//     background-color: inherit;
+//     font-family: inherit; /* Important for vertical align on mobile phones */
+//     margin: 0; /* Important for vertical align on mobile phones */
+
+//     cursor: pointer;
+//   }
+  
+//   /* Dropdown content (hidden by default) */
+//   .dropdownContent {
+//     display: none;
+//     position: absolute;
+//     background-color: white;
+//     border-radius: 8px;
+//     min-width: 140px;
+//     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+//     z-index: 2;
+//   }
+  
+//   /* Links inside the dropdown */
+//   .dropdownContent a {
+//     float: none;
+//     color: black;
+//     padding: 12px 16px;
+//     text-decoration: none;
+//     display: block;
+//     text-align: left;
+
+//     z-index: 2;
+//   }
+  
+//   /* Add a blue background color to dropdown links on hover */
+//   .dropdownContent a:hover {
+//     background-color: #349ae9;
+//     color: white;
+//     transition: all ease-in-out 0.2s;
+//   }
+  
+//   /* Show the dropdown menu on hover */
+//   .dropdown:hover .dropdownContent {
+//     display: block;
+//     right: 1%;
+//   }
+// }
 
 
 
