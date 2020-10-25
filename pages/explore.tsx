@@ -87,10 +87,12 @@ export default function Pages() {
       <main className={"ExploreMainWrapper"}>
         <HeaderUnAuthenticated login={true} signup={true} about={true} />
         <TitleText />
-        <SearchBar updateSearchFilter={updateSearchFilter}/>
-        <div className={"selections"}>
-          <TagSelect updateTagFilter={updateTagFilter} tagFilter={tagFilter}/>
-          <SortSelect updateSortFilter={updateSortFilter} sortFilter={sortFilter}/>
+        <div className={"search-and-filter"}>
+          <SearchBar updateSearchFilter={updateSearchFilter}/>
+          <div className={"selections"}>
+            <TagSelect updateTagFilter={updateTagFilter} tagFilter={tagFilter}/>
+            <SortSelect updateSortFilter={updateSortFilter} sortFilter={sortFilter}/>
+          </div>
         </div>
         <DisplayPosts posts={filteredPosts} router={router}/>
       </main>
@@ -184,11 +186,11 @@ function TagSelect(props: {updateTagFilter: any, tagFilter: string}) {
   const data = ["Algorithms", "Data Science", "Machine Learning"]
   const other = ["All", "Design", "Documentation", "Other"]
   return (
-    <div className={"navbar"}>
+    <div className={"filter"}>
       <div className={"dropdown"}>
         <button className={"dropbtn"}>
           <img src="images/filter.svg" />
-          Filter by: {props.tagFilter}
+          {/* Filter by: {props.tagFilter} */}
           <i className={"fa fa-caret-down"}></i>
         </button>
         <div className={"dropdown-content"}>
@@ -304,11 +306,11 @@ function TagSelect(props: {updateTagFilter: any, tagFilter: string}) {
 function SortSelect(props: {updateSortFilter: any, sortFilter: string}) {
   const sortOptions = ["Date", "Recent", "Title", "Author"];
   return (
-    <div className={"NavBarDropDown"}>
+    <div className={"sort"}>
       <div className={"dropdown"}>
         <button className={"dropbtn"}>
           <img src="images/sort.svg" />
-          Sort by: {props.sortFilter}
+          {/* Sort by: {props.sortFilter} */}
         </button>
         <div className={"dropdownContent"}>
           <div>
