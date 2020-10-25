@@ -177,31 +177,89 @@ function SearchBar(props: {updateSearchFilter: any}) {
 }
 
 function TagSelect(props: {updateTagFilter: any}) {
-  const [opened, toggleOpen] = useState(false);
-  const tagsList = ["All", "Algorithms", "Android", "Angular", "APIs", "AWS", 
-      "Back End", "Data Science", "Design", "Django", "Documentation", "Front End", "Go", "Google Cloud", "HTML", "iOS", 
-      "Java", "Javascript", "Machine Learning", "NextJS", "PHP", "Python", "React", "Ruby", "Web Dev", "Other"];
+  const webdev = ["Angular", "Front End", "HTML", "Javascript", "PHP", "React", "Web Dev"]
+  const lang = ["Go", "Java", "Python", "Ruby"]
+  const backend = ["APIs", "AWS", "Back End", "Django", "Google Cloud", "NextJS"]
+  const mobile = ["Android", "iOS"]
+  const data = ["Algorithms", "Data Science", "Machine Learning"]
+  const other = ["All", "Design", "Documentation", "Other"]
   return (
-    <div className={"NavBarDropDown"}>
+    <div className={"navbar"}>
       <div className={"dropdown"}>
-        <button onClick={(e) => toggleOpen(!opened)} className={"dropbtn"}>
-          tag
+        <button className={"dropbtn"}>Tags
+          <i className={"fa fa-caret-down"}></i>
         </button>
-        <div className={"dropdownContent"}>
-          {opened ? (
-            <div>
-              {tagsList.map((tag: string) => (
+        <div className={"dropdown-content"}>
+          <div className={"row"}>
+            <div className={"column"}>
+              <h3>Backend</h3>
+              {backend.map((tag: string) => (
                   <option value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
               ))}
             </div>
-          ) : (
-            <div></div>
-          )}
+            <div className={"column"}>
+              <h3>Data</h3>
+              {data.map((tag: string) => (
+                  <option value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
+              ))}
+            </div>
+            <div className={"column"}>
+              <h3>Languages</h3>
+              {lang.map((tag: string) => (
+                  <option value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
+              ))}
+            </div>
+            <div className={"column"}>
+              <h3>Mobile</h3>
+              {mobile.map((tag: string) => (
+                  <option value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
+              ))}
+            </div>
+            <div className={"column"}>
+              <h3>Web Development</h3>
+              {webdev.map((tag: string) => (
+                  <option value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
+              ))}
+            </div>
+            <div className={"column"}>
+              <h3>Other</h3>
+              {other.map((tag: string) => (
+                  <option value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  );
+  )
 }
+
+// function TagSelect(props: {updateTagFilter: any}) {
+//   const [opened, toggleOpen] = useState(false);
+  // const tagsList = ["All", "Algorithms", "Android", "Angular", "APIs", "AWS", 
+  //     "Back End", "Data Science", "Design", "Django", "Documentation", "Front End", "Go", "Google Cloud", "HTML", "iOS", 
+  //     "Java", "Javascript", "Machine Learning", "NextJS", "PHP", "Python", "React", "Ruby", "Web Dev", "Other"];
+//   return (
+//     <div className={"NavBarDropDown"}>
+//       <div className={"dropdown"}>
+//         <button onClick={(e) => toggleOpen(!opened)} className={"dropbtn"}>
+//           tag
+//         </button>
+//         <div className={"dropdownContent"}>
+//           {opened ? (
+//             <div>
+              // {tagsList.map((tag: string) => (
+              //     <option value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
+              // ))}
+//             </div>
+//           ) : (
+//             <div></div>
+//           )}
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
   // const tagsList = ["All", "Algorithms", "Android", "Angular", "APIs", "AWS", 
   //     "Back End", "Data Science", "Design", "Django", "Documentation", "Front End", "Go", "Google Cloud", "HTML", "iOS", 
   //     "Java", "Javascript", "Machine Learning", "NextJS", "PHP", "Python", "React", "Ruby", "Web Dev", "Other"];
