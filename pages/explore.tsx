@@ -50,7 +50,7 @@ export default function Pages() {
   const [filteredPosts, filterPosts] = useState(postsData);
   const [searchFilter, updateSearchFilter] = useState("");
   const [tagFilter, updateTagFilter] = useState("All");
-  const [sortFilter, updateSortFilter] = useState("date");
+  const [sortFilter, updateSortFilter] = useState("Date");
   // console.log(filteredPosts);
   // filterPosts(postsData);
 
@@ -89,8 +89,8 @@ export default function Pages() {
         <TitleText />
         <SearchBar updateSearchFilter={updateSearchFilter}/>
         <div className={"selections"}>
-          <TagSelect updateTagFilter={updateTagFilter}/>
-          <SortSelect updateSortFilter={updateSortFilter}/>
+          <TagSelect updateTagFilter={updateTagFilter} tagFilter={tagFilter}/>
+          <SortSelect updateSortFilter={updateSortFilter} sortFilter={sortFilter}/>
         </div>
         <DisplayPosts posts={filteredPosts} router={router}/>
       </main>
@@ -114,7 +114,7 @@ function searchAndFilterPosts(filterPosts: any, allPosts: any, searchFilter: str
     newPosts = newPosts.filter((post: any) => post["tags"].includes(tagFilter));
   }
   switch (sortFilter) {
-    case "date": {
+    case "Date": {
       newPosts.sort(function(a: any, b: any) {
         var keyA = new Date(a.publishedAt),
           keyB = new Date(b.publishedAt);
@@ -125,7 +125,7 @@ function searchAndFilterPosts(filterPosts: any, allPosts: any, searchFilter: str
       filterPosts(newPosts);
       break;
     }
-    case "recent": {
+    case "Recent": {
       newPosts.sort(function(a: any, b: any) {
         var keyA = new Date(a.publishedAt),
           keyB = new Date(b.publishedAt);
@@ -136,7 +136,7 @@ function searchAndFilterPosts(filterPosts: any, allPosts: any, searchFilter: str
       filterPosts(newPosts);
       break;
     }
-    case "title": {
+    case "Title": {
       newPosts.sort(function(a: any, b: any) {
         var keyA = a.title.toLowerCase(),
           keyB = b.title.toLowerCase();
@@ -148,7 +148,7 @@ function searchAndFilterPosts(filterPosts: any, allPosts: any, searchFilter: str
       filterPosts(newPosts);
       break;
     }
-    case "username": {
+    case "Author": {
       newPosts.sort(function(a: any, b: any) {
         var keyA = a.username.toLowerCase(),
           keyB = b.username.toLowerCase();
@@ -176,7 +176,7 @@ function SearchBar(props: {updateSearchFilter: any}) {
   );
 }
 
-function TagSelect(props: {updateTagFilter: any}) {
+function TagSelect(props: {updateTagFilter: any, tagFilter: string}) {
   const webdev = ["Angular", "Front End", "HTML", "Javascript", "PHP", "React", "Web Dev"]
   const lang = ["Go", "Java", "Python", "Ruby"]
   const backend = ["APIs", "AWS", "Back End", "Django", "Google Cloud", "NextJS"]
@@ -186,7 +186,9 @@ function TagSelect(props: {updateTagFilter: any}) {
   return (
     <div className={"navbar"}>
       <div className={"dropdown"}>
-        <button className={"dropbtn"}>Tags
+        <button className={"dropbtn"}>
+          <img src="images/filter.svg" />
+          Filter by: {props.tagFilter}
           <i className={"fa fa-caret-down"}></i>
         </button>
         <div className={"dropdown-content"}>
@@ -194,37 +196,61 @@ function TagSelect(props: {updateTagFilter: any}) {
             <div className={"column"}>
               <h3>Backend</h3>
               {backend.map((tag: string) => (
+                tag === props.tagFilter ? (
+                  <option className={"selected-option"} value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
+                ) : (
                   <option value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
+                )
               ))}
             </div>
             <div className={"column"}>
               <h3>Data</h3>
               {data.map((tag: string) => (
+                tag === props.tagFilter ? (
+                  <option className={"selected-option"} value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
+                ) : (
                   <option value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
+                )
               ))}
             </div>
             <div className={"column"}>
               <h3>Languages</h3>
               {lang.map((tag: string) => (
+                tag === props.tagFilter ? (
+                  <option className={"selected-option"} value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
+                ) : (
                   <option value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
+                )
               ))}
             </div>
             <div className={"column"}>
               <h3>Mobile</h3>
               {mobile.map((tag: string) => (
+                tag === props.tagFilter ? (
+                  <option className={"selected-option"} value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
+                ) : (
                   <option value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
+                )
               ))}
             </div>
             <div className={"column"}>
               <h3>Web Development</h3>
               {webdev.map((tag: string) => (
+                tag === props.tagFilter ? (
+                  <option className={"selected-option"} value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
+                ) : (
                   <option value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
+                )
               ))}
             </div>
             <div className={"column"}>
               <h3>Other</h3>
               {other.map((tag: string) => (
+                tag === props.tagFilter ? (
+                  <option className={"selected-option"} value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
+                ) : (
                   <option value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
+                )
               ))}
             </div>
           </div>
@@ -275,26 +301,26 @@ function TagSelect(props: {updateTagFilter: any}) {
   //  );
 
 
-function SortSelect(props: {updateSortFilter: any}) {
-  const [opened, toggleOpen] = useState(false);
+function SortSelect(props: {updateSortFilter: any, sortFilter: string}) {
+  const sortOptions = ["Date", "Recent", "Title", "Author"];
   return (
     <div className={"NavBarDropDown"}>
       <div className={"dropdown"}>
-        <button onClick={(e) => toggleOpen(!opened)} className={"dropbtn"}>
-          ☰
+        <button className={"dropbtn"}>
+          <img src="images/sort.svg" />
+          Sort by: {props.sortFilter}
         </button>
         <div className={"dropdownContent"}>
-          {opened ? (
-            <div>
-              <option value="date" onClick={(e) => props.updateSortFilter("date")}>Date</option>
-              <option value="recent" onClick={(e) => props.updateSortFilter("recent")}>Most Recent</option>
-              <option value="title" onClick={(e) => props.updateSortFilter("title")}>Title</option>
-              <option value="username" onClick={(e) => props.updateSortFilter("username")}>Author</option>
-            </div>
-          ) : (
-            <div></div>
-          )}
-        </div>
+          <div>
+            {sortOptions.map((option: string) => (
+              option === props.sortFilter ? (
+                <option className={"selected-option"} value={option} onClick={(e) => props.updateSortFilter(option)}>{option}</option>
+              ) : (
+                <option value={option} onClick={(e) => props.updateSortFilter(option)}>{option}</option>
+              )
+            ))}
+          </div>
+        </div> 
       </div>
     </div>
   );

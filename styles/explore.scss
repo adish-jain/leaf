@@ -81,7 +81,9 @@
 .selections {
   display: flex;
   flex-direction: row;
-  margin-bottom: 50px;
+  justify-content: space-evenly;
+  // align-items: center;
+  // margin-bottom: 50px;
   // position: absolute;
 
   // .select-dropdown  {
@@ -121,6 +123,12 @@
     background-color: inherit;
     font: inherit; /* Important for vertical align on mobile phones */
     margin: 0; /* Important for vertical align on mobile phones */
+
+    img {
+      max-width: 15px;
+      height: auto;
+      margin-right: 6px;
+    }
   }
 
   /* Dropdown content (hidden by default) */
@@ -130,7 +138,7 @@
     background-color: #f9f9f9;
     width: 100%;
     left: 0;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    // box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
   }
 
@@ -146,6 +154,11 @@
     padding: 10px;
     // background-color: #ccc;
     height: 420px;
+
+    .selected-option {
+      background-color: #349ae9 !important;
+      color: white !important;
+    }
   }
 
   /* Style links inside the columns */
@@ -161,6 +174,7 @@
   /* Add a background color on hover */
   .column option:hover {
     background-color: #349ae9;
+    color: white;
   }
 
   /* Clear floats after the columns */
@@ -171,8 +185,8 @@
   }
 
   .NavBarDropDown{
-    margin-right: 100px;
-    margin-left: 100px;
+    // margin-right: 100px;
+    // margin-left: 100px;
     .dropdown {
       // align-items: center;
       position: absolute;
@@ -184,7 +198,6 @@
     /* Dropdown button */
     .dropdown .dropbtn {
       z-index: 2;
-      transform: scale(1.8);
       font-size: 16px;
       border: none;
       outline: none;
@@ -195,6 +208,11 @@
       margin: 0; /* Important for vertical align on mobile phones */
     
       cursor: pointer;
+
+      img {
+        max-width: 15px;
+        height: auto;
+      }
     }
     
     /* Dropdown content (hidden by default) */
@@ -208,6 +226,11 @@
       min-width: 140px;
       box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
       z-index: 2;
+
+      .selected-option {
+        background-color: #349ae9 !important;
+        color: white !important;
+      }
     }
     
     /* Links inside the dropdown */
