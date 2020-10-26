@@ -48,6 +48,7 @@
 .search-and-filter {
   display: flex;
   flex-direction: row;
+  margin-right: 30px;
   align-items: stretch;
   .search {
     display: flex;
@@ -141,9 +142,11 @@
     .dropdown-content {
       display: none;
       position: absolute;
-      background-color: #f9f9f9;
-      width: 100%;
-      left: 0;
+      background-color: #FFFEFC;
+      width: 70%;
+      height: 100%;
+      left: 18%;
+      // margin: 50;
       // box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
       z-index: 1;
     }
@@ -166,12 +169,16 @@
         color: white !important;
       }
     }
+
+    .column h3 {
+      padding: 10px;
+    }
   
     /* Style links inside the columns */
     .column option {
       float: none;
       color: black;
-      padding: 16px;
+      padding: 10px;
       text-decoration: none;
       display: block;
       text-align: left;
@@ -213,8 +220,6 @@
         background-color: inherit;
         font-family: inherit; /* Important for vertical align on mobile phones */
         margin: 0; /* Important for vertical align on mobile phones */
-      
-        cursor: pointer;
   
         img {
           max-width: 15px;
@@ -228,7 +233,7 @@
         // flex-direction: row;
         display: none;
         // position: absolute;
-        background-color: #f9f9f9;
+        background-color: #FFFEFC;
         border-radius: 8px;
         min-width: 140px;
         box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);

@@ -171,6 +171,7 @@ function SearchBar(props: {updateSearchFilter: any}) {
     <div className={"search"}>
       <input 
         className={"search-bar"} 
+        placeholder="Search for a title"
         onChange={(e) => props.updateSearchFilter(e.target.value)}
       />
       <img src="images/search.svg" />
@@ -236,7 +237,7 @@ function TagSelect(props: {updateTagFilter: any, tagFilter: string}) {
               ))}
             </div>
             <div className={"column"}>
-              <h3>Web Development</h3>
+              <h3>Web</h3>
               {webdev.map((tag: string) => (
                 tag === props.tagFilter ? (
                   <option className={"selected-option"} value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
