@@ -46,12 +46,12 @@ export default function Pages() {
   );
 
   // const posts = postsData["posts"];
-  // console.log(postsData);
+  console.log(postsData);
   const [filteredPosts, filterPosts] = useState(postsData);
   const [searchFilter, updateSearchFilter] = useState("");
   const [tagFilter, updateTagFilter] = useState("All");
   const [sortFilter, updateSortFilter] = useState("Date");
-  // console.log(filteredPosts);
+  console.log(filteredPosts);
   // filterPosts(postsData);
 
   const { authenticated, error, loading } = useLoggedIn();
@@ -68,6 +68,11 @@ export default function Pages() {
   useEffect(() => {
     searchAndFilterPosts(filterPosts, postsData, searchFilter, tagFilter, sortFilter);
   }, [searchFilter, tagFilter, sortFilter]);
+
+  useEffect(() => {
+    // TODO this needs to be fixed (re-loads anytime new post)
+    filterPosts(postsData);
+  }, [postsData]);
 
   return (
     <div className="container">
@@ -94,7 +99,7 @@ export default function Pages() {
             <SortSelect updateSortFilter={updateSortFilter} sortFilter={sortFilter}/>
           </div>
         </div>
-        <DisplayPosts posts={filteredPosts} router={router}/>
+        <DisplayPosts posts={filteredPosts} router={router} updateTagFilter={updateTagFilter}/>
       </main>
     </div>
   );
@@ -263,47 +268,6 @@ function TagSelect(props: {updateTagFilter: any, tagFilter: string}) {
   )
 }
 
-// function TagSelect(props: {updateTagFilter: any}) {
-//   const [opened, toggleOpen] = useState(false);
-  // const tagsList = ["All", "Algorithms", "Android", "Angular", "APIs", "AWS", 
-  //     "Back End", "Data Science", "Design", "Django", "Documentation", "Front End", "Go", "Google Cloud", "HTML", "iOS", 
-  //     "Java", "Javascript", "Machine Learning", "NextJS", "PHP", "Python", "React", "Ruby", "Web Dev", "Other"];
-//   return (
-//     <div className={"NavBarDropDown"}>
-//       <div className={"dropdown"}>
-//         <button onClick={(e) => toggleOpen(!opened)} className={"dropbtn"}>
-//           tag
-//         </button>
-//         <div className={"dropdownContent"}>
-//           {opened ? (
-//             <div>
-              // {tagsList.map((tag: string) => (
-              //     <option value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
-              // ))}
-//             </div>
-//           ) : (
-//             <div></div>
-//           )}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-  // const tagsList = ["All", "Algorithms", "Android", "Angular", "APIs", "AWS", 
-  //     "Back End", "Data Science", "Design", "Django", "Documentation", "Front End", "Go", "Google Cloud", "HTML", "iOS", 
-  //     "Java", "Javascript", "Machine Learning", "NextJS", "PHP", "Python", "React", "Ruby", "Web Dev", "Other"];
-  // return (
-  //   <select 
-  //     className={"select-dropdown"} 
-  //     onChange={(e) => props.updateTagFilter(e.target.value)}
-  //   >
-      // {tagsList.map((tag: string) => (
-      //     <option value={tag}>{tag}</option>
-      // ))}
-  //   </select>
-  //  );
-
-
 function SortSelect(props: {updateSortFilter: any, sortFilter: string}) {
   const sortOptions = ["Date", "Recent", "Title", "Author"];
   return (
@@ -327,48 +291,44 @@ function SortSelect(props: {updateSortFilter: any, sortFilter: string}) {
       </div>
     </div>
   );
-  // return (
-  //   <select 
-  //     className={"select-dropdown"} 
-  //     onChange={(e) => props.updateSortFilter(e.target.value)}
-  //   >
-  //     <option value="date">Date</option>
-  //     <option value="recent">Most Recent</option>
-  //     <option value="title">Title</option>
-  //     <option value="username">Author</option>
-  //   </select>
-  // )
 }
 
-function DisplayPosts(props: {posts: any, router: any}) {
+function DisplayPosts(props: {posts: any, router: any, updateTagFilter: any}) {
   try {
     return (
         <div>
-          {Array.from(props.posts).map((arr: any) => {
-            return (
-              <div className={"post"} onClick={() => props.router.push(arr["postURL"])}>
-                <div className={"post-title-explore"}>
-                  {arr["title"]}
-                </div>
-                <div className={"post-date"}>
-                  {new Date(arr["publishedAt"]).toDateString()}
-                </div>
-                <div className={"post-tags-author"}>
-                  {arr["tags"] !== undefined ? 
-                    (arr["tags"].map((tag: string) => {
-                      return (
-                      <div className={"post-tag"}>
-                        {tag}
+          {props.posts.length === 0 ? (
+            <h3>No posts found</h3>
+            ) : (
+              <div>
+                {Array.from(props.posts).map((arr: any) => {
+                  return (
+                    <div className={"post"} onClick={() => props.router.push(arr["postURL"])}>
+                      <div className={"post-title-explore"}>
+                        {arr["title"]}
                       </div>
-                      );
-                    })) : (<div></div>)}
-                    <div className={"post-author"}>
-                    {arr["username"]}
-                  </div>
-                </div>
+                      <div className={"post-date"}>
+                        {new Date(arr["publishedAt"]).toDateString()}
+                      </div>
+                      <div className={"post-tags-author"}>
+                        {arr["tags"] !== undefined ? 
+                          (arr["tags"].map((tag: string) => {
+                            return (
+                            <div className={"post-tag"} onClick={function(e) { props.updateTagFilter(tag); e.stopPropagation()}}>
+                              {tag}
+                            </div>
+                            );
+                          })) : (<div></div>)}
+                          <div className={"post-author"}>
+                          {arr["username"]}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-            );
-          })}
+            )
+          }
         </div>
     );
   } catch {

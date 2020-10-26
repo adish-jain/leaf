@@ -143,6 +143,7 @@
       display: none;
       position: absolute;
       background-color: #FFFEFC;
+    
       width: 70%;
       height: 100%;
       left: 18%;
@@ -276,64 +277,6 @@
   }
 } 
 
-
-
-
-
-
-
-// .Tutorials {
-//   display: flex;
-//   flex-direction: row;
-//   flex-wrap: wrap;
-//   align-items: center;
-//   justify-content: center;
-//   // margin-top: 48px;
-//   a:link {
-//     color: #000000;
-//     text-decoration: none;
-//   }
-
-//   a:visited {
-//     color: #000000;
-//   }
-
-//   a:hover {
-//     color: #1db954;
-//   }
-//   .Tutorial {
-//     width: 350px;
-//     padding: 16px;
-//     margin-left: 20px;
-//     margin-right: 20px;
-//     // margin-bottom: 30px;
-//     height: 300px;
-//     border-radius: 36px;
-//     border-width: 0px;
-//     box-shadow: 0px 4px 32px rgba(0.25, 0.25, 0.25, 0.25);
-//     cursor: pointer;
-
-//     font-family: Arial;
-//     font-style: normal;
-//     font-size: 35px;
-//     display: flex;
-//     align-items: center;
-//     justify-content: center;
-//     text-align: center;
-
-//     color: #ffffff;
-//     background-color: rgb(10, 164, 235);
-//     opacity: 0.35;
-
-//     transition: box-shadow ease-in-out 0.2s;
-//   }
-
-//   .Tutorial:hover {
-//     box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.7);
-//     transition: box-shadow ease-in-out 0.2s;
-//   }
-// }
-
 .post {
   width: 811px;
   height: 130px;
@@ -354,7 +297,6 @@
   margin-top: 10px;
   overflow: scroll;
   white-space: nowrap; 
-  text-overflow: ellipsis;
   // overflow: hidden;
   // left: 331px;
   // top: 322px;
@@ -362,8 +304,8 @@
   font-family: Arial;
   font-style: normal;
   font-weight: bold;
-  font-size: 35px;
-  line-height: 46px;
+  font-size: 25px;
+  // line-height: 46px;
   /* identical to box height */
   
   display: flex;
@@ -417,6 +359,12 @@
     // margin-left: auto;
     
     color: #000000;
+  }
+
+  .post-tag:hover {
+    background-color: #349ae9;
+    color: white;
+    transition: all ease-in-out 0.2s;
   }
 
   .post-author {
