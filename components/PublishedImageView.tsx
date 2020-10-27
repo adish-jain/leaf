@@ -8,6 +8,8 @@ type PublishedImageViewProps = {
   currentStepIndex: number;
   imageViewRef: React.RefObject<HTMLDivElement>;
   scrollSpeed: number;
+  prismWrapper: React.RefObject<HTMLDivElement>;
+  animateLines: () => void;
 };
 
 type PublishedImageViewState = {};
@@ -23,9 +25,10 @@ export default class PublishedImageView extends Component<
     this.state = {};
   }
 
-  onComplete() {
-    console.log("animation completed");
-  }
+  onComplete = () => {
+    // console.log("animation completed");
+    this.props.animateLines();
+  };
 
   render() {
     let { currentStepIndex, steps, imageViewRef, scrollSpeed } = this.props;
@@ -43,13 +46,11 @@ export default class PublishedImageView extends Component<
                 height: "0px",
                 // transform: "scaleY(0)"
               }}
-              style={
-                {
-                  // height: "0px",
-                  overflow: "hidden",
-                  // maxHeight: "600px",
-                }
-              }
+              style={{
+                // height: "0px",
+                overflow: "hidden",
+                // maxHeight: "600px",
+              }}
               animate={{
                 // opacity: 1,
                 // transform: "scaleY(1)"

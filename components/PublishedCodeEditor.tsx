@@ -6,6 +6,7 @@ import "../styles/publishedcodeeditor.scss";
 import { File, Step } from "../typescript/types/app_types";
 import PrismEditor from "./PrismEditor";
 import PublishedImageView from "./PublishedImageView";
+import animateScrollTo from "animated-scroll-to";
 
 type PublishedCodeEditorProps = {
   // changeStep: (newStep: number) => void;
@@ -26,6 +27,7 @@ export default class PublishedCodeEditor extends Component<
   PublishedCodeEditorState
 > {
   imageViewRef = createRef<HTMLDivElement>();
+  prismWrapper = createRef<HTMLDivElement>();
   // imageViewRef = createRef<HTMLImageElement>();
 
   constructor(props: PublishedCodeEditorProps) {
@@ -36,6 +38,18 @@ export default class PublishedCodeEditor extends Component<
     };
   }
 
+  animateLines = () => {
+    let { steps, currentStepIndex } = this.props;
+    let currentStep = steps[currentStepIndex];
+    let animationOptions = {
+      elementToScroll: this.prismWrapper.current!,
+      // add offset so scrolled to line isnt exactly at top
+      verticalOffset: 0,
+    };
+    let lineCalc = currentStep?.lines?.start! * 18 - 5;
+    animateScrollTo(lineCalc, animationOptions);
+  };
+
   render() {
     let {
       files,
@@ -43,7 +57,7 @@ export default class PublishedCodeEditor extends Component<
       steps,
       updateFile,
       currentFileIndex,
-      scrollSpeed
+      scrollSpeed,
     } = this.props;
     let currentStep = steps[currentStepIndex];
     let currentFile = files[currentFileIndex];
@@ -54,6 +68,8 @@ export default class PublishedCodeEditor extends Component<
           currentStepIndex={currentStepIndex}
           imageViewRef={this.imageViewRef}
           scrollSpeed={scrollSpeed}
+          prismWrapper={this.prismWrapper}
+          animateLines={this.animateLines}
         />
         <PublishedFileBar
           updateFile={updateFile}
@@ -66,6 +82,8 @@ export default class PublishedCodeEditor extends Component<
           files={files}
           currentFileIndex={currentFileIndex}
           imageViewRef={this.imageViewRef}
+          prismWrapper={this.prismWrapper}
+          animateLines={this.animateLines}
         />
 
         <PublishedLanguageBar language={currentFile.language} />

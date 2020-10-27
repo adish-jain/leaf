@@ -25,6 +25,8 @@ type PrismEditorProps = {
   files: File[];
   currentFileIndex: number;
   imageViewRef: React.RefObject<HTMLDivElement>;
+  prismWrapper: React.RefObject<HTMLDivElement>;
+  animateLines: () => void;
 };
 
 type PrismEditorState = {
@@ -39,14 +41,10 @@ export default class PrismEditor extends Component<
   PrismEditorProps,
   PrismEditorState
 > {
-  PrismWrapper = createRef<HTMLDivElement>();
-  linesWrapper = createRef<HTMLDivElement>();
-
   constructor(props: PrismEditorProps) {
     super(props);
 
     this.updateLines = this.updateLines.bind(this);
-    this.animateLines = this.animateLines.bind(this);
     this.highlightedLines = this.highlightedLines.bind(this);
     this.renderFile = this.renderFile.bind(this);
     this.Line = this.Line.bind(this);
@@ -72,7 +70,13 @@ export default class PrismEditor extends Component<
   };
 
   componentDidUpdate(prevProps: PrismEditorProps) {
-    let { steps, currentStepIndex, files, currentFileIndex } = this.props;
+    let {
+      steps,
+      currentStepIndex,
+      files,
+      currentFileIndex,
+      prismWrapper,
+    } = this.props;
     let currentFile = files[currentFileIndex];
     let currentStep = steps[currentStepIndex];
     let previousStep = steps[prevProps.currentStepIndex];
@@ -90,7 +94,7 @@ export default class PrismEditor extends Component<
     // if file changes
     if (currentFile.id !== currentFile.id) {
       // reset scroll position
-      this.PrismWrapper.current!.scrollTop = 0;
+      prismWrapper.current!.scrollTop = 0;
 
       // if file is different from current step file, then hide the lines
       if (currentFile.id !== currentStep?.fileId) {
@@ -111,7 +115,7 @@ export default class PrismEditor extends Component<
   }
 
   updateLines() {
-    let { files, currentFileIndex } = this.props;
+    let { files, currentFileIndex, animateLines } = this.props;
     let currentFile = files[currentFileIndex];
     let { steps, currentStepIndex } = this.props;
     let currentStep = steps[currentStepIndex];
@@ -126,43 +130,9 @@ export default class PrismEditor extends Component<
           endHighlightLine: currentStep.lines.end,
           hideLines: false,
         },
-        () => {
-          this.animateLines();
-        }
+        () => animateLines()
       );
     }
-  }
-
-  animateLines() {
-    let {
-      steps,
-      currentStepIndex,
-      files,
-      currentFileIndex,
-      imageViewRef,
-    } = this.props;
-    let currentStep = steps[currentStepIndex];
-    // console.log("image view height is", imageViewRef.current?.clientHeight!);
-    // console.log(
-    //   "prism wrapper height is",
-    //   this.PrismWrapper.current?.clientHeight!
-    // );
-
-    // if height is undefined, that means the div is still in the opening
-    // animation. Default to a height of 250px in this case (the opening height of the div)
-    let imageViewRefHeight =
-      imageViewRef.current?.clientHeight !== undefined
-        ? imageViewRef.current?.clientHeight
-        : 250;
-    let animationOptions = {
-      elementToScroll: this.PrismWrapper.current!,
-      // add offset so scrolled to line isnt exactly at top
-      // verticalOffset:
-      //   (-1 * this.PrismWrapper.current?.clientHeight! / 2)+
-      //   imageViewRef.current?.clientHeight!,
-    };
-    let lineCalc = currentStep?.lines?.start! * 18 - 5;
-    animateScrollTo(lineCalc, animationOptions);
   }
 
   highlightedLines = () => {
@@ -281,7 +251,13 @@ export default class PrismEditor extends Component<
   };
 
   render() {
-    let { steps, currentStepIndex, files, currentFileIndex } = this.props;
+    let {
+      steps,
+      currentStepIndex,
+      files,
+      currentFileIndex,
+      prismWrapper,
+    } = this.props;
 
     let currentStep = steps[currentStepIndex];
     let currentFile = files[currentFileIndex];
@@ -291,7 +267,7 @@ export default class PrismEditor extends Component<
       <div
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
-        ref={this.PrismWrapper}
+        ref={prismWrapper}
         className={"prism-editor"}
       >
         <this.renderFile />
