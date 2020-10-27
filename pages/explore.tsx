@@ -1,11 +1,7 @@
 import Head from "next/head";
-import Link from "next/link";
-
-import { useLoggedIn, logOut } from "../lib/UseLoggedIn";
-import Header, { HeaderUnAuthenticated } from "../components/Header";
+import { useLoggedIn } from "../lib/UseLoggedIn";
+import { HeaderUnAuthenticated } from "../components/Header";
 import { useRouter } from "next/router";
-// import Router from "next/router";
-
 import "../styles/explore.scss";
 import useSWR from "swr";
 import { useState, useEffect } from "react";
@@ -45,32 +41,22 @@ export default function Pages() {
     { initialData, revalidateOnMount: true }
   );
 
-  // const posts = postsData["posts"];
-  console.log(postsData);
   const [filteredPosts, filterPosts] = useState(postsData);
   const [searchFilter, updateSearchFilter] = useState("");
   const [tagFilter, updateTagFilter] = useState("All");
   const [sortFilter, updateSortFilter] = useState("Date");
-  console.log(filteredPosts);
-  // filterPosts(postsData);
-
   const { authenticated, error, loading } = useLoggedIn();
 
   if (authenticated) {
     window.location.href = "/landing";
   }
 
-  const goToIndex = (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-    router.push("/");
-  };
-
   useEffect(() => {
     searchAndFilterPosts(filterPosts, postsData, searchFilter, tagFilter, sortFilter);
   }, [searchFilter, tagFilter, sortFilter]);
 
+  // TODO this needs to be fixed (re-loads anytime new post)
   useEffect(() => {
-    // TODO this needs to be fixed (re-loads anytime new post)
     filterPosts(postsData);
   }, [postsData]);
 
@@ -89,7 +75,7 @@ export default function Pages() {
           }}
         />
       </Head>
-      <main className={"ExploreMainWrapper"}>
+      <main className={"explore-main-wrapper"}>
         <HeaderUnAuthenticated login={true} signup={true} about={true} />
         <TitleText />
         <div className={"search-and-filter"}>
@@ -108,7 +94,7 @@ export default function Pages() {
 function TitleText() {
   return (
     <div className={"explore-title"}>
-      <div className={"Text"}>Discover Library</div>
+      <div className={"explore-title-text"}>Discover Library</div>
     </div>
   );
 }
@@ -129,7 +115,6 @@ function searchAndFilterPosts(filterPosts: any, allPosts: any, searchFilter: str
         if (keyA > keyB) return 1;
         return 0;
       });
-      filterPosts(newPosts);
       break;
     }
     case "Recent": {
@@ -140,7 +125,6 @@ function searchAndFilterPosts(filterPosts: any, allPosts: any, searchFilter: str
         if (keyA < keyB) return 1;
         return 0;
       });
-      filterPosts(newPosts);
       break;
     }
     case "Title": {
@@ -151,8 +135,6 @@ function searchAndFilterPosts(filterPosts: any, allPosts: any, searchFilter: str
         if (keyA > keyB) return 1;
         return 0;
       });
-      console.log(newPosts);
-      filterPosts(newPosts);
       break;
     }
     case "Author": {
@@ -163,14 +145,13 @@ function searchAndFilterPosts(filterPosts: any, allPosts: any, searchFilter: str
         if (keyA > keyB) return 1;
         return 0;
       });
-      console.log(newPosts);
-      filterPosts(newPosts);
       break;
     }
   }
+  filterPosts(newPosts);
 }
 
-// want to implement google-search like suggestions for tags 
+// TODO want to implement google-search like suggestions for tags 
 function SearchBar(props: {updateSearchFilter: any}) {
   return (
     <div className={"search"}>
@@ -185,81 +166,34 @@ function SearchBar(props: {updateSearchFilter: any}) {
 }
 
 function TagSelect(props: {updateTagFilter: any, tagFilter: string}) {
-  const webdev = ["Angular", "Front End", "HTML", "Javascript", "PHP", "React", "Web Dev"]
-  const lang = ["Go", "Java", "Python", "Ruby"]
-  const backend = ["APIs", "AWS", "Back End", "Django", "Google Cloud", "NextJS"]
-  const mobile = ["Android", "iOS"]
-  const data = ["Algorithms", "Data Science", "Machine Learning"]
-  const other = ["All", "Design", "Documentation", "Other"]
+  const webdev = ["Angular", "Front End", "HTML", "Javascript", "PHP", "React", "Web Dev"];
+  const lang = ["Go", "Java", "Python", "Ruby"];
+  const backend = ["APIs", "AWS", "Back End", "Django", "Google Cloud", "NextJS"];
+  const mobile = ["Android", "iOS"];
+  const data = ["Algorithms", "Data Science", "Machine Learning"];
+  const other = ["All", "Design", "Documentation", "Other"];
+  const allTags = [backend, data, lang, mobile, webdev, other];
+  const order = ["Backend", "Data", "Languages", "Mobile", "Web", "Other"];
   return (
     <div className={"filter"}>
       <div className={"filter-dropdown"}>
         <button className={"filter-dropbtn"}>
           <img src="images/filter.svg" />
-          {/* Filter by: {props.tagFilter} */}
         </button>
         <div className={"filter-dropdown-content"}>
           <div className={"filter-row"}>
-            <div className={"filter-column"}>
-              <h3>Backend</h3>
-              {backend.map((tag: string) => (
-                tag === props.tagFilter ? (
-                  <option className={"filter-selected-option"} value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
-                ) : (
-                  <option value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
-                )
-              ))}
-            </div>
-            <div className={"filter-column"}>
-              <h3>Data</h3>
-              {data.map((tag: string) => (
-                tag === props.tagFilter ? (
-                  <option className={"filter-selected-option"} value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
-                ) : (
-                  <option value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
-                )
-              ))}
-            </div>
-            <div className={"filter-column"}>
-              <h3>Languages</h3>
-              {lang.map((tag: string) => (
-                tag === props.tagFilter ? (
-                  <option className={"filter-selected-option"} value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
-                ) : (
-                  <option value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
-                )
-              ))}
-            </div>
-            <div className={"filter-column"}>
-              <h3>Mobile</h3>
-              {mobile.map((tag: string) => (
-                tag === props.tagFilter ? (
-                  <option className={"filter-selected-option"} value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
-                ) : (
-                  <option value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
-                )
-              ))}
-            </div>
-            <div className={"filter-column"}>
-              <h3>Web</h3>
-              {webdev.map((tag: string) => (
-                tag === props.tagFilter ? (
-                  <option className={"filter-selected-option"} value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
-                ) : (
-                  <option value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
-                )
-              ))}
-            </div>
-            <div className={"filter-column"}>
-              <h3>Other</h3>
-              {other.map((tag: string) => (
-                tag === props.tagFilter ? (
-                  <option className={"filter-selected-option"} value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
-                ) : (
-                  <option value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
-                )
-              ))}
-            </div>
+            {allTags.map((tagsArr: Array<string>, index) => (
+              <div className={"filter-column"}>
+                <h3>{order[index]}</h3>
+                {tagsArr.map((tag: string) => (
+                  tag === props.tagFilter ? (
+                    <option className={"filter-selected-option"} value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
+                  ) : (
+                    <option value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
+                  )
+                ))}
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -270,13 +204,12 @@ function TagSelect(props: {updateTagFilter: any, tagFilter: string}) {
 function SortSelect(props: {updateSortFilter: any, sortFilter: string}) {
   const sortOptions = ["Date", "Recent", "Title", "Author"];
   return (
-    <div className={"sort"}>
+    <div>
       <div className={"sort-dropdown"}>
         <button className={"sort-dropbtn"}>
           <img src="images/sort.svg" />
-          {/* Sort by: {props.sortFilter} */}
         </button>
-        <div className={"sort-dropdownContent"}>
+        <div className={"sort-dropdown-content"}>
           <div>
             {sortOptions.map((option: string) => (
               option === props.sortFilter ? (

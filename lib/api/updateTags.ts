@@ -8,16 +8,8 @@ initFirebaseAdmin();
 initFirebase();
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  // console.log("in saveStep");
   return handleUpdateTags(req, res);
 };
-
-function handleError(res: NextApiResponse, error: any) {
-  console.log(error);
-  res.statusCode = 403;
-  res.end();
-  return;
-}
 
 async function handleUpdateTags(req: NextApiRequest, res: NextApiResponse) {
   let draftId = req.body.draftId;

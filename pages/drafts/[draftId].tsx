@@ -116,7 +116,7 @@ const DraftView = () => {
     saveFileCode,
   } = useFiles(draftId, draftFiles, mutate);
 
-  const [shouldShowBlock, updateShowBlock] = useState(false);
+  // const [shouldShowBlock, updateShowBlock] = useState(false);
   const [showPreview, updateShowPreview] = useState(false);
   const [showTags, updateShowTags] = useState(false);
 
@@ -132,9 +132,7 @@ const DraftView = () => {
     removeFile(toDeleteIndex);
   }
 
-  // TODO need to refactor the logic here
   function toggleTag(tag: string) {
-    // let { tags, draftId, mutate } = this.props;
     if (typeof tags === "undefined") {
       var data = {
         requestedAPI: "updateTags",
@@ -166,7 +164,7 @@ const DraftView = () => {
 
     } else {
       if (!tags.includes(tag) && tags.length >= 3) {
-        console.log("too many tags selected");
+        console.log("Too many tags selected");
       } else {
         if (tags.includes(tag)) {
           var selectedTags: string[] = tags.filter((element: string) => element != tag)

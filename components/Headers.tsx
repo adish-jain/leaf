@@ -17,9 +17,9 @@ export function DraftHeader(props: DraftHeaderProps) {
         <Link href="/landing">
           <a>Home</a>
         </Link>
-        {/* <Link href={`/${props.username}`}>
+        <Link href={`/${props.username}`}>
           <a>Profile</a>
-        </Link> */}
+        </Link>
       </div>
     );
   }
@@ -51,6 +51,7 @@ export function DraftHeader(props: DraftHeaderProps) {
   function Buttons() {
     return (
       <div className={"buttons"}>
+         <TagsButton />
         <button
           className={"preview-button"}
           onClick={(e) => {
@@ -60,7 +61,6 @@ export function DraftHeader(props: DraftHeaderProps) {
           Preview Post
         </button>
         <PublishButtonChoice />
-        <TagsButton />
       </div>
     );
   }

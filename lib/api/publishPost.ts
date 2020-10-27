@@ -1,21 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebaseAdmin, initFirebase } from "../initFirebase";
-import { getUser, checkUsernameDNE, getUsernameFromUid } from "../userUtils";
-import { getUserStepsForDraft } from "../postUtils";
-const shortId = require("shortid");
+import { getUser, getUsernameFromUid } from "../userUtils";
 const admin = require("firebase-admin");
-const firebase = require("firebase/app");
 
 let db = admin.firestore();
 initFirebaseAdmin();
 initFirebase();
-
-type File = {
-  id: string;
-  language: string;
-  code: string;
-  name: string;
-};
 
 export default async function publishPost(
   req: NextApiRequest,

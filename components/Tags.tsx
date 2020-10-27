@@ -1,5 +1,4 @@
-import React, { useState, Component, SetStateAction } from "react";
-const fetch = require("node-fetch");
+import React, { Component, SetStateAction } from "react";
 import "../styles/tags.scss";
 import { TagsHeader } from "../components/Headers";
 
@@ -25,28 +24,8 @@ export default class TagsView extends Component<
     };
 
     this.TagButtons = this.TagButtons.bind(this);
-    this.toggleTag = this.toggleTag.bind(this);
-  }
-
-  toggleTag(tag: string) {
-      this.props.toggleTag(tag);
-    // if (this.props.selectedTags.includes(tag)) {
-    //     this.setState({
-    //         selectedTags: this.props.selectedTags.filter((element) => element != tag)
-    //     });
-    //     var button = document.getElementById(tag);
-    //     button!.style.color = "black";
-    //     button!.style.background = "#F5F5F5"
-    // } else if (this.props.selectedTags.length < 3) {
-    //     this.setState({
-    //         selectedTags: [...this.props.selectedTags, tag],
-    //     });
-    //     var button = document.getElementById(tag);
-    //     button!.style.color = "white";
-    //     button!.style.background = "#349AE9"
-    // } else {
-    //     console.log("too many tags selected");
-    // }
+    this.NoSelectedTags = this.NoSelectedTags.bind(this);
+    this.SomeSelectedTags = this.SomeSelectedTags.bind(this);
   }
 
   TagButtons() {
@@ -55,21 +34,32 @@ export default class TagsView extends Component<
       "Java", "Javascript", "Machine Learning", "NextJS", "PHP", "Python", "React", "Ruby", "Web Dev", "Other"];
       return (
           <div className={"tags"}>
-            {(typeof this.props.selectedTags === "undefined") ? (
-                tagsList.map((tag: string) => (
-                    <button id={tag} className={"tag-button"} onClick={() => this.toggleTag(tag)}>{tag}</button>
-                ))) : (
-                tagsList.map((tag: string) => (
-                    this.props.selectedTags.includes(tag) ? 
-                    <button id={tag} className={"selected-tag-button"} onClick={() => this.toggleTag(tag)}>{tag}</button> :
-                    <button id={tag} className={"tag-button"} onClick={() => this.toggleTag(tag)}>{tag}</button>
-                )))}
+            {(typeof this.props.selectedTags === "undefined") ? 
+                (<this.NoSelectedTags tagsList={tagsList}/>) : 
+                (<this.SomeSelectedTags tagsList={tagsList}/>)}
           </div>
       );
   }
 
+  NoSelectedTags(props: {tagsList: any}) {
+      return (
+        props.tagsList.map((tag: string) => (
+            <button id={tag} className={"tag-button"} onClick={() => this.props.toggleTag(tag)}>{tag}</button>
+        ))
+      );
+  }
+
+  SomeSelectedTags(props: {tagsList: any}) {
+    return (
+        props.tagsList.map((tag: string) => (
+            this.props.selectedTags.includes(tag) ? 
+            <button id={tag} className={"selected-tag-button"} onClick={() => this.props.toggleTag(tag)}>{tag}</button> :
+            <button id={tag} className={"tag-button"} onClick={() => this.props.toggleTag(tag)}>{tag}</button>
+        ))
+    );
+  }
+
   render() {
-    console.log(this.props.selectedTags);
     return (
         <div>
             <div className={"options-wrapper"}>
@@ -79,12 +69,11 @@ export default class TagsView extends Component<
                 />
             </div>
             <div className={"tags-header"}>
-                <h1>'{this.props.title}' is almost ready to be published</h1>
-                <h2>Select up to 3 tags to help readers find your article</h2>
+                <h1>Tags help readers find your content</h1>
+                <h2>Select up to 3 tags for '{this.props.title}'</h2>
             </div>
             <this.TagButtons />
-            <div className={"filebar-wrapper"}>
-            </div>
+            <div className={"filebar-wrapper"}></div>
         </div>
     );
   }

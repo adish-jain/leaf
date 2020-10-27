@@ -27,7 +27,8 @@
 
   .post-tag {
     background: #F5F5F5;
-    height: 28.12371063232422px;
+    height: 28px;
+    padding: 2px;
     width: 70px;
     left: 331px;
     top: 408px;
@@ -38,11 +39,12 @@
     font-family: Arial;
     font-style: normal;
     font-weight: normal;
-    font-size: 12px;
+    font-size: 11px;
     line-height: 11px;
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
     // margin-left: auto;
     
     color: #000000;
