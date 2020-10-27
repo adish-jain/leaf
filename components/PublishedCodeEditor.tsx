@@ -22,6 +22,8 @@ type PublishedCodeEditorState = {
   language: string;
 };
 
+const SPEED_SCROLL_LIMIT = 30;
+
 export default class PublishedCodeEditor extends Component<
   PublishedCodeEditorProps,
   PublishedCodeEditorState
@@ -39,7 +41,7 @@ export default class PublishedCodeEditor extends Component<
   }
 
   animateLines = () => {
-    let { steps, currentStepIndex } = this.props;
+    let { steps, currentStepIndex, scrollSpeed } = this.props;
     let currentStep = steps[currentStepIndex];
     let animationOptions = {
       elementToScroll: this.prismWrapper.current!,
@@ -47,7 +49,11 @@ export default class PublishedCodeEditor extends Component<
       verticalOffset: 0,
     };
     let lineCalc = currentStep?.lines?.start! * 18 - 5;
-    animateScrollTo(lineCalc, animationOptions);
+    if (scrollSpeed > SPEED_SCROLL_LIMIT) {
+      this.prismWrapper.current!.scrollTop = lineCalc;
+    } else {
+      animateScrollTo(lineCalc, animationOptions);
+    }
   };
 
   render() {

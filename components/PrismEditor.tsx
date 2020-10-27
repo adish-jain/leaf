@@ -30,8 +30,6 @@ type PrismEditorProps = {
 };
 
 type PrismEditorState = {
-  startHighlightLine?: number;
-  endHighlightLine?: number;
   hideLines: boolean;
   hovered: boolean;
 };
@@ -82,7 +80,7 @@ export default class PrismEditor extends Component<
     let previousStep = steps[prevProps.currentStepIndex];
     let previousFile = files[prevProps.currentFileIndex];
     // if step changes
-    if (previousStep.id !== currentStep?.id) {
+    if (previousStep?.id !== currentStep?.id) {
       this.updateLines();
     }
 
@@ -124,14 +122,7 @@ export default class PrismEditor extends Component<
       currentStep.lines !== null &&
       currentStep.lines !== undefined
     ) {
-      this.setState(
-        {
-          startHighlightLine: currentStep.lines.start,
-          endHighlightLine: currentStep.lines.end,
-          hideLines: false,
-        },
-        () => animateLines()
-      );
+      animateLines();
     }
   }
 
@@ -220,7 +211,8 @@ export default class PrismEditor extends Component<
     let lines = currentStep?.lines;
     let highlighted = "";
     let line_dim = "";
-    let differentFile = currentFile.id !== currentStep.fileId;
+    let differentFile = currentFile?.id !== currentStep?.fileId;
+
     if (
       lines &&
       index >= lines.start - 1 &&

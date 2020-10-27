@@ -3,6 +3,8 @@ import PublishedStep from "./PublishedStep";
 import "../styles/scrolling.scss";
 import { InView } from "react-intersection-observer";
 import { Step, timeStamp } from "../typescript/types/app_types";
+import { AnimatePresence } from "framer-motion";
+import Link from "next/link";
 const moment = require("moment");
 
 type ScrollingProps = {
@@ -10,16 +12,14 @@ type ScrollingProps = {
   steps: Step[];
   currentStepIndex: number;
   title: string;
-  updateStep: React.Dispatch<React.SetStateAction<number>>;
   username: string;
   publishedAtSeconds: number;
   scrollingRef: React.RefObject<HTMLDivElement>;
+  pageYOffset: number;
 };
 
 type ScrollingState = {
   height: number;
-  pageYOffset: number;
-  selectedStepIndex: number;
 };
 
 type StepDimensions = {
@@ -39,16 +39,11 @@ export default class Scrolling extends Component<
     super(props);
 
     this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
-    this.updateScrollPosition = this.updateScrollPosition.bind(this);
-    this.handleScroll = this.handleScroll.bind(this);
-    this.calculateDividerHeight = this.calculateDividerHeight.bind(this);
 
     this.TitleSection = this.TitleSection.bind(this);
 
     this.state = {
       height: 0,
-      pageYOffset: 0,
-      selectedStepIndex: 0,
     };
   }
 
@@ -56,27 +51,10 @@ export default class Scrolling extends Component<
     this.updateWindowDimensions();
     window.addEventListener("resize", this.updateWindowDimensions);
     this.findSteps();
-    // console.log(stepCoords);
-
-    // window.addEventListener("scroll", this.updateScrollPosition);
   }
 
   componentWillUnmount() {
     window.removeEventListener("resize", this.updateWindowDimensions);
-    // window.removeEventListener("scroll", this.updateScrollPosition);
-  }
-
-  updateScrollPosition() {
-    let selectedStepIndex = this.selectStep(
-      window.pageYOffset + this.state.height / 2
-    );
-    this.setState({
-      pageYOffset: window.pageYOffset,
-      selectedStepIndex: this.selectStep(
-        window.pageYOffset + this.state.height / 2
-      ),
-    });
-    // this.props.updateStep(selectedStepIndex);
   }
 
   findSteps() {
@@ -112,57 +90,61 @@ export default class Scrolling extends Component<
     });
   }
 
-  handleScroll(event: React.UIEvent<HTMLDivElement, UIEvent>) {
-    console.log("scrolling");
-    // console.log(event);
-  }
 
   handleChange(inView: boolean, entry: IntersectionObserverEntry) {
     // console.log(entry);
   }
 
-  calculateDividerHeight() {
-    let { height, pageYOffset } = this.state;
+  calculateDividerHeight = () => {
+    let { height } = this.state;
+    let { pageYOffset } = this.props;
     let mid = height / 2;
     if (pageYOffset < mid) {
       return;
     }
-  }
+  };
 
-  TitleSection() {
-    function ScrollDown(props: { pageYOffset: number }) {
-      let style = { opacity: 1 };
-      if (pageYOffset > 10) {
-        style = {
-          opacity: 0,
-        };
-      }
-      return (
+  ScrollDown = () => {
+    let { pageYOffset } = this.props;
+    let style = { opacity: 1 };
+    if (pageYOffset > 10) {
+      style = {
+        opacity: 0,
+      };
+    }
+    return (
+      <AnimatePresence>
         <div style={style} className={"scroll-down"}>
           <p> Scroll down to begin</p>
           <span>↓</span>
         </div>
-      );
-    }
+      </AnimatePresence>
+    );
+  };
+
+  TitleSection() {
     let { username, title, publishedAtSeconds } = this.props;
-    let { pageYOffset } = this.state;
     let day = moment.unix(publishedAtSeconds);
     let formattedDate = day.format("MMMM Do YYYY");
     return (
       <div>
         <h1 className={"post-title"}>{title}</h1>
         <p className={"published-by"}>
-          Published by {username} on {formattedDate}
+          Published by
+          <Link href={`/${username}`}>
+            <a>{username}</a>
+          </Link>
+          on {formattedDate}
         </p>
-        <ScrollDown pageYOffset={pageYOffset} />
+        <this.ScrollDown />
       </div>
     );
   }
 
   render() {
     let { steps, currentStepIndex, title, scrollingRef } = this.props;
-    let { height, pageYOffset, selectedStepIndex } = this.state;
-    // console.log("render scrolling");
+    let { height } = this.state;
+
     return (
       <div className={"scrolling"}>
         <this.TitleSection />
@@ -176,7 +158,6 @@ export default class Scrolling extends Component<
               <PublishedStep
                 index={index}
                 key={step.id}
-                // changeStep={this.props.changeStep}
                 text={step.text}
                 selected={index === currentStepIndex}
                 height={height}

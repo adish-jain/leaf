@@ -7,7 +7,6 @@ import { motion, AnimatePresence } from "framer-motion";
 
 type PublishedStepProps = {
   index: number;
-  // changeStep: (newStep: number, yPos: number, entered: boolean) => void;
   text: string;
   selected: boolean;
   height: number;
@@ -47,7 +46,7 @@ class PublishedStep extends Component<PublishedStepProps, PublishedStepState> {
     let { height } = this.props;
     let animationOptions = {
       // add offset so scrolled to line isnt exactly at top
-      verticalOffset: (-1 * height) / 2,
+      verticalOffset: (-1 * height) / 2 + 64,
     };
 
     animateScrollTo(this.myRef.current!, animationOptions);
