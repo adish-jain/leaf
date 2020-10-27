@@ -148,10 +148,10 @@ export default class Scrolling extends Component<
     return (
       <div className={"scrolling"}>
         <this.TitleSection />
-        <div
+        {/* <div
           style={{ top: `${height / 2}px` }}
           className={"intersection-zone"}
-        ></div>
+        ></div> */}
         {steps ? (
           <div ref={scrollingRef}>
             {steps.map((step, index) => (

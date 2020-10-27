@@ -10,7 +10,7 @@ import { File, Step, FinishedPostProps } from "../typescript/types/app_types";
 import Link from "next/link";
 import { FinishedPostHeader } from "../components/Headers";
 import checkScrollSpeed from "../lib/utils/scrollUtils";
-
+import { getMonacoLanguages } from "../lib/utils/languageUtils";
 const stepsInView: { [stepIndex: number]: boolean } = {};
 
 type StepDimensions = {
@@ -18,17 +18,26 @@ type StepDimensions = {
   bottomY: number;
 };
 
+/*
+This array keeps track of the top and bottom position of every step.
+We use this array to determine what step is currently in the middle of
+the screen.
+*/
 var stepCoords: StepDimensions[] = [];
+
+const STEP_MARGIN = 64;
 
 const FinishedPost = (props: FinishedPostProps) => {
   const [currentStepIndex, updateStep] = useState(0);
   const [currentFileIndex, updateFile] = useState(0);
+
+  // scrollspeed is used to determine whether we should animate transitions
+  // or scrolling to highlighted lines. If a fast scroll speed, we skip
+  // animations.
   const [scrollSpeed, updateScrollSpeed] = useState(0);
   const [scrollPosition, updateScrollPosition] = useState(0);
   const scrollingRef = React.useRef<HTMLDivElement>(null);
   const { authenticated, error, loading } = useLoggedIn();
-  let editorInstance: CodeMirror.Editor | undefined = undefined;
-  const markers: CodeMirror.TextMarker[] = [];
 
   const handleScroll = useCallback((event) => {
     // select new step
@@ -59,6 +68,9 @@ const FinishedPost = (props: FinishedPostProps) => {
     findSteps();
   }, []);
 
+  console.log(getMonacoLanguages());
+
+  // finds which step is in the middle of the viewport and selects it
   function selectStepIndex(): number {
     let pos = window.pageYOffset + window.innerHeight / 2;
     for (let i = 0; i < stepCoords.length; i++) {
@@ -66,7 +78,10 @@ const FinishedPost = (props: FinishedPostProps) => {
       if (pos < stepCoords[0].topY) {
         return 0;
       }
-      if (pos >= stepCoords[i].topY && pos <= stepCoords[i].bottomY + 64) {
+      if (
+        pos >= stepCoords[i].topY &&
+        pos <= stepCoords[i].bottomY + STEP_MARGIN
+      ) {
         return i;
       }
     }
@@ -74,6 +89,7 @@ const FinishedPost = (props: FinishedPostProps) => {
     return stepCoords.length - 1;
   }
 
+  // selects the file associated with the current step
   function selectFileIndex(newStepIndex: number): number {
     let newFileId = props.steps[newStepIndex].fileId;
     for (let j = 0; j < props.files.length; j++) {
@@ -85,6 +101,7 @@ const FinishedPost = (props: FinishedPostProps) => {
     return 0;
   }
 
+  // populates the stepCoords array. Only needs to be run once on mount.
   function findSteps() {
     let children = scrollingRef.current?.children;
     if (children === undefined) {
@@ -93,8 +110,6 @@ const FinishedPost = (props: FinishedPostProps) => {
     for (let i = 0; i < children.length; i++) {
       let child = children[i];
       let coords = child.getBoundingClientRect();
-      // let centerCoord = coords.top + coords.height / 2;
-      // stepCoords.push(centerCoord);
       stepCoords.push({
         topY: coords.top,
         bottomY: coords.bottom,

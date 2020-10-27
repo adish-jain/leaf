@@ -56,24 +56,23 @@ function TitleText() {
 function Tutorials() {
   return (
     <div className={"Tutorials"}>
-      <a
-        href="https://getleaf.app/dsps301/binarysearch-58opqzc9"
-        target="_blank"
-      >
-        <div className={"Tutorial"}>Binary Search</div>
-      </a>
-      <a
-        href="https://getleaf.app/outofthebot/howdostepsandscrollingworkintheleafcodebase-y4qrlau9"
-        target="_blank"
-      >
-        <div className={"Tutorial"}>Steps & Scrolling in the Leaf Codebase</div>
-      </a>
-      <a
-        href="https://getleaf.app/dsps301/kanyewestspower-pm6ne39l"
-        target="_blank"
-      >
-        <div className={"Tutorial"}>Kanye West's 'Power'</div>
-      </a>
+      <Link href="/dsps301/binarysearch-58opqzc9">
+        <a>
+          <div className={"Tutorial"}>Binary Search</div>
+        </a>
+      </Link>
+      <Link href="/outofthebot/howdostepsandscrollingworkintheleafcodebase-y4qrlau9">
+        <a>
+          <div className={"Tutorial"}>
+            Steps & Scrolling in the Leaf Codebase
+          </div>
+        </a>
+      </Link>
+      <Link href="dsps301/kanyewestspower-pm6ne39l">
+        <a>
+          <div className={"Tutorial"}>Kanye West's 'Power'</div>
+        </a>
+      </Link>
     </div>
   );
 }

@@ -55,6 +55,8 @@ export default class PrismEditor extends Component<
     };
   }
 
+  // uses prism to create syntax higlighted code
+  // run once on mount and everytime a new file is added or removed.
   syntaxHighlightFiles = () => {
     let { files } = this.props;
     for (let i = 0; i < files.length; i++) {

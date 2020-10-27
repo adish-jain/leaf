@@ -66,6 +66,7 @@ export function useFiles(draftId: any, draftFiles: any, mutate: any) {
     html: "html",
     go: "go",
     css: "css",
+    scss: "scss",
     java: "java",
     php: "php",
     rb: "ruby",

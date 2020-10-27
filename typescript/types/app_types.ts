@@ -35,4 +35,4 @@ export type FinishedPostProps = {
 export type timeStamp = {
   _nanoseconds: number;
   _seconds: number;
-}
+};

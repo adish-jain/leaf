@@ -36,14 +36,20 @@ export default class CodeMirror extends Component<
           >
             <option value="xml">HTML</option>
             <option value="css">CSS</option>
-            <option value="jsx">JSX</option>
+            <option value="scss">SCSS</option>
+            <option value="json">JSON</option>
+            <option value="yaml">YAML</option>
             <option value="typescript">Typescript</option>
+            <option value="tsx">Typescript React</option>
             <option value="javascript">Javascript</option>
             <option value="python">Python</option>
             <option value="java">Java</option>
             <option value="go">Go</option>
             <option value="php">PHP</option>
             <option value="ruby">Ruby</option>
+            <option value="objective-c">Objective C</option>
+            <option value="c">C</option>
+            <option value="c++">C++</option>
             <option value="plaintext">Text</option>
           </select>
         </label>
@@ -51,3 +57,22 @@ export default class CodeMirror extends Component<
     );
   }
 }
+
+let PrismLanguageString = {
+  xml: "html",
+  css: "css",
+  jsx: "jsx",
+  yaml: "yaml",
+  json: "json",
+  javascript: "javascript",
+  typescript: "tsx",
+  python: "python",
+  java: "java",
+  go: "go",
+  php: "php",
+  ruby: "ruby",
+  "objective-c": "objectivec",
+  plaintext: "textile",
+  "c++": "cpp",
+  c: "c",
+};
