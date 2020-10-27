@@ -46,7 +46,7 @@ export default class PublishedCodeEditor extends Component<
     let animationOptions = {
       elementToScroll: this.prismWrapper.current!,
       // add offset so scrolled to line isnt exactly at top
-      verticalOffset: 0,
+      verticalOffset: -100,
     };
     let lineCalc = currentStep?.lines?.start! * 18 - 5;
     if (scrollSpeed > SPEED_SCROLL_LIMIT) {
