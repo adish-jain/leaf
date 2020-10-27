@@ -33,6 +33,7 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 24px;
+
   .Text {
     margin-left: 0px;
     width: 100%;
@@ -115,13 +116,13 @@
     }
   
     /* The dropdown container */
-    .dropdown {
+    .filter-dropdown {
       float: left;
       overflow: hidden;
     }
   
     /* Dropdown button */
-    .dropdown .dropbtn {
+    .filter-dropdown .filter-dropbtn {
       font-size: 16px;
       border: none;
       outline: none;
@@ -139,7 +140,7 @@
     }
   
     /* Dropdown content (hidden by default) */
-    .dropdown-content {
+    .filter-dropdown-content {
       display: none;
       position: absolute;
       background-color: #FFFEFC;
@@ -153,30 +154,30 @@
     }
   
     /* Show the dropdown menu on hover */
-    .dropdown:hover .dropdown-content {
+    .filter-dropdown:hover .filter-dropdown-content {
       display: block;
     }
   
     /* Create three equal columns that floats next to each other */
-    .column {
+    .filter-column {
       float: left;
       width: 14%;
       padding: 10px;
       // background-color: #ccc;
       height: 420px;
   
-      .selected-option {
+      .filter-selected-option {
         background-color: #349ae9 !important;
         color: white !important;
       }
     }
 
-    .column h3 {
+    .filter-column h3 {
       padding: 10px;
     }
   
     /* Style links inside the columns */
-    .column option {
+    .filter-column option {
       float: none;
       color: black;
       padding: 10px;
@@ -186,14 +187,14 @@
     }
   
     /* Add a background color on hover */
-    .column option:hover {
+    .filter-column option:hover {
       background-color: #349ae9;
       color: white;
       transition: all ease-in-out 0.2s;
     }
   
     /* Clear floats after the columns */
-    .row:after {
+    .filter-row:after {
       content: "";
       display: table;
       clear: both;

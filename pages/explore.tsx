@@ -193,69 +193,69 @@ function TagSelect(props: {updateTagFilter: any, tagFilter: string}) {
   const other = ["All", "Design", "Documentation", "Other"]
   return (
     <div className={"filter"}>
-      <div className={"dropdown"}>
-        <button className={"dropbtn"}>
+      <div className={"filter-dropdown"}>
+        <button className={"filter-dropbtn"}>
           <img src="images/filter.svg" />
           {/* Filter by: {props.tagFilter} */}
           <i className={"fa fa-caret-down"}></i>
         </button>
-        <div className={"dropdown-content"}>
-          <div className={"row"}>
-            <div className={"column"}>
+        <div className={"filter-dropdown-content"}>
+          <div className={"filter-row"}>
+            <div className={"filter-column"}>
               <h3>Backend</h3>
               {backend.map((tag: string) => (
                 tag === props.tagFilter ? (
-                  <option className={"selected-option"} value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
+                  <option className={"filter-selected-option"} value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
                 ) : (
                   <option value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
                 )
               ))}
             </div>
-            <div className={"column"}>
+            <div className={"filter-column"}>
               <h3>Data</h3>
               {data.map((tag: string) => (
                 tag === props.tagFilter ? (
-                  <option className={"selected-option"} value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
+                  <option className={"filter-selected-option"} value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
                 ) : (
                   <option value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
                 )
               ))}
             </div>
-            <div className={"column"}>
+            <div className={"filter-column"}>
               <h3>Languages</h3>
               {lang.map((tag: string) => (
                 tag === props.tagFilter ? (
-                  <option className={"selected-option"} value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
+                  <option className={"filter-selected-option"} value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
                 ) : (
                   <option value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
                 )
               ))}
             </div>
-            <div className={"column"}>
+            <div className={"filter-column"}>
               <h3>Mobile</h3>
               {mobile.map((tag: string) => (
                 tag === props.tagFilter ? (
-                  <option className={"selected-option"} value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
+                  <option className={"filter-selected-option"} value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
                 ) : (
                   <option value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
                 )
               ))}
             </div>
-            <div className={"column"}>
+            <div className={"filter-column"}>
               <h3>Web</h3>
               {webdev.map((tag: string) => (
                 tag === props.tagFilter ? (
-                  <option className={"selected-option"} value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
+                  <option className={"filter-selected-option"} value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
                 ) : (
                   <option value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
                 )
               ))}
             </div>
-            <div className={"column"}>
+            <div className={"filter-column"}>
               <h3>Other</h3>
               {other.map((tag: string) => (
                 tag === props.tagFilter ? (
-                  <option className={"selected-option"} value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
+                  <option className={"filter-selected-option"} value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
                 ) : (
                   <option value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
                 )
