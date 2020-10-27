@@ -51,8 +51,10 @@ export default class Scrolling extends Component<
       <div className={"scrolling"}>
         <h1 className={"post-title"}>{title}</h1>
         <div className={"post-tags"}>
-          {tags.map((tag: string) => (
-            <div className={"post-tag"}>{tag}</div>))
+          {tags === null ? (<div></div>) 
+            : tags.map((tag: string) => (
+              <div className={"post-tag"}>{tag}</div>)
+            )
           }
         </div>
         {steps ? (

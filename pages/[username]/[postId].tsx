@@ -48,6 +48,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
       }
       steps[i].fileName = null;
     }
+    if (tags === undefined) {
+      tags = null;
+    }
     return {
       revalidate: 1,
       props: {

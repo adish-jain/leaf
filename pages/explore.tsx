@@ -302,7 +302,7 @@ function DisplayPosts(props: {posts: any, router: any, updateTagFilter: any}) {
               <div>
                 {Array.from(props.posts).map((arr: any) => {
                   return (
-                    <div className={"post"} onClick={() => props.router.push(arr["postURL"])}>
+                    <div className={"post-explore"} onClick={() => props.router.push(arr["postURL"])}>
                       <div className={"post-title-explore"}>
                         {arr["title"]}
                       </div>
