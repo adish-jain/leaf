@@ -234,7 +234,7 @@ export default class MonacoEditorWrapper extends Component<
               margin: "auto",
               // bottom: 0,
               // right: 0,
-              left: '30%',
+              left: "30%",
               zIndex: 1,
             }}
             initial={{
@@ -261,7 +261,13 @@ export default class MonacoEditorWrapper extends Component<
                 <button onClick={(e) => this.saveLines()}>
                   Attach highlighted lines to step.
                 </button>
-                <button>X</button>
+                <button
+                  onClick={(e) => {
+                    this.setState({ showModal: false });
+                  }}
+                >
+                  X
+                </button>
               </div>
             </div>
           </motion.div>
