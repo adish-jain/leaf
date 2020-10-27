@@ -203,7 +203,7 @@
     .sort{
       // margin-right: 100px;
       // margin-left: 100px;
-      .dropdown {
+      .sort-dropdown {
         // align-items: center;
         position: absolute;
         z-index: 1;
@@ -212,7 +212,7 @@
       }
       
       /* Dropdown button */
-      .dropdown .dropbtn {
+      .sort-dropdown .sort-dropbtn {
         z-index: 2;
         font-size: 16px;
         border: none;
@@ -230,7 +230,7 @@
       }
       
       /* Dropdown content (hidden by default) */
-      .dropdownContent {
+      .sort-dropdownContent {
         // display: flex;
         // flex-direction: row;
         display: none;
@@ -241,14 +241,14 @@
         // box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
         z-index: 2;
   
-        .selected-option {
+        .sort-selected-option {
           background-color: #349ae9 !important;
           color: white !important;
         }
       }
       
       /* Links inside the dropdown */
-      .dropdownContent option {
+      .sort-dropdownContent option {
         // float: right;
         display: flex;
         color: black;
@@ -262,14 +262,14 @@
       }
       
       /* Add a blue background color to dropdown links on hover */
-      .dropdownContent option:hover {
+      .sort-dropdownContent option:hover {
         background-color: #349ae9;
         color: white;
         transition: all ease-in-out 0.2s;
       }
       
       /* Show the dropdown menu on hover */
-      .dropdown:hover .dropdownContent {
+      .sort-dropdown:hover .sort-dropdownContent {
         // display: flex;
         // flex-direction: row;
         // left: 18%;

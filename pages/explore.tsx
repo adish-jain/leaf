@@ -197,7 +197,6 @@ function TagSelect(props: {updateTagFilter: any, tagFilter: string}) {
         <button className={"filter-dropbtn"}>
           <img src="images/filter.svg" />
           {/* Filter by: {props.tagFilter} */}
-          <i className={"fa fa-caret-down"}></i>
         </button>
         <div className={"filter-dropdown-content"}>
           <div className={"filter-row"}>
@@ -272,16 +271,16 @@ function SortSelect(props: {updateSortFilter: any, sortFilter: string}) {
   const sortOptions = ["Date", "Recent", "Title", "Author"];
   return (
     <div className={"sort"}>
-      <div className={"dropdown"}>
-        <button className={"dropbtn"}>
+      <div className={"sort-dropdown"}>
+        <button className={"sort-dropbtn"}>
           <img src="images/sort.svg" />
           {/* Sort by: {props.sortFilter} */}
         </button>
-        <div className={"dropdownContent"}>
+        <div className={"sort-dropdownContent"}>
           <div>
             {sortOptions.map((option: string) => (
               option === props.sortFilter ? (
-                <option className={"selected-option"} value={option} onClick={(e) => props.updateSortFilter(option)}>{option}</option>
+                <option className={"sort-selected-option"} value={option} onClick={(e) => props.updateSortFilter(option)}>{option}</option>
               ) : (
                 <option value={option} onClick={(e) => props.updateSortFilter(option)}>{option}</option>
               )
