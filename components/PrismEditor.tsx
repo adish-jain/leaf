@@ -1,6 +1,7 @@
 import Prism, { highlight } from "prismjs";
 import React, { Component, createRef } from "react";
-import "../styles/prism.css";
+// import "../styles/prism.css";
+// import "../styles/prism-tomorrow-night.scss";
 import "../styles/prism-white.css";
 import { File, Step } from "../typescript/types/app_types";
 
@@ -23,6 +24,7 @@ type PrismEditorProps = {
   currentStepIndex: number;
   files: File[];
   currentFileIndex: number;
+  imageViewRef: React.RefObject<HTMLDivElement>;
 };
 
 type PrismEditorState = {
@@ -38,7 +40,6 @@ export default class PrismEditor extends Component<
   PrismEditorState
 > {
   PrismWrapper = createRef<HTMLDivElement>();
-
   linesWrapper = createRef<HTMLDivElement>();
 
   constructor(props: PrismEditorProps) {
@@ -46,7 +47,6 @@ export default class PrismEditor extends Component<
 
     this.updateLines = this.updateLines.bind(this);
     this.animateLines = this.animateLines.bind(this);
-    this.renderFiles = this.renderFiles.bind(this);
     this.highlightedLines = this.highlightedLines.bind(this);
     this.renderFile = this.renderFile.bind(this);
     this.Line = this.Line.bind(this);
@@ -85,7 +85,6 @@ export default class PrismEditor extends Component<
     // file is deleted or added
     if (prevProps.files.length != files.length) {
       this.syntaxHighlightFiles();
-      console.log("file length updated");
     }
 
     // if file changes
@@ -104,13 +103,9 @@ export default class PrismEditor extends Component<
         });
       }
     }
-
-    // Prism.highlightAll();
   }
 
   componentDidMount() {
-    // Prism.highlightAll();
-    console.log("CDM called");
     this.syntaxHighlightFiles();
     this.updateLines();
   }
@@ -139,47 +134,35 @@ export default class PrismEditor extends Component<
   }
 
   animateLines() {
-    let { steps, currentStepIndex, files, currentFileIndex } = this.props;
+    let {
+      steps,
+      currentStepIndex,
+      files,
+      currentFileIndex,
+      imageViewRef,
+    } = this.props;
     let currentStep = steps[currentStepIndex];
+    // console.log("image view height is", imageViewRef.current?.clientHeight!);
+    // console.log(
+    //   "prism wrapper height is",
+    //   this.PrismWrapper.current?.clientHeight!
+    // );
 
+    // if height is undefined, that means the div is still in the opening
+    // animation. Default to a height of 250px in this case (the opening height of the div)
+    let imageViewRefHeight =
+      imageViewRef.current?.clientHeight !== undefined
+        ? imageViewRef.current?.clientHeight
+        : 250;
     let animationOptions = {
       elementToScroll: this.PrismWrapper.current!,
       // add offset so scrolled to line isnt exactly at top
-      verticalOffset: -50,
+      // verticalOffset:
+      //   (-1 * this.PrismWrapper.current?.clientHeight! / 2)+
+      //   imageViewRef.current?.clientHeight!,
     };
-
-    let lineCalc = currentStep?.lines?.start! * 18;
+    let lineCalc = currentStep?.lines?.start! * 18 - 5;
     animateScrollTo(lineCalc, animationOptions);
-  }
-
-  renderFiles() {
-    let { steps, currentStepIndex, files, currentFileIndex } = this.props;
-    let lineString = `${this.state.startHighlightLine}-${this.state.endHighlightLine}`;
-
-    return (
-      <div style={{ background: "white" }} ref={this.linesWrapper}>
-        {files.map((file, index) => {
-          let style = {
-            display: "none",
-            color: "black",
-          };
-          if (index === currentFileIndex) {
-            style.display = "block";
-          }
-          return (
-            <pre
-              data-line={this.state.hideLines ? " " : lineString}
-              className="line-numbers"
-              style={style}
-            >
-              <code className="language-tsx">{file.code}</code>
-              <this.highlightedLines />
-              {/* <this.dimmer /> */}
-            </pre>
-          );
-        })}
-      </div>
-    );
   }
 
   highlightedLines = () => {
@@ -208,14 +191,6 @@ export default class PrismEditor extends Component<
     let currentFile = files[currentFileIndex];
     let lines = highlightedFiles[currentFileIndex].split(/\r?\n/);
     return <this.CodeFile index={1} key={currentFile.id} lines={lines} />;
-    // return (
-    //   <div>
-    //     {highlightedFiles.map((file, index) => {
-    //       let lines = file.split(/\r?\n/);
-    //       return <this.CodeFile key={index} index={index} lines={lines} />;
-    //     })}
-    //   </div>
-    // );
   }
 
   CodeFile = (props: { lines: string[]; index: number }) => {
@@ -223,6 +198,8 @@ export default class PrismEditor extends Component<
     let index = props.index;
     let { hovered } = this.state;
     let { steps, currentStepIndex, files, currentFileIndex } = this.props;
+    let currentFile = files[currentFileIndex];
+    let language = currentFile.language;
     let style = {
       background: "white",
       display: "block",
@@ -231,7 +208,7 @@ export default class PrismEditor extends Component<
     return (
       <div>
         <pre style={style} className="line-numbers">
-          <code className="language-tsx">
+          <code className={`language-${language}`}>
             {lines.map((line, index) => (
               <this.Line
                 steps={steps}
@@ -270,7 +247,7 @@ export default class PrismEditor extends Component<
     } = LineProps;
     let currentStep = steps[currentStepIndex];
     let currentFile = files[currentFileIndex];
-    let lines = currentStep.lines;
+    let lines = currentStep?.lines;
     let highlighted = "";
     let line_dim = "";
     let differentFile = currentFile.id !== currentStep.fileId;
@@ -281,7 +258,7 @@ export default class PrismEditor extends Component<
       !differentFile
     ) {
       highlighted = "highlighted";
-    } else if (!hovered && lines) {
+    } else if (!hovered && lines && !differentFile) {
       line_dim = "line-dim";
     }
     return (
@@ -317,7 +294,6 @@ export default class PrismEditor extends Component<
         ref={this.PrismWrapper}
         className={"prism-editor"}
       >
-        {/* <this.renderFiles /> */}
         <this.renderFile />
       </div>
     );

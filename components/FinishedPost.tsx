@@ -9,6 +9,7 @@ import "../styles/draftheader.scss";
 import { File, Step, FinishedPostProps } from "../typescript/types/app_types";
 import Link from "next/link";
 import { FinishedPostHeader } from "../components/Headers";
+import checkScrollSpeed from "../lib/utils/scrollUtils";
 
 const stepsInView: { [stepIndex: number]: boolean } = {};
 
@@ -22,7 +23,7 @@ var stepCoords: StepDimensions[] = [];
 const FinishedPost = (props: FinishedPostProps) => {
   const [currentStepIndex, updateStep] = useState(0);
   const [currentFileIndex, updateFile] = useState(0);
-  const [scrollPosition, updateScrollPosition] = useState(0);
+  const [scrollSpeed, updateScrollSpeed] = useState(0);
   const scrollingRef = React.useRef<HTMLDivElement>(null);
   const { authenticated, error, loading } = useLoggedIn();
   let editorInstance: CodeMirror.Editor | undefined = undefined;
@@ -31,9 +32,9 @@ const FinishedPost = (props: FinishedPostProps) => {
   const handleScroll = useCallback((event) => {
     // updateScrollPosition(window.pageYOffset);
     selectStep();
+    let scrollSpeed = checkScrollSpeed();
+    updateScrollSpeed(scrollSpeed);
   }, []);
-
-  function findSelectedStep() {}
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -50,17 +51,21 @@ const FinishedPost = (props: FinishedPostProps) => {
   function selectStep() {
     let pos = window.pageYOffset + window.innerHeight / 2;
     for (let i = 0; i < stepCoords.length; i++) {
+      // if coord is inside step
       if (pos >= stepCoords[i].topY - 64 && pos <= stepCoords[i].bottomY) {
         updateStep(i);
+        // switch file
         let newFileId = props.steps[i].fileId;
         for (let j = 0; j < props.files.length; j++) {
           if (props.files[j].id === newFileId) {
             updateFile(j);
+            break;
           }
         }
         return;
       }
     }
+    // otherwise, set step to last step
     updateStep(stepCoords.length - 1);
     return;
   }
@@ -107,6 +112,7 @@ const FinishedPost = (props: FinishedPostProps) => {
           steps={props.steps}
           currentStepIndex={currentStepIndex}
           updateFile={updateFile}
+          scrollSpeed={scrollSpeed}
         />
       </div>
     </div>

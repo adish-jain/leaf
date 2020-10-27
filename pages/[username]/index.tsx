@@ -44,17 +44,18 @@ export const getStaticProps: GetStaticProps = async (context) => {
     }
     return {
       props: {
-        revalidate: 1,
         publishedPosts: publishedPosts,
         username: username,
         errored: false,
       },
+      revalidate: 1,
     };
   } catch {
     return {
       props: {
         errored: true,
       },
+      revalidate: 1
     };
   }
 };

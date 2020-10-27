@@ -4,22 +4,9 @@
   flex-grow: 100;
   overflow-y: scroll;
   position: relative;
-
+  overscroll-behavior: contain ;
   transition: all 0.2s ease-in-out;
-}
-
-.highlighted-lines {
-  position: absolute;
-  left: 0;
-  right: 0;
-  padding: inherit 0;
-  margin-top: 1em;
-  background: #f7ebc6;
-  box-shadow: inset 5px 0 0 #f7d87c;
-  z-index: 0;
-  pointer-events: none;
-  line-height: inherit;
-  white-space: pre;
+  
 }
 
 .highlighted {
@@ -34,6 +21,11 @@
   pointer-events: none;
   line-height: inherit;
   white-space: pre;
+
+  span {
+    background: #f7ebc6 !important;
+    // transition: background 0.2s ease-in-out;
+  }
 }
 
 .line-number {
@@ -46,8 +38,14 @@
   user-select: none;
 }
 
+$color-transition-duration: 0.2s;
 .line-wrapper {
   display: flex;
+  transition: color $color-transition-duration ease-out;
+  font-size: 12px;
+  span {
+    transition: color $color-transition-duration ease-out;
+  }
 }
 
 .line-dim {
@@ -55,11 +53,9 @@
 
   span {
     color: $leaf-light-gray !important;
-    transition: color 0.2s ease-in-out;
-
+    transition: color $color-transition-duration ease-in-out;
   }
-  transition: color 0.2s ease-in-out;
-
+  transition: color $color-transition-duration ease-in-out;
 }
 
 .line-dim:hover {

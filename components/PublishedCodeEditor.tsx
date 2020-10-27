@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, createRef } from "react";
 import dynamic from "next/dynamic";
 import PublishedLanguageBar from "./PublishedLanguageBar";
 import PublishedFileBar from "./PublishedFileBar";
@@ -14,6 +14,7 @@ type PublishedCodeEditorProps = {
   files: File[];
   currentFileIndex: number;
   updateFile: (fileIndex: number) => void;
+  scrollSpeed: number;
 };
 
 type PublishedCodeEditorState = {
@@ -24,6 +25,9 @@ export default class PublishedCodeEditor extends Component<
   PublishedCodeEditorProps,
   PublishedCodeEditorState
 > {
+  imageViewRef = createRef<HTMLDivElement>();
+  // imageViewRef = createRef<HTMLImageElement>();
+
   constructor(props: PublishedCodeEditorProps) {
     super(props);
 
@@ -39,15 +43,17 @@ export default class PublishedCodeEditor extends Component<
       steps,
       updateFile,
       currentFileIndex,
+      scrollSpeed
     } = this.props;
     let currentStep = steps[currentStepIndex];
     let currentFile = files[currentFileIndex];
     return (
       <div className={"editor-wrapper"}>
         <PublishedImageView
-          // key={1}
           steps={steps}
           currentStepIndex={currentStepIndex}
+          imageViewRef={this.imageViewRef}
+          scrollSpeed={scrollSpeed}
         />
         <PublishedFileBar
           updateFile={updateFile}
@@ -59,6 +65,7 @@ export default class PublishedCodeEditor extends Component<
           currentStepIndex={currentStepIndex}
           files={files}
           currentFileIndex={currentFileIndex}
+          imageViewRef={this.imageViewRef}
         />
 
         <PublishedLanguageBar language={currentFile.language} />
