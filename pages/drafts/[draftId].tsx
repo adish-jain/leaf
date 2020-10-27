@@ -27,6 +27,7 @@ import "../../styles/draftheader.scss";
 import { DraftHeader } from "../../components/Headers";
 import { DraftJsButtonProps } from "draft-js-buttons";
 import { motion, AnimatePresence } from "framer-motion";
+import FileSaver from "file-saver";
 const moment = require("moment");
 
 const DraftView = () => {
@@ -313,6 +314,27 @@ class DraftContent extends Component<DraftContentProps, DraftContentState> {
     window.location.href = `/${username}/${postId}`;
   }
 
+  changeEditingStepWrapper = (stepIndex: number) => {
+    let {
+      changeEditingStep,
+      changeSelectedFileIndex,
+      codeFiles,
+      realSteps,
+    } = this.props;
+    changeEditingStep(stepIndex);
+    let newFileIndex = 0;
+    if (stepIndex < 0) {
+      return;
+    }
+    for (let i = 0; i < codeFiles.length; i++) {
+      if (codeFiles[i].id === realSteps![stepIndex].fileId) {
+        newFileIndex = i;
+        break;
+      }
+    }
+    changeSelectedFileIndex(newFileIndex);
+  };
+
   DraftComponent() {
     let {
       username,
@@ -370,7 +392,7 @@ class DraftContent extends Component<DraftContentProps, DraftContentState> {
               moveStepDown={moveStepDown}
               onTitleChange={onTitleChange}
               editingStep={editingStep}
-              changeEditingStep={changeEditingStep}
+              changeEditingStep={this.changeEditingStepWrapper}
               selectedFileIndex={selectedFileIndex}
               lines={lines}
               files={draftFiles}

@@ -25,18 +25,35 @@
 }
 
 .line-modal {
-  position: absolute;
-  right: 50%;
-  bottom: 40px;
+  // position: absolute;
+  // right: 50%;
+  // bottom: 40px;
   // top: 0;
   // left: 50%;
+  transition: bottom 0.2s ease-in-out;
+  border-style: solid;
+  border-width: 1px;
+  border-color: $leaf-light-gray;
+  border-radius: 4px;
+  box-shadow: 0px 4px 16px #edece9;
+  padding: 16px;
+  background-color: white;
+
+  p {
+    font-size: 14px;
+  }
+
+  button {
+    @include draft-button;
+    margin-left: 4px;
+  }
 
   .adjusted {
-    position: relative;
+    // position: relative;
     z-index: 3;
     background: white;
-    padding: 16px;
-    right: -50%;
+    // padding: 16px;
+    // right: -50%;
   }
 }
 

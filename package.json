@@ -57,7 +57,7 @@
     "react-transition-group": "^4.4.1",
     "read-env": "^2.0.0",
     "shortid": "^2.2.15",
-    "swr": "^0.3.0",
+    "swr": "^0.3.6",
     "url-loader": "^4.1.0"
   },
   "devDependencies": {

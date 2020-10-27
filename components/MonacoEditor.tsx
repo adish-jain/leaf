@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import "../styles/codeeditor.scss";
 import { editor } from "monaco-editor";
 const MonacoEditor = dynamic(import("react-monaco-editor"), { ssr: false });
+import { motion, AnimatePresence } from "framer-motion";
 
 type MonacoEditorWrapperState = {
   showModal: boolean;
@@ -223,27 +224,50 @@ export default class MonacoEditorWrapper extends Component<
 
   LineModal = () => {
     let { start, end } = this.props.lines;
-    if (!this.props.editing) {
-      return <div></div>;
-    }
 
-    if (this.state.showModal) {
-      return (
-        <div className={"line-modal"}>
-          <div className={"adjusted"}>
-            <p>
-              Highlight lines {start} to {end}?
-            </p>
-            <button onClick={(e) => this.saveLines()}>
-              Attach highlighted lines to step.
-            </button>
-            <button>X</button>
-          </div>
-        </div>
-      );
-    } else {
-      return <div></div>;
-    }
+    return (
+      <AnimatePresence>
+        {this.state.showModal && this.props.editing && (
+          <motion.div
+            style={{
+              position: "absolute",
+              margin: "auto",
+              // bottom: 0,
+              // right: 0,
+              left: '30%',
+              zIndex: 1,
+            }}
+            initial={{
+              bottom: "-40px",
+              opacity: 0,
+            }}
+            animate={{
+              bottom: "40px",
+              opacity: 1,
+            }}
+            exit={{
+              opacity: 0,
+              bottom: "0px",
+            }}
+            transition={{
+              duration: 0.3,
+            }}
+          >
+            <div className={"line-modal"}>
+              <div className={"adjusted"}>
+                <p>
+                  Highlight lines {start} to {end}?
+                </p>
+                <button onClick={(e) => this.saveLines()}>
+                  Attach highlighted lines to step.
+                </button>
+                <button>X</button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    );
   };
 
   render() {
