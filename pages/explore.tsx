@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import "../styles/explore.scss";
 import useSWR from "swr";
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Pages() {
   const router = useRouter();
@@ -79,10 +80,62 @@ export default function Pages() {
         <HeaderUnAuthenticated login={true} signup={true} about={true} />
         <TitleText />
         <div className={"search-and-filter"}>
-          <SearchBar updateSearchFilter={updateSearchFilter}/>
+          <AnimatePresence>
+            <motion.div
+              initial={{
+                opacity: 0,
+              }}
+              animate={{
+                opacity: 1,
+              }}
+              exit={{
+                opacity: 0,
+              }}
+              transition={{
+                duration: 0.4,
+              }}
+              >
+              <SearchBar updateSearchFilter={updateSearchFilter}/>
+            </motion.div>
+          </AnimatePresence>
           <div className={"selections"}>
-            <TagSelect updateTagFilter={updateTagFilter} tagFilter={tagFilter}/>
-            <SortSelect updateSortFilter={updateSortFilter} sortFilter={sortFilter}/>
+            <AnimatePresence>
+              <motion.div
+                initial={{
+                  opacity: 0,
+                }}
+                animate={{
+                  opacity: 1,
+                }}
+                exit={{
+                  opacity: 0,
+                }}
+                transition={{
+                  duration: 0.4,
+                }}
+                >
+                <TagSelect updateTagFilter={updateTagFilter} tagFilter={tagFilter}/>
+              </motion.div>
+            </AnimatePresence>
+
+            <AnimatePresence>
+              <motion.div
+                initial={{
+                  opacity: 0,
+                }}
+                animate={{
+                  opacity: 1,
+                }}
+                exit={{
+                  opacity: 0,
+                }}
+                transition={{
+                  duration: 0.4,
+                }}
+                >
+                <SortSelect updateSortFilter={updateSortFilter} sortFilter={sortFilter}/>
+              </motion.div>
+            </AnimatePresence>
           </div>
         </div>
         <DisplayPosts posts={filteredPosts} router={router} updateTagFilter={updateTagFilter}/>
@@ -187,9 +240,9 @@ function TagSelect(props: {updateTagFilter: any, tagFilter: string}) {
                 <h3>{order[index]}</h3>
                 {tagsArr.map((tag: string) => (
                   tag === props.tagFilter ? (
-                    <option className={"filter-selected-option"} value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
+                    <a className={"filter-selected-option"} onClick={(e) => props.updateTagFilter(tag)}>{tag}</a>
                   ) : (
-                    <option value={tag} onClick={(e) => props.updateTagFilter(tag)}>{tag}</option>
+                    <a onClick={(e) => props.updateTagFilter(tag)}>{tag}</a>
                   )
                 ))}
               </div>
@@ -213,9 +266,9 @@ function SortSelect(props: {updateSortFilter: any, sortFilter: string}) {
           <div>
             {sortOptions.map((option: string) => (
               option === props.sortFilter ? (
-                <option className={"sort-selected-option"} value={option} onClick={(e) => props.updateSortFilter(option)}>{option}</option>
+                <a className={"sort-selected-option"} onClick={(e) => props.updateSortFilter(option)}>{option}</a>
               ) : (
-                <option value={option} onClick={(e) => props.updateSortFilter(option)}>{option}</option>
+                <a onClick={(e) => props.updateSortFilter(option)}>{option}</a>
               )
             ))}
           </div>
