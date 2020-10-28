@@ -1,4 +1,8 @@
 import { useState } from "react";
+import {
+  getLanguageFromExtension,
+  getExtensionFromLanguage,
+} from "./utils/languageUtils";
 var shortId = require("shortid");
 const fetch = require("node-fetch");
 
@@ -44,58 +48,6 @@ export function useFiles(draftId: any, draftFiles: any, mutate: any) {
     files[selectedfileIndex] will give you the current selected file
     */
   const [selectedFileIndex, changeSelectedFileIndex] = useState(0);
-
-  type tExtToName = {
-    [key: string]: string;
-  };
-
-  type tNameToExt = {
-    [key: string]: string;
-  };
-
-  /*
-    Maps file extensions -> value that will be passed to CodeMirror to syntax highlight.
-    Used to map file names to language selection for file. 
-    */
-  const extToName: tExtToName = {
-    py: "python",
-    jsx: "javascript",
-    js: "javascript",
-    tsx: "typescript",
-    ts: "typescript",
-    html: "html",
-    go: "go",
-    css: "css",
-    scss: "scss",
-    java: "java",
-    php: "php",
-    rb: "ruby",
-    txt: "plaintext",
-    xml: "xml",
-  };
-  Object.freeze(extToName);
-
-  /*
-    Maps value from languageBar selection to file extension.
-    Used to map language selection for file to proper file extension name. 
-    */
-  const nameToExt: tNameToExt = {
-    python: "py",
-    jsx: "jsx",
-    javascript: "js",
-    typescript: "ts",
-    html: "html",
-    java: "java",
-    xml: "xml",
-    go: "go",
-    css: "css",
-    php: "php",
-    ruby: "rb",
-    plaintext: "txt",
-    textile: "txt",
-  };
-
-  Object.freeze(nameToExt);
 
   /*
     Update the code in DynamicCodeEditor in the correct file
@@ -204,8 +156,7 @@ export function useFiles(draftId: any, draftFiles: any, mutate: any) {
       method: "POST",
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify(data),
-    }).then(async (res: any) => {
-    });
+    }).then(async (res: any) => {});
   }
 
   /*
@@ -239,8 +190,7 @@ export function useFiles(draftId: any, draftFiles: any, mutate: any) {
       method: "POST",
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify(data),
-    }).then(async (res: any) => {
-    });
+    }).then(async (res: any) => {});
   }
 
   /*
@@ -258,16 +208,9 @@ export function useFiles(draftId: any, draftFiles: any, mutate: any) {
     } else {
       langType = fileNameTokens[fileNameTokens.length - 1];
     }
-
     langType = langType.trim();
-
-    if (!(langType in extToName)) {
-      // if extension type isn't supported
-      alert("This file extension is not supported yet!");
-      langType = "txt";
-    }
-
-    changeFileLanguage(extToName[langType], false);
+    let newLanguage = getLanguageFromExtension(langType);
+    changeFileLanguage(newLanguage, false);
   }
 
   /*
@@ -275,7 +218,8 @@ export function useFiles(draftId: any, draftFiles: any, mutate: any) {
     Called by changeFileLanguage (defined above) when `external` is true.
     */
   function setNameFromLang(value: string) {
-    let extension = nameToExt[value];
+    let extension = getExtensionFromLanguage(value);
+    console.log("extension is ", extension);
     let fileName = files[selectedFileIndex].name;
     let newName;
     if (!fileName.includes(".")) {
@@ -432,8 +376,7 @@ export function useFiles(draftId: any, draftFiles: any, mutate: any) {
       method: "POST",
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify(data),
-    }).then(async (res: any) => {
-    });
+    }).then(async (res: any) => {});
   }
 
   return {

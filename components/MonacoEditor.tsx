@@ -5,6 +5,7 @@ import "../styles/codeeditor.scss";
 import { editor } from "monaco-editor";
 const MonacoEditor = dynamic(import("react-monaco-editor"), { ssr: false });
 import { motion, AnimatePresence } from "framer-motion";
+import { getMonacoLanguageFromBackend } from "../lib/utils/languageUtils";
 
 type MonacoEditorWrapperState = {
   showModal: boolean;
@@ -278,7 +279,7 @@ export default class MonacoEditorWrapper extends Component<
 
   render() {
     let { draftCode, language } = this.props;
-
+    console.log(language);
     return (
       <div>
         <style jsx>{`
@@ -292,7 +293,7 @@ export default class MonacoEditorWrapper extends Component<
         <this.LineModal />
         <MonacoEditor
           height={"100%"}
-          language={language}
+          language={getMonacoLanguageFromBackend(language)}
           value={draftCode}
           onChange={(value) => this.props.changeCode(value)}
           options={{
@@ -321,9 +322,12 @@ export default class MonacoEditorWrapper extends Component<
               if (label === "rust") return "/_next/static/rust.worker.js";
               if (label === "objective-c")
                 return "/_next/static/objective-c.worker.js";
+              if (label === "rust") return "/_next/static/rust.worker.js";
+              if (label === "swift") return "/_next/static/swift.worker.js";
+              if (label === "dockerfile")
+                return "/_next/static/dockerfile.worker.js";
               if (label === "markdown")
                 return "/_next/static/markdown.worker.js";
-
               return "/_next/static/editor.worker.js";
             };
           }}

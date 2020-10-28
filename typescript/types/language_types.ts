@@ -10,7 +10,7 @@ export const languageStrings: supportedLanguages = {
     monacoName: "css",
   },
   scss: {
-    fileExtension: "css",
+    fileExtension: "scss",
     prismName: "scss",
     monacoName: "css",
   },
@@ -25,27 +25,27 @@ export const languageStrings: supportedLanguages = {
     monacoName: "json",
   },
   typescript: {
-    fileExtension: "typescript",
+    fileExtension: "ts",
     prismName: "typescript",
-    monacoName: "ts",
+    monacoName: "typescript",
   },
   javascript: {
-    fileExtension: "javascript",
+    fileExtension: "js",
     prismName: "javascript",
-    monacoName: "ts",
+    monacoName: "typescript",
   },
   tsx: {
     fileExtension: "tsx",
     prismName: "tsx",
-    monacoName: "ts",
+    monacoName: "typescript",
   },
   jsx: {
     fileExtension: "jsx",
     prismName: "jsx",
-    monacoName: "ts",
+    monacoName: "typescript",
   },
   python: {
-    fileExtension: "python",
+    fileExtension: "py",
     prismName: "python",
     monacoName: "python",
   },
@@ -65,12 +65,12 @@ export const languageStrings: supportedLanguages = {
     monacoName: "php",
   },
   ruby: {
-    fileExtension: "ruby",
+    fileExtension: "rb",
     prismName: "ruby",
     monacoName: "ruby",
   },
   "objective-c": {
-    fileExtension: "objective-c",
+    fileExtension: "c",
     prismName: "objectivec",
     monacoName: "objective-c",
   },
@@ -80,7 +80,7 @@ export const languageStrings: supportedLanguages = {
     monacoName: "cpp",
   },
   "c++": {
-    fileExtension: "c++",
+    fileExtension: "cpp",
     prismName: "cpp",
     monacoName: "cpp",
   },

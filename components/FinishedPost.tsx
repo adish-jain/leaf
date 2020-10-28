@@ -91,7 +91,8 @@ const FinishedPost = (props: FinishedPostProps) => {
 
   // selects the file associated with the current step
   function selectFileIndex(newStepIndex: number): number {
-    let newFileId = props.steps[newStepIndex].fileId;
+    let newFile = props.steps[newStepIndex];
+    let newFileId = newFile?.fileId;
     for (let j = 0; j < props.files.length; j++) {
       if (props.files[j].id === newFileId) {
         return j;
