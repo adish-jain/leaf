@@ -93,12 +93,12 @@
       display: flex;
       flex-direction: row;
       button {
-        border: 1px solid #ccc;
         display: inline-block;
+        border-style: hidden;
         padding: 12px 12px;
-        background-color: #37abda;
+        background-color: $leaf-dark-blue;
         color: white;
-        border-radius: 8px;
+        border-radius: 4px;
         margin-left: 10px;
         margin-right: 10px;
         cursor: pointer;
