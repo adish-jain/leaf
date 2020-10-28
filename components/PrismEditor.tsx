@@ -30,7 +30,6 @@ type PrismEditorProps = {
 };
 
 type PrismEditorState = {
-  hideLines: boolean;
   hovered: boolean;
 };
 let highlightedFiles: string[] = [];
@@ -50,7 +49,6 @@ export default class PrismEditor extends Component<
     this.syntaxHighlightFiles();
 
     this.state = {
-      hideLines: false,
       hovered: false,
     };
   }
@@ -95,17 +93,6 @@ export default class PrismEditor extends Component<
     if (currentFile.id !== currentFile.id) {
       // reset scroll position
       prismWrapper.current!.scrollTop = 0;
-
-      // if file is different from current step file, then hide the lines
-      if (currentFile.id !== currentStep?.fileId) {
-        this.setState({
-          hideLines: true,
-        });
-      } else {
-        this.setState({
-          hideLines: false,
-        });
-      }
     }
   }
 
@@ -215,6 +202,8 @@ export default class PrismEditor extends Component<
     let line_dim = "";
     let differentFile = currentFile?.id !== currentStep?.fileId;
 
+    // highlight selected lines and dim unselected lines
+    // undim all lines upon hover
     if (
       lines &&
       index >= lines.start - 1 &&

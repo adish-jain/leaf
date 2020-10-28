@@ -27,14 +27,10 @@ type StepDimensions = {
   bottomY: number;
 };
 
-var stepCoords: StepDimensions[] = [];
-
 export default class Scrolling extends Component<
   ScrollingProps,
   ScrollingState
 > {
-  private scrollingRef = React.createRef<HTMLDivElement>();
-
   constructor(props: any) {
     super(props);
 
@@ -50,49 +46,16 @@ export default class Scrolling extends Component<
   componentDidMount() {
     this.updateWindowDimensions();
     window.addEventListener("resize", this.updateWindowDimensions);
-    this.findSteps();
   }
 
   componentWillUnmount() {
     window.removeEventListener("resize", this.updateWindowDimensions);
   }
 
-  findSteps() {
-    let children = this.scrollingRef.current?.children;
-    if (children === undefined) {
-      return;
-    }
-    for (let i = 0; i < children.length; i++) {
-      let child = children[i];
-      let coords = child.getBoundingClientRect();
-      // console.log(coords);
-      // let centerCoord = coords.top + coords.height / 2;
-      // stepCoords.push(centerCoord);
-      stepCoords.push({
-        topY: coords.top,
-        bottomY: coords.bottom,
-      });
-    }
-  }
-
-  selectStep(pos: number) {
-    for (let i = 0; i < stepCoords.length; i++) {
-      if (pos >= stepCoords[i].topY - 32 && pos <= stepCoords[i].bottomY) {
-        return i;
-      }
-    }
-    return stepCoords.length - 1;
-  }
-
   updateWindowDimensions() {
     this.setState({
       height: window.innerHeight,
     });
-  }
-
-
-  handleChange(inView: boolean, entry: IntersectionObserverEntry) {
-    // console.log(entry);
   }
 
   calculateDividerHeight = () => {

@@ -12,9 +12,7 @@ type PublishedStepProps = {
   height: number;
 };
 
-type PublishedStepState = {
-  stepHeight: number;
-};
+type PublishedStepState = {};
 
 class PublishedStep extends Component<PublishedStepProps, PublishedStepState> {
   private myRef = React.createRef<HTMLDivElement>();
@@ -25,16 +23,8 @@ class PublishedStep extends Component<PublishedStepProps, PublishedStepState> {
 
     this.myRef = React.createRef();
 
-    this.state = {
-      stepHeight: 0,
-    };
+    this.state = {};
   }
-
-  // componentDidMount() {
-  //   this.setState({
-  //     stepHeight: this.myRef.current!.clientHeight,
-  //   });
-  // }
 
   renderDraftJS() {
     let rawContentState = JSON.parse(this.props.text);
@@ -65,7 +55,6 @@ class PublishedStep extends Component<PublishedStepProps, PublishedStepState> {
               dangerouslySetInnerHTML={this.renderDraftJS()}
             />
           </div>
-          {/* <div className={"divider"}></div> */}
         </div>
       </div>
     );

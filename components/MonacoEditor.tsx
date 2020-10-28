@@ -279,7 +279,6 @@ export default class MonacoEditorWrapper extends Component<
 
   render() {
     let { draftCode, language } = this.props;
-    console.log(language);
     return (
       <div>
         <style jsx>{`
