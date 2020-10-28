@@ -46,7 +46,11 @@ export default function Pages() {
   const [searchFilter, updateSearchFilter] = useState("");
   const [tagFilter, updateTagFilter] = useState("All");
   const [sortFilter, updateSortFilter] = useState("Date");
+  const [tagSelectOpened, toggleTagSelectOpened] = useState(false);
+  const [sortSelectOpened, toggleSortSelectOpened] = useState(false);
+
   const { authenticated, error, loading } = useLoggedIn();
+
 
   if (authenticated) {
     window.location.href = "/landing";
@@ -114,7 +118,12 @@ export default function Pages() {
                   duration: 0.4,
                 }}
                 >
-                <TagSelect updateTagFilter={updateTagFilter} tagFilter={tagFilter}/>
+                <TagSelect 
+                  updateTagFilter={updateTagFilter} 
+                  tagFilter={tagFilter}
+                  tagSelectOpened={tagSelectOpened}
+                  toggleTagSelectOpen={toggleTagSelectOpened}
+                  toggleSortSelectOpen={toggleSortSelectOpened}/>
               </motion.div>
             </AnimatePresence>
 
@@ -133,7 +142,12 @@ export default function Pages() {
                   duration: 0.4,
                 }}
                 >
-                <SortSelect updateSortFilter={updateSortFilter} sortFilter={sortFilter}/>
+                <SortSelect 
+                  updateSortFilter={updateSortFilter} 
+                  sortFilter={sortFilter}
+                  sortSelectOpened={sortSelectOpened}
+                  toggleTagSelectOpen={toggleTagSelectOpened}
+                  toggleSortSelectOpen={toggleSortSelectOpened}/>
               </motion.div>
             </AnimatePresence>
           </div>
@@ -218,7 +232,7 @@ function SearchBar(props: {updateSearchFilter: any}) {
   );
 }
 
-function TagSelect(props: {updateTagFilter: any, tagFilter: string}) {
+function TagSelect(props: {updateTagFilter: any, tagFilter: string, tagSelectOpened: boolean, toggleTagSelectOpen: any, toggleSortSelectOpen: any}) {
   const webdev = ["Angular", "Front End", "HTML", "Javascript", "PHP", "React", "Web Dev"];
   const lang = ["Go", "Java", "Python", "Ruby"];
   const backend = ["APIs", "AWS", "Back End", "Django", "Google Cloud", "NextJS"];
@@ -230,49 +244,93 @@ function TagSelect(props: {updateTagFilter: any, tagFilter: string}) {
   return (
     <div className={"filter"}>
       <div className={"filter-dropdown"}>
-        <button className={"filter-dropbtn"}>
+        <button className={"filter-dropbtn"} onClick={function() {props.toggleTagSelectOpen(!props.tagSelectOpened); props.toggleSortSelectOpen(false)}}>
           <img src="images/filter.svg" />
         </button>
-        <div className={"filter-dropdown-content"}>
-          <div className={"filter-row"}>
-            {allTags.map((tagsArr: Array<string>, index) => (
-              <div className={"filter-column"}>
-                <h3>{order[index]}</h3>
-                {tagsArr.map((tag: string) => (
-                  tag === props.tagFilter ? (
-                    <a className={"filter-selected-option"} onClick={(e) => props.updateTagFilter(tag)}>{tag}</a>
-                  ) : (
-                    <a onClick={(e) => props.updateTagFilter(tag)}>{tag}</a>
-                  )
+        <AnimatePresence>
+          {props.tagSelectOpened && 
+          <motion.div
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          exit={{
+            opacity: 0,
+          }}
+          transition={{
+            duration: 0.4,
+          }}
+          >
+          {props.tagSelectOpened ? (
+            <div className={"filter-dropdown-content"}>
+              <div className={"filter-row"}>
+                {allTags.map((tagsArr: Array<string>, index) => (
+                  <div className={"filter-column"}>
+                    <h3>{order[index]}</h3>
+                    {tagsArr.map((tag: string) => (
+                      tag === props.tagFilter ? (
+                        <a className={"filter-selected-option"} onClick={(e) => props.updateTagFilter(tag)}>{tag}</a>
+                      ) : (
+                        <a onClick={(e) => props.updateTagFilter(tag)}>{tag}</a>
+                      )
+                    ))}
+                  </div>
                 ))}
               </div>
-            ))}
-          </div>
-        </div>
+            </div>
+          ) : (<div></div>)
+          }
+          </motion.div>
+          }
+        </AnimatePresence>
       </div>
     </div>
   )
 }
 
-function SortSelect(props: {updateSortFilter: any, sortFilter: string}) {
+function SortSelect(props: {updateSortFilter: any, sortFilter: string, sortSelectOpened: boolean, toggleSortSelectOpen: any, toggleTagSelectOpen: any}) {
   const sortOptions = ["Date", "Recent", "Title", "Author"];
   return (
     <div>
       <div className={"sort-dropdown"}>
-        <button className={"sort-dropbtn"}>
+        <button className={"sort-dropbtn"} onClick={function() {props.toggleSortSelectOpen(!props.sortSelectOpened); props.toggleTagSelectOpen(false)}}>
           <img src="images/sort.svg" />
         </button>
-        <div className={"sort-dropdown-content"}>
-          <div>
-            {sortOptions.map((option: string) => (
-              option === props.sortFilter ? (
-                <a className={"sort-selected-option"} onClick={(e) => props.updateSortFilter(option)}>{option}</a>
-              ) : (
-                <a onClick={(e) => props.updateSortFilter(option)}>{option}</a>
-              )
-            ))}
-          </div>
-        </div> 
+        <AnimatePresence>
+          {props.sortSelectOpened && 
+          <motion.div
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          exit={{
+            opacity: 0,
+          }}
+          transition={{
+            duration: 0.4,
+          }}
+          >
+          {props.sortSelectOpened ? (
+            <div className={"sort-dropdown-content"}>
+              <div>
+                {sortOptions.map((option: string) => (
+                  option === props.sortFilter ? (
+                    <a className={"sort-selected-option"} onClick={(e) => props.updateSortFilter(option)}>{option}</a>
+                  ) : (
+                    <a onClick={(e) => props.updateSortFilter(option)}>{option}</a>
+                  )
+                ))}
+              </div>
+            </div> 
+          ) : (<div></div>)
+          }
+          </motion.div>
+          }
+        </AnimatePresence>
       </div>
     </div>
   );
