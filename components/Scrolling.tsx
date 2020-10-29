@@ -96,7 +96,7 @@ export default class Scrolling extends Component<
           <Link href={`/${username}`}>
             <a>{username}</a>
           </Link>
-          on {"formattedDate"}
+          on {formattedDate}
         </p>
         <this.ScrollDown />
       </div>
