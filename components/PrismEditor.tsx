@@ -1,23 +1,54 @@
-import Prism, { highlight } from "prismjs";
-import React, { Component, createRef } from "react";
-// import "../styles/prism.css";
-// import "../styles/prism-tomorrow-night.scss";
+import Prism from "prismjs";
+import React, { Component } from "react";
 import "../styles/prism-white.css";
 import { File, Step } from "../typescript/types/app_types";
+import { getPrismLanguageFromBackend } from "../lib/utils/languageUtils";
 
-import "prismjs/plugins/line-highlight/prism-line-highlight.css";
-import "prismjs/plugins/line-highlight/prism-line-highlight.min";
-
-import "prismjs/plugins/line-numbers/prism-line-numbers.css";
-import "prismjs/plugins/line-numbers/prism-line-numbers.min";
-
+//html, xml
+import "prismjs/components/prism-markup.min";
+// css, scss
+import "prismjs/components/prism-css.min";
+import "prismjs/components/prism-scss.min";
+// yaml
+import "prismjs/components/prism-yaml.min";
+// json
+import "prismjs/components/prism-json";
+// typescript
+import "prismjs/components/prism-typescript.min";
+// tsx, jsx, javascript
+import "prismjs/components/prism-javascript.min";
 import "prismjs/components/prism-jsx.min";
 import "prismjs/components/prism-tsx.min";
-import "prismjs/components/prism-typescript.min";
+// python
+import "prismjs/components/prism-python.min";
+// java
+import "prismjs/components/prism-java.min";
+import "prismjs/components/prism-clike.min";
+// go
+import "prismjs/components/prism-go.min";
+// php
+import "prismjs/components/prism-php.min";
+import "prismjs/components/prism-markup-templating.min";
+// ruby
+import "prismjs/components/prism-ruby.min";
+// rust
+import "prismjs/components/prism-rust.min";
+// swift
+import "prismjs/components/prism-swift.min";
+// c
+import "prismjs/components/prism-c.min";
+// objectivec
+import "prismjs/components/prism-objectivec";
+// c++
+import "prismjs/components/prism-cpp.min";
+// textile/plaintext
+import "prismjs/components/prism-textile.min";
+// markdown
+import "prismjs/components/prism-markdown.min";
+// dockerfile
+import "prismjs/components/prism-docker.min";
 
 import "../styles/prismeditor.scss";
-
-import animateScrollTo from "animated-scroll-to";
 
 type PrismEditorProps = {
   steps: Step[];
@@ -58,10 +89,11 @@ export default class PrismEditor extends Component<
   syntaxHighlightFiles = () => {
     let { files } = this.props;
     for (let i = 0; i < files.length; i++) {
+      let prismLanguage = getPrismLanguageFromBackend(files[i].language);
       let highlightedCode = Prism.highlight(
         files[i].code,
-        Prism.languages.typescript,
-        "typescript"
+        Prism.languages[prismLanguage],
+        files[i].language
       );
       highlightedFiles.push(highlightedCode);
     }
@@ -102,9 +134,14 @@ export default class PrismEditor extends Component<
   }
 
   updateLines() {
-    let { files, currentFileIndex, animateLines } = this.props;
+    let {
+      files,
+      currentFileIndex,
+      animateLines,
+      steps,
+      currentStepIndex,
+    } = this.props;
     let currentFile = files[currentFileIndex];
-    let { steps, currentStepIndex } = this.props;
     let currentStep = steps[currentStepIndex];
     if (
       currentStep &&
@@ -140,12 +177,11 @@ export default class PrismEditor extends Component<
     let { steps, currentStepIndex, files, currentFileIndex } = this.props;
     let currentFile = files[currentFileIndex];
     let lines = highlightedFiles[currentFileIndex].split(/\r?\n/);
-    return <this.CodeFile index={1} key={currentFile.id} lines={lines} />;
+    return <this.CodeFile key={currentFile.id} lines={lines} />;
   }
 
-  CodeFile = (props: { lines: string[]; index: number }) => {
+  CodeFile = (props: { lines: string[] }) => {
     let lines = props.lines;
-    let index = props.index;
     let { hovered } = this.state;
     let { steps, currentStepIndex, files, currentFileIndex } = this.props;
     let currentFile = files[currentFileIndex];

@@ -1,5 +1,4 @@
 import React, { Component, createRef } from "react";
-import dynamic from "next/dynamic";
 import PublishedLanguageBar from "./PublishedLanguageBar";
 import PublishedFileBar from "./PublishedFileBar";
 import "../styles/publishedcodeeditor.scss";
@@ -7,6 +6,7 @@ import { File, Step } from "../typescript/types/app_types";
 import PrismEditor from "./PrismEditor";
 import PublishedImageView from "./PublishedImageView";
 import animateScrollTo from "animated-scroll-to";
+import {SPEED_SCROLL_LIMIT} from '../components/FinishedPost'
 
 type PublishedCodeEditorProps = {
   // changeStep: (newStep: number) => void;
@@ -22,7 +22,6 @@ type PublishedCodeEditorState = {
   language: string;
 };
 
-const SPEED_SCROLL_LIMIT = 30;
 
 export default class PublishedCodeEditor extends Component<
   PublishedCodeEditorProps,
@@ -48,6 +47,7 @@ export default class PublishedCodeEditor extends Component<
       // add offset so scrolled to line isnt exactly at top
       verticalOffset: -100,
     };
+    // each line is around 18 pixels in height, and minus 5 to take into account some padding
     let lineCalc = currentStep?.lines?.start! * 18 - 5;
     if (scrollSpeed > SPEED_SCROLL_LIMIT) {
       this.prismWrapper.current!.scrollTop = lineCalc;

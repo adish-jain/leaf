@@ -1,17 +1,12 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Scrolling from "./Scrolling";
-import animateScrollTo from "animated-scroll-to";
 import { useLoggedIn } from "../lib/UseLoggedIn";
-import Header, { HeaderUnAuthenticated } from "../components/Header";
 import PublishedCodeEditor from "./PublishedCodeEditor";
 import "../styles/app.scss";
 import "../styles/draftheader.scss";
-import { File, Step, FinishedPostProps } from "../typescript/types/app_types";
-import Link from "next/link";
+import { FinishedPostProps } from "../typescript/types/app_types";
 import { FinishedPostHeader } from "../components/Headers";
 import checkScrollSpeed from "../lib/utils/scrollUtils";
-import { getMonacoLanguages } from "../lib/utils/languageUtils";
-const stepsInView: { [stepIndex: number]: boolean } = {};
 
 type StepDimensions = {
   topY: number;
@@ -68,8 +63,6 @@ const FinishedPost = (props: FinishedPostProps) => {
     findSteps();
   }, []);
 
-  console.log(getMonacoLanguages());
-
   // finds which step is in the middle of the viewport and selects it
   function selectStepIndex(): number {
     let pos = window.pageYOffset + window.innerHeight / 2;
@@ -91,8 +84,8 @@ const FinishedPost = (props: FinishedPostProps) => {
 
   // selects the file associated with the current step
   function selectFileIndex(newStepIndex: number): number {
-    let newFile = props.steps[newStepIndex];
-    let newFileId = newFile?.fileId;
+    let newStep = props.steps[newStepIndex];
+    let newFileId = newStep?.fileId;
     for (let j = 0; j < props.files.length; j++) {
       if (props.files[j].id === newFileId) {
         return j;
@@ -150,3 +143,7 @@ const FinishedPost = (props: FinishedPostProps) => {
 };
 
 export default FinishedPost;
+
+// 30 means that if the page yPos travels more than 30 pixels between
+// two onScroll events the scroll speed is above the scroll speed limit
+export const SPEED_SCROLL_LIMIT = 30;

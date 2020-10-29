@@ -1,12 +1,11 @@
 import { useRouter } from "next/router";
 import {
   useState,
-  useCallback,
   Component,
   Dispatch,
   SetStateAction,
 } from "react";
-import { useLoggedIn, logOut } from "../../lib/UseLoggedIn";
+import { useLoggedIn } from "../../lib/UseLoggedIn";
 import { useFiles } from "../../lib/useFiles";
 import { useSteps } from "../../lib/useSteps";
 import { useDraftTitle } from "../../lib/useDraftTitle";
@@ -16,19 +15,14 @@ import CodeEditor from "../../components/CodeEditor";
 import DefaultErrorPage from "next/error";
 import Head from "next/head";
 import FinishedPost from "../../components/FinishedPost";
-import { goToPost } from "../../lib/usePosts";
 const fetch = require("node-fetch");
 import { File, Step, Lines } from "../../typescript/types/app_types";
 global.Headers = fetch.Headers;
 import Router from "next/router";
-import Link from "next/link";
 import "../../styles/app.scss";
 import "../../styles/draftheader.scss";
 import { DraftHeader } from "../../components/Headers";
-import { DraftJsButtonProps } from "draft-js-buttons";
 import { motion, AnimatePresence } from "framer-motion";
-import FileSaver from "file-saver";
-const moment = require("moment");
 
 const DraftView = () => {
   const { authenticated, error, loading } = useLoggedIn();

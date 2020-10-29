@@ -1,11 +1,10 @@
 import React, { Component } from "react";
 import PublishedStep from "./PublishedStep";
 import "../styles/scrolling.scss";
-import { InView } from "react-intersection-observer";
-import { Step, timeStamp } from "../typescript/types/app_types";
+import { Step } from "../typescript/types/app_types";
 import { AnimatePresence } from "framer-motion";
 import Link from "next/link";
-const moment = require("moment");
+const dayjs = require("dayjs");
 
 type ScrollingProps = {
   // changeStep: (newStep: number, yPos: number, entered: boolean) => void;
@@ -87,8 +86,8 @@ export default class Scrolling extends Component<
 
   TitleSection() {
     let { username, title, publishedAtSeconds } = this.props;
-    let day = moment.unix(publishedAtSeconds);
-    let formattedDate = day.format("MMMM Do YYYY");
+    let date = new Date(publishedAtSeconds * 1000);
+    let formattedDate = dayjs(date).format("MMMM D YYYY");
     return (
       <div>
         <h1 className={"post-title"}>{title}</h1>
@@ -97,7 +96,7 @@ export default class Scrolling extends Component<
           <Link href={`/${username}`}>
             <a>{username}</a>
           </Link>
-          on {formattedDate}
+          on {"formattedDate"}
         </p>
         <this.ScrollDown />
       </div>

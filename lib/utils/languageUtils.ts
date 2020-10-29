@@ -28,6 +28,17 @@ export function getMonacoLanguageFromBackend(backendLanguage: string) {
   return monacoLanguage;
 }
 
+export function getPrismLanguageFromBackend(backendLanguage: string) {
+  let prismLanguage: string = "textile";
+  Object.entries(languageStrings).forEach((record) => {
+    let ProgrammingLanguageObject = record[1];
+    if (record[0] === backendLanguage) {
+      prismLanguage = ProgrammingLanguageObject.prismName;
+    }
+  });
+  return prismLanguage;
+}
+
 export function getLanguageFromExtension(extension: string) {
   let language: string = "markdown";
   Object.entries(languageStrings).forEach((record) => {

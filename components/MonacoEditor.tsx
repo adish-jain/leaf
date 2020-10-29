@@ -6,6 +6,7 @@ import { editor } from "monaco-editor";
 const MonacoEditor = dynamic(import("react-monaco-editor"), { ssr: false });
 import { motion, AnimatePresence } from "framer-motion";
 import { getMonacoLanguageFromBackend } from "../lib/utils/languageUtils";
+const shortid = require("shortid");
 
 type MonacoEditorWrapperState = {
   showModal: boolean;
@@ -278,7 +279,7 @@ export default class MonacoEditorWrapper extends Component<
   };
 
   render() {
-    let { draftCode, language } = this.props;
+    let { draftCode, language, selectedFile } = this.props;
     return (
       <div>
         <style jsx>{`
@@ -291,6 +292,7 @@ export default class MonacoEditorWrapper extends Component<
         `}</style>
         <this.LineModal />
         <MonacoEditor
+          key={selectedFile.id}
           height={"100%"}
           language={getMonacoLanguageFromBackend(language)}
           value={draftCode}
@@ -307,26 +309,12 @@ export default class MonacoEditorWrapper extends Component<
             //@ts-ignore
             window.MonacoEnvironment.getWorkerUrl = (moduleId, label) => {
               if (label === "html") return "/_next/static/html.worker.js";
+              if (label === "xml") return "/_next/static/xml.worker.js";
               if (label === "css") return "/_next/static/css.worker.js";
               if (label === "scss") return "/_next/static/css.worker.js";
-              if (label === "yaml") return "/_next/static/yaml.worker.js";
-              if (label === "json") return "/_next/static/ts.worker.js";
+              if (label === "json") return "/_next/static/json.worker.js";
               if (label === "typescript" || label === "javascript")
                 return "/_next/static/ts.worker.js";
-              if (label === "python") return "/_next/static/python.worker.js";
-              if (label === "java") return "/_next/static/java.worker.js";
-              if (label === "go") return "/_next/static/go.worker.js";
-              if (label === "ruby") return "/_next/static/ruby.worker.js";
-              if (label === "php") return "/_next/static/php.worker.js";
-              if (label === "rust") return "/_next/static/rust.worker.js";
-              if (label === "objective-c")
-                return "/_next/static/objective-c.worker.js";
-              if (label === "rust") return "/_next/static/rust.worker.js";
-              if (label === "swift") return "/_next/static/swift.worker.js";
-              if (label === "dockerfile")
-                return "/_next/static/dockerfile.worker.js";
-              if (label === "markdown")
-                return "/_next/static/markdown.worker.js";
               return "/_next/static/editor.worker.js";
             };
           }}

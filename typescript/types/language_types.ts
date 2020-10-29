@@ -16,7 +16,7 @@ export const languageStrings: supportedLanguages = {
   },
   yaml: {
     fileExtension: "yaml",
-    prismName: "yaml",
+    prismName: "yml",
     monacoName: "yaml",
   },
   json: {

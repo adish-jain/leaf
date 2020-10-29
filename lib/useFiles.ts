@@ -219,7 +219,6 @@ export function useFiles(draftId: any, draftFiles: any, mutate: any) {
     */
   function setNameFromLang(value: string) {
     let extension = getExtensionFromLanguage(value);
-    console.log("extension is ", extension);
     let fileName = files[selectedFileIndex].name;
     let newName;
     if (!fileName.includes(".")) {

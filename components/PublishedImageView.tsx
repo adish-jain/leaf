@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "../styles/imageview.scss";
 import { File, Step } from "../typescript/types/app_types";
 import { motion, AnimatePresence } from "framer-motion";
+import {SPEED_SCROLL_LIMIT} from '../components/FinishedPost'
 
 type PublishedImageViewProps = {
   steps: Step[];
@@ -13,8 +14,6 @@ type PublishedImageViewProps = {
 };
 
 type PublishedImageViewState = {};
-var highest = 0;
-const SPEED_SCROLL_LIMIT = 30;
 export default class PublishedImageView extends Component<
   PublishedImageViewProps,
   PublishedImageViewState

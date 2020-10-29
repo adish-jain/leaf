@@ -1,9 +1,7 @@
-import React, { Component, useEffect } from "react";
+import React, { Component } from "react";
 import "../styles/publishedstep.scss";
-import { useInView, InView } from "react-intersection-observer";
 const draftToHtml = require("draftjs-to-html");
 import animateScrollTo from "animated-scroll-to";
-import { motion, AnimatePresence } from "framer-motion";
 
 type PublishedStepProps = {
   index: number;
