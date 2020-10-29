@@ -9,6 +9,7 @@ import { useUserInfo } from "../lib/useUserInfo";
 import { usePosts, goToPost } from "../lib/usePosts";
 import Header from "../components/Header";
 const dayjs = require("dayjs");
+import { LandingHeader } from "../components/Headers";
 
 type DraftType = {
   id: string;
@@ -89,12 +90,13 @@ export default function Landing() {
         />
       </Head>
       <main>
-        <Header
+        {/* <Header
           username={username}
           profile={true}
           settings={true}
           logout={true}
-        />
+        /> */}
+        <LandingHeader username={username} />
         <div className={"landing"}>
           <YourDrafts
             deleteDraft={deleteDraft}
