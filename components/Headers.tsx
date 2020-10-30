@@ -20,7 +20,7 @@ export function LandingHeader(props: LandingHeaderProps) {
   return (
     <div className={"landing-header"}>
       <div className={"inner-content"}>
-        <img className={"landimg-img"} src="/images/LeafLogo.svg" />
+        <img className={"landing-img"} src="/images/LeafLogo.svg" />
         <div className={"links"}>
           <Link href={`/settings`}>
             <a>Settings</a>
