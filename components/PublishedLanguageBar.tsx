@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Controlled as CodeMirror2 } from "react-codemirror2";
 import "../styles/languagebar.scss";
 
 type PublishedLanguageBarProps = {

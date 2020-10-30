@@ -1,5 +1,4 @@
 import Head from "next/head";
-const moment = require("moment");
 const fetch = require("node-fetch");
 global.Headers = fetch.Headers;
 import "../styles/landing.scss";
@@ -9,6 +8,7 @@ import { useDrafts } from "../lib/useDrafts";
 import { useUserInfo } from "../lib/useUserInfo";
 import { usePosts, goToPost } from "../lib/usePosts";
 import Header from "../components/Header";
+const dayjs = require("dayjs");
 import { LandingHeader } from "../components/Headers";
 
 type DraftType = {
@@ -149,8 +149,8 @@ function YourPosts(props: {
       return (
         <div>
           {posts!.map((post: any) => {
-            let day = moment.unix(post.publishedAt._seconds);
-            let formattedDate = day.format("MMMM Do YYYY");
+            let date = new Date(post.publishedAt._seconds * 1000);
+            let formattedDate = dayjs(date).format("MMMM D YYYY");
             return (
               <Post
                 formattedDate={formattedDate}

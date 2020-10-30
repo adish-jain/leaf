@@ -1,7 +1,111 @@
-@import 'commonui.scss';
+@import "commonui.scss";
 
 .prism-editor {
   flex-grow: 100;
   overflow-y: scroll;
   position: relative;
+  overscroll-behavior: contain ;
+  transition: all 0.2s ease-in-out;
+
 }
+
+.highlighted {
+  // position: absolute;
+  // left: 0;
+  // right: 0;
+  padding: inherit 0;
+  // margin-top: 1em;
+  background: #f7ebc6;
+  box-shadow: inset 5px 0 0 #f7d87c;
+  z-index: 0;
+  pointer-events: none;
+  line-height: inherit;
+  white-space: pre;
+
+  span {
+    background: #f7ebc6 !important;
+    // transition: background 0.2s ease-in-out;
+  }
+}
+
+.line-number {
+  min-width: 40px;
+  display: inline-block;
+  text-align: right;
+  margin-right: 20px;
+  position: relative;
+  // color: rgba(255, 255, 255, 0.3);
+  user-select: none;
+}
+
+$color-transition-duration: 0.2s;
+.line-wrapper {
+  display: flex;
+  transition: color $color-transition-duration ease-out;
+  font-size: 12px;
+  span {
+    transition: color $color-transition-duration ease-out;
+  }
+}
+
+.line-dim {
+  color: $leaf-light-gray;
+
+  span {
+    color: $leaf-light-gray !important;
+    transition: color $color-transition-duration ease-in-out;
+  }
+  transition: color $color-transition-duration ease-in-out;
+}
+
+.line-dim:hover {
+  // color: black;
+  // span {
+  //   color: black !important;
+  // }
+  // transition: color 0.2s ease-in-out;
+}
+
+.dimmer {
+  left: 0;
+  right: 0;
+  background: black;
+  height: 50px;
+  top: 0;
+  position: absolute;
+  z-index: 1;
+  opacity: 0.5;
+}
+
+code {
+  span {
+    // color: black !important;
+  }
+}
+
+// .prism-code {
+//   color: #5c6e74;
+//   font-size: 12px;
+//   text-shadow: none;
+//   font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+//   direction: ltr;
+//   text-align: left;
+//   white-space: pre;
+//   word-spacing: normal;
+//   word-break: normal;
+//   line-height: 1.5;
+//   -moz-tab-size: 4;
+//   -o-tab-size: 4;
+//   tab-size: 4;
+//   -webkit-hyphens: none;
+//   -moz-hyphens: none;
+//   -ms-hyphens: none;
+//   hyphens: none;
+// }
+
+// .prism-pre {
+//   padding: 1em;
+//   margin: 0.5em 0;
+//   overflow: auto;
+//   background: #fffefc;
+// }
