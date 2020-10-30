@@ -27,6 +27,7 @@ import "../../styles/draftheader.scss";
 import { DraftHeader } from "../../components/Headers";
 import { DraftJsButtonProps } from "draft-js-buttons";
 import { motion, AnimatePresence } from "framer-motion";
+import MDXSection from "../../components/MdxSection";
 
 const DraftView = () => {
   const { authenticated, error, loading } = useLoggedIn();
@@ -350,49 +351,52 @@ class DraftContent extends Component<DraftContentProps, DraftContentState> {
         />
         <div className={"App"}>
           <div className={"center-divs"}>
-            <Publishing
-              draftId={draftId as string}
-              title={draftTitle}
-              storedSteps={realSteps!}
-              saveStep={saveStep}
-              mutateStoredStep={mutateStoredStep}
-              saveStepToBackend={saveStepToBackend}
-              deleteStoredStep={deleteStoredStep}
-              moveStepUp={moveStepUp}
-              moveStepDown={moveStepDown}
-              onTitleChange={onTitleChange}
-              editingStep={editingStep}
-              changeEditingStep={changeEditingStep}
-              selectedFileIndex={selectedFileIndex}
-              lines={lines}
-              files={draftFiles}
-              saveLines={saveLines}
-              published={draftPublished}
-              goToPublishedPost={this.goToPublishedPost}
-            />
-            <div className={"RightPane"}>
-              <CodeEditor
-                addStepImage={addStepImage}
-                deleteStepImage={deleteStepImage}
+            <MDXSection />
+            <div className={"draft-content"}>
+              <Publishing
                 draftId={draftId as string}
+                title={draftTitle}
+                storedSteps={realSteps!}
+                saveStep={saveStep}
+                mutateStoredStep={mutateStoredStep}
+                saveStepToBackend={saveStepToBackend}
+                deleteStoredStep={deleteStoredStep}
+                moveStepUp={moveStepUp}
+                moveStepDown={moveStepDown}
+                onTitleChange={onTitleChange}
                 editingStep={editingStep}
-                saveFileCode={saveFileCode}
-                draftCode={codeFiles[selectedFileIndex].code}
-                files={draftFiles}
-                addFile={addFile}
-                removeFile={deleteStepAndFile}
+                changeEditingStep={changeEditingStep}
                 selectedFileIndex={selectedFileIndex}
-                changeCode={changeCode}
-                changeSelectedFile={changeSelectedFileIndex}
-                changeFileLanguage={changeFileLanguage}
-                saveFileName={saveFileName}
-                onNameChange={onNameChange}
-                language={draftFiles[selectedFileIndex].language}
-                changeLines={changeLines}
-                saveLines={saveLines}
                 lines={lines}
-                currentlyEditingStep={realSteps![editingStep]}
+                files={draftFiles}
+                saveLines={saveLines}
+                published={draftPublished}
+                goToPublishedPost={this.goToPublishedPost}
               />
+              <div className={"RightPane"}>
+                <CodeEditor
+                  addStepImage={addStepImage}
+                  deleteStepImage={deleteStepImage}
+                  draftId={draftId as string}
+                  editingStep={editingStep}
+                  saveFileCode={saveFileCode}
+                  draftCode={codeFiles[selectedFileIndex].code}
+                  files={draftFiles}
+                  addFile={addFile}
+                  removeFile={deleteStepAndFile}
+                  selectedFileIndex={selectedFileIndex}
+                  changeCode={changeCode}
+                  changeSelectedFile={changeSelectedFileIndex}
+                  changeFileLanguage={changeFileLanguage}
+                  saveFileName={saveFileName}
+                  onNameChange={onNameChange}
+                  language={draftFiles[selectedFileIndex].language}
+                  changeLines={changeLines}
+                  saveLines={saveLines}
+                  lines={lines}
+                  currentlyEditingStep={realSteps![editingStep]}
+                />
+              </div>
             </div>
           </div>
         </div>
