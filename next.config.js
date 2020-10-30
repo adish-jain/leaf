@@ -90,6 +90,7 @@ module.exports = withSourceMaps(
 
         return config;
       },
+      generateEtags: false
     })
   )
 );
