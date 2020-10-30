@@ -40,7 +40,7 @@ export function getPrismLanguageFromBackend(backendLanguage: string) {
 }
 
 export function getLanguageFromExtension(extension: string) {
-  let language: string = "markdown";
+  let language: string = "plaintext";
   Object.entries(languageStrings).forEach((record) => {
     let ProgrammingLanguageObject = record[1];
     if (ProgrammingLanguageObject.fileExtension === extension) {
