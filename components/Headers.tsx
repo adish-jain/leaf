@@ -1,6 +1,8 @@
 import "../styles/draftheader.scss";
+import "../styles/landingheader.scss";
 import { SetStateAction } from "react";
 import Link from "next/link";
+import { goToIndex, goToLanding, logOut } from "../lib/UseLoggedIn";
 
 type DraftHeaderProps = {
   username: string;
@@ -10,6 +12,35 @@ type DraftHeaderProps = {
   publishPost: () => void;
   published: boolean;
 };
+
+type LandingHeaderProps = {
+  username: string;
+};
+
+export function LandingHeader(props: LandingHeaderProps) {
+  return (
+    <div className={"landing-header"}>
+      <div className={"inner-content"}>
+        <img className={"landing-img"} src="/images/LeafLogo.svg" />
+        <div className={"links"}>
+          <Link href={`/${props.username}`}>
+            <a>Profile</a>
+          </Link>
+          <Link href={`/explore`}>
+            <a>Explore</a>
+          </Link>
+          <Link href={`/settings`}>
+            <a>Settings</a>
+          </Link>
+          <div className={"logout-button"} onClick={logOut}>
+            Logout
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function DraftHeader(props: DraftHeaderProps) {
   function Links() {
     return (

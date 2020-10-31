@@ -1,3 +1,5 @@
+import { timeStamp } from "../typescript/types/app_types";
+
 export function useTags(
   tags: string[],
   draftId: string,
@@ -6,6 +8,7 @@ export function useTags(
   draftPublished: boolean,
   postId: string,
   username: string,
+  createdAt: timeStamp,
   mutate: any
 ) {
   function toggleTag(tag: string) {
@@ -26,6 +29,7 @@ export function useTags(
           published: draftPublished,
           postId: postId,
           tags: selectedTags,
+          createdAt: createdAt,
           username: username,
         },
         false
@@ -63,6 +67,7 @@ export function useTags(
             published: draftPublished,
             postId: postId,
             tags: selectedTags,
+            createdAt: createdAt,
             username: username,
           },
           false

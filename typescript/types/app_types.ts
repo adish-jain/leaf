@@ -30,4 +30,10 @@ export type FinishedPostProps = {
   username: string;
   previewMode: boolean;
   updateShowPreview?: (value: SetStateAction<boolean>) => void;
+  publishedAtSeconds: number;
+};
+
+export type timeStamp = {
+  _nanoseconds: number;
+  _seconds: number;
 };

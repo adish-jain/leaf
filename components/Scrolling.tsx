@@ -1,19 +1,30 @@
 import React, { Component } from "react";
 import PublishedStep from "./PublishedStep";
 import "../styles/scrolling.scss";
-import { InView } from "react-intersection-observer";
 import { Step } from "../typescript/types/app_types";
+import { AnimatePresence } from "framer-motion";
+import Link from "next/link";
+const dayjs = require("dayjs");
 
 type ScrollingProps = {
-  changeStep: (newStep: number, yPos: number, entered: boolean) => void;
+  // changeStep: (newStep: number, yPos: number, entered: boolean) => void;
   steps: Step[];
   tags: string[];
   currentStepIndex: number;
   title: string;
+  username: string;
+  publishedAtSeconds: number;
+  scrollingRef: React.RefObject<HTMLDivElement>;
+  pageYOffset: number;
 };
 
 type ScrollingState = {
   height: number;
+};
+
+type StepDimensions = {
+  topY: number;
+  bottomY: number;
 };
 
 export default class Scrolling extends Component<
@@ -22,7 +33,10 @@ export default class Scrolling extends Component<
 > {
   constructor(props: any) {
     super(props);
+
     this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
+
+    this.TitleSection = this.TitleSection.bind(this);
 
     this.state = {
       height: 0,
@@ -44,24 +58,76 @@ export default class Scrolling extends Component<
     });
   }
 
-  render() {
-    let { steps, currentStepIndex, title, tags } = this.props;
+  calculateDividerHeight = () => {
     let { height } = this.state;
+    let { pageYOffset } = this.props;
+    let mid = height / 2;
+    if (pageYOffset < mid) {
+      return;
+    }
+  };
+
+  ScrollDown = () => {
+    let { pageYOffset } = this.props;
+    let style = { opacity: 1 };
+    if (pageYOffset > 10) {
+      style = {
+        opacity: 0,
+      };
+    }
+    return (
+      <AnimatePresence>
+        <div style={style} className={"scroll-down"}>
+          <p> Scroll down to begin</p>
+          <span>↓</span>
+        </div>
+      </AnimatePresence>
+    );
+  };
+
+  TitleSection() {
+    let { username, title, tags, publishedAtSeconds } = this.props;
+    let date = new Date(publishedAtSeconds * 1000);
+    let formattedDate = dayjs(date).format("MMMM D YYYY");
+    return (
+      <div>
+        <h1 className={"post-title"}>{title}</h1>
+        <p className={"published-by"}>
+          Published by
+          <Link href={`/${username}`}>
+            <a>{username}</a>
+          </Link>
+          on {formattedDate}
+        </p>
+        <PostTags tags={tags} />
+        <this.ScrollDown />
+      </div>
+    );
+  }
+
+  render() {
+    let { steps, currentStepIndex, title, tags, scrollingRef } = this.props;
+    let { height } = this.state;
+
     return (
       <div className={"scrolling"}>
-        <h1 className={"post-title"}>{title}</h1>
-        <PostTags tags={tags} />
+        <this.TitleSection />
+        {/* <div
+          style={{ top: `${height / 2}px` }}
+          className={"intersection-zone"}
+        ></div> */}
         {steps ? (
-          steps.map((step, index) => (
-            <PublishedStep
-              index={index}
-              key={step.id}
-              changeStep={this.props.changeStep}
-              text={step.text}
-              selected={index === currentStepIndex}
-              height={height}
-            />
-          ))
+          <div ref={scrollingRef}>
+            {steps.map((step, index) => (
+              <PublishedStep
+                index={index}
+                key={step.id}
+                text={step.text}
+                selected={index === currentStepIndex}
+                height={height}
+              />
+            ))}
+          </div>
         ) : (
           <div></div>
         )}
@@ -74,7 +140,7 @@ export default class Scrolling extends Component<
 function PostTags(props: { tags: string[]}) {
   return (
     <div className={"post-tags"}>
-      {props.tags === null ? (<div></div>) 
+      {(props.tags === null || props.tags === undefined) ? (<div></div>) 
         : props.tags.map((tag: string) => (
           <div className={"post-tag"}>{tag}</div>)
         )

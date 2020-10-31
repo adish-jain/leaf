@@ -1,12 +1,11 @@
 import { useRouter } from "next/router";
 import {
   useState,
-  useCallback,
   Component,
   Dispatch,
   SetStateAction,
 } from "react";
-import { useLoggedIn, logOut } from "../../lib/UseLoggedIn";
+import { useLoggedIn } from "../../lib/UseLoggedIn";
 import { useFiles } from "../../lib/useFiles";
 import { useSteps } from "../../lib/useSteps";
 import { useTags } from "../../lib/useTags";
@@ -18,16 +17,13 @@ import Tags from "../../components/Tags";
 import DefaultErrorPage from "next/error";
 import Head from "next/head";
 import FinishedPost from "../../components/FinishedPost";
-import { goToPost } from "../../lib/usePosts";
 const fetch = require("node-fetch");
 import { File, Step, Lines } from "../../typescript/types/app_types";
 global.Headers = fetch.Headers;
 import Router from "next/router";
-import Link from "next/link";
 import "../../styles/app.scss";
 import "../../styles/draftheader.scss";
 import { DraftHeader } from "../../components/Headers";
-import { DraftJsButtonProps } from "draft-js-buttons";
 import { motion, AnimatePresence } from "framer-motion";
 
 const DraftView = () => {
@@ -66,6 +62,10 @@ const DraftView = () => {
     postId: "",
     tags: [],
     username: "",
+    createdAt: {
+      _nanoseconds: 0,
+      _seconds: 0,
+    },
   };
 
   let { data: draftData, mutate } = useSWR(
@@ -80,6 +80,7 @@ const DraftView = () => {
   const postId = draftData["postId"];
   const tags = draftData["tags"];
   const username = draftData["username"];
+  const createdAt = draftData["createdAt"];
 
   let { onTitleChange, draftTitle } = useDraftTitle(
     draftId as string,
@@ -125,6 +126,7 @@ const DraftView = () => {
     draftPublished, 
     postId, 
     username, 
+    createdAt,
     mutate
   );
 
@@ -152,6 +154,7 @@ const DraftView = () => {
     <div className="container">
       <Head>
         <title>{draftTitle}</title>
+        {/* <script src="https://unpkg.com/intersection-observer-debugger"></script> */}
         <link rel="icon" href="/favicon.ico" />
         <script
           dangerouslySetInnerHTML={{
@@ -193,6 +196,7 @@ const DraftView = () => {
                 files={draftFiles}
                 updateShowPreview={updateShowPreview}
                 previewMode={true}
+                publishedAtSeconds={createdAt._seconds}
               />
             </motion.div>
           )}
@@ -338,6 +342,27 @@ class DraftContent extends Component<DraftContentProps, DraftContentState> {
     window.location.href = `/${username}/${postId}`;
   }
 
+  changeEditingStepWrapper = (stepIndex: number) => {
+    let {
+      changeEditingStep,
+      changeSelectedFileIndex,
+      codeFiles,
+      realSteps,
+    } = this.props;
+    changeEditingStep(stepIndex);
+    let newFileIndex = 0;
+    if (stepIndex < 0) {
+      return;
+    }
+    for (let i = 0; i < codeFiles.length; i++) {
+      if (codeFiles[i].id === realSteps![stepIndex].fileId) {
+        newFileIndex = i;
+        break;
+      }
+    }
+    changeSelectedFileIndex(newFileIndex);
+  };
+
   DraftComponent() {
     let {
       username,
@@ -397,7 +422,7 @@ class DraftContent extends Component<DraftContentProps, DraftContentState> {
               moveStepDown={moveStepDown}
               onTitleChange={onTitleChange}
               editingStep={editingStep}
-              changeEditingStep={changeEditingStep}
+              changeEditingStep={this.changeEditingStepWrapper}
               selectedFileIndex={selectedFileIndex}
               lines={lines}
               files={draftFiles}

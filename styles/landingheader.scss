@@ -1,0 +1,46 @@
+@import "commonui.scss";
+
+.landing-header {
+  padding-top: 16px;
+
+  .inner-content {
+    margin-left: 80px;
+    margin-right: 80px;
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 8px;
+    align-items: center;
+    // border-bottom: 1px solid $leaf-light-gray;
+  }
+}
+
+.landing-img {
+  height: 60px;
+  position: relative;
+  left: -12px;
+}
+
+.links {
+  @include link-item;
+  display: flex;
+  a {
+    margin-right: 8px;
+  }
+}
+
+.logout-button {
+  color: #000000;
+  text-decoration: none;
+  transition: all ease-in-out 0.2s;
+  padding: 4px;
+  cursor: pointer;
+}
+
+.logout-button:hover {
+  background-color: #349ae9;
+  color: white;
+  transition: all ease-in-out 0.2s;
+  padding: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+}

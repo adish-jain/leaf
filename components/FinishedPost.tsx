@@ -1,44 +1,113 @@
-import React, { useState, Component } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Scrolling from "./Scrolling";
-import animateScrollTo from "animated-scroll-to";
 import { useLoggedIn } from "../lib/UseLoggedIn";
-import Header, { HeaderUnAuthenticated } from "../components/Header";
 import PublishedCodeEditor from "./PublishedCodeEditor";
 import "../styles/app.scss";
 import "../styles/draftheader.scss";
-import { File, Step, FinishedPostProps } from "../typescript/types/app_types";
-import Link from "next/link";
+import { FinishedPostProps } from "../typescript/types/app_types";
 import { FinishedPostHeader } from "../components/Headers";
+import checkScrollSpeed from "../lib/utils/scrollUtils";
 
-const stepsInView: { [stepIndex: number]: boolean } = {};
+type StepDimensions = {
+  topY: number;
+  bottomY: number;
+};
+
+/*
+This array keeps track of the top and bottom position of every step.
+We use this array to determine what step is currently in the middle of
+the screen.
+*/
+var stepCoords: StepDimensions[] = [];
+
+const STEP_MARGIN = 64;
 
 const FinishedPost = (props: FinishedPostProps) => {
   const [currentStepIndex, updateStep] = useState(0);
   const [currentFileIndex, updateFile] = useState(0);
+
+  // scrollspeed is used to determine whether we should animate transitions
+  // or scrolling to highlighted lines. If a fast scroll speed, we skip
+  // animations.
+  const [scrollSpeed, updateScrollSpeed] = useState(0);
+  const [scrollPosition, updateScrollPosition] = useState(0);
+  const scrollingRef = React.useRef<HTMLDivElement>(null);
   const { authenticated, error, loading } = useLoggedIn();
-  let editorInstance: CodeMirror.Editor | undefined = undefined;
-  const markers: CodeMirror.TextMarker[] = [];
 
-  function changeStep(newStep: number, yPos: number, entered: boolean) {
-    // stepsInView keeps track of what steps are inside the viewport
-    stepsInView[newStep] = entered;
+  const handleScroll = useCallback((event) => {
+    // select new step
+    let newStepIndex = selectStepIndex();
+    updateStep(newStepIndex);
 
-    /* whichever step is the closest to the top of the viewport 
-        AND is inside the viewport becomes the selected step */
-    for (let step in stepsInView) {
-      if (stepsInView[step]) {
-        let stepIndex = Number(step);
-        let newFileId = props.steps[stepIndex].fileId;
-        for (let i = 0; i < props.files.length; i++) {
-          if (props.files[i].id === newFileId) {
-            updateFile(i);
-          }
-        }
-        updateStep(stepIndex);
+    // select new file
+    let newFileIndex = selectFileIndex(newStepIndex);
+    updateFile(newFileIndex);
 
-        // this is the first step in view, so we break
-        break;
+    // update scroll speed
+    let scrollSpeed = checkScrollSpeed();
+    updateScrollSpeed(scrollSpeed);
+
+    // update scroll position
+    updateScrollPosition(window.pageYOffset);
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [handleScroll]);
+
+  useEffect(() => {
+    findSteps();
+  }, []);
+
+  // finds which step is in the middle of the viewport and selects it
+  function selectStepIndex(): number {
+    let pos = window.pageYOffset + window.innerHeight / 2;
+    for (let i = 0; i < stepCoords.length; i++) {
+      // if coord is inside step
+      if (pos < stepCoords[0].topY) {
+        return 0;
       }
+      if (
+        pos >= stepCoords[i].topY &&
+        pos <= stepCoords[i].bottomY + STEP_MARGIN
+      ) {
+        return i;
+      }
+    }
+    // otherwise, set step to last step
+    return stepCoords.length - 1;
+  }
+
+  // selects the file associated with the current step
+  function selectFileIndex(newStepIndex: number): number {
+    let newStep = props.steps[newStepIndex];
+    let newFileId = newStep?.fileId;
+    for (let j = 0; j < props.files.length; j++) {
+      if (props.files[j].id === newFileId) {
+        return j;
+      }
+    }
+    // fallback, return first file
+    return 0;
+  }
+
+  // populates the stepCoords array. Only needs to be run once on mount.
+  function findSteps() {
+    let children = scrollingRef.current?.children;
+    if (children === undefined) {
+      return;
+    }
+    for (let i = 0; i < children.length; i++) {
+      let child = children[i];
+      let coords = child.getBoundingClientRect();
+      stepCoords.push({
+        topY: coords.top,
+        bottomY: coords.bottom,
+      });
     }
   }
 
@@ -55,14 +124,19 @@ const FinishedPost = (props: FinishedPostProps) => {
           title={props.title}
           tags={props.tags}
           currentStepIndex={currentStepIndex}
-          changeStep={changeStep}
           steps={props.steps}
+          username={props.username}
+          scrollingRef={scrollingRef}
+          publishedAtSeconds={props.publishedAtSeconds}
+          pageYOffset={scrollPosition}
         />
         <PublishedCodeEditor
-          currentFile={props.files[currentFileIndex]}
+          currentFileIndex={currentFileIndex}
           files={props.files}
-          currentStep={props.steps[currentStepIndex]}
+          steps={props.steps}
+          currentStepIndex={currentStepIndex}
           updateFile={updateFile}
+          scrollSpeed={scrollSpeed}
         />
       </div>
     </div>
@@ -70,3 +144,7 @@ const FinishedPost = (props: FinishedPostProps) => {
 };
 
 export default FinishedPost;
+
+// 30 means that if the page yPos travels more than 30 pixels between
+// two onScroll events the scroll speed is above the scroll speed limit
+export const SPEED_SCROLL_LIMIT = 30;

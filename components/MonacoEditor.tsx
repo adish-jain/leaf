@@ -4,6 +4,9 @@ import dynamic from "next/dynamic";
 import "../styles/codeeditor.scss";
 import { editor } from "monaco-editor";
 const MonacoEditor = dynamic(import("react-monaco-editor"), { ssr: false });
+import { motion, AnimatePresence } from "framer-motion";
+import { getMonacoLanguageFromBackend } from "../lib/utils/languageUtils";
+const shortid = require("shortid");
 
 type MonacoEditorWrapperState = {
   showModal: boolean;
@@ -223,32 +226,60 @@ export default class MonacoEditorWrapper extends Component<
 
   LineModal = () => {
     let { start, end } = this.props.lines;
-    if (!this.props.editing) {
-      return <div></div>;
-    }
 
-    if (this.state.showModal) {
-      return (
-        <div className={"line-modal"}>
-          <div className={"adjusted"}>
-            <p>
-              Highlight lines {start} to {end}?
-            </p>
-            <button onClick={(e) => this.saveLines()}>
-              Attach highlighted lines to step.
-            </button>
-            <button>X</button>
-          </div>
-        </div>
-      );
-    } else {
-      return <div></div>;
-    }
+    return (
+      <AnimatePresence>
+        {this.state.showModal && this.props.editing && (
+          <motion.div
+            style={{
+              position: "absolute",
+              margin: "auto",
+              // bottom: 0,
+              // right: 0,
+              left: "30%",
+              zIndex: 1,
+            }}
+            initial={{
+              bottom: "-40px",
+              opacity: 0,
+            }}
+            animate={{
+              bottom: "40px",
+              opacity: 1,
+            }}
+            exit={{
+              opacity: 0,
+              bottom: "0px",
+            }}
+            transition={{
+              duration: 0.3,
+            }}
+          >
+            <div className={"line-modal"}>
+              <div className={"adjusted"}>
+                <p>
+                  Highlight lines {start} to {end}?
+                </p>
+                <button onClick={(e) => this.saveLines()}>
+                  Attach highlighted lines to step.
+                </button>
+                <button
+                  onClick={(e) => {
+                    this.setState({ showModal: false });
+                  }}
+                >
+                  X
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    );
   };
 
   render() {
-    let { draftCode, language } = this.props;
-
+    let { draftCode, language, selectedFile } = this.props;
     return (
       <div>
         <style jsx>{`
@@ -261,8 +292,9 @@ export default class MonacoEditorWrapper extends Component<
         `}</style>
         <this.LineModal />
         <MonacoEditor
+          key={selectedFile.id}
           height={"100%"}
-          language={language}
+          language={getMonacoLanguageFromBackend(language)}
           value={draftCode}
           onChange={(value) => this.props.changeCode(value)}
           options={{
@@ -276,18 +308,11 @@ export default class MonacoEditorWrapper extends Component<
             this.mountEditor(editor, monaco);
             //@ts-ignore
             window.MonacoEnvironment.getWorkerUrl = (moduleId, label) => {
-              if (label === "json") return "/_next/static/json.worker.js";
-              if (label === "go") return "/_next/static/go.worker.js";
-              if (label === "java") return "/_next/static/java.worker.js";
-              if (label === "python") return "/_next/static/python.worker.js";
-              if (label === "ruby") return "/_next/static/ruby.worker.js";
-              if (label === "rust") return "/_next/static/rust.worker.js";
-              if (label === "yaml") return "/_next/static/yaml.worker.js";
-              if (label === "css") return "/_next/static/css.worker.js";
-              if (label === "scss") return "/_next/static/scss.worker.js";
               if (label === "html") return "/_next/static/html.worker.js";
-              if (label === "markdown")
-                return "/_next/static/markdown.worker.js";
+              if (label === "xml") return "/_next/static/xml.worker.js";
+              if (label === "css") return "/_next/static/css.worker.js";
+              if (label === "scss") return "/_next/static/css.worker.js";
+              if (label === "json") return "/_next/static/json.worker.js";
               if (label === "typescript" || label === "javascript")
                 return "/_next/static/ts.worker.js";
               return "/_next/static/editor.worker.js";

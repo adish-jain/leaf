@@ -5,6 +5,7 @@ initFirebaseAdmin();
 let db = admin.firestore();
 
 import { getUidFromUsername, getUsernameFromUid } from "./userUtils";
+import { timeStamp } from "../typescript/types/app_types";
 
 export async function adjustStepOrder(
   uid: string,
@@ -33,11 +34,13 @@ export async function getDraftDataHandler(uid: string, draftId: string) {
       .doc(draftId)
       .get();
     let title = draftData.data().title;
-    let published = draftData.data().published;
-    let postId = draftData.data().postId;
+    let published: boolean = draftData.data().published;
+    let postId: string = draftData.data().postId;
     let tags = draftData.data().tags;
+    let createdAt: timeStamp = draftData.data().createdAt;
+    let publishedAt: timeStamp = draftData.data().publishedAt;
     let files = await getFilesForDraft(uid, draftId);
-    let username = await getUsernameFromUid(uid);
+    let username: string = await getUsernameFromUid(uid);
     let results = {
       title: title,
       files: files,
@@ -46,6 +49,8 @@ export async function getDraftDataHandler(uid: string, draftId: string) {
       postId,
       tags,
       username,
+      createdAt,
+      publishedAt,
     };
     return results;
   } catch (error) {
@@ -58,6 +63,14 @@ export async function getDraftDataHandler(uid: string, draftId: string) {
       published: false,
       postId: "",
       username: "",
+      createdAt: {
+        _seconds: 0,
+        _nanoseconds: 0,
+      },
+      publishedAt: {
+        _seconds: 0,
+        _nanoseconds: 0,
+      },
     };
     return results;
   }

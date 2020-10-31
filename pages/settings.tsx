@@ -61,7 +61,7 @@ export default function SignUp() {
           username={username}
         />
         <div className={"settings"}>
-          <h1 className={"title"}>Settings</h1>
+          <h1 className={"settings-title"}>Settings</h1>
           <hr />
           <Username
             changeNewUsername={changeNewUsername}

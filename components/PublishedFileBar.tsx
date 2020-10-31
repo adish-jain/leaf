@@ -18,10 +18,6 @@ type PublishedFileBarProps = {
 export default function PublishedFileBar(props: PublishedFileBarProps) {
   return (
     <div className={"published-filebar"}>
-      <div className={"title-with-divider"}>
-        <label>files</label>
-        <div></div>
-      </div>
       <div className={"files"}>
         {props.files.map((file, index) => (
           <File

@@ -114,10 +114,10 @@ export default class Publishing extends Component<
     let {
       storedSteps,
       editingStep,
-      changeEditingStep,
       selectedFileIndex,
       files,
       onTitleChange,
+      changeEditingStep,
       saveLines,
       mutateStoredStep,
       saveStepToBackend,

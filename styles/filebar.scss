@@ -9,7 +9,10 @@
 .published-filebar {
   position: relative;
   margin-top: 16px;
-  margin-bottom: 16px;
+  padding-bottom: 16px;
+  margin-left: 16px;
+  border-bottom: 1px solid $leaf-light-gray;
+  background-color: white;
 }
 
 .published-file {
@@ -55,11 +58,7 @@
   }
 }
 
-.published-filebar {
-  position: relative;
-  margin-top: 16px;
-  margin-bottom: 16px;
-}
+
 
 .files {
   display: flex;
