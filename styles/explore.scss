@@ -22,7 +22,6 @@
   background: #ffffff;
   justify-content: center;
   align-items: center;
-
 }
 
 .explore-title {
@@ -50,12 +49,12 @@
   flex-direction: row;
   margin-right: 30px;
   align-items: stretch;
-} 
+}
 
 .search {
   display: flex;
   flex-direction: row;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   position: relative;
 
   img {
@@ -69,9 +68,9 @@
     right: 0%;
     top: 0%;
     bottom: 0%;
-    
-    background: #FFFFFF;
-    box-shadow: 0px 4px 16px #EDECE9;
+
+    background: #ffffff;
+    box-shadow: 0px 4px 16px #edece9;
     height: 40px;
     width: 569px;
     left: 0px;
@@ -119,7 +118,7 @@
   color: black;
   padding: 14px 16px;
   background-color: inherit;
-  font: inherit; 
+  font: inherit;
   margin: 0;
 
   img {
@@ -131,7 +130,7 @@
 .filter-dropdown-content {
   display: block;
   position: absolute;
-  background-color: #FFFEFC;
+  background-color: #fffefc;
 
   width: 70%;
   height: 100%;
@@ -191,8 +190,8 @@
   color: black;
   padding: 14px 16px;
   background-color: inherit;
-  font-family: inherit; 
-  margin: 0; 
+  font-family: inherit;
+  margin: 0;
 
   img {
     max-width: 15px;
@@ -202,7 +201,7 @@
 
 .sort-dropdown-content {
   // display: none;
-  background-color: #FFFEFC;
+  background-color: #fffefc;
   border-radius: 8px;
   min-width: 95px;
   z-index: 2;
@@ -238,8 +237,8 @@
   left: 315px;
   top: 306px;
   margin: 10px;
-  background: #FFFFFF;
-  box-shadow: 0px 4px 16px #EDECE9;
+  background: #ffffff;
+  box-shadow: 0px 4px 16px #edece9;
   border-radius: 8px;
   padding: 8px;
   cursor: pointer;
@@ -251,13 +250,13 @@
   margin-left: 10px;
   padding: 5px;
   word-wrap: normal;
-  
+
   font-family: Arial;
   font-style: normal;
   font-weight: bold;
   font-size: 25px;
   align-items: center;
-  
+
   color: #000000;
 }
 
@@ -268,7 +267,7 @@
   top: 400px;
   margin-left: 10px;
   padding: 5px;
-  
+
   font-family: Arial;
   font-style: italic;
   font-weight: normal;
@@ -276,8 +275,8 @@
   line-height: 17px;
   display: flex;
   align-items: center;
-  
-  color: #C4C4C4;
+
+  color: #c4c4c4;
 }
 
 .post-tags-author {
@@ -289,14 +288,14 @@
   padding: 5px;
 
   .post-tag {
-    background: #F5F5F5;
+    background: #f5f5f5;
     height: 28.12371063232422px;
     width: 70px;
     left: 331px;
     top: 408px;
     border-radius: 3.195876121520996px;
     margin-right: 10px;
-    
+
     font-family: Arial;
     font-style: normal;
     font-weight: normal;
@@ -305,7 +304,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    
+    text-align: center;
+
     color: #000000;
   }
 
@@ -322,8 +322,3 @@
     margin-right: 10px;
   }
 }
-
-
-
-
-

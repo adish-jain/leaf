@@ -9,6 +9,7 @@ import {
 import { useLoggedIn, logOut } from "../../lib/UseLoggedIn";
 import { useFiles } from "../../lib/useFiles";
 import { useSteps } from "../../lib/useSteps";
+import { useTags } from "../../lib/useTags";
 import { useDraftTitle } from "../../lib/useDraftTitle";
 import useSWR from "swr";
 import Publishing from "../../components/Publishing";
@@ -116,6 +117,17 @@ const DraftView = () => {
     saveFileCode,
   } = useFiles(draftId, draftFiles, mutate);
 
+  let { toggleTag } = useTags(
+    tags, 
+    draftId as string, 
+    draftFiles, 
+    errored, 
+    draftPublished, 
+    postId, 
+    username, 
+    mutate
+  );
+
   // const [shouldShowBlock, updateShowBlock] = useState(false);
   const [showPreview, updateShowPreview] = useState(false);
   const [showTags, updateShowTags] = useState(false);
@@ -130,80 +142,6 @@ const DraftView = () => {
       }
     }
     removeFile(toDeleteIndex);
-  }
-
-  function toggleTag(tag: string) {
-    if (typeof tags === "undefined") {
-      var data = {
-        requestedAPI: "updateTags",
-        draftId: draftId,
-        tags: [tag],
-      };
-
-      var selectedTags: string[] = [tag];
-      var button = document.getElementById(tag);
-      button!.style.color = "white";
-      button!.style.background = "#349AE9"
-
-      // optimistic mutate 
-      mutate({
-        files: draftFiles, 
-        errored: errored, 
-        published: draftPublished, 
-        postId: postId, 
-        tags: selectedTags, 
-        username: username}, false);
-    
-      fetch("/api/endpoint", {
-        method: "POST",
-        headers: new Headers({ "Content-Type": "application/json" }),
-        body: JSON.stringify(data),
-      }).then(async (res: any) => {
-        let resJSON = await res.json();
-      });
-
-    } else {
-      if (!tags.includes(tag) && tags.length >= 3) {
-        console.log("Too many tags selected");
-      } else {
-        if (tags.includes(tag)) {
-          var selectedTags: string[] = tags.filter((element: string) => element != tag)
-          var button = document.getElementById(tag);
-          button!.style.color = "black";
-          button!.style.background = "#F5F5F5"
-          console.log(selectedTags);
-          console.log(tag);
-        } else {
-          var selectedTags: string[] = [...tags, tag];
-          var button = document.getElementById(tag);
-          button!.style.color = "white";
-          button!.style.background = "#349AE9"
-        }
-        // update tags in firebase
-        var data = {
-          requestedAPI: "updateTags",
-          draftId: draftId,
-          tags: selectedTags,
-        };
-  
-        // optimistic mutate 
-        mutate({
-          files: draftFiles, 
-          errored: errored, 
-          published: draftPublished, 
-          postId: postId, 
-          tags: selectedTags, 
-          username: username}, false);
-      
-        fetch("/api/endpoint", {
-          method: "POST",
-          headers: new Headers({ "Content-Type": "application/json" }),
-          body: JSON.stringify(data),
-        }).then(async (res: any) => {
-          let resJSON = await res.json();
-        });
-      }
-    }
   }
 
   if (errored) {
