@@ -1,11 +1,13 @@
 import Head from "next/head";
 import { useLoggedIn } from "../lib/UseLoggedIn";
 import { HeaderUnAuthenticated } from "../components/Header";
+import Header from "../components/Header";
 import { useRouter } from "next/router";
 import "../styles/explore.scss";
 import useSWR from "swr";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useUserInfo } from "../lib/useUserInfo";
 
 export default function Pages() {
   const router = useRouter();
@@ -36,6 +38,15 @@ export default function Pages() {
     ],
   };
 
+  type Post = {
+    postId: string;
+    postURL: string;
+    title: string
+    publishedAt: string;
+    tags: string[];
+    username: string;
+  };
+
   let { data: postsData, mutate } = useSWR(
     "getAllPostsData",
     fetcher,
@@ -50,11 +61,7 @@ export default function Pages() {
   const [sortSelectOpened, toggleSortSelectOpened] = useState(false);
 
   const { authenticated, error, loading } = useLoggedIn();
-
-
-  if (authenticated) {
-    window.location.href = "/landing";
-  }
+  const { username } = useUserInfo(authenticated);
 
   useEffect(() => {
     searchAndFilterPosts(filterPosts, postsData, searchFilter, tagFilter, sortFilter);
@@ -70,18 +77,12 @@ export default function Pages() {
       <Head>
         <title>Explore</title>
         <link rel="icon" href="/favicon.ico" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-          if (document.cookie && document.cookie.includes('authed')) {
-            window.location.href = "/landing"
-          }
-        `,
-          }}
-        />
       </Head>
       <main className={"explore-main-wrapper"}>
-        <HeaderUnAuthenticated login={true} signup={true} about={true} />
+        {authenticated ? 
+        (<Header username={username} profile={true} settings={true} logout={true}/>) :
+        (<HeaderUnAuthenticated login={true} signup={true} about={true} />)
+        }
         <TitleText />
         <div className={"search-and-filter"}>
           <AnimatePresence>
@@ -264,23 +265,15 @@ function TagSelect(props: {updateTagFilter: any, tagFilter: string, tagSelectOpe
           }}
           >
           {props.tagSelectOpened ? (
-            <div className={"filter-dropdown-content"}>
-              <div className={"filter-row"}>
-                {allTags.map((tagsArr: Array<string>, index) => (
-                  <div className={"filter-column"}>
-                    <h3>{order[index]}</h3>
-                    {tagsArr.map((tag: string) => (
-                      tag === props.tagFilter ? (
-                        <a className={"filter-selected-option"} onClick={(e) => props.updateTagFilter(tag)}>{tag}</a>
-                      ) : (
-                        <a onClick={(e) => props.updateTagFilter(tag)}>{tag}</a>
-                      )
-                    ))}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ) : (<div></div>)
+            <TagSelectDropDown 
+              allTags={allTags}  
+              order={order}
+              tagFilter={props.tagFilter}
+              updateTagFilter={props.updateTagFilter}
+            />
+            ) : (
+            <div></div>
+            )
           }
           </motion.div>
           }
@@ -288,6 +281,27 @@ function TagSelect(props: {updateTagFilter: any, tagFilter: string, tagSelectOpe
       </div>
     </div>
   )
+}
+
+function TagSelectDropDown(props: { allTags: any, order: string[], tagFilter: string, updateTagFilter: any}) {
+  return (
+    <div className={"filter-dropdown-content"}>
+      <div className={"filter-row"}>
+        {props.allTags.map((tagsArr: Array<string>, index: number) => (
+          <div className={"filter-column"}>
+            <h3>{props.order[index]}</h3>
+            {tagsArr.map((tag: string) => (
+              tag === props.tagFilter ? (
+                <a className={"filter-selected-option"} onClick={(e) => props.updateTagFilter(tag)}>{tag}</a>
+              ) : (
+                <a onClick={(e) => props.updateTagFilter(tag)}>{tag}</a>
+              )
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 function SortSelect(props: {updateSortFilter: any, sortFilter: string, sortSelectOpened: boolean, toggleSortSelectOpen: any, toggleTagSelectOpen: any}) {
@@ -315,18 +329,14 @@ function SortSelect(props: {updateSortFilter: any, sortFilter: string, sortSelec
           }}
           >
           {props.sortSelectOpened ? (
-            <div className={"sort-dropdown-content"}>
-              <div>
-                {sortOptions.map((option: string) => (
-                  option === props.sortFilter ? (
-                    <a className={"sort-selected-option"} onClick={(e) => props.updateSortFilter(option)}>{option}</a>
-                  ) : (
-                    <a onClick={(e) => props.updateSortFilter(option)}>{option}</a>
-                  )
-                ))}
-              </div>
-            </div> 
-          ) : (<div></div>)
+            <SortSelectDropDown 
+              sortOptions={sortOptions}
+              sortFilter={props.sortFilter}
+              updateSortFilter={props.updateSortFilter}
+            />
+            ) : (
+            <div></div>
+            )
           }
           </motion.div>
           }
@@ -336,43 +346,59 @@ function SortSelect(props: {updateSortFilter: any, sortFilter: string, sortSelec
   );
 }
 
+function SortSelectDropDown(props: { sortOptions: string[], sortFilter: string, updateSortFilter: any }) {
+  return (
+    <div className={"sort-dropdown-content"}>
+      <div>
+        {props.sortOptions.map((option: string) => (
+          option === props.sortFilter ? (
+            <a className={"sort-selected-option"} onClick={(e) => props.updateSortFilter(option)}>{option}</a>
+          ) : (
+            <a onClick={(e) => props.updateSortFilter(option)}>{option}</a>
+          )
+        ))}
+      </div>
+    </div> 
+  );
+}
+
 function DisplayPosts(props: {posts: any, router: any, updateTagFilter: any}) {
   try {
     return (
-        <div>
-          {props.posts.length === 0 ? (
-            <h3>No posts found</h3>
-            ) : (
-              <div>
-                {Array.from(props.posts).map((arr: any) => {
-                  return (
-                    <div className={"post-explore"} onClick={() => props.router.push(arr["postURL"])}>
-                      <div className={"post-title-explore"}>
-                        {arr["title"]}
-                      </div>
-                      <div className={"post-date"}>
-                        {new Date(arr["publishedAt"]).toDateString()}
-                      </div>
-                      <div className={"post-tags-author"}>
-                        {arr["tags"] !== undefined ? 
-                          (arr["tags"].map((tag: string) => {
-                            return (
-                            <div className={"post-tag"} onClick={function(e) { props.updateTagFilter(tag); e.stopPropagation()}}>
-                              {tag}
-                            </div>
-                            );
-                          })) : (<div></div>)}
-                          <div className={"post-author"}>
-                          {arr["username"]}
-                        </div>
+      <div>
+        {props.posts.length === 0 ? (
+          <h3>No posts found</h3>
+          ) : (
+            <div>
+              {Array.from(props.posts).map((post: any) => {
+                return (
+                  <div className={"post-explore"} onClick={() => props.router.push(post["postURL"])}>
+                    <div className={"post-title-explore"}>
+                      {post["title"]}
+                    </div>
+                    <div className={"post-date"}>
+                      {new Date(post["publishedAt"]).toDateString()}
+                    </div>
+                    <div className={"post-tags-author"}>
+                      {post["tags"] !== undefined ? 
+                        (post["tags"].map((tag: string) => {
+                          return (
+                          <div className={"post-tag"} onClick={function(e) { props.updateTagFilter(tag); e.stopPropagation()}}>
+                            {tag}
+                          </div>
+                          );
+                        })) : (<div></div>)}
+                        <div className={"post-author"}>
+                        {post["username"]}
                       </div>
                     </div>
-                  );
-                })}
-              </div>
-            )
-          }
-        </div>
+                  </div>
+                );
+              })}
+            </div>
+          )
+        }
+      </div>
     );
   } catch {
     console.log("error fetching posts");

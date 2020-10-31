@@ -56,6 +56,7 @@ export default function SignUp() {
         <Header
           settings={false}
           profile={true}
+          explore={true}
           logout={true}
           username={username}
         />

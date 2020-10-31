@@ -92,6 +92,7 @@ export default function Landing() {
         <Header
           username={username}
           profile={true}
+          explore={true}
           settings={true}
           logout={true}
         />

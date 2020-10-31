@@ -50,13 +50,7 @@ export default class Scrolling extends Component<
     return (
       <div className={"scrolling"}>
         <h1 className={"post-title"}>{title}</h1>
-        <div className={"post-tags"}>
-          {tags === null ? (<div></div>) 
-            : tags.map((tag: string) => (
-              <div className={"post-tag"}>{tag}</div>)
-            )
-          }
-        </div>
+        <PostTags tags={tags} />
         {steps ? (
           steps.map((step, index) => (
             <PublishedStep
@@ -75,6 +69,18 @@ export default class Scrolling extends Component<
       </div>
     );
   }
+}
+
+function PostTags(props: { tags: string[]}) {
+  return (
+    <div className={"post-tags"}>
+      {props.tags === null ? (<div></div>) 
+        : props.tags.map((tag: string) => (
+          <div className={"post-tag"}>{tag}</div>)
+        )
+      }
+    </div>
+  );
 }
 
 function BufferDiv(props: { height: number }) {
