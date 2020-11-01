@@ -42,7 +42,6 @@ export function usePosts(authenticated: boolean) {
     }
   );
 
-
   // Deletes a published post.
   function deletePost(postUid: string) {
     function removeSpecificPost() {
@@ -97,5 +96,5 @@ export function usePosts(authenticated: boolean) {
 
 // Redirects to a published Post
 export function goToPost(username: string, postId: string) {
-  Router.push("/[username]/[postId]", "/" + username + "/" + postId);
+  // Router.replace("/[username]/[postId]", "/" + username + "/" + postId);
 }

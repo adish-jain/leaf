@@ -7,6 +7,7 @@ import { useLoggedIn, logOut, goToIndex } from "../lib/UseLoggedIn";
 import { useDrafts } from "../lib/useDrafts";
 import { useUserInfo } from "../lib/useUserInfo";
 import { usePosts, goToPost } from "../lib/usePosts";
+import Link from "next/link";
 import Header from "../components/Header";
 const dayjs = require("dayjs");
 import { LandingHeader } from "../components/Headers";
@@ -228,13 +229,15 @@ function Post(props: {
   return (
     <div className={"DraftWrapper"}>
       {props.postsEditClicked ? <Editbuttons /> : <div></div>}
-      <div
-        onClick={(e) => props.goToPost(username, postId)}
-        className={"draft"}
-      >
-        <p className={"Draft-Title"}>{props.title}</p>
-        <p>Published on {props.formattedDate}</p>
-      </div>
+      <Link href={`/${username}/${postId}`} passHref>
+        <div
+          // onClick={(e) => props.goToPost(username, postId)}
+          className={"draft"}
+        >
+          <p className={"Draft-Title"}>{props.title}</p>
+          <p>Published on {props.formattedDate}</p>
+        </div>
+      </Link>
     </div>
   );
 }

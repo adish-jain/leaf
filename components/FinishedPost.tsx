@@ -18,11 +18,11 @@ This array keeps track of the top and bottom position of every step.
 We use this array to determine what step is currently in the middle of
 the screen.
 */
-var stepCoords: StepDimensions[] = [];
 
 const STEP_MARGIN = 64;
 
 const FinishedPost = (props: FinishedPostProps) => {
+  let stepCoords: StepDimensions[] = [];
   const [currentStepIndex, updateStep] = useState(0);
   const [currentFileIndex, updateFile] = useState(0);
 
@@ -48,27 +48,27 @@ const FinishedPost = (props: FinishedPostProps) => {
     updateScrollSpeed(scrollSpeed);
 
     // update scroll position
-    console.log("page Y offset is ", window.pageYOffset);
+    // console.log("page Y offset is ", window.pageYOffset);
 
-    console.log(
-      "return: page total height is",
-      document.documentElement.scrollHeight
-    );
+    // console.log(
+    //   "return: page total height is",
+    //   document.documentElement.scrollHeight
+    // );
     updateScrollPosition(window.pageYOffset);
   }, []);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
-    console.log("page total height is", document.documentElement.scrollHeight);
+    // console.log("page total height is", document.documentElement.scrollHeight);
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [handleScroll]);
 
   useEffect(() => {
-    console.log("finding steps");
+    // console.log("finding steps");
     findSteps();
-    console.log(stepCoords);
+    // console.log(stepCoords);
   }, []);
 
   // finds which step is in the middle of the viewport and selects it
@@ -144,6 +144,7 @@ const FinishedPost = (props: FinishedPostProps) => {
           currentStepIndex={currentStepIndex}
           updateFile={updateFile}
           scrollSpeed={scrollSpeed}
+          key={`${props.title} ${props.publishedAtSeconds}`}
         />
       </div>
     </div>
