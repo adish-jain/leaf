@@ -1,8 +1,64 @@
 import Prism from "prismjs";
+import "prismjs";
 import React, { Component } from "react";
 import "../styles/prism-white.css";
 import { File, Step } from "../typescript/types/app_types";
 import { getPrismLanguageFromBackend } from "../lib/utils/languageUtils";
+console.log("adding check");
+const isBrowser = () => typeof window !== "undefined";
+
+if (isBrowser()) {
+  window.Prism = window.Prism || {};
+  //@ts-ignore
+  Prism.manual = true;
+}
+
+//@ts-ignore
+/*
+//html, xml
+import "prismjs/components/prism-markup";
+// css, scss
+import "prismjs/components/prism-css";
+import "prismjs/components/prism-scss";
+// yaml
+import "prismjs/components/prism-yaml";
+// json
+import "prismjs/components/prism-json";
+// typescript
+import "prismjs/components/prism-typescript";
+// tsx, jsx, javascript
+import "prismjs/components/prism-javascript";
+import "prismjs/components/prism-jsx";
+import "prismjs/components/prism-tsx";
+// python
+import "prismjs/components/prism-python";
+// java
+import "prismjs/components/prism-java";
+import "prismjs/components/prism-clike";
+// go
+import "prismjs/components/prism-go";
+// php
+import "prismjs/components/prism-php";
+import "prismjs/components/prism-markup-templating";
+// ruby
+import "prismjs/components/prism-ruby";
+// rust
+import "prismjs/components/prism-rust";
+// swift
+import "prismjs/components/prism-swift";
+// c
+import "prismjs/components/prism-c";
+// objectivec
+import "prismjs/components/prism-objectivec";
+// c++
+import "prismjs/components/prism-cpp";
+// textile/plaintext
+import "prismjs/components/prism-textile";
+// markdown
+import "prismjs/components/prism-markdown";
+// dockerfile
+import "prismjs/components/prism-docker";
+*/
 
 //html, xml
 import "prismjs/components/prism-markup.min";
@@ -48,6 +104,8 @@ import "prismjs/components/prism-markdown.min";
 // dockerfile
 import "prismjs/components/prism-docker.min";
 
+import "prismjs/plugins/unescaped-markup/prism-unescaped-markup.min.js";
+
 import "../styles/prismeditor.scss";
 
 type PrismEditorProps = {
@@ -72,21 +130,26 @@ export default class PrismEditor extends Component<
   constructor(props: PrismEditorProps) {
     super(props);
 
+    //@ts-ignore
+    // document.removeEventListener("DOMContentLoaded", Prism.highlightAll);
+
     this.updateLines = this.updateLines.bind(this);
     this.highlightedLines = this.highlightedLines.bind(this);
     this.renderFile = this.renderFile.bind(this);
     this.Line = this.Line.bind(this);
-
+    console.log("constructor called");
     this.syntaxHighlightFiles();
-
+    // highlightedFiles = ["test", "Test", "Test"];
     this.state = {
       hovered: false,
     };
   }
-
-  // uses prism to create syntax higlighted code
-  // run once on mount and everytime a new file is added or removed.
+  /*
+  uses prism to create syntax higlighted code
+  run once on mount and everytime a new file is added or removed.
+  */
   syntaxHighlightFiles = () => {
+    console.log("syntax higlight called");
     let { files } = this.props;
     for (let i = 0; i < files.length; i++) {
       let prismLanguage = getPrismLanguageFromBackend(files[i].language);
@@ -118,7 +181,7 @@ export default class PrismEditor extends Component<
 
     // file is deleted or added
     if (prevProps.files.length != files.length) {
-      this.syntaxHighlightFiles();
+      // this.syntaxHighlightFiles();
     }
 
     // if file changes
@@ -129,7 +192,8 @@ export default class PrismEditor extends Component<
   }
 
   componentDidMount() {
-    this.syntaxHighlightFiles();
+    // this.syntaxHighlightFiles();
+
     this.updateLines();
   }
 
@@ -296,5 +360,6 @@ export default class PrismEditor extends Component<
 }
 
 function injectHTML(line: string) {
+  console.log("injecting ", line);
   return { __html: line };
 }

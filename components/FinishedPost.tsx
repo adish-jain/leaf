@@ -48,19 +48,27 @@ const FinishedPost = (props: FinishedPostProps) => {
     updateScrollSpeed(scrollSpeed);
 
     // update scroll position
+    console.log("page Y offset is ", window.pageYOffset);
+
+    console.log(
+      "return: page total height is",
+      document.documentElement.scrollHeight
+    );
     updateScrollPosition(window.pageYOffset);
   }, []);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
-
+    console.log("page total height is", document.documentElement.scrollHeight);
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [handleScroll]);
 
   useEffect(() => {
+    console.log("finding steps");
     findSteps();
+    console.log(stepCoords);
   }, []);
 
   // finds which step is in the middle of the viewport and selects it
