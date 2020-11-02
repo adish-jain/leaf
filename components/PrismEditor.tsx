@@ -3,6 +3,14 @@ import React, { Component } from "react";
 import "../styles/prism-white.css";
 import { File, Step } from "../typescript/types/app_types";
 import { getPrismLanguageFromBackend } from "../lib/utils/languageUtils";
+const isBrowser = () => typeof window !== "undefined";
+
+// prevents prism from highlighting immediately
+if (isBrowser()) {
+  window.Prism = window.Prism || {};
+  //@ts-ignore
+  Prism.manual = true;
+}
 
 //html, xml
 import "prismjs/components/prism-markup.min";
@@ -63,12 +71,13 @@ type PrismEditorProps = {
 type PrismEditorState = {
   hovered: boolean;
 };
-let highlightedFiles: string[] = [];
 
 export default class PrismEditor extends Component<
   PrismEditorProps,
   PrismEditorState
 > {
+  highlightedFiles: string[] = [];
+
   constructor(props: PrismEditorProps) {
     super(props);
 
@@ -76,16 +85,15 @@ export default class PrismEditor extends Component<
     this.highlightedLines = this.highlightedLines.bind(this);
     this.renderFile = this.renderFile.bind(this);
     this.Line = this.Line.bind(this);
-
     this.syntaxHighlightFiles();
-
     this.state = {
       hovered: false,
     };
   }
-
-  // uses prism to create syntax higlighted code
-  // run once on mount and everytime a new file is added or removed.
+  /*
+  uses prism to create syntax higlighted code
+  run once on mount and everytime a new file is added or removed.
+  */
   syntaxHighlightFiles = () => {
     let { files } = this.props;
     for (let i = 0; i < files.length; i++) {
@@ -95,7 +103,7 @@ export default class PrismEditor extends Component<
         Prism.languages[prismLanguage],
         files[i].language
       );
-      highlightedFiles.push(highlightedCode);
+      this.highlightedFiles.push(highlightedCode);
     }
   };
 
@@ -176,7 +184,7 @@ export default class PrismEditor extends Component<
   renderFile() {
     let { steps, currentStepIndex, files, currentFileIndex } = this.props;
     let currentFile = files[currentFileIndex];
-    let lines = highlightedFiles[currentFileIndex].split(/\r?\n/);
+    let lines = this.highlightedFiles[currentFileIndex].split(/\r?\n/);
     return <this.CodeFile key={currentFile.id} lines={lines} />;
   }
 

@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import dynamic from "next/dynamic";
 import LanguageBar from "./LanguageBar";
 import FileBar from "./FileBar";
 import ImageOptions from "./ImageOptions";
