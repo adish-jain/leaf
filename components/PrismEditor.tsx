@@ -1,11 +1,11 @@
 import Prism from "prismjs";
-import "prismjs";
 import React, { Component } from "react";
 import "../styles/prism-white.css";
 import { File, Step } from "../typescript/types/app_types";
 import { getPrismLanguageFromBackend } from "../lib/utils/languageUtils";
 const isBrowser = () => typeof window !== "undefined";
 
+// prevents prism from highlighting immediately
 if (isBrowser()) {
   window.Prism = window.Prism || {};
   //@ts-ignore
@@ -55,8 +55,6 @@ import "prismjs/components/prism-textile.min";
 import "prismjs/components/prism-markdown.min";
 // dockerfile
 import "prismjs/components/prism-docker.min";
-
-import "prismjs/plugins/unescaped-markup/prism-unescaped-markup.min.js";
 
 import "../styles/prismeditor.scss";
 
@@ -132,7 +130,7 @@ export default class PrismEditor extends Component<
 
     // file is deleted or added
     if (prevProps.files.length != files.length) {
-      // this.syntaxHighlightFiles();
+      this.syntaxHighlightFiles();
     }
 
     // if file changes
