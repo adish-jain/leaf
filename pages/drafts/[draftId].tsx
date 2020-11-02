@@ -386,7 +386,7 @@ class DraftContent extends Component<DraftContentProps, DraftContentState> {
               moveStepDown={moveStepDown}
               onTitleChange={onTitleChange}
               editingStep={editingStep}
-              changeEditingStep={changeEditingStep}
+              changeEditingStep={this.changeEditingStepWrapper}
               selectedFileIndex={selectedFileIndex}
               lines={lines}
               files={draftFiles}
