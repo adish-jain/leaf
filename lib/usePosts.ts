@@ -96,5 +96,5 @@ export function usePosts(authenticated: boolean) {
 
 // Redirects to a published Post
 export function goToPost(username: string, postId: string) {
-  // Router.replace("/[username]/[postId]", "/" + username + "/" + postId);
+  Router.replace("/[username]/[postId]", "/" + username + "/" + postId);
 }

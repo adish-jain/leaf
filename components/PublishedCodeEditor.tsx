@@ -89,7 +89,6 @@ export default class PublishedCodeEditor extends Component<
           imageViewRef={this.imageViewRef}
           prismWrapper={this.prismWrapper}
           animateLines={this.animateLines}
-          key={currentFile.id}
         />
 
         <PublishedLanguageBar language={currentFile.language} />

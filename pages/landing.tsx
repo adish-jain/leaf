@@ -229,15 +229,13 @@ function Post(props: {
   return (
     <div className={"DraftWrapper"}>
       {props.postsEditClicked ? <Editbuttons /> : <div></div>}
-      <Link href={`/${username}/${postId}`} passHref>
-        <div
-          // onClick={(e) => props.goToPost(username, postId)}
-          className={"draft"}
-        >
-          <p className={"Draft-Title"}>{props.title}</p>
-          <p>Published on {props.formattedDate}</p>
-        </div>
-      </Link>
+      <div
+        onClick={(e) => props.goToPost(username, postId)}
+        className={"draft"}
+      >
+        <p className={"Draft-Title"}>{props.title}</p>
+        <p>Published on {props.formattedDate}</p>
+      </div>
     </div>
   );
 }

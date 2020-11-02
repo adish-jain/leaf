@@ -211,7 +211,7 @@ export default class PrismEditor extends Component<
               <this.Line
                 steps={steps}
                 currentStepIndex={currentStepIndex}
-                key={`Line-${index} ${currentFile.id}`}
+                key={`Line-${index}`}
                 index={index}
                 line={line}
                 files={files}
@@ -301,7 +301,7 @@ export default class PrismEditor extends Component<
         ref={prismWrapper}
         className={"prism-editor"}
       >
-        <this.renderFile key={currentFile.id} />
+        <this.renderFile />
       </div>
     );
   }
