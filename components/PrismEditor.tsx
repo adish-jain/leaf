@@ -81,15 +81,11 @@ export default class PrismEditor extends Component<
   constructor(props: PrismEditorProps) {
     super(props);
 
-    //@ts-ignore
-    // document.removeEventListener("DOMContentLoaded", Prism.highlightAll);
-
     this.updateLines = this.updateLines.bind(this);
     this.highlightedLines = this.highlightedLines.bind(this);
     this.renderFile = this.renderFile.bind(this);
     this.Line = this.Line.bind(this);
     this.syntaxHighlightFiles();
-    // highlightedFiles = ["test", "Test", "Test"];
     this.state = {
       hovered: false,
     };

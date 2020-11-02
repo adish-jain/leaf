@@ -7,8 +7,6 @@ import { useLoggedIn, logOut, goToIndex } from "../lib/UseLoggedIn";
 import { useDrafts } from "../lib/useDrafts";
 import { useUserInfo } from "../lib/useUserInfo";
 import { usePosts, goToPost } from "../lib/usePosts";
-import Link from "next/link";
-import Header from "../components/Header";
 const dayjs = require("dayjs");
 import { LandingHeader } from "../components/Headers";
 
