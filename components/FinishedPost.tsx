@@ -1,4 +1,9 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useLayoutEffect,
+} from "react";
 import Scrolling from "./Scrolling";
 import { useLoggedIn } from "../lib/UseLoggedIn";
 import PublishedCodeEditor from "./PublishedCodeEditor";
@@ -22,7 +27,7 @@ the screen.
 const STEP_MARGIN = 64;
 
 const FinishedPost = (props: FinishedPostProps) => {
-  let stepCoords: StepDimensions[] = [];
+  const [stepCoords, updateStepCoords] = useState<StepDimensions[]>([]);
   const [currentStepIndex, updateStep] = useState(0);
   const [currentFileIndex, updateFile] = useState(0);
 
@@ -34,22 +39,25 @@ const FinishedPost = (props: FinishedPostProps) => {
   const scrollingRef = React.useRef<HTMLDivElement>(null);
   const { authenticated, error, loading } = useLoggedIn();
 
-  const handleScroll = useCallback((event) => {
-    // select new step
-    let newStepIndex = selectStepIndex();
-    updateStep(newStepIndex);
+  const handleScroll = useCallback(
+    (event) => {
+      // select new step
+      let newStepIndex = selectStepIndex();
+      updateStep(newStepIndex);
 
-    // select new file
-    let newFileIndex = selectFileIndex(newStepIndex);
-    updateFile(newFileIndex);
+      // select new file
+      let newFileIndex = selectFileIndex(newStepIndex);
+      updateFile(newFileIndex);
 
-    // update scroll speed
-    let scrollSpeed = checkScrollSpeed();
-    updateScrollSpeed(scrollSpeed);
+      // update scroll speed
+      let scrollSpeed = checkScrollSpeed();
+      updateScrollSpeed(scrollSpeed);
 
-    // update scroll position
-    updateScrollPosition(window.pageYOffset);
-  }, []);
+      // update scroll position
+      updateScrollPosition(window.pageYOffset);
+    },
+    [stepCoords]
+  );
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -65,8 +73,10 @@ const FinishedPost = (props: FinishedPostProps) => {
   // finds which step is in the middle of the viewport and selects it
   function selectStepIndex(): number {
     let pos = window.pageYOffset + window.innerHeight / 2;
+    console.log(stepCoords);
     for (let i = 0; i < stepCoords.length; i++) {
       // if coord is inside step
+      // console.log(stepCoords[i]);
       if (pos < stepCoords[0].topY) {
         return 0;
       }
@@ -96,6 +106,7 @@ const FinishedPost = (props: FinishedPostProps) => {
 
   // populates the stepCoords array. Only needs to be run once on mount.
   function findSteps() {
+    let newStepCoords: StepDimensions[] = [];
     let children = scrollingRef.current?.children;
     if (children === undefined) {
       return;
@@ -103,11 +114,13 @@ const FinishedPost = (props: FinishedPostProps) => {
     for (let i = 0; i < children.length; i++) {
       let child = children[i];
       let coords = child.getBoundingClientRect();
-      stepCoords.push({
+      newStepCoords.push({
         topY: coords.top,
         bottomY: coords.bottom,
       });
     }
+    console.log(newStepCoords);
+    updateStepCoords(newStepCoords);
   }
 
   return (

@@ -9,17 +9,19 @@
   padding: 24px;
   // border: 1px solid $leaf-light-gray;
   border-left: 2px solid $leaf-light-gray;
+  transition: color, box-shadow 0.2s ease-in-out;
 
   // border-radius: 8px;
   box-sizing: border-box;
   color: $leaf-light-gray;
-  transition: all 0.2s ease-in-out;
+  // transition: all 0.2s ease-in-out;
   // transform: scale(0.97);
   cursor: pointer;
 
   &--Selected {
     @extend .Step;
-    transition: all 0.2s ease-in-out;
+    // transition: all 0.2s ease-in-out;
+    transition: color, box-shadow 0.2s ease-in-out;
 
     box-shadow: 0px 4px 16px #edece9;
     background: #ffffff;
@@ -39,7 +41,6 @@
   color: #000000;
   transition: color 0.2s ease-in-out;
 }
-
 
 .InnerHTML {
   word-break: break-word;
