@@ -41,6 +41,7 @@ const FinishedPost = (props: FinishedPostProps) => {
 
   const handleScroll = useCallback(
     (event) => {
+      // findSteps();
       // select new step
       let newStepIndex = selectStepIndex();
       updateStep(newStepIndex);
@@ -73,6 +74,7 @@ const FinishedPost = (props: FinishedPostProps) => {
   // finds which step is in the middle of the viewport and selects it
   function selectStepIndex(): number {
     let pos = window.pageYOffset + window.innerHeight / 2;
+    // let stepCoords = findSteps();
     console.log(stepCoords);
     for (let i = 0; i < stepCoords.length; i++) {
       // if coord is inside step
@@ -114,13 +116,15 @@ const FinishedPost = (props: FinishedPostProps) => {
     for (let i = 0; i < children.length; i++) {
       let child = children[i];
       let coords = child.getBoundingClientRect();
+      console.log(coords);
       newStepCoords.push({
-        topY: coords.top,
-        bottomY: coords.bottom,
+        topY: coords.top + window.pageYOffset,
+        bottomY: coords.bottom + window.pageYOffset,
       });
     }
     console.log(newStepCoords);
     updateStepCoords(newStepCoords);
+    // return newStepCoords;
   }
 
   return (
