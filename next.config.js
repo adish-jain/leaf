@@ -68,32 +68,30 @@ module.exports = withMDX(
             new MonacoWebpackPlugin({
               // Add languages as needed...
               languages: [
+                "html",
+                "css",
+                "yaml",
+                "json",
                 "javascript",
                 "typescript",
-                "go",
-                "ruby",
-                "java",
                 "python",
-                "rust",
-                "yaml",
-                "css",
-                "scss",
-                "html",
-                "markdown",
-                "cpp",
-                "dockerfile",
-                "xml",
-                "swift",
-                "objective-c",
+                "java",
+                "go",
                 "php",
+                "ruby",
+                "objective-c",
+                "cpp",
+                "markdown",
+                "xml",
+                "rust",
+                "swift",
+                "dockerfile",
               ],
               filename: "static/[name].worker.js",
             })
           );
-
           return config;
         },
-        pageExtensions: ["js", "jsx", "ts", "tsx", "md", "mdx"],
       })
     )
   )

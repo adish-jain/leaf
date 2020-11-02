@@ -14,6 +14,7 @@ type ImageViewProps = {
 type ImageViewState = {
   upload: boolean;
   uploadFailed: boolean;
+  imageName: string;
 };
 
 export default class ImageView extends Component<
@@ -25,6 +26,7 @@ export default class ImageView extends Component<
     this.state = {
       upload: false,
       uploadFailed: false,
+      imageName: "",
     };
 
     this.UploadScreen = this.UploadScreen.bind(this);
@@ -40,12 +42,15 @@ export default class ImageView extends Component<
 
   handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
     selectedImage = e.target.files![0];
-    this.setState({ upload: true });
-    this.setState({ uploadFailed: false });
+    this.setState({
+      upload: true,
+      uploadFailed: false,
+      imageName: selectedImage.name,
+    });
   }
 
   handleImageSelect() {
-    this.setState({ upload: false });
+    this.setState({ upload: false, imageName: "" });
     this.setState({ uploadFailed: false });
   }
 
@@ -122,7 +127,7 @@ export default class ImageView extends Component<
     return (
       <div className={"preview"}>
         <div className={"submit"}>
-          <p>Selected {"name"}</p>
+          <p>Selected {this.state.imageName}</p>
           <div className={"submitButtons"}>
             <button onClick={(e) => this.handleImageSelect()}>Go Back</button>
             <button onClick={(e) => this.handleImageSubmit()}>Submit</button>
@@ -168,7 +173,10 @@ export default class ImageView extends Component<
         <AnimatePresence>
           {show && (
             <motion.div
-              style={{ overflow: "hidden", paddingBottom: "8px" }}
+              style={{
+                // overflow: "hidden",
+                paddingBottom: "8px",
+              }}
               initial={
                 {
                   height: 0,

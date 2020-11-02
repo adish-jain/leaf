@@ -1,3 +1,5 @@
+@import "commonui.scss";
+
 .scrolling {
   // min-width: 400px;
   // flex-grow: 100;
@@ -5,6 +7,59 @@
   width: 440px;
   // margin-left: 3%;
   // margin-right: 3%;
+}
+
+.post-title {
+  padding: 0;
+  margin: 0;
+}
+
+.scroll-down {
+  // justify-content: center;
+  display: flex;
+  margin-top: 56px;
+  margin-bottom: 56px;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  color: $gray-text;
+  transition: opacity 0.2s ease-in-out;
+
+  p {
+    margin: 0;
+    font-size: 28px;
+    margin-bottom: 16px;
+  }
+
+  span {
+    font-size: 28px;
+    position: relative;
+    animation-name: up-down;
+    animation-duration: 1.3s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    transition: transform 0.2s ease-in-out;
+  }
+}
+
+@keyframes up-down {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(8px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.published-by {
+  margin-top: 16px;
+  padding: 0;
+  margin-bottom: 0px;
+  @include link-item;
 }
 
 .step {
@@ -16,8 +71,18 @@
   padding: 16px;
 }
 
+.intersection-zone {
+  position: fixed;
+  height: 1px;
+  background-color: black;
+  width: 100%;
+}
+
 .post-title {
   overflow-wrap: break-word;
+  font-size: 40px;
+  margin-left: 0;
+  padding-left: 0;
 }
 
 /* Extra small devices (phones, 600px and down) */

@@ -8,7 +8,7 @@ import { getDraftDataFromPostId } from "../../lib/postUtils";
 import DefaultErrorPage from "next/error";
 import { useRouter } from "next/router";
 import ErroredPage from "../404";
-import { File, Step } from "../../typescript/types/app_types";
+import { File, Step, timeStamp } from "../../typescript/types/app_types";
 
 export async function getStaticPaths() {
   return {
@@ -34,6 +34,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     let steps = postData.steps;
     let files = postData.files;
     let title = postData.title;
+    let publishedAt = postData.publishedAt;
     let errored = postData.errored;
     // replace undefineds with null to prevent nextJS errors
     for (let i = 0; i < steps.length; i++) {
@@ -55,6 +56,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
         files,
         errored,
         username,
+        publishedAtSeconds: publishedAt._seconds,
       },
     };
   } catch (error) {
@@ -73,6 +75,7 @@ type PostPageProps = {
   errored: boolean;
   files: File[];
   username: string;
+  publishedAtSeconds: number;
 };
 
 const Post = (props: PostPageProps) => {
@@ -91,6 +94,7 @@ const Post = (props: PostPageProps) => {
       <Head>
         <title>{props.title}</title>
         <link rel="icon" href="/favicon.ico" />
+        {/* <script src="https://unpkg.com/intersection-observer-debugger"></script> */}
       </Head>
       <main>
         <FinishedPost
@@ -99,6 +103,7 @@ const Post = (props: PostPageProps) => {
           files={props.files}
           title={props.title}
           previewMode={false}
+          publishedAtSeconds={props.publishedAtSeconds}
         />
       </main>
     </div>
