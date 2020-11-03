@@ -61,8 +61,9 @@ export default class TagsView extends Component<TagsProps, TagsState> {
     );
   }
 
-  NoSelectedTags(props: { tagsList: any }) {
-    return props.tagsList.map((tag: string) => (
+  NoSelectedTags(props: { tagsList: string[] }){
+    return <>{
+      props.tagsList.map((tag: string) => (
       <button
         id={tag}
         className={"tag-button"}
@@ -70,11 +71,12 @@ export default class TagsView extends Component<TagsProps, TagsState> {
       >
         {tag}
       </button>
-    ));
+    ))}</>;
   }
 
-  SomeSelectedTags(props: { tagsList: any }) {
-    return props.tagsList.map((tag: string) =>
+  SomeSelectedTags(props: { tagsList: string[] }) {
+    return <>{
+      props.tagsList.map((tag: string) =>
       this.props.selectedTags.includes(tag) ? (
         <button
           id={tag}
@@ -92,7 +94,7 @@ export default class TagsView extends Component<TagsProps, TagsState> {
           {tag}
         </button>
       )
-    );
+    )}</>;
   }
 
   render() {

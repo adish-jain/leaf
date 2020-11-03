@@ -33,6 +33,15 @@ export type FinishedPostProps = {
   publishedAtSeconds: number;
 };
 
+export type Post = {
+  postId: string;
+  postURL: string;
+  title: string;
+  publishedAt: timeStamp;
+  tags: string[];
+  username: string;
+};
+
 export type timeStamp = {
   _nanoseconds: number;
   _seconds: number;

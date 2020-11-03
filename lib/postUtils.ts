@@ -5,7 +5,7 @@ initFirebaseAdmin();
 let db = admin.firestore();
 
 import { getUidFromUsername, getUsernameFromUid } from "./userUtils";
-import { timeStamp } from "../typescript/types/app_types";
+import { timeStamp, Post } from "../typescript/types/app_types";
 
 export async function adjustStepOrder(
   uid: string,
@@ -164,7 +164,7 @@ export async function getAllPostsHandler() {
   let activeRef = await db.collectionGroup("drafts").where("published", "==", true).get();
   const arr: any[] = [];
   activeRef.forEach((child: any) => arr.push(child));
-  var results: any[] = [];
+  var results: Post[] = [];
   for(const doc of arr) {
     let username = await doc.ref.parent.parent.get().then((docSnapshot: any) => {
       return docSnapshot.data().username;
@@ -181,19 +181,12 @@ export async function getAllPostsHandler() {
     });
   }
   // sort by published date
-  results.sort(function(a: any, b: any) {
-    var keyA = new Date(a.publishedAt),
-      keyB = new Date(b.publishedAt);
+  results.sort(function(a: Post, b: Post) {
+    var keyA = a.publishedAt,
+      keyB = b.publishedAt;
     if (keyA < keyB) return -1;
     if (keyA > keyB) return 1;
     return 0;
   });
   return results;
 }
-
-type File = {
-  id: string;
-  language: string;
-  code: string;
-  name: string;
-};

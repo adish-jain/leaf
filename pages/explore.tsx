@@ -5,13 +5,13 @@ import Header from "../components/Header";
 import { useRouter } from "next/router";
 import "../styles/explore.scss";
 import useSWR from "swr";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useUserInfo } from "../lib/useUserInfo";
+import { Post } from "../typescript/types/app_types";
+const dayjs = require("dayjs");
 
 export default function Pages() {
-  const router = useRouter();
-
   const rawData = {
     requestedAPI: "getAllPostsData",
   };
@@ -36,15 +36,6 @@ export default function Pages() {
         username: "",
       },
     ],
-  };
-
-  type Post = {
-    postId: string;
-    postURL: string;
-    title: string;
-    publishedAt: string;
-    tags: string[];
-    username: string;
   };
 
   let { data: postsData, mutate } = useSWR("getAllPostsData", fetcher, {
@@ -168,7 +159,6 @@ export default function Pages() {
         </div>
         <DisplayPosts
           posts={filteredPosts}
-          router={router}
           updateTagFilter={updateTagFilter}
         />
       </main>
@@ -186,26 +176,26 @@ function TitleText() {
 
 // this will combine searchFilter, tagFilter, and sortFilter to give filtered results
 function searchAndFilterPosts(
-  filterPosts: any,
-  allPosts: any,
+  filterPosts: Dispatch<any>,
+  allPosts: Post[],
   searchFilter: string,
   tagFilter: string,
   sortFilter: string
 ) {
-  var newPosts = Array.from(allPosts).filter((post: any) =>
+  var newPosts = Array.from(allPosts).filter((post: Post) =>
     post["title"].toLowerCase().includes(searchFilter.toLowerCase())
   );
   if (tagFilter !== "All") {
     newPosts = Array.from(newPosts).filter(
-      (post: any) => typeof post["tags"] !== "undefined"
+      (post: Post) => typeof post["tags"] !== "undefined"
     );
-    newPosts = newPosts.filter((post: any) => post["tags"].includes(tagFilter));
+    newPosts = newPosts.filter((post: Post) => post["tags"].includes(tagFilter));
   }
   switch (sortFilter) {
     case "Date": {
-      newPosts.sort(function (a: any, b: any) {
-        var keyA = new Date(a.publishedAt),
-          keyB = new Date(b.publishedAt);
+      newPosts.sort(function (a: Post, b: Post) {
+        var keyA = a.publishedAt,
+          keyB = b.publishedAt;
         if (keyA < keyB) return -1;
         if (keyA > keyB) return 1;
         return 0;
@@ -213,9 +203,9 @@ function searchAndFilterPosts(
       break;
     }
     case "Recent": {
-      newPosts.sort(function (a: any, b: any) {
-        var keyA = new Date(a.publishedAt),
-          keyB = new Date(b.publishedAt);
+      newPosts.sort(function (a: Post, b: Post) {
+        var keyA = a.publishedAt,
+          keyB = b.publishedAt;
         if (keyA > keyB) return -1;
         if (keyA < keyB) return 1;
         return 0;
@@ -223,7 +213,7 @@ function searchAndFilterPosts(
       break;
     }
     case "Title": {
-      newPosts.sort(function (a: any, b: any) {
+      newPosts.sort(function (a: Post, b: Post) {
         var keyA = a.title.toLowerCase(),
           keyB = b.title.toLowerCase();
         if (keyA < keyB) return -1;
@@ -233,7 +223,7 @@ function searchAndFilterPosts(
       break;
     }
     case "Author": {
-      newPosts.sort(function (a: any, b: any) {
+      newPosts.sort(function (a: Post, b: Post) {
         var keyA = a.username.toLowerCase(),
           keyB = b.username.toLowerCase();
         if (keyA < keyB) return -1;
@@ -247,7 +237,7 @@ function searchAndFilterPosts(
 }
 
 // TODO want to implement google-search like suggestions for tags
-function SearchBar(props: { updateSearchFilter: any }) {
+function SearchBar(props: { updateSearchFilter: Dispatch<SetStateAction<string>> }) {
   return (
     <div className={"search"}>
       <input
@@ -261,11 +251,11 @@ function SearchBar(props: { updateSearchFilter: any }) {
 }
 
 function TagSelect(props: {
-  updateTagFilter: any;
+  updateTagFilter: Dispatch<SetStateAction<string>>;
   tagFilter: string;
   tagSelectOpened: boolean;
-  toggleTagSelectOpen: any;
-  toggleSortSelectOpen: any;
+  toggleTagSelectOpen: Dispatch<SetStateAction<boolean>>;
+  toggleSortSelectOpen: Dispatch<SetStateAction<boolean>>;
 }) {
   const webdev = [
     "Angular",
@@ -337,10 +327,10 @@ function TagSelect(props: {
 }
 
 function TagSelectDropDown(props: {
-  allTags: any;
+  allTags: string[][];
   order: string[];
   tagFilter: string;
-  updateTagFilter: any;
+  updateTagFilter: Dispatch<SetStateAction<string>>;
 }) {
   return (
     <div className={"filter-dropdown-content"}>
@@ -368,11 +358,11 @@ function TagSelectDropDown(props: {
 }
 
 function SortSelect(props: {
-  updateSortFilter: any;
+  updateSortFilter: Dispatch<SetStateAction<string>>;
   sortFilter: string;
   sortSelectOpened: boolean;
-  toggleSortSelectOpen: any;
-  toggleTagSelectOpen: any;
+  toggleSortSelectOpen: Dispatch<SetStateAction<boolean>>;
+  toggleTagSelectOpen: Dispatch<SetStateAction<boolean>>;
 }) {
   const sortOptions = ["Date", "Recent", "Title", "Author"];
   return (
@@ -423,7 +413,7 @@ function SortSelect(props: {
 function SortSelectDropDown(props: {
   sortOptions: string[];
   sortFilter: string;
-  updateSortFilter: any;
+  updateSortFilter: Dispatch<SetStateAction<string>>;
 }) {
   return (
     <div className={"sort-dropdown-content"}>
@@ -446,26 +436,26 @@ function SortSelectDropDown(props: {
 }
 
 function DisplayPosts(props: {
-  posts: any;
-  router: any;
-  updateTagFilter: any;
+  posts: Post[];
+  updateTagFilter: Dispatch<SetStateAction<string>>;
 }) {
   try {
+    const router = useRouter();
     return (
       <div>
         {props.posts.length === 0 ? (
           <h3>No posts found</h3>
         ) : (
           <div>
-            {Array.from(props.posts).map((post: any) => {
+            {Array.from(props.posts).map((post: Post) => {
               return (
                 <div
                   className={"post-explore"}
-                  onClick={() => props.router.push(post["postURL"])}
+                  onClick={() => router.push(post["postURL"])}
                 >
                   <div className={"post-title-explore"}>{post["title"]}</div>
                   <div className={"post-date"}>
-                    {new Date(post["publishedAt"]).toDateString()}
+                    {dayjs(post["publishedAt"]).format("MMMM D YYYY")}
                   </div>
                   <div className={"post-tags-author"}>
                     {post["tags"] !== undefined ? (
@@ -496,6 +486,6 @@ function DisplayPosts(props: {
     );
   } catch {
     console.log("error fetching posts");
-    return <div></div>;
+    return <div><h3>Error Fetching Posts</h3></div>;
   }
 }
