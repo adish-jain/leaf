@@ -98,7 +98,7 @@ const UserPage = (props: UserPageProps) => {
       </Head>
       <main>
         {authenticated ? (
-          <Header profile={false} settings={true} logout={true} />
+          <Header profile={false} explore={true} settings={true} logout={true} />
         ) : (
           <HeaderUnAuthenticated />
         )}

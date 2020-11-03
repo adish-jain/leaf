@@ -1,21 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebaseAdmin, initFirebase } from "../initFirebase";
-import { getUser, checkUsernameDNE, getUsernameFromUid } from "../userUtils";
-import { getUserStepsForDraft } from "../postUtils";
-const shortId = require("shortid");
+import { getUser, getUsernameFromUid } from "../userUtils";
 const admin = require("firebase-admin");
-const firebase = require("firebase/app");
 
 let db = admin.firestore();
 initFirebaseAdmin();
 initFirebase();
-
-type File = {
-  id: string;
-  language: string;
-  code: string;
-  name: string;
-};
 
 export default async function publishPost(
   req: NextApiRequest,
@@ -58,17 +48,19 @@ export default async function publishPost(
   let deduplicationId = Math.random().toString(36).substring(2, 10);
   let postId = titleWithDashes + "-" + deduplicationId;
 
+  let username = await getUsernameFromUid(uid);
+  let newURL = "/" + username + "/" + postId;
+
   db.collection("users").doc(uid).collection("drafts").doc(draftId).update({
     published: true,
     publishedAt: admin.firestore.FieldValue.serverTimestamp(),
-    postId: postId,
+    postId: postId
   });
-
-  let username = await getUsernameFromUid(uid);
-  let newURL = "/" + username + "/" + postId;
+  
   res.send({
     newURL: newURL,
   });
+
   return;
 }
 

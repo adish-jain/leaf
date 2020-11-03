@@ -9,6 +9,7 @@ const dayjs = require("dayjs");
 type ScrollingProps = {
   // changeStep: (newStep: number, yPos: number, entered: boolean) => void;
   steps: Step[];
+  tags: string[];
   currentStepIndex: number;
   title: string;
   username: string;
@@ -85,7 +86,7 @@ export default class Scrolling extends Component<
   };
 
   TitleSection() {
-    let { username, title, publishedAtSeconds } = this.props;
+    let { username, title, tags, publishedAtSeconds } = this.props;
     let date = new Date(publishedAtSeconds * 1000);
     let formattedDate = dayjs(date).format("MMMM D YYYY");
     return (
@@ -98,13 +99,14 @@ export default class Scrolling extends Component<
           </Link>
           on {formattedDate}
         </p>
+        <PostTags tags={tags} />
         <this.ScrollDown />
       </div>
     );
   }
 
   render() {
-    let { steps, currentStepIndex, title, scrollingRef } = this.props;
+    let { steps, currentStepIndex, title, tags, scrollingRef } = this.props;
     let { height } = this.state;
 
     return (
@@ -133,6 +135,18 @@ export default class Scrolling extends Component<
       </div>
     );
   }
+}
+
+function PostTags(props: { tags: string[]}) {
+  return (
+    <div className={"post-tags"}>
+      {(props.tags === null || props.tags === undefined) ? (<div></div>) 
+        : props.tags.map((tag: string) => (
+          <div className={"post-tag"}>{tag}</div>)
+        )
+      }
+    </div>
+  );
 }
 
 function BufferDiv(props: { height: number }) {

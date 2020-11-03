@@ -8,10 +8,12 @@ import {
 import { useLoggedIn } from "../../lib/UseLoggedIn";
 import { useFiles } from "../../lib/useFiles";
 import { useSteps } from "../../lib/useSteps";
+import { useTags } from "../../lib/useTags";
 import { useDraftTitle } from "../../lib/useDraftTitle";
 import useSWR from "swr";
 import Publishing from "../../components/Publishing";
 import CodeEditor from "../../components/CodeEditor";
+import Tags from "../../components/Tags";
 import DefaultErrorPage from "next/error";
 import Head from "next/head";
 import FinishedPost from "../../components/FinishedPost";
@@ -58,6 +60,7 @@ const DraftView = () => {
     errored: false,
     published: false,
     postId: "",
+    tags: [],
     username: "",
     createdAt: {
       _nanoseconds: 0,
@@ -75,6 +78,7 @@ const DraftView = () => {
   let errored = draftData["errored"];
   const draftPublished = draftData["published"];
   const postId = draftData["postId"];
+  const tags = draftData["tags"];
   const username = draftData["username"];
   const createdAt = draftData["createdAt"];
 
@@ -114,8 +118,21 @@ const DraftView = () => {
     saveFileCode,
   } = useFiles(draftId, draftFiles, mutate);
 
-  const [shouldShowBlock, updateShowBlock] = useState(false);
+  let { toggleTag } = useTags(
+    tags, 
+    draftId as string, 
+    draftFiles, 
+    errored, 
+    draftPublished, 
+    postId, 
+    username, 
+    createdAt,
+    mutate
+  );
+
+  // const [shouldShowBlock, updateShowBlock] = useState(false);
   const [showPreview, updateShowPreview] = useState(false);
+  const [showTags, updateShowTags] = useState(false);
 
   // wrapper function for deleting a file.
   // when a file is deleted, make sure all associated steps remove that file
@@ -174,6 +191,7 @@ const DraftView = () => {
               <FinishedPost
                 steps={realSteps!}
                 title={draftTitle}
+                tags={tags}
                 username={username}
                 files={draftFiles}
                 updateShowPreview={updateShowPreview}
@@ -183,43 +201,55 @@ const DraftView = () => {
             </motion.div>
           )}
         </AnimatePresence>
-        <DraftContent
-          showPreview={showPreview}
-          username={username}
-          postId={postId}
-          codeFiles={codeFiles}
-          selectedFileIndex={selectedFileIndex}
-          draftFiles={draftFiles}
-          realSteps={realSteps}
-          editingStep={editingStep}
-          lines={lines}
-          changeEditingStep={changeEditingStep}
-          mutateStoredStep={mutateStoredStep}
-          changeLines={changeLines}
-          saveStepToBackend={saveStepToBackend}
-          deleteStoredStep={deleteStoredStep}
-          moveStepDown={moveStepDown}
-          onTitleChange={onTitleChange}
-          deleteStepAndFile={deleteStepAndFile}
-          draftPublished={draftPublished}
-          draftTitle={draftTitle}
-          saveFileCode={saveFileCode}
-          onNameChange={onNameChange}
-          saveFileName={saveFileName}
-          changeFileLanguage={changeFileLanguage}
-          changeSelectedFileIndex={changeSelectedFileIndex}
-          changeCode={changeCode}
-          removeFile={removeFile}
-          addFile={addFile}
-          draftId={draftId as string}
-          saveStep={saveStep}
-          moveStepUp={moveStepUp}
-          saveLines={saveLines}
-          removeLines={removeLines}
-          addStepImage={addStepImage}
-          deleteStepImage={deleteStepImage}
-          updateShowPreview={updateShowPreview}
-        />
+        {showTags ? 
+          (<Tags 
+            showTags={showTags}
+            updateShowTags={updateShowTags}
+            title={draftTitle}
+            selectedTags={tags}
+            toggleTag={toggleTag}
+          />) : 
+          (<DraftContent
+            showPreview={showPreview}
+            showTags={showTags}
+            username={username}
+            postId={postId}
+            codeFiles={codeFiles}
+            selectedFileIndex={selectedFileIndex}
+            draftFiles={draftFiles}
+            realSteps={realSteps}
+            editingStep={editingStep}
+            lines={lines}
+            tags={tags}
+            changeEditingStep={changeEditingStep}
+            mutateStoredStep={mutateStoredStep}
+            changeLines={changeLines}
+            saveStepToBackend={saveStepToBackend}
+            deleteStoredStep={deleteStoredStep}
+            moveStepDown={moveStepDown}
+            onTitleChange={onTitleChange}
+            deleteStepAndFile={deleteStepAndFile}
+            draftPublished={draftPublished}
+            draftTitle={draftTitle}
+            saveFileCode={saveFileCode}
+            onNameChange={onNameChange}
+            saveFileName={saveFileName}
+            changeFileLanguage={changeFileLanguage}
+            changeSelectedFileIndex={changeSelectedFileIndex}
+            changeCode={changeCode}
+            removeFile={removeFile}
+            addFile={addFile}
+            draftId={draftId as string}
+            saveStep={saveStep}
+            moveStepUp={moveStepUp}
+            saveLines={saveLines}
+            removeLines={removeLines}
+            addStepImage={addStepImage}
+            deleteStepImage={deleteStepImage}
+            updateShowPreview={updateShowPreview}
+            updateShowTags={updateShowTags}
+            mutate={mutate}
+        />)}
       </main>
     </div>
   );
@@ -227,6 +257,7 @@ const DraftView = () => {
 
 type DraftContentProps = {
   showPreview: boolean;
+  showTags: boolean;
   username: string;
   postId: string;
   draftId: string;
@@ -240,6 +271,7 @@ type DraftContentProps = {
   editingStep: number;
   changeEditingStep: Dispatch<SetStateAction<number>>;
   lines: Lines;
+  tags: any;
   changeLines: Dispatch<SetStateAction<Lines>>;
   saveLines: (fileId: string, remove: boolean) => void;
   removeLines: (stepIndex: number) => void;
@@ -261,6 +293,8 @@ type DraftContentProps = {
   draftFiles: File[];
   onTitleChange: (updatedtitle: string) => Promise<void>;
   updateShowPreview: Dispatch<SetStateAction<boolean>>;
+  updateShowTags: Dispatch<SetStateAction<boolean>>;
+  mutate: any;
 };
 
 type DraftContentState = {
@@ -362,12 +396,14 @@ class DraftContent extends Component<DraftContentProps, DraftContentState> {
       changeLines,
       moveStepDown,
       updateShowPreview,
+      updateShowTags,
     } = this.props;
     return (
       <div>
         <DraftHeader
           username={username}
           updateShowPreview={updateShowPreview}
+          updateShowTags={updateShowTags}
           goToPublishedPost={this.goToPublishedPost}
           published={draftPublished}
           publishPost={this.publishDraft}
