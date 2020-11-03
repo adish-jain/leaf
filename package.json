@@ -36,6 +36,7 @@
     "draft-js-plugins-editor": "^3.0.0",
     "draft-js-static-toolbar-plugin": "^3.0.1",
     "draftjs-to-html": "^0.9.1",
+    "emotion": "^10.0.27",
     "firebase": "^7.15.0",
     "firebase-admin": "^8.12.1",
     "framer-motion": "2.9.4",
@@ -56,6 +57,7 @@
     "read-env": "^2.0.0",
     "shortid": "^2.2.15",
     "slate": "^0.59.0",
+    "slate-history": "^0.59.0",
     "slate-react": "^0.59.0",
     "swr": "^0.3.6",
     "url-loader": "^4.1.0"

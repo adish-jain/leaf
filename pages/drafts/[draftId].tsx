@@ -28,6 +28,7 @@ import { DraftHeader } from "../../components/Headers";
 import { DraftJsButtonProps } from "draft-js-buttons";
 import { motion, AnimatePresence } from "framer-motion";
 import SlateEditor from "../../components/SlateSection";
+import MarkdownPreviewExample from "../../components/MarkdownSection";
 
 const DraftView = () => {
   const { authenticated, error, loading } = useLoggedIn();
@@ -358,6 +359,7 @@ class DraftContent extends Component<DraftContentProps, DraftContentState> {
         <div className={"App"}>
           <div className={"center-divs"}>
             <SlateEditor />
+            <MarkdownPreviewExample />
             <div className={"draft-content"}>
               <Publishing
                 draftId={draftId as string}
