@@ -33,11 +33,17 @@
 .center-divs {
   margin: auto;
   display: flex;
+  display: flex;
+  flex-direction: column;
   width: fit-content;
 }
 
+.draft-content {
+  display: flex;
+}
+
 .finishedpost-wrapper {
-  margin-top: 60px;
+  margin-top: 56px;
   width: 100%;
 }
 

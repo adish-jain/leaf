@@ -1,11 +1,12 @@
 import { useRouter } from "next/router";
 import {
   useState,
+  useCallback,
   Component,
   Dispatch,
   SetStateAction,
 } from "react";
-import { useLoggedIn } from "../../lib/UseLoggedIn";
+import { useLoggedIn, logOut } from "../../lib/UseLoggedIn";
 import { useFiles } from "../../lib/useFiles";
 import { useSteps } from "../../lib/useSteps";
 import { useDraftTitle } from "../../lib/useDraftTitle";
@@ -15,14 +16,18 @@ import CodeEditor from "../../components/CodeEditor";
 import DefaultErrorPage from "next/error";
 import Head from "next/head";
 import FinishedPost from "../../components/FinishedPost";
+import { goToPost } from "../../lib/usePosts";
 const fetch = require("node-fetch");
 import { File, Step, Lines } from "../../typescript/types/app_types";
 global.Headers = fetch.Headers;
 import Router from "next/router";
+import Link from "next/link";
 import "../../styles/app.scss";
 import "../../styles/draftheader.scss";
 import { DraftHeader } from "../../components/Headers";
+import { DraftJsButtonProps } from "draft-js-buttons";
 import { motion, AnimatePresence } from "framer-motion";
+import SlateEditor from "../../components/SlateSection";
 
 const DraftView = () => {
   const { authenticated, error, loading } = useLoggedIn();
@@ -137,7 +142,6 @@ const DraftView = () => {
     <div className="container">
       <Head>
         <title>{draftTitle}</title>
-        {/* <script src="https://unpkg.com/intersection-observer-debugger"></script> */}
         <link rel="icon" href="/favicon.ico" />
         <script
           dangerouslySetInnerHTML={{
@@ -178,7 +182,7 @@ const DraftView = () => {
                 files={draftFiles}
                 updateShowPreview={updateShowPreview}
                 previewMode={true}
-                publishedAtSeconds={createdAt._seconds}
+                publishedAtSeconds={createdAt.publishedAtSeconds}
               />
             </motion.div>
           )}
@@ -308,27 +312,6 @@ class DraftContent extends Component<DraftContentProps, DraftContentState> {
     window.location.href = `/${username}/${postId}`;
   }
 
-  changeEditingStepWrapper = (stepIndex: number) => {
-    let {
-      changeEditingStep,
-      changeSelectedFileIndex,
-      codeFiles,
-      realSteps,
-    } = this.props;
-    changeEditingStep(stepIndex);
-    let newFileIndex = 0;
-    if (stepIndex < 0) {
-      return;
-    }
-    for (let i = 0; i < codeFiles.length; i++) {
-      if (codeFiles[i].id === realSteps![stepIndex].fileId) {
-        newFileIndex = i;
-        break;
-      }
-    }
-    changeSelectedFileIndex(newFileIndex);
-  };
-
   DraftComponent() {
     let {
       username,
@@ -374,49 +357,52 @@ class DraftContent extends Component<DraftContentProps, DraftContentState> {
         />
         <div className={"App"}>
           <div className={"center-divs"}>
-            <Publishing
-              draftId={draftId as string}
-              title={draftTitle}
-              storedSteps={realSteps!}
-              saveStep={saveStep}
-              mutateStoredStep={mutateStoredStep}
-              saveStepToBackend={saveStepToBackend}
-              deleteStoredStep={deleteStoredStep}
-              moveStepUp={moveStepUp}
-              moveStepDown={moveStepDown}
-              onTitleChange={onTitleChange}
-              editingStep={editingStep}
-              changeEditingStep={this.changeEditingStepWrapper}
-              selectedFileIndex={selectedFileIndex}
-              lines={lines}
-              files={draftFiles}
-              saveLines={saveLines}
-              published={draftPublished}
-              goToPublishedPost={this.goToPublishedPost}
-            />
-            <div className={"RightPane"}>
-              <CodeEditor
-                addStepImage={addStepImage}
-                deleteStepImage={deleteStepImage}
+            <SlateEditor />
+            <div className={"draft-content"}>
+              <Publishing
                 draftId={draftId as string}
+                title={draftTitle}
+                storedSteps={realSteps!}
+                saveStep={saveStep}
+                mutateStoredStep={mutateStoredStep}
+                saveStepToBackend={saveStepToBackend}
+                deleteStoredStep={deleteStoredStep}
+                moveStepUp={moveStepUp}
+                moveStepDown={moveStepDown}
+                onTitleChange={onTitleChange}
                 editingStep={editingStep}
-                saveFileCode={saveFileCode}
-                draftCode={codeFiles[selectedFileIndex].code}
-                files={draftFiles}
-                addFile={addFile}
-                removeFile={deleteStepAndFile}
+                changeEditingStep={changeEditingStep}
                 selectedFileIndex={selectedFileIndex}
-                changeCode={changeCode}
-                changeSelectedFile={changeSelectedFileIndex}
-                changeFileLanguage={changeFileLanguage}
-                saveFileName={saveFileName}
-                onNameChange={onNameChange}
-                language={draftFiles[selectedFileIndex].language}
-                changeLines={changeLines}
-                saveLines={saveLines}
                 lines={lines}
-                currentlyEditingStep={realSteps![editingStep]}
+                files={draftFiles}
+                saveLines={saveLines}
+                published={draftPublished}
+                goToPublishedPost={this.goToPublishedPost}
               />
+              <div className={"RightPane"}>
+                <CodeEditor
+                  addStepImage={addStepImage}
+                  deleteStepImage={deleteStepImage}
+                  draftId={draftId as string}
+                  editingStep={editingStep}
+                  saveFileCode={saveFileCode}
+                  draftCode={codeFiles[selectedFileIndex].code}
+                  files={draftFiles}
+                  addFile={addFile}
+                  removeFile={deleteStepAndFile}
+                  selectedFileIndex={selectedFileIndex}
+                  changeCode={changeCode}
+                  changeSelectedFile={changeSelectedFileIndex}
+                  changeFileLanguage={changeFileLanguage}
+                  saveFileName={saveFileName}
+                  onNameChange={onNameChange}
+                  language={draftFiles[selectedFileIndex].language}
+                  changeLines={changeLines}
+                  saveLines={saveLines}
+                  lines={lines}
+                  currentlyEditingStep={realSteps![editingStep]}
+                />
+              </div>
             </div>
           </div>
         </div>
