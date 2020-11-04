@@ -25,11 +25,21 @@ export type Lines = {
 export type FinishedPostProps = {
   steps: Step[];
   title: string;
+  tags: string[];
   files: File[];
   username: string;
   previewMode: boolean;
   updateShowPreview?: (value: SetStateAction<boolean>) => void;
   publishedAtSeconds: number;
+};
+
+export type Post = {
+  postId: string;
+  postURL: string;
+  title: string;
+  publishedAt: timeStamp;
+  tags: string[];
+  username: string;
 };
 
 export type timeStamp = {

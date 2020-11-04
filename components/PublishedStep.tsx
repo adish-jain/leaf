@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import "../styles/publishedstep.scss";
 const draftToHtml = require("draftjs-to-html");
 import animateScrollTo from "animated-scroll-to";
 

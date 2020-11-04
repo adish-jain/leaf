@@ -1,4 +1,9 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useLayoutEffect,
+} from "react";
 import Scrolling from "./Scrolling";
 import { useLoggedIn } from "../lib/UseLoggedIn";
 import PublishedCodeEditor from "./PublishedCodeEditor";
@@ -18,11 +23,11 @@ This array keeps track of the top and bottom position of every step.
 We use this array to determine what step is currently in the middle of
 the screen.
 */
-var stepCoords: StepDimensions[] = [];
 
 const STEP_MARGIN = 64;
 
 const FinishedPost = (props: FinishedPostProps) => {
+  let stepCoords: StepDimensions[] = [];
   const [currentStepIndex, updateStep] = useState(0);
   const [currentFileIndex, updateFile] = useState(0);
 
@@ -53,7 +58,6 @@ const FinishedPost = (props: FinishedPostProps) => {
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
-
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
@@ -105,8 +109,8 @@ const FinishedPost = (props: FinishedPostProps) => {
       let child = children[i];
       let coords = child.getBoundingClientRect();
       stepCoords.push({
-        topY: coords.top,
-        bottomY: coords.bottom,
+        topY: coords.top + window.pageYOffset,
+        bottomY: coords.bottom + window.pageYOffset,
       });
     }
   }
@@ -122,6 +126,7 @@ const FinishedPost = (props: FinishedPostProps) => {
       <div className={"center-divs"}>
         <Scrolling
           title={props.title}
+          tags={props.tags}
           currentStepIndex={currentStepIndex}
           steps={props.steps}
           username={props.username}

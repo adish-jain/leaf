@@ -1,7 +1,9 @@
 import "../styles/global.scss";
+import "../styles/publishedstep.scss";
+
 import { AppProps } from "next/app";
 
-import "draft-js/dist/Draft.css";
+// import "draft-js/dist/Draft.css";
 
 import * as Sentry from '@sentry/node'
 

@@ -42,7 +42,6 @@ export function usePosts(authenticated: boolean) {
     }
   );
 
-
   // Deletes a published post.
   function deletePost(postUid: string) {
     function removeSpecificPost() {

@@ -5,7 +5,7 @@ initFirebaseAdmin();
 let db = admin.firestore();
 
 import { getUidFromUsername, getUsernameFromUid } from "./userUtils";
-import { timeStamp } from "../typescript/types/app_types";
+import { timeStamp, Post } from "../typescript/types/app_types";
 
 export async function adjustStepOrder(
   uid: string,
@@ -36,6 +36,7 @@ export async function getDraftDataHandler(uid: string, draftId: string) {
     let title = draftData.data().title;
     let published: boolean = draftData.data().published;
     let postId: string = draftData.data().postId;
+    let tags = draftData.data().tags;
     let createdAt: timeStamp = draftData.data().createdAt;
     let publishedAt: timeStamp = draftData.data().publishedAt;
     let files = await getFilesForDraft(uid, draftId);
@@ -46,6 +47,7 @@ export async function getDraftDataHandler(uid: string, draftId: string) {
       errored: false,
       published,
       postId,
+      tags,
       username,
       createdAt,
       publishedAt,
@@ -56,6 +58,7 @@ export async function getDraftDataHandler(uid: string, draftId: string) {
     let results = {
       title: "",
       files: [],
+      tags: [],
       errored: true,
       published: false,
       postId: "",
@@ -157,9 +160,33 @@ export async function getDraftImages(uid: string, draftId: string) {
     });
 }
 
-type File = {
-  id: string;
-  language: string;
-  code: string;
-  name: string;
-};
+export async function getAllPostsHandler() {
+  let activeRef = await db.collectionGroup("drafts").where("published", "==", true).get();
+  const arr: any[] = [];
+  activeRef.forEach((child: any) => arr.push(child));
+  var results: Post[] = [];
+  for(const doc of arr) {
+    let username = await doc.ref.parent.parent.get().then((docSnapshot: any) => {
+      return docSnapshot.data().username;
+    });
+    let resultsJSON = doc.data();
+    let postURL = "/" + username + "/" + resultsJSON.postId;
+    results.push({
+      postId: resultsJSON.postId,
+      postURL: postURL,
+      title: resultsJSON.title,
+      publishedAt: resultsJSON.publishedAt.toDate(),
+      tags: resultsJSON.tags,
+      username: username,
+    });
+  }
+  // sort by published date
+  results.sort(function(a: Post, b: Post) {
+    var keyA = a.publishedAt,
+      keyB = b.publishedAt;
+    if (keyA < keyB) return -1;
+    if (keyA > keyB) return 1;
+    return 0;
+  });
+  return results;
+}

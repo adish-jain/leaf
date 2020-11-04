@@ -1,0 +1,46 @@
+@import "commonui.scss";
+
+.tags-header {
+    text-align: center;
+    margin-top: 80px;
+}
+
+.tags {
+    margin-top: 30px;
+    justify-content: space-evenly;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-self: center;
+    max-width: 50%;
+    margin-left: 24.5%;
+    .tag-button {
+        height: 40px;
+        width: 110px;
+        left: 0px;
+        border-radius: 5px;
+        border: 0;
+        margin-top: 20px;
+        margin-left: 22px;
+        font-size: 15px;
+        text-align: center;
+        background: #F5F5F5;
+    }
+    .selected-tag-button {
+        height: 40px;
+        width: 110px;
+        left: 0px;
+        border-radius: 5px;
+        border: 0;
+        margin-top: 20px;
+        margin-left: 22px;
+        font-size: 15px;
+        text-align: center;
+        color: white;
+        background: #349AE9;
+    }
+    .tag-buttons:hover {
+        cursor: pointer;
+    }
+}
+
