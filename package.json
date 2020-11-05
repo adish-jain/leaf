@@ -23,6 +23,7 @@
     "@types/slate": "^0.47.8",
     "@types/slate-react": "^0.22.9",
     "@types/typeform__embed": "^0.22.0",
+    "@udecode/slate-plugins": "^0.68.1",
     "@zeit/next-css": "^1.0.1",
     "@zeit/next-sass": "^1.0.1",
     "@zeit/next-source-maps": "0.0.4-canary.1",
@@ -58,6 +59,7 @@
     "shortid": "^2.2.15",
     "slate": "^0.59.0",
     "slate-history": "^0.59.0",
+    "slate-hyperscript": "^0.59.0",
     "slate-react": "^0.59.0",
     "swr": "^0.3.6",
     "url-loader": "^4.1.0"
