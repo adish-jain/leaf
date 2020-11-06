@@ -1,6 +1,6 @@
 // @refresh reset
 import React, { useEffect, useMemo, useState, useCallback } from "react";
-import "../styles/slate.scss";
+import "../styles/slate-editor.scss";
 import { Block } from "../typescript/enums/app_enums";
 import { Lines, Step } from "../typescript/types/app_types";
 
@@ -58,7 +58,7 @@ export default function SlateEditor(props: SlateEditorProps) {
 
       // When "B" is pressed, bold the text in the selection.
       case "b": {
-        console.log("case b");
+        // console.log("case b");
         event.preventDefault();
         const [match] = Editor.nodes(editor, {
           match: (n) => {
@@ -66,7 +66,7 @@ export default function SlateEditor(props: SlateEditorProps) {
           },
         });
         let shouldBold = match === undefined;
-        console.log(shouldBold);
+        // console.log(shouldBold);
         let selection = editor.selection;
 
         let selected = editor.children[selection!.anchor.path[0]];

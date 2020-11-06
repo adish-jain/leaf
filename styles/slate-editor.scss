@@ -1,0 +1,36 @@
+@import "commonui.scss";
+
+.slate-wrapper {
+  width: 800px;
+  margin: auto;
+  border: 1px solid black;
+}
+
+.prompt {
+  position: relative;
+  z-index: 1;
+
+  br {
+    display: none !important;
+  }
+
+  .prompt-content {
+    z-index: 1;
+  }
+
+  .placeholder-text {
+    position: absolute;
+    top: 0;
+    color: $leaf-light-gray;
+    pointer-events: none;
+    z-index: 0;
+
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+  }
+}

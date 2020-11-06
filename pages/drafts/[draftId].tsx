@@ -361,7 +361,7 @@ class DraftContent extends Component<DraftContentProps, DraftContentState> {
           <div className={"center-divs"}>
             <SlateEditor />
             {/* <MarkdownPreviewExample /> */}
-            <PluginEditor />
+            {/* <PluginEditor /> */}
             <MarkdownPreviewExample />
             <div className={"draft-content"}>
               <Publishing

@@ -1,102 +1,239 @@
 // @refresh reset
 
 import Prism, { Token } from "prismjs";
-import React, { useState, useCallback, useMemo } from "react";
-import { Slate, Editable, withReact } from "slate-react";
-import { Node, Text, createEditor, Element } from "slate";
+import React, { useState, useCallback, useMemo, ReactElement } from "react";
+import {
+  Slate,
+  Editable,
+  withReact,
+  ReactEditor,
+  RenderElementProps,
+  useSelected,
+  useFocused,
+} from "slate-react";
+import {
+  Node,
+  Text,
+  createEditor,
+  Editor,
+  Element,
+  Transforms,
+  Path,
+  Range,
+  NodeEntry,
+  Operation,
+  Point,
+} from "slate";
 import { withHistory } from "slate-history";
 import { css } from "emotion";
-
-// eslint-disable-next-line
-
-// Prism.languages.markdown=Prism.languages.extend("markup",{}),Prism.languages.insertBefore("markdown","prolog",{blockquote:{pattern:/^>(?:[\t ]*>)*/m,alias:"punctuation"},code:[{pattern:/^(?: {4}|\t).+/m,alias:"keyword"},{pattern:/``.+?``|`[^`\n]+`/,alias:"keyword"}],title:[{pattern:/\w+.*(?:\r?\n|\r)(?:==+|--+)/,alias:"important",inside:{punctuation:/==+$|--+$/}},{pattern:/(^\s*)#+.+/m,lookbehind:!0,alias:"important",inside:{punctuation:/^#+|#+$/}}],hr:{pattern:/(^\s*)([*-])([\t ]*\2){2,}(?=\s*$)/m,lookbehind:!0,alias:"punctuation"},list:{pattern:/(^\s*)(?:[*+-]|\d+\.)(?=[\t ].)/m,lookbehind:!0,alias:"punctuation"},"url-reference":{pattern:/!?\[[^\]]+\]:[\t ]+(?:\S+|<(?:\\.|[^>\\])+>)(?:[\t ]+(?:"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\((?:\\.|[^)\\])*\)))?/,inside:{variable:{pattern:/^(!?\[)[^\]]+/,lookbehind:!0},string:/(?:"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\((?:\\.|[^)\\])*\))$/,punctuation:/^[\[\]!:]|[<>]/},alias:"url"},bold:{pattern:/(^|[^\\])(\*\*|__)(?:(?:\r?\n|\r)(?!\r?\n|\r)|.)+?\2/,lookbehind:!0,inside:{punctuation:/^\*\*|^__|\*\*$|__$/}},italic:{pattern:/(^|[^\\])([*_])(?:(?:\r?\n|\r)(?!\r?\n|\r)|.)+?\2/,lookbehind:!0,inside:{punctuation:/^[*_]|[*_]$/}},url:{pattern:/!?\[[^\]]+\](?:\([^\s)]+(?:[\t ]+"(?:\\.|[^"\\])*")?\)| ?\[[^\]\n]*\])/,inside:{variable:{pattern:/(!?\[)[^\]]+(?=\]$)/,lookbehind:!0},string:{pattern:/"(?:\\.|[^"\\])*"(?=\)$)/}}}}),Prism.languages.markdown.bold.inside.url=Prism.util.clone(Prism.languages.markdown.url),Prism.languages.markdown.italic.inside.url=Prism.util.clone(Prism.languages.markdown.url),Prism.languages.markdown.bold.inside.italic=Prism.util.clone(Prism.languages.markdown.italic),Prism.languages.markdown.italic.inside.bold=Prism.util.clone(Prism.languages.markdown.bold); // prettier-ignore
+import "../styles/slate-editor.scss";
+import { isCollapsed } from "@udecode/slate-plugins";
 
 const MarkdownPreviewExample = () => {
   const [value, setValue] = useState<Node[]>(initialValue);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
 
-  const renderElement = useCallback((props) => {
-    // console.log("render element called");
-    // console.log(props);
+  // Define a React component renderer for our code blocks.
+  const PromptElement = () => {
+    return (
+      <div className={"prompt"}>
+        <label
+          contentEditable={false}
+          onClick={(e) => e.preventDefault()}
+          className={"placeholder-text"}
+        >
+          {"Press '/' for commands"}
+        </label>
+      </div>
+    );
+  };
+
+  const renderElement = useCallback((props: RenderElementProps) => {
+    let selected = false;
+    // let selection = props.children.props.selection;
+    // if (selection !== null && Range.isCollapsed(selection)) {
+    //   selected = true;
+    // }
+    let emptyText = props.element.children[0].text === "";
+    // if (selected && emptyText) {
+    //   return (
+    //     <PromptElement emptyText={emptyText} selected={selected} {...props} />
+    //   );
+    // }
     switch (props.element.type) {
       case "code":
         return <CodeElement {...props} />;
+      //   case "prompt":
+      //     return (
+      //       <PromptElement emptyText={emptyText} selected={selected} {...props} />
+      //     );
+      case "default":
+        return <DefaultElement {...props} />;
       default:
         return <DefaultElement {...props} />;
     }
   }, []);
 
-  const decorate = useCallback(([node, path]) => {
-    const ranges: any = [];
+  const decorate = useCallback((currentNodeEntry: NodeEntry) => {
+    let [node, path] = currentNodeEntry;
+
+    // let dimensions = ReactEditor.toDOMNode(
+    //   editor,
+    //   node
+    // ).getBoundingClientRect();
 
     if (!Text.isText(node)) {
-      return ranges;
+      return [];
     }
-    // console.log(node.text);
-
-    const getLength = (token: any) => {
-      if (typeof token === "string") {
-        return token.length;
-      } else if (typeof token.content === "string") {
-        return token.content.length;
-      } else {
-        return token.content.reduce((l: any, t: any) => l + getLength(t), 0);
-      }
-    };
-
     const tokens = Prism.tokenize(node.text, Prism.languages.markdown);
-    let start = 0;
-
-    for (const token of tokens) {
-      const length = getLength(token);
-      const end = start + length;
-      if (typeof token !== "string") {
-        if (token.type === "title") {
-          //   console.log("token type is title");
-          //   console.log((token.content as Token[])[0].content);
-          switch ((token.content as Token[])[0].content) {
-            case "#":
-              token.type = "h1";
-              // code block
-              break;
-            case "##":
-              token.type = "h2";
-              // code block
-              break;
-            case "###":
-              token.type = "h3";
-            default:
-            // code block
-          }
-        }
-        ranges.push({
-          [token.type]: true,
-          anchor: { path, offset: start },
-          focus: { path, offset: end },
-        });
-      }
-
-      start = end;
-    }
-
-    return ranges;
+    return addMarkDown(tokens as Token[], path);
   }, []);
 
   function addBlock() {
     let newNode: Node = {
+      type: "prompt",
       children: [
         {
           text: "",
         },
       ],
     };
-    console.log(value);
-    setValue([...value, newNode]);
+    Transforms.insertNodes(editor, newNode);
   }
 
+  function reOrderBlock() {
+    Transforms.moveNodes(editor, { at: [1], to: [3] });
+  }
+  function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+    switch (event.key) {
+      case "/":
+    }
+  }
+
+  function handleKeyUp(event: React.KeyboardEvent<HTMLDivElement>) {
+    // switch (event.key) {
+    //   case "ArrowUp": {
+    //     refreshPrompt();
+    //   }
+    //   case "ArrowDown": {
+    //     refreshPrompt();
+    //   }
+    // }
+  }
+
+  function refreshPrompt() {
+    let selection = editor.selection;
+    if (selection !== null) {
+      //   clear all prompts
+      Transforms.setNodes(
+        editor,
+        { type: "default" },
+        {
+          match: (n) => {
+            return n.type === "prompt";
+          },
+          at: [],
+        }
+      );
+      if (Range.isCollapsed(selection)) {
+        Transforms.setNodes(
+          editor,
+          { type: "prompt" },
+          {
+            // match: (n) => {
+            //   return Editor.isBlock(editor, n);
+            // },
+            at: selection.anchor,
+          }
+        );
+      }
+    }
+  }
+
+  function handleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    let selection = editor.selection;
+    if (
+      selection !== null
+
+      // && !Range.isCollapsed(selection)
+    ) {
+      //   refreshPrompt();
+
+      let selectedNode = editor.children[selection.anchor.path[0]];
+      let selectedNodeType = selectedNode.type;
+      if (selectedNodeType == "default") {
+        // ReactEditor.focus(editor);
+        // Transforms.select(editor, selection.anchor.path);
+        // Transforms.deselect(editor);
+      }
+
+      //   Transforms.select(editor, Editor.start(editor));
+    }
+  }
+
+  const DefaultElement = (props: RenderElementProps) => {
+    const selected = useSelected();
+    const focused = useFocused();
+    let thisPath: Point | null = null;
+    let showThing = false;
+    if (props.attributes.ref.current !== null) {
+      thisPath = ReactEditor.toSlatePoint(editor, [
+        props.attributes.ref.current,
+        0,
+      ]);
+
+      let selection: Range | null = (props.children as ReactElement).props
+        .selection;
+      if (selection !== null) {
+        // console.log(selection);
+        // console.log(thisPath);
+        let anchorIndex = selection.anchor.path[0];
+        let focusIndex = selection.focus.path[0];
+        let elemIndex = thisPath.path[0];
+        // console.log("anchorIndex is ", anchorIndex);
+        // console.log("focusIndex is ", focusIndex);
+        // console.log("anchorIndex is ", anchorIndex);
+        if (
+          anchorIndex == focusIndex &&
+          focusIndex == elemIndex &&
+          elemIndex == anchorIndex &&
+          Range.isCollapsed(selection)
+        ) {
+          console.log("show prompt for  line ", elemIndex);
+          showThing = true;
+        }
+      } else {
+        let elemIndex = thisPath.path[0];
+        console.log("selection null for line ", elemIndex);
+      }
+    }
+
+    //   console.log("selected is ", selected);
+    // console.log("focused is ", focused);
+
+    return (
+      <div className={"prompt"}>
+        <p className={"prompt-content"} {...props.attributes}>
+          {props.children}
+        </p>
+        {selected && focused && (
+          <label
+            contentEditable={false}
+            onClick={(e) => e.preventDefault()}
+            className={"placeholder-text"}
+          >
+            {"Press '/' for commands"}
+          </label>
+        )}
+      </div>
+    );
+  };
+
+  function handleChange() {}
+
   return (
-    <div>
+    <div className={"slate-wrapper"}>
       <Slate
         editor={editor}
         value={value}
@@ -106,7 +243,9 @@ const MarkdownPreviewExample = () => {
           decorate={decorate}
           renderLeaf={renderLeaf}
           renderElement={renderElement}
-          placeholder="Write some markdown..."
+          onKeyDown={handleKeyDown}
+          onKeyUp={handleKeyUp}
+          onClick={handleClick}
         />
       </Slate>
       <button
@@ -116,12 +255,23 @@ const MarkdownPreviewExample = () => {
       >
         Add block
       </button>
+      <button
+        onClick={(e) => {
+          reOrderBlock();
+        }}
+      >
+        Reorder block
+      </button>
     </div>
   );
 };
 
 const Leaf = ({ attributes, children, leaf }: any) => {
-  //   console.log(leaf);
+  switch (leaf.type) {
+    case "bold":
+
+    default:
+  }
   return (
     <span
       {...attributes}
@@ -171,18 +321,12 @@ const Leaf = ({ attributes, children, leaf }: any) => {
 
 const initialValue = [
   {
+    type: "default",
     children: [
       {
-        text:
-          "Slate is flexible enough to add **decorations** that can format text based on its content. For example, this editor has **Markdown** preview decorations on it, to make it _dead_ simple to make an editor with built-in Markdown previewing.",
+        text: "",
       },
     ],
-  },
-  {
-    children: [{ text: "## Try it out!" }],
-  },
-  {
-    children: [{ text: "Try it out for yourself!" }],
   },
 ];
 
@@ -195,8 +339,50 @@ const CodeElement = (props: any) => {
   );
 };
 
-const DefaultElement = (props: any) => {
-  return <p {...props.attributes}>{props.children}</p>;
+function addMarkDown(tokens: Token[], path: Path) {
+  const ranges: Range[] = [];
+  let start = 0;
+
+  for (const token of tokens) {
+    const length = getLength(token);
+    const end = start + length;
+    if (typeof token !== "string") {
+      if (token.type === "title") {
+        switch ((token.content as Token[])[0].content) {
+          case "#":
+            token.type = "h1";
+            // code block
+            break;
+          case "##":
+            token.type = "h2";
+            // code block
+            break;
+          case "###":
+            token.type = "h3";
+          default:
+          // code block
+        }
+      }
+      ranges.push({
+        type: token.type,
+        anchor: { path, offset: start },
+        focus: { path, offset: end },
+      });
+    }
+
+    start = end;
+  }
+  return ranges;
+}
+
+const getLength = (token: Token): number => {
+  if (typeof token === "string") {
+    return (token as string).length;
+  } else if (typeof token.content === "string") {
+    return token.content.length;
+  } else {
+    return (token.content as Token[]).reduce((l, t) => l + getLength(t), 0);
+  }
 };
 
 export default MarkdownPreviewExample;
