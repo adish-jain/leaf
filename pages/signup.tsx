@@ -90,9 +90,9 @@ export default function SignUp() {
   };
 
   function googleSignIn(googleUser: any) {
-    var profile = googleUser.getBasicProfile();
+    // var profile = googleUser.getBasicProfile();
     console.log("Google Auth Response", googleUser.getBasicProfile());
-    console.log("Name: ", profile.getName());
+    // console.log("Name: ", profile.getName());
     let data = {
       requestedAPI: "googleSignup",
       googleUser: googleUser,
