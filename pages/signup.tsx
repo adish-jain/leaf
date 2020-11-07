@@ -5,9 +5,12 @@ import { useLoggedIn } from "../lib/UseLoggedIn";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { HeaderUnAuthenticated } from "../components/Header";
+import { GoogleLogin } from "react-google-login";
 
 import "../styles/header.scss";
 import "../styles/login.scss";
+
+
 
 export default function SignUp() {
   const router = useRouter();
@@ -61,8 +64,7 @@ export default function SignUp() {
       requestedAPI: "signup",
       email: email,
       username: username,
-      password: password,
-      google: false,
+      password: password
     };
     fetch("/api/endpoint", {
       method: "POST",
@@ -88,44 +90,42 @@ export default function SignUp() {
         console.log(error);
       });
   };
-
-  function googleSignIn(googleUser: any) {
-    // var profile = googleUser.getBasicProfile();
-    console.log("Google Auth Response", googleUser.getBasicProfile());
-    // console.log("Name: ", profile.getName());
-    let data = {
-      requestedAPI: "googleSignup",
-      googleUser: googleUser,
-    };
-    fetch("/api/endpoint", {
-      method: "POST",
-      // eslint-disable-next-line no-undef
-      headers: new Headers({ "Content-Type": "application/json" }),
-      credentials: "same-origin",
-      body: JSON.stringify(data),
-    })
-      .then((res) => {
-        if (res.status === 200) {
-          updateErrored(false);
-          router.push("/landing");
-        }
-        if (res.status === 403) {
-          res.json().then((resJson) => {
-            updateErrored(true);
-            updateErrorMsg(resJson.errorMsg);
-            changeSigningUp(false);
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
 
   const goToIndex = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     router.push("/");
   };
+
+  const responseGoogle = (response: any) => {
+    console.log(response);
+    let data = {
+      requestedAPI: "googleSignup",
+      accessToken: response.accessToken
+    };
+    fetch("/api/endpoint", {
+      method: "POST",
+      // eslint-disable-next-line no-undef
+      headers: new Headers({ "Content-Type": "application/json" }),
+      credentials: "same-origin",
+      body: JSON.stringify(data),
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          updateErrored(false);
+          // router.push("/landing");
+        }
+        if (res.status === 403) {
+          res.json().then((resJson) => {
+            updateErrored(true);
+            updateErrorMsg(resJson.errorMsg);
+            changeSigningUp(false);
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }  
 
   return (
     <div className="container">
@@ -141,12 +141,17 @@ export default function SignUp() {
         `,
           }}
         />
-        <script src="https://apis.google.com/js/platform.js"></script>
+        {/* <script src="https://apis.google.com/js/platform.js"></script>
         <meta name="google-signin-client_id" content="969806278278-q6o19gcraf5rfqofo73b0loo9s88o1ln.apps.googleusercontent.com"></meta>
         <meta name="google-signin-cookiepolicy" content="single_host_origin"></meta>
-        <meta name="google-signin-scope" content="profile email"></meta>
+        <meta name="google-signin-scope" content="profile email"></meta> */}
       </Head>
       <main className={"LoginMain"}>
+        {/* <script type="text/javascript">
+          function googleSignIn(googleUser: any) {
+            console.log("please work");
+          }
+        </script> */}
         <HeaderUnAuthenticated
           explore={true}
           login={true}
@@ -199,10 +204,15 @@ export default function SignUp() {
                 {signingUp ? "Signing Up..." : "Signup"}
               </button>
               <p>OR</p>
-              <div className={"g-signin2"} data-onsuccess={"googleSignIn"}></div>
-              {/* <button className={"LoginButton"} onClick={handleGoogleClick}>
-                Google Sign in
-              </button> */}
+              <GoogleLogin
+                clientId="969806278278-q6o19gcraf5rfqofo73b0loo9s88o1ln.apps.googleusercontent.com"
+                buttonText="Login"
+                onSuccess={responseGoogle}
+                onFailure={responseGoogle}
+                cookiePolicy={'single_host_origin'}
+              />
+              {/* <p>OR</p>
+              <div className={"g-signin2"} data-onsuccess="googleSignIn"></div> */}
             </div>
           </div>
         </div>

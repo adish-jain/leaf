@@ -3,6 +3,7 @@ import useSWR from "swr";
 import { initFirebase, initFirebaseAdmin } from "../../lib/initFirebase";
 import { setTokenCookies } from "../../lib/cookieUtils";
 import { userNameErrorMessage } from "../userUtils";
+import { request } from "http";
 
 const admin = require("firebase-admin");
 const firebase = require("firebase/app");
@@ -14,67 +15,85 @@ let db = admin.firestore();
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   let requestBody = req.body;
-  let googleUser = requestBody.googleUser;
-  console.log("entering");
-  var unsubscribe = firebase.auth().onAuthStateChanged(function(firebaseUser: any) {
-    unsubscribe();
-    if (!isUserEqual(googleUser, firebaseUser)) {
-        var credential = firebase.auth.GoogleAuthProvider.credential(googleUser.getAuthResponse().id_token);
-        firebase.auth().signInWithCredential(credential).catch(function(error: any) {
-            // handle error
-        });
-    } else {
-        console.log("User already signed in");
-    }
-  });
+  let accessToken = requestBody.accessToken;
+  console.log(accessToken);
 
-  function isUserEqual(googleUser: any, firebaseUser: any) {
-    if (firebaseUser) {
-      var providerData = firebaseUser.providerData;
-      for (var i = 0; i < providerData.length; i++) {
-        if (providerData[i].providerId === firebase.auth.GoogleAuthProvider.PROVIDER_ID &&
-            providerData[i].uid === googleUser.getBasicProfile().getId()) {
-          // We don't need to reauth the Firebase connection.
-          return true;
-        }
-      }
-    }
-    return false;
-  }
+  let errored = false;
 
-  
+  // check if username exists
+  // let errorMsg = await userNameErrorMessage(username);
+  // if (errorMsg !== "") {
+  //   res.status(403).send({
+  //     errorMsg: errorMsg,
+  //   });
+  //   return;
+  // }
 
-//   let signedin_user = userCredential.user;
+  // // Promise<UserCredential>
+  // let userCredential = await firebase
+  //   .auth()
+  //   .createUserWithEmailAndPassword(email, password)
+  //   .catch(function (error: any) {
+  //     errored = true;
+  //     switch (error.code) {
+  //       case "auth/weak-password":
+  //         res.status(403).send({
+  //           errorMsg: "Password should be longer than 6 characters.",
+  //         });
+  //         return;
+  //       case "auth/email-already-in-use":
+  //         res.status(403).send({
+  //           errorMsg: "Email already in use.",
+  //         });
+  //         return;
+  //       case "auth/invalid-email":
+  //         res.status(403).send({
+  //           errorMsg: "Email is badly formatted.",
+  //         });
+  //         return;
+  //       default:
+  //         console.log(error);
+  //         res.status(403).send({
+  //           errorMsg: "Signup failed.",
+  //         });
+  //     }
+  //   });
 
-//   let currentUser = await firebase.auth().currentUser;
-//   // console.log(currentUser);
+  // if (errored) {
+  //   return;
+  // }
 
-//   await currentUser.sendEmailVerification();
-//   // console.log(signedin_user.emailVerified);
+  // let signedin_user = userCredential.user;
 
-//   // while (currentUser.emailVerified != true) {
-//   //   await currentUser.reload();
-//   // }
+  // let currentUser = await firebase.auth().currentUser;
+  // // console.log(currentUser);
 
-//   db.collection("users").doc(signedin_user.uid).set({
-//     email: signedin_user.email,
-//     username: username,
-//   });
+  // await currentUser.sendEmailVerification();
+  // // console.log(signedin_user.emailVerified);
 
-//   let userToken = await signedin_user.getIdToken();
-//   let refreshToken = signedin_user.refreshToken;
+  // // while (currentUser.emailVerified != true) {
+  // //   await currentUser.reload();
+  // // }
 
-//   let tokens = [
-//     {
-//       tokenName: "userToken",
-//       token: userToken,
-//     },
-//     {
-//       tokenName: "refreshToken",
-//       token: refreshToken,
-//     },
-//   ];
+  // db.collection("users").doc(signedin_user.uid).set({
+  //   email: signedin_user.email,
+  //   username: username,
+  // });
 
-//   setTokenCookies(res, tokens);
+  // let userToken = await signedin_user.getIdToken();
+  // let refreshToken = signedin_user.refreshToken;
+
+  // let tokens = [
+  //   {
+  //     tokenName: "userToken",
+  //     token: userToken,
+  //   },
+  //   {
+  //     tokenName: "refreshToken",
+  //     token: refreshToken,
+  //   },
+  // ];
+
+  // setTokenCookies(res, tokens);
   res.status(200).end();
 };

@@ -93,7 +93,7 @@ export default sentryHandler(
         return handleSignup(req, res);
       }
 
-      case "handleGoogleSignup": {
+      case "googleSignup": {
         return handleGoogleSignup(req, res);
       }
 
