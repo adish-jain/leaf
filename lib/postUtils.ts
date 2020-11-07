@@ -37,6 +37,7 @@ export async function getDraftDataHandler(uid: string, draftId: string) {
     let published: boolean = draftData.data().published;
     let postId: string = draftData.data().postId;
     let tags = draftData.data().tags;
+    let likes = draftData.data().likes;
     let createdAt: timeStamp = draftData.data().createdAt;
     let publishedAt: timeStamp = draftData.data().publishedAt;
     let files = await getFilesForDraft(uid, draftId);
@@ -48,6 +49,7 @@ export async function getDraftDataHandler(uid: string, draftId: string) {
       published,
       postId,
       tags,
+      likes,
       username,
       createdAt,
       publishedAt,
@@ -59,6 +61,7 @@ export async function getDraftDataHandler(uid: string, draftId: string) {
       title: "",
       files: [],
       tags: [],
+      likes: 0,
       errored: true,
       published: false,
       postId: "",
@@ -177,6 +180,7 @@ export async function getAllPostsHandler() {
       title: resultsJSON.title,
       publishedAt: resultsJSON.publishedAt.toDate(),
       tags: resultsJSON.tags,
+      likes: resultsJSON.likes,
       username: username,
     });
   }

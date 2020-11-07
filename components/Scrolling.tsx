@@ -10,6 +10,7 @@ type ScrollingProps = {
   // changeStep: (newStep: number, yPos: number, entered: boolean) => void;
   steps: Step[];
   tags: string[];
+  likes: number;
   currentStepIndex: number;
   title: string;
   username: string;
@@ -67,6 +68,13 @@ export default class Scrolling extends Component<
     }
   };
 
+  incrementLike = () => {
+    // let data = {
+    //   requestedAPI: "updateTags",
+    //   tags: [tag],
+    // };
+  }
+
   ScrollDown = () => {
     let { pageYOffset } = this.props;
     let style = { opacity: 1 };
@@ -100,6 +108,8 @@ export default class Scrolling extends Component<
           on {formattedDate}
         </p>
         <PostTags tags={tags} />
+        <button onClick={this.incrementLike}>like</button>
+        <p>Likes: {this.props.likes === null ? "No likes yet" : this.props.likes}</p>
         <this.ScrollDown />
       </div>
     );

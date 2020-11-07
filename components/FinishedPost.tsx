@@ -127,6 +127,7 @@ const FinishedPost = (props: FinishedPostProps) => {
         <Scrolling
           title={props.title}
           tags={props.tags}
+          likes={props.likes}
           currentStepIndex={currentStepIndex}
           steps={props.steps}
           username={props.username}

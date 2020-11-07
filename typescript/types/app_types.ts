@@ -26,6 +26,7 @@ export type FinishedPostProps = {
   steps: Step[];
   title: string;
   tags: string[];
+  likes: number;
   files: File[];
   username: string;
   previewMode: boolean;
@@ -39,6 +40,7 @@ export type Post = {
   title: string;
   publishedAt: timeStamp;
   tags: string[];
+  likes: number;
   username: string;
 };
 

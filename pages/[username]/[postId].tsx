@@ -35,6 +35,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     let files = postData.files;
     let title = postData.title;
     let tags = postData.tags;
+    let likes = postData.likes;
     let publishedAt = postData.publishedAt;
     let errored = postData.errored;
     // replace undefineds with null to prevent nextJS errors
@@ -49,6 +50,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
       }
       steps[i].fileName = null;
     }
+    if (likes === undefined) {
+      likes = null;
+    }
     if (tags === undefined) {
       tags = null;
     }
@@ -58,6 +62,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
         steps,
         title,
         tags,
+        likes,
         files,
         errored,
         username,
@@ -78,6 +83,7 @@ type PostPageProps = {
   steps: Step[];
   title: string;
   tags: string[];
+  likes: number;
   errored: boolean;
   files: File[];
   username: string;
@@ -109,6 +115,7 @@ const Post = (props: PostPageProps) => {
           files={props.files}
           title={props.title}
           tags={props.tags}
+          likes={props.likes}
           previewMode={false}
           publishedAtSeconds={props.publishedAtSeconds}
         />
