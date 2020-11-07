@@ -1,7 +1,14 @@
 // @refresh reset
 
 import Prism, { Token } from "prismjs";
-import React, { useState, useCallback, useMemo, ReactElement } from "react";
+import FormattingPane from "./FormattingPane";
+import React, {
+  useState,
+  useCallback,
+  useMemo,
+  useEffect,
+  ReactElement,
+} from "react";
 import {
   Slate,
   Editable,
@@ -10,6 +17,7 @@ import {
   RenderElementProps,
   useSelected,
   useFocused,
+  RenderLeafProps,
 } from "slate-react";
 import {
   Node,
@@ -28,46 +36,31 @@ import { withHistory } from "slate-history";
 import { css } from "emotion";
 import "../styles/slate-editor.scss";
 import { isCollapsed } from "@udecode/slate-plugins";
+import { motion, AnimatePresence } from "framer-motion";
 
+let slashDown = false;
 const MarkdownPreviewExample = () => {
   const [value, setValue] = useState<Node[]>(initialValue);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
+  const [slashPosition, updateSlashPosition] = useState<Range | null>(null);
 
-  // Define a React component renderer for our code blocks.
-  const PromptElement = () => {
-    return (
-      <div className={"prompt"}>
-        <label
-          contentEditable={false}
-          onClick={(e) => e.preventDefault()}
-          className={"placeholder-text"}
-        >
-          {"Press '/' for commands"}
-        </label>
-      </div>
-    );
-  };
+  useEffect(() => {
+    window.addEventListener("keydown", handleKey);
+
+    return () => {
+      window.removeEventListener("keydown", handleKey);
+    };
+  }, [handleKey]);
+
+  function handleKey(this: Window, ev: KeyboardEvent) {
+    console.log(ev.key);
+  }
 
   const renderElement = useCallback((props: RenderElementProps) => {
-    let selected = false;
-    // let selection = props.children.props.selection;
-    // if (selection !== null && Range.isCollapsed(selection)) {
-    //   selected = true;
-    // }
-    let emptyText = props.element.children[0].text === "";
-    // if (selected && emptyText) {
-    //   return (
-    //     <PromptElement emptyText={emptyText} selected={selected} {...props} />
-    //   );
-    // }
     switch (props.element.type) {
       case "code":
         return <CodeElement {...props} />;
-      //   case "prompt":
-      //     return (
-      //       <PromptElement emptyText={emptyText} selected={selected} {...props} />
-      //     );
       case "default":
         return <DefaultElement {...props} />;
       default:
@@ -77,11 +70,6 @@ const MarkdownPreviewExample = () => {
 
   const decorate = useCallback((currentNodeEntry: NodeEntry) => {
     let [node, path] = currentNodeEntry;
-
-    // let dimensions = ReactEditor.toDOMNode(
-    //   editor,
-    //   node
-    // ).getBoundingClientRect();
 
     if (!Text.isText(node)) {
       return [];
@@ -106,10 +94,44 @@ const MarkdownPreviewExample = () => {
     Transforms.moveNodes(editor, { at: [1], to: [3] });
   }
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+    // if (editor.selection && Range.isBackward(editor.selection)) {
+    // }
+    if (slashPosition) {
+      let newSlashPosition = {
+        anchor: slashPosition.anchor,
+        focus: editor.selection!.anchor,
+      };
+      updateSlashPosition(newSlashPosition);
+    }
+
     switch (event.key) {
       case "/":
+        if (!slashPosition) {
+          event.preventDefault();
+          editor.insertText("/");
+          updateSlashPosition(editor.selection!);
+        }
+        break;
+      case "Backspace":
+        if (slashPosition) {
+          let newSlashPosition = {
+            anchor: slashPosition.anchor,
+            focus: editor.selection!.anchor,
+          };
+          updateSlashPosition(newSlashPosition);
+          if (Range.equals(newSlashPosition, editor.selection!)) {
+            updateSlashPosition(null);
+          }
+        }
+        break;
+      case "escape":
+        if (slashPosition) {
+          updateSlashPosition(null);
+        }
     }
   }
+
+  function handleChange() {}
 
   function handleKeyUp(event: React.KeyboardEvent<HTMLDivElement>) {
     // switch (event.key) {
@@ -175,49 +197,14 @@ const MarkdownPreviewExample = () => {
   const DefaultElement = (props: RenderElementProps) => {
     const selected = useSelected();
     const focused = useFocused();
-    let thisPath: Point | null = null;
-    let showThing = false;
-    if (props.attributes.ref.current !== null) {
-      thisPath = ReactEditor.toSlatePoint(editor, [
-        props.attributes.ref.current,
-        0,
-      ]);
-
-      let selection: Range | null = (props.children as ReactElement).props
-        .selection;
-      if (selection !== null) {
-        // console.log(selection);
-        // console.log(thisPath);
-        let anchorIndex = selection.anchor.path[0];
-        let focusIndex = selection.focus.path[0];
-        let elemIndex = thisPath.path[0];
-        // console.log("anchorIndex is ", anchorIndex);
-        // console.log("focusIndex is ", focusIndex);
-        // console.log("anchorIndex is ", anchorIndex);
-        if (
-          anchorIndex == focusIndex &&
-          focusIndex == elemIndex &&
-          elemIndex == anchorIndex &&
-          Range.isCollapsed(selection)
-        ) {
-          console.log("show prompt for  line ", elemIndex);
-          showThing = true;
-        }
-      } else {
-        let elemIndex = thisPath.path[0];
-        console.log("selection null for line ", elemIndex);
-      }
-    }
-
-    //   console.log("selected is ", selected);
-    // console.log("focused is ", focused);
+    let emptyText = props.element.children[0].text === "";
 
     return (
       <div className={"prompt"}>
-        <p className={"prompt-content"} {...props.attributes}>
+        <span className={"prompt-content"} {...props.attributes}>
           {props.children}
-        </p>
-        {selected && focused && (
+        </span>
+        {focused && selected && emptyText && (
           <label
             contentEditable={false}
             onClick={(e) => e.preventDefault()}
@@ -229,8 +216,6 @@ const MarkdownPreviewExample = () => {
       </div>
     );
   };
-
-  function handleChange() {}
 
   return (
     <div className={"slate-wrapper"}>
@@ -244,32 +229,32 @@ const MarkdownPreviewExample = () => {
           renderLeaf={renderLeaf}
           renderElement={renderElement}
           onKeyDown={handleKeyDown}
-          onKeyUp={handleKeyUp}
           onClick={handleClick}
         />
       </Slate>
-      <button
-        onClick={(e) => {
-          addBlock();
-        }}
-      >
-        Add block
-      </button>
-      <button
-        onClick={(e) => {
-          reOrderBlock();
-        }}
-      >
-        Reorder block
-      </button>
+      <FormattingPane
+        editor={editor}
+        slashPosition={slashPosition}
+        updateSlashPosition={updateSlashPosition}
+      />
     </div>
   );
 };
 
-const Leaf = ({ attributes, children, leaf }: any) => {
+const Leaf = ({ attributes, children, leaf }: RenderLeafProps) => {
+  console.log(leaf.type);
+
   switch (leaf.type) {
     case "bold":
-
+      return <div {...attributes}>{children}</div>;
+    // case "slashCapture":
+    //   return (
+    //     <span {...attributes} style={{ color: "red" }}>
+    //       {children}
+    //     </span>
+    //   );
+    case "h1":
+      return <h1 {...attributes}>{children}</h1>;
     default:
   }
   return (
