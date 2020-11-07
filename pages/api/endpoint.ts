@@ -5,7 +5,7 @@ import { initFirebase } from "../../lib/initFirebase";
 // authentication
 import handleLogin from "../../lib/api/login";
 import handleSignup from "../../lib/api/signup";
-import handleGoogleSignup from "../../lib/api/googleSignup"
+import handleGoogleAuthentication from "../../lib/api/googleAuthentication";
 import handleLogout from "../../lib/api/logout";
 
 // get drafts for landing page
@@ -93,8 +93,8 @@ export default sentryHandler(
         return handleSignup(req, res);
       }
 
-      case "googleSignup": {
-        return handleGoogleSignup(req, res);
+      case "googleAuthentication": {
+        return handleGoogleAuthentication(req, res);
       }
 
       case "logout": {

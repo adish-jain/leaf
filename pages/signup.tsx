@@ -97,10 +97,12 @@ export default function SignUp() {
   };
 
   const responseGoogle = (response: any) => {
-    console.log(response);
+    // console.log(response);
+    // console.log(response.tokenId);
     let data = {
-      requestedAPI: "googleSignup",
-      accessToken: response.accessToken
+      requestedAPI: "googleAuthentication",
+      tokenId: response.tokenId,
+      type: "signup"
     };
     fetch("/api/endpoint", {
       method: "POST",
@@ -112,7 +114,7 @@ export default function SignUp() {
       .then((res) => {
         if (res.status === 200) {
           updateErrored(false);
-          // router.push("/landing");
+          router.push("/landing");
         }
         if (res.status === 403) {
           res.json().then((resJson) => {
@@ -166,7 +168,16 @@ export default function SignUp() {
         <div className={"Login"}>
           <div className={"LoginBox"}>
             <h1>Sign Up</h1>
+            <GoogleLogin
+              clientId="969806278278-q6o19gcraf5rfqofo73b0loo9s88o1ln.apps.googleusercontent.com"
+              buttonText="Continue with Google"
+              onSuccess={responseGoogle}
+              onFailure={responseGoogle}
+              cookiePolicy={'single_host_origin'}
+              theme="light"
+            />
             <div className={"FormWrapper"}>
+              <div className={"Bar"}></div>
               <div className={"InputBox"}>
                 <label>Email</label>
                 <input id="email" value={email} onChange={handleChangeEmail} />
@@ -203,16 +214,6 @@ export default function SignUp() {
               <button className={"LoginButton"} onClick={handleClick}>  
                 {signingUp ? "Signing Up..." : "Signup"}
               </button>
-              <p>OR</p>
-              <GoogleLogin
-                clientId="969806278278-q6o19gcraf5rfqofo73b0loo9s88o1ln.apps.googleusercontent.com"
-                buttonText="Login"
-                onSuccess={responseGoogle}
-                onFailure={responseGoogle}
-                cookiePolicy={'single_host_origin'}
-              />
-              {/* <p>OR</p>
-              <div className={"g-signin2"} data-onsuccess="googleSignIn"></div> */}
             </div>
           </div>
         </div>

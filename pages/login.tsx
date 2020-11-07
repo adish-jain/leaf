@@ -5,6 +5,7 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { HeaderUnAuthenticated } from "../components/Header";
 import { useRouter } from "next/router";
+import { GoogleLogin } from "react-google-login";
 
 import "../styles/header.scss";
 import "../styles/login.scss";
@@ -174,6 +175,7 @@ export default function Login() {
               handleLoginClick={handleLoginClick}
               handleChangePassword={handleChangePassword}
               handleForgotPassword={handleForgotPassword}
+              router={router}
             />
           )}
         </div>
@@ -222,11 +224,49 @@ function LoginScreen(props: {
   handleLoginClick: any;
   handleChangePassword: any;
   handleForgotPassword: any;
+  router: any;
 }) {
+  const responseGoogle = (response: any) => {
+    // console.log(response);
+    // console.log(response.tokenId);
+    let data = {
+      requestedAPI: "googleAuthentication",
+      tokenId: response.tokenId,
+      type: "login"
+    };
+    fetch("/api/endpoint", {
+      method: "POST",
+      // eslint-disable-next-line no-undef
+      headers: new Headers({ "Content-Type": "application/json" }),
+      credentials: "same-origin",
+      body: JSON.stringify(data),
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          props.router.push("/landing");
+        }
+        if (res.status === 403) {
+          res.json().then((resJson) => {
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }  
   return (
     <div className={"LoginBox"}>
       <h1>Login</h1>
+      <GoogleLogin
+        clientId="969806278278-q6o19gcraf5rfqofo73b0loo9s88o1ln.apps.googleusercontent.com"
+        buttonText="Continue with Google"
+        onSuccess={responseGoogle}
+        onFailure={responseGoogle}
+        cookiePolicy={'single_host_origin'}
+        theme="light"
+      />
       <div className={"FormWrapper"}>
+        <div className={"Bar"}></div>
         <div className={"InputBox"}>
           <label>Email</label>
           <input autoComplete={"username email"} name={"email"} type={"text"} onChange={props.handleChangeEmail}></input>
