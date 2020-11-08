@@ -53,14 +53,18 @@ const MarkdownPreviewExample = () => {
     };
   }, [handleKey]);
 
-  function handleKey(this: Window, ev: KeyboardEvent) {
-    console.log(ev.key);
-  }
+  function handleKey(this: Window, ev: KeyboardEvent) {}
 
   const renderElement = useCallback((props: RenderElementProps) => {
     switch (props.element.type) {
       case "code":
         return <CodeElement {...props} />;
+      case "h1":
+        return <HeaderOneElement {...props} />;
+      case "h2":
+        return <HeaderTwoElement {...props} />;
+      case "h3":
+        return <HeaderThreeElement {...props} />;
       case "default":
         return <DefaultElement {...props} />;
       default:
@@ -103,7 +107,6 @@ const MarkdownPreviewExample = () => {
       };
       updateSlashPosition(newSlashPosition);
     }
-
     switch (event.key) {
       case "/":
         if (!slashPosition) {
@@ -122,16 +125,56 @@ const MarkdownPreviewExample = () => {
           if (Range.equals(newSlashPosition, editor.selection!)) {
             updateSlashPosition(null);
           }
+          break;
+        }
+        // if begining of line
+        if (editor.selection?.anchor.offset === 0) {
+          Transforms.setNodes(
+            editor,
+            { type: "default" },
+            {
+              match: (n: Node) => {
+                return Editor.isBlock(editor, n);
+              },
+            }
+          );
         }
         break;
-      case "escape":
+      case "Escape":
         if (slashPosition) {
+          event.preventDefault();
           updateSlashPosition(null);
         }
+        break;
+      case "Enter":
+        event.preventDefault();
+        // updateSlashPosition(null);
+        let newNode: Node = {
+          type: "default",
+          children: [
+            {
+              text: "",
+            },
+          ],
+        };
+        Transforms.insertNodes(editor, newNode);
+      // Transforms.setNodes(
+      //   editor,
+      //   { type: "default" },
+      //   {
+      //     match: (n: Node) => {
+      //       // console.log(n);
+      //       return n.type !== "default";
+      //     },
+      //     // at: Editor.after(editor, editor.selection?.focus!),
+      //   }
+      // );
     }
   }
 
-  function handleChange() {}
+  function handleChange(value: Node[]) {
+    setValue(value);
+  }
 
   function handleKeyUp(event: React.KeyboardEvent<HTMLDivElement>) {
     // switch (event.key) {
@@ -219,13 +262,9 @@ const MarkdownPreviewExample = () => {
 
   return (
     <div className={"slate-wrapper"}>
-      <Slate
-        editor={editor}
-        value={value}
-        onChange={(value) => setValue(value)}
-      >
+      <Slate editor={editor} value={value} onChange={handleChange}>
         <Editable
-          decorate={decorate}
+          // decorate={decorate}
           renderLeaf={renderLeaf}
           renderElement={renderElement}
           onKeyDown={handleKeyDown}
@@ -242,8 +281,6 @@ const MarkdownPreviewExample = () => {
 };
 
 const Leaf = ({ attributes, children, leaf }: RenderLeafProps) => {
-  console.log(leaf.type);
-
   switch (leaf.type) {
     case "bold":
       return <div {...attributes}>{children}</div>;
@@ -254,7 +291,16 @@ const Leaf = ({ attributes, children, leaf }: RenderLeafProps) => {
     //     </span>
     //   );
     case "h1":
-      return <h1 {...attributes}>{children}</h1>;
+      return (
+        <h1
+          style={{
+            display: "inline-block",
+          }}
+          {...attributes}
+        >
+          {children}
+        </h1>
+      );
     default:
   }
   return (
@@ -321,6 +367,47 @@ const CodeElement = (props: any) => {
     <pre {...props.attributes}>
       <code>{props.children}</code>
     </pre>
+  );
+};
+
+// Define a React component renderer for h1 blocks.
+const HeaderOneElement = (props: RenderElementProps) => {
+  let currentNode = props.element.children[0];
+  let empty = currentNode.text === "";
+  return (
+    <div className={"headerOne"}>
+      <h1 {...props.attributes}>{props.children}</h1>
+      {empty && (
+        <label contentEditable={false} onClick={(e) => e.preventDefault()}>
+          Heading One
+        </label>
+      )}
+    </div>
+  );
+};
+
+// Define a React component renderer for h2 blocks.
+const HeaderTwoElement = (props: any) => {
+  let currentNode = props.element.children[0];
+  let empty = currentNode.text === "";
+  return (
+    <div className={"headerTwo"}>
+      <h2 {...props.attributes}>{props.children}</h2>
+      {empty && <label>Heading Two</label>}
+    </div>
+  );
+};
+
+// Define a React component renderer for h2 blocks.
+const HeaderThreeElement = (props: RenderElementProps) => {
+  let currentNode = props.element.children[0];
+  let empty = currentNode.text === "";
+
+  return (
+    <div className={"headerThree"}>
+      <h3 {...props.attributes}>{props.children}</h3>
+      {empty && <label>Heading Three</label>}
+    </div>
   );
 };
 

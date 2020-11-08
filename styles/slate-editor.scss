@@ -1,5 +1,54 @@
 @import "commonui.scss";
 
+@mixin header-placeholder {
+  position: relative;
+
+  label {
+    position: absolute;
+    top: 0;
+    color: $leaf-light-gray;
+    pointer-events: none;
+    font-weight: bold;
+
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+  }
+}
+
+.headerOne {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+                                supported by Chrome, Edge, Opera and Firefox */
+  @include header-placeholder;
+  
+  label {
+    font-size: 2em;
+  }
+}
+
+.headerTwo {
+  @include header-placeholder;
+  label {
+    font-size: 1.5em;
+  }
+}
+
+.headerThree {
+  @include header-placeholder;
+  label {
+    font-size: 1.17em;
+  }
+}
+
 .slate-wrapper {
   width: 800px;
   margin: auto;
@@ -33,9 +82,4 @@
     user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Edge, Opera and Firefox */
   }
-}
-
-.formatting-pane {
-  background-color: white;
-  z-index: 1;
 }

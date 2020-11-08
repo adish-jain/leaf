@@ -11,6 +11,7 @@ import {
   NodeEntry,
   Operation,
   Point,
+  Ancestor,
 } from "slate";
 import {
   Slate,
@@ -23,6 +24,14 @@ import {
   RenderLeafProps,
 } from "slate-react";
 import { HistoryEditor } from "slate-history";
+import "../styles/formattingpane.scss";
+import { isAncestor } from "@udecode/slate-plugins";
+
+enum headerType {
+  H1 = "h1",
+  H2 = "h2",
+  H3 = "h3",
+}
 
 export default function FormattingPane(props: {
   editor: Editor & ReactEditor & HistoryEditor;
@@ -31,34 +40,123 @@ export default function FormattingPane(props: {
 }) {
   let { slashPosition, editor, updateSlashPosition } = props;
 
-  function addHeaderOne() {
+  function addHeader(headerType: headerType) {
     // if beginning of line
-    if (slashPosition?.anchor.path[1] === 0) {
-      console.log("deleting slashpoint");
-      //   Transforms.delete(editor, {
-      //     at: slashPosition.anchor,
-      //     unit: 'line',
-      //     distance: slashPosition.focus.offset - slashPosition.anchor.offset,
-      //   });
-      Transforms.insertText(editor, "# ", {
-        at: slashPosition.anchor.path,
+    if (slashPosition?.anchor.offset === 1) {
+      // change current line to h1
+      let currentNodeEntry = Editor.above(editor, {
+        match: (node) => {
+          return Node.isNode(node);
+        },
+        at: slashPosition,
       });
+
+      if (currentNodeEntry) {
+        let currentNode = currentNodeEntry[0];
+        let currentPath = currentNodeEntry[1];
+        // if nondefault, add new header
+        if (currentNode.type !== "default") {
+          let newNode: Node = {
+            type: headerType,
+            children: [
+              {
+                text: "",
+              },
+            ],
+          };
+          Transforms.insertNodes(editor, newNode, {
+            at: slashPosition!.focus,
+          });
+          Transforms.delete(editor, {
+            at: slashPosition,
+            unit: "character",
+            distance: 1,
+            reverse: true,
+          });
+          console.log("hit");
+          console.log(slashPosition.anchor.path);
+          Transforms.select(
+            editor,
+            Editor.after(editor, slashPosition.anchor)!
+          );
+          // Editor.after();
+          // Editor.insertText(editor, "");
+        }
+        // change default to header
+        else {
+          Transforms.setNodes(
+            editor,
+            { type: headerType },
+            {
+              match: (n: Node) => {
+                return Editor.isBlock(editor, n);
+              },
+              at: slashPosition.anchor,
+            }
+          );
+
+          // Replace the slash
+          Transforms.select(editor, slashPosition.anchor);
+          Editor.deleteForward(editor, {
+            unit: "line",
+          });
+          // delete the slash
+          Editor.deleteBackward(editor, { unit: "character" });
+        }
+      }
     } else {
+      // if in the middle of line
+      let newBefore =
+        Editor.before(editor, slashPosition!.anchor) || slashPosition!.anchor;
+      let newAfter =
+        Editor.after(editor, slashPosition!.focus) || slashPosition!.focus;
+      let replaceRange: Range = {
+        anchor: newBefore,
+        focus: newAfter,
+      };
+      // Transforms.insertText(editor, "", {
+      //   at: replaceRange,
+      // });
       let newNode: Node = {
-        type: "default",
+        type: headerType,
         children: [
           {
-            text: "# ",
+            text: "",
           },
         ],
       };
       Transforms.insertNodes(editor, newNode, {
-        at: slashPosition!,
+        at: slashPosition!.focus,
       });
+      let correctPos = Editor.after(editor, slashPosition!.focus, {
+        unit: "line",
+        distance: 1,
+      });
+      if (correctPos) {
+        Transforms.select(editor, correctPos);
+      }
     }
     ReactEditor.focus(editor);
-    Transforms.select(editor, slashPosition!);
     updateSlashPosition(null);
+  }
+  // let selection = editor.selection;
+  // let selectedNode: Node;
+  // if (selection) {
+  //   selectedNode = editor.children[selection.anchor.path[0]];
+  //   console.log("selected node is ", selectedNode);
+  //   console.log(domNode.getBoundingClientRect());
+  // }
+  let currentNodeEntry = Editor.above(editor, {
+    match: (node) => Node.isNode(node),
+  });
+  console.log("current node entry is");
+  console.log(currentNodeEntry);
+  let top: number = 0;
+  if (slashPosition && currentNodeEntry) {
+    let currentNode = currentNodeEntry[0];
+    let domNode = ReactEditor.toDOMNode(editor, currentNode);
+    let domNodeDimensions = domNode.getBoundingClientRect();
+    top = domNodeDimensions.bottom;
   }
 
   return (
@@ -68,6 +166,7 @@ export default function FormattingPane(props: {
           style={{
             position: "absolute",
             zIndex: 1,
+            top: top,
           }}
           initial={{
             opacity: 0,
@@ -83,9 +182,31 @@ export default function FormattingPane(props: {
           }}
         >
           <div className={"formatting-pane"}>
-            <div onClick={addHeaderOne}>Header</div>
-            <div>Header 2</div>
-            <div>Header 3</div>
+            <div
+              onClick={(e) => {
+                addHeader(headerType.H1);
+              }}
+            >
+              Header
+            </div>
+            <div
+              onClick={(e) => {
+                addHeader(headerType.H2);
+              }}
+            >
+              Header 2
+            </div>
+            <div
+              onClick={(e) => {
+                addHeader(headerType.H3);
+              }}
+            >
+              Header 3
+            </div>
+            <div>Bulleted List</div>
+            <div>Numbered List</div>
+            <div>Code Block</div>
+            <div>Image</div>
           </div>
         </motion.div>
       )}
