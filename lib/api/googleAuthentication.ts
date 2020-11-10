@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import useSWR from "swr";
 import { initFirebase, initFirebaseAdmin } from "../initFirebase";
 import { setTokenCookies } from "../cookieUtils";
-import { userNameErrorMessage, handleLoginCookies } from "../userUtils";
+import { userNameErrorMessage, handleLoginCookies, checkEmailDNE, checkUsernameDNE } from "../userUtils";
 import { request } from "http";
 
 const admin = require("firebase-admin");
@@ -12,6 +12,8 @@ initFirebase();
 initFirebaseAdmin();
 
 let db = admin.firestore();
+const shortid = require("shortid");
+shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_.');
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   let requestBody = req.body;
@@ -34,7 +36,36 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   
     // await currentUser.sendEmailVerification();
   
-    let username = currentUser.displayName;
+    /* 
+      Try setting username by using email ID, display name, or combinations
+      of these two. If none are valid, use auto-generated username if 
+      neither email ID nor display name can give valid username. 
+      If this does happen, user can reset their auto-generated username in 
+      settings.
+    */
+    let username;
+    let indexOfAt = currentUser.email.indexOf("@");
+    let emailId = currentUser.email.substring(0, indexOfAt);
+    let displayName = currentUser.displayName;
+    let generatedId = shortid.generate();
+
+    if (await validate(displayName)) {
+      username = await validate(displayName);
+    } else if (await validate(emailId)) {
+      username = await validate(emailId);
+    } else if (await validate(emailId + displayName)) {
+      username = await validate(emailId + displayName);
+    } else if (await validate(displayName + emailId)) {
+      username = await validate(displayName + emailId);
+    } else if (await validate(displayName + generatedId)) {
+      username = await validate(displayName + generatedId);
+    } else if (await validate(emailId + generatedId)) {
+      username = await validate(emailId + generatedId);
+    } else {
+      username = "user" + generatedId;
+    }
+
+    console.log(username);
   
     db.collection("users").doc(signedin_user.uid).set({
       email: signedin_user.email,
@@ -47,3 +78,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   handleLoginCookies(res, userToken, refreshToken);
   res.status(200).end();
 };
+
+async function validate(username: string) {
+  var desired = username.replace(/[\s~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g, '');
+  desired = desired.substring(0, 24);
+  let usernameDNE = await checkUsernameDNE(desired);
+  if (desired.length === 0 || !usernameDNE) { 
+    return false;
+  }
+  return desired;
+}

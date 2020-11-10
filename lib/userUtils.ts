@@ -210,6 +210,7 @@ export async function checkUsernameDNE(username: string): Promise<boolean> {
     .where("username", "==", username)
     .get()
     .then(function (snapshot: any) {
+      console.log(snapshot);
       size = snapshot.size;
     });
 
@@ -253,15 +254,15 @@ export async function getDraftTitle(uid: string, draftId: string) {
 }
 
 export async function userNameErrorMessage(username: string) {
-  function isValid(username: string) {
-    return !/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(username);
+  function isNotValid(username: string) {
+    return /[\s~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(username);
   }
   let unUnique = await checkUsernameDNE(username);
-  if (username.length > 16) {
-    return "Username cannot be longer than 16 characters";
-  } else if (username.length === 0) {
-    return "Invalid username";
-  } else if (!isValid(username)) {
+  if (username.length > 30) {
+    return "Username cannot be longer than 30 characters";
+  } else if (username.length < 6) {
+    return "Username is too short";
+  } else if (isNotValid(username)) {
     return "Username cannot contain special characters";
   } else if (!unUnique) {
     return "Username taken";
