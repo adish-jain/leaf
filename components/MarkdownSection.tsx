@@ -46,6 +46,14 @@ const MarkdownPreviewExample = () => {
   const [slashPosition, updateSlashPosition] = useState<Range | null>(null);
 
   useEffect(() => {
+    let retrieveValue = JSON.parse(localStorage.getItem("draftStore")!);
+    if (Array.isArray(retrieveValue) && retrieveValue.length === 0) {
+      retrieveValue = initialValue;
+    }
+    setValue(retrieveValue);
+  }, [process.browser]);
+
+  useEffect(() => {
     window.addEventListener("keydown", handleKey);
 
     return () => {
@@ -65,6 +73,8 @@ const MarkdownPreviewExample = () => {
         return <HeaderTwoElement {...props} />;
       case "h3":
         return <HeaderThreeElement {...props} />;
+      case "ul":
+        return <UnOrderedListElement {...props} />;
       case "default":
         return <DefaultElement {...props} />;
       default:
@@ -121,7 +131,9 @@ const MarkdownPreviewExample = () => {
             anchor: slashPosition.anchor,
             focus: editor.selection!.anchor,
           };
+          // shorten slash selection
           updateSlashPosition(newSlashPosition);
+          // if slash is deleted, remove slashPosition
           if (Range.equals(newSlashPosition, editor.selection!)) {
             updateSlashPosition(null);
           }
@@ -129,15 +141,27 @@ const MarkdownPreviewExample = () => {
         }
         // if begining of line
         if (editor.selection?.anchor.offset === 0) {
-          Transforms.setNodes(
-            editor,
-            { type: "default" },
-            {
-              match: (n: Node) => {
-                return Editor.isBlock(editor, n);
-              },
-            }
-          );
+          event.preventDefault();
+          let currentNodeEntry = Editor.above(editor, {
+            match: (node) => Node.isNode(node),
+          });
+          // if not a default element
+          if (currentNodeEntry && currentNodeEntry[0].type !== "default") {
+            event.preventDefault();
+            // set to a default element
+            Transforms.setNodes(
+              editor,
+              { type: "default" },
+              {
+                match: (n: Node) => {
+                  return Editor.isBlock(editor, n) && n.type !== "default";
+                },
+              }
+            );
+          } else {
+            // if is a default element
+            Transforms.removeNodes(editor);
+          }
         }
         break;
       case "Escape":
@@ -147,8 +171,30 @@ const MarkdownPreviewExample = () => {
         }
         break;
       case "Enter":
+        let currentNodeEntry = Editor.above(editor, {
+          match: (node) => Node.isNode(node),
+        });
+        if (currentNodeEntry) {
+          let currentNode = currentNodeEntry[0];
+          let currentPath = currentNodeEntry[1];
+          let isHeader =
+            currentNode.type === "h1" ||
+            currentNode.type === "h2" ||
+            currentNode.type === "h3";
+          if (editor.selection?.anchor.offset === 1 && isHeader) {
+            Transforms.setNodes(
+              editor,
+              { type: "default" },
+              {
+                match: (n: Node) => {
+                  return Editor.isBlock(editor, n);
+                },
+                at: editor.selection,
+              }
+            );
+          }
+        }
         event.preventDefault();
-        // updateSlashPosition(null);
         let newNode: Node = {
           type: "default",
           children: [
@@ -158,21 +204,12 @@ const MarkdownPreviewExample = () => {
           ],
         };
         Transforms.insertNodes(editor, newNode);
-      // Transforms.setNodes(
-      //   editor,
-      //   { type: "default" },
-      //   {
-      //     match: (n: Node) => {
-      //       // console.log(n);
-      //       return n.type !== "default";
-      //     },
-      //     // at: Editor.after(editor, editor.selection?.focus!),
-      //   }
-      // );
     }
   }
 
   function handleChange(value: Node[]) {
+    let stringifyValue = JSON.stringify(value);
+    localStorage.setItem("draftStore", stringifyValue);
     setValue(value);
   }
 
@@ -350,7 +387,7 @@ const Leaf = ({ attributes, children, leaf }: RenderLeafProps) => {
   );
 };
 
-const initialValue = [
+const initialValue: Node[] = [
   {
     type: "default",
     children: [
@@ -377,14 +414,18 @@ const HeaderOneElement = (props: RenderElementProps) => {
   return (
     <div className={"headerOne"}>
       <h1 {...props.attributes}>{props.children}</h1>
-      {empty && (
-        <label contentEditable={false} onClick={(e) => e.preventDefault()}>
-          Heading One
-        </label>
-      )}
+      {empty && <HeadingPlaceHolder>Heading 1</HeadingPlaceHolder>}
     </div>
   );
 };
+
+function HeadingPlaceHolder(props: any) {
+  return (
+    <label contentEditable={false} onClick={(e) => e.preventDefault()}>
+      {props.children}
+    </label>
+  );
+}
 
 // Define a React component renderer for h2 blocks.
 const HeaderTwoElement = (props: any) => {
@@ -393,7 +434,7 @@ const HeaderTwoElement = (props: any) => {
   return (
     <div className={"headerTwo"}>
       <h2 {...props.attributes}>{props.children}</h2>
-      {empty && <label>Heading Two</label>}
+      {empty && <HeadingPlaceHolder>Heading 2</HeadingPlaceHolder>}
     </div>
   );
 };
@@ -406,7 +447,15 @@ const HeaderThreeElement = (props: RenderElementProps) => {
   return (
     <div className={"headerThree"}>
       <h3 {...props.attributes}>{props.children}</h3>
-      {empty && <label>Heading Three</label>}
+      {empty && <HeadingPlaceHolder>Heading 3</HeadingPlaceHolder>}
+    </div>
+  );
+};
+
+const UnOrderedListElement = (props: RenderElementProps) => {
+  return (
+    <div {...props.attributes} className={"unordered-list"}>
+      {props.children}
     </div>
   );
 };

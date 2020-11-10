@@ -29,10 +29,41 @@
   user-select: none; /* Non-prefixed version, currently
                                 supported by Chrome, Edge, Opera and Firefox */
   @include header-placeholder;
-  
+
   label {
     font-size: 2em;
   }
+}
+
+$headerOneFontSize: 2em;
+$headerTwoFontSize: 1.5em;
+$headerThreeFontSize: 1.17em;
+
+.headerOne::before {
+  content: "h1";
+  position: absolute;
+  font-size: $headerOneFontSize;
+  font-weight: bold;
+  color: $leaf-light-gray;
+  left: -40px;
+}
+
+.headerTwo::before {
+  content: "h2";
+  position: absolute;
+  font-size: $headerTwoFontSize;
+  font-weight: bold;
+  color: $leaf-light-gray;
+  left: -40px;
+}
+
+.headerThree::before {
+  content: "h3";
+  position: absolute;
+  font-size: $headerThreeFontSize;
+  font-weight: bold;
+  color: $leaf-light-gray;
+  left: -40px;
 }
 
 .headerTwo {
@@ -82,4 +113,17 @@
     user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Edge, Opera and Firefox */
   }
+}
+
+.unordered-list::before {
+  content: ".";
+  position: absolute;
+  left: -16px;
+  font-size: 40px;
+  bottom: -2px;
+}
+
+.unordered-list {
+  position: relative;
+  margin-left: 20px;
 }

@@ -12,6 +12,7 @@ import {
   UnderlinePlugin,
   pipe,
   SlateDocument,
+  ToolbarElement
 } from "@udecode/slate-plugins";
 
 const options = {
@@ -23,6 +24,9 @@ const options = {
   },
   italic: {
     type: "italic",
+  },
+  h1: {
+    type: 'h1',
   },
   underline: {
     type: "underline",
@@ -63,6 +67,7 @@ const PluginEditor = () => {
       value={value}
       onChange={(newValue) => setValue(newValue as SlateDocument)}
     >
+      <ToolbarElement type={options.h1.type} icon={<LooksOne />}/>
       <EditablePlugins plugins={plugins} placeholder="Enter some text..." />
     </Slate>
   );
