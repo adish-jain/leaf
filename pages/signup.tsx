@@ -6,9 +6,11 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { HeaderUnAuthenticated } from "../components/Header";
 import { GoogleLogin } from "react-google-login";
+import { motion, AnimatePresence } from "framer-motion";
 
 import "../styles/header.scss";
 import "../styles/login.scss";
+import { verify } from "crypto";
 
 
 
@@ -23,19 +25,32 @@ export default function SignUp() {
   const [errorMsg, updateErrorMsg] = useState("");
   const [errored, updateErrored] = useState(false);
   const [signingUp, changeSigningUp] = useState(false);
+  const [normalSignup, changeNormalSignup] = useState(false);
 
   const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateErrored(false);
+    if (e.target.value !== "") {
+      changeNormalSignup(true);
+    }
+    if (e.target.value === "" && username === "" && password ==  "" && verifyPassword == "") {
+      changeNormalSignup(false);
+    }
     changeEmail(e.target.value);
   };
 
   const handleChangeUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateErrored(false);
+    if (e.target.value === "" && email === "" && password ==  "" && verifyPassword == "") {
+      changeNormalSignup(false);
+    }
     changeUsername(e.target.value);
   };
 
   const handleChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateErrored(false);
+    if (e.target.value === "" && username === "" && email ==  "" && verifyPassword == "") {
+      changeNormalSignup(false);
+    }
     changePassword(e.target.value);
   };
 
@@ -43,6 +58,9 @@ export default function SignUp() {
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     updateErrored(false);
+    if (e.target.value === "" && username === "" && password ==  "" && email == "") {
+      changeNormalSignup(false);
+    }
     changeVerifyPassword(e.target.value);
   };
 
@@ -165,60 +183,99 @@ export default function SignUp() {
             height: 100%;
           }
         `}</style>
-        <div className={"Login"}>
-          <div className={"LoginBox"}>
-            <h1>Sign Up</h1>
-            <GoogleLogin
-              clientId="969806278278-q6o19gcraf5rfqofo73b0loo9s88o1ln.apps.googleusercontent.com"
-              buttonText="Continue with Google"
-              onSuccess={responseGoogle}
-              onFailure={responseGoogle}
-              cookiePolicy={'single_host_origin'}
-              theme="light"
-            />
-            <div className={"FormWrapper"}>
-              <div className={"Bar"}></div>
-              <div className={"InputBox"}>
-                <label>Email</label>
-                <input id="email" value={email} onChange={handleChangeEmail} />
-              </div>
-              <div className={"InputBox"}>
-                <label>Username</label>
-                <input
-                  id="username"
-                  value={username}
-                  onChange={handleChangeUsername}
+        <AnimatePresence>
+          <motion.div
+            initial={{
+              opacity: 0,
+            }}
+            animate={{
+              opacity: 1,
+            }}
+            exit={{
+              opacity: 0,
+            }}
+            transition={{
+              duration: 0.4,
+            }}
+          >
+            <div className={"Login"}>
+              <div className={"LoginBox"}>
+                <h1>Sign Up</h1>
+                <GoogleLogin
+                  clientId="969806278278-q6o19gcraf5rfqofo73b0loo9s88o1ln.apps.googleusercontent.com"
+                  buttonText="Continue with Google"
+                  onSuccess={responseGoogle}
+                  onFailure={responseGoogle}
+                  cookiePolicy={'single_host_origin'}
+                  theme="light"
                 />
+                <div className={"FormWrapper"}>
+                  <div className={"Bar"}></div>
+                  <div className={"InputBox"}>
+                    <label>Email</label>
+                    <input id="email" value={email} onChange={handleChangeEmail} />
+                  </div>
+                  {normalSignup && (
+                    <AnimatePresence>
+                    <motion.div
+                      initial={{
+                        opacity: 0,
+                      }}
+                      animate={{
+                        opacity: 1,
+                      }}
+                      exit={{
+                        opacity: 0,
+                      }}
+                      transition={{
+                        duration: 0.4,
+                      }}
+                    >
+                      <div>
+                        <div className={"InputBox"}>
+                          <label>Username</label>
+                          <input
+                            id="username"
+                            value={username}
+                            onChange={handleChangeUsername}
+                          />
+                        </div>
+                        <div className={"InputBox"}>
+                          <label>Password</label>
+                          <input
+                            onChange={handleChangePassword}
+                            type="password"
+                            id="password"
+                          ></input>
+                        </div>
+                        <div className={"InputBox"}>
+                          <label>Confirm Password</label>
+                          <input
+                            onChange={handleChangeVerifyPassword}
+                            type="password"
+                            id="verify-password"
+                          ></input>
+                        </div>
+                      </div>
+                    </motion.div>
+                    </AnimatePresence>
+                  )}
+                  {!errored ? (
+                    <div></div>
+                  ) : (
+                    <p className={"ErrorMessage"}>{errorMsg}</p>
+                  )}
+                  <button className={"LoginButton"} onClick={handleClick}>  
+                    {signingUp ? "Signing Up..." : "Signup"}
+                  </button>
+                </div>
               </div>
-              <div className={"InputBox"}>
-                <label>Password</label>
-                <input
-                  onChange={handleChangePassword}
-                  type="password"
-                  id="password"
-                ></input>
-              </div>
-              <div className={"InputBox"}>
-                <label>Confirm Password</label>
-                <input
-                  onChange={handleChangeVerifyPassword}
-                  type="password"
-                  id="verify-password"
-                ></input>
-              </div>
-              {!errored ? (
-                <div></div>
-              ) : (
-                <p className={"ErrorMessage"}>{errorMsg}</p>
-              )}
-              <button className={"LoginButton"} onClick={handleClick}>  
-                {signingUp ? "Signing Up..." : "Signup"}
-              </button>
             </div>
-          </div>
-        </div>
-      </main>
-    </div>
+          </motion.div>
+        </AnimatePresence>
+        </main>
+      </div>
+
   );
 }
 

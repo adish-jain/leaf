@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { HeaderUnAuthenticated } from "../components/Header";
 import { useRouter } from "next/router";
 import { GoogleLogin } from "react-google-login";
+import { motion, AnimatePresence } from "framer-motion";
 
 import "../styles/header.scss";
 import "../styles/login.scss";
@@ -29,14 +30,24 @@ export default function Login() {
   const [resetting, changeResetting] = useState(false);
   const [errorMessage, updateErrorMessage] = useState("");
   const [errored, updateErrored] = useState(false);
+  const [normalLogin, changeNormalLogin] = useState(false);
 
   const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateErrored(false);
+    if (e.target.value !== "") {
+      changeNormalLogin(true);
+    }
+    if (e.target.value === "" && password == "") {
+      changeNormalLogin(false);
+    }
     changeEmail(e.target.value);
   };
 
   const handleChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateErrored(false);
+    if (e.target.value === "" && email == "") {
+      changeNormalLogin(false);
+    }
     changePassword(e.target.value);
   };
 
@@ -135,52 +146,70 @@ export default function Login() {
   };
 
   return (
-    <div className="container">
-      <Head>
-        <title>Login</title>
-        <link rel="icon" href="/favicon.ico" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-          if (document.cookie && document.cookie.includes('authed')) {
-            window.location.href = "/landing"
-          }
-        `,
-          }}
-        />
-      </Head>
-      <main className={"LoginMain"}>
-        <HeaderUnAuthenticated
-          signup={true}
-          about={true}
-          explore={true}
-          login={false}
-        />
-        <div className={"Login"}>
-          {forgotPassword ? (
-            <ForgotPassword
-              handleChangeEmail={handleChangeEmail}
-              errored={errored}
-              errorMessage={errorMessage}
-              handleResetClick={handleResetClick}
-              resetting={resetting}
-              handleBackToLogin={handleBackToLogin}
-            />
-          ) : (
-            <LoginScreen
-              handleChangeEmail={handleChangeEmail}
-              errored={errored}
-              loggingIn={loggingIn}
-              errorMessage={errorMessage}
-              handleLoginClick={handleLoginClick}
-              handleChangePassword={handleChangePassword}
-              handleForgotPassword={handleForgotPassword}
-              router={router}
-            />
-          )}
-        </div>
-      </main>
-    </div>
+    <AnimatePresence>
+      <motion.div
+        initial={{
+          opacity: 0,
+        }}
+        animate={{
+          opacity: 1,
+        }}
+        exit={{
+          opacity: 0,
+        }}
+        transition={{
+          duration: 0.4,
+        }}
+      >
+      <div className="container">
+        <Head>
+          <title>Login</title>
+          <link rel="icon" href="/favicon.ico" />
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+            if (document.cookie && document.cookie.includes('authed')) {
+              window.location.href = "/landing"
+            }
+          `,
+            }}
+          />
+        </Head>
+        <main className={"LoginMain"}>
+          <HeaderUnAuthenticated
+            signup={true}
+            about={true}
+            explore={true}
+            login={false}
+          />
+          <div className={"Login"}>
+            {forgotPassword ? (
+              <ForgotPassword
+                handleChangeEmail={handleChangeEmail}
+                errored={errored}
+                errorMessage={errorMessage}
+                handleResetClick={handleResetClick}
+                resetting={resetting}
+                handleBackToLogin={handleBackToLogin}
+              />
+            ) : (
+              <LoginScreen
+                handleChangeEmail={handleChangeEmail}
+                errored={errored}
+                loggingIn={loggingIn}
+                errorMessage={errorMessage}
+                handleLoginClick={handleLoginClick}
+                handleChangePassword={handleChangePassword}
+                handleForgotPassword={handleForgotPassword}
+                router={router}
+                normalLogin={normalLogin}
+              />
+            )}
+          </div>
+        </main>
+      </div>
+      </motion.div>
+    </AnimatePresence>
   );
 }
 
@@ -225,6 +254,7 @@ function LoginScreen(props: {
   handleChangePassword: any;
   handleForgotPassword: any;
   router: any;
+  normalLogin: boolean;
 }) {
   const responseGoogle = (response: any) => {
     // console.log(response);
@@ -271,15 +301,36 @@ function LoginScreen(props: {
           <label>Email</label>
           <input autoComplete={"username email"} name={"email"} type={"text"} onChange={props.handleChangeEmail}></input>
         </div>
-        <div className={"InputBox"}>
-          <label>Password</label>
-          <input name={"password"} autoComplete={"new-password"} type="password" onChange={props.handleChangePassword}></input>
-        </div>
-        {!props.errored ? (
-          <div></div>
-        ) : (
-          <p className={"ErrorMessage"}>{props.errorMessage}</p>
-        )}
+        {props.normalLogin && 
+         <AnimatePresence>
+         <motion.div
+           initial={{
+             opacity: 0,
+           }}
+           animate={{
+             opacity: 1,
+           }}
+           exit={{
+             opacity: 0,
+           }}
+           transition={{
+             duration: 0.4,
+           }}
+         >
+          <div>
+            <div className={"InputBox"}>
+              <label>Password</label>
+              <input name={"password"} autoComplete={"new-password"} type="password" onChange={props.handleChangePassword}></input>
+            </div>
+            {!props.errored ? (
+              <div></div>
+            ) : (
+              <p className={"ErrorMessage"}>{props.errorMessage}</p>
+            )}
+          </div>
+          </motion.div>
+          </AnimatePresence>
+        }
         <button className={"LoginButton"} onClick={props.handleLoginClick}>
           {props.loggingIn ? "Logging In..." : "Login"}
         </button>
