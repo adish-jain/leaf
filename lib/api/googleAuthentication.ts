@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import useSWR from "swr";
 import { initFirebase, initFirebaseAdmin } from "../initFirebase";
 import { setTokenCookies } from "../cookieUtils";
-import { userNameErrorMessage, handleLoginCookies, checkEmailDNE, checkUsernameDNE } from "../userUtils";
+import { userNameErrorMessage, handleLoginCookies, checkEmailDNE, checkUsernameDNE, getUsernameFromUid } from "../userUtils";
 import { request } from "http";
 
 const admin = require("firebase-admin");
@@ -37,34 +37,36 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     // await currentUser.sendEmailVerification();
   
     /* 
-      Try setting username by using email ID, display name, or combinations
+      If user has already set a username, retrieve it. Else, we
+      try setting username by using email ID, display name, or combinations
       of these two. If none are valid, use auto-generated username if 
       neither email ID nor display name can give valid username. 
       If this does happen, user can reset their auto-generated username in 
       settings.
     */
-    let username;
-    let indexOfAt = currentUser.email.indexOf("@");
-    let emailId = currentUser.email.substring(0, indexOfAt);
-    let displayName = currentUser.displayName;
-    let generatedId = shortid.generate();
+    var username = await getUsernameFromUid(signedin_user.uid);
+    if (!validate(username)) {
+      let indexOfAt = currentUser.email.indexOf("@");
+      let emailId = currentUser.email.substring(0, indexOfAt);
+      let displayName = currentUser.displayName;
+      let generatedId = shortid.generate();
 
-    if (await validate(displayName)) {
-      username = await validate(displayName);
-    } else if (await validate(emailId)) {
-      username = await validate(emailId);
-    } else if (await validate(emailId + displayName)) {
-      username = await validate(emailId + displayName);
-    } else if (await validate(displayName + emailId)) {
-      username = await validate(displayName + emailId);
-    } else if (await validate(displayName + generatedId)) {
-      username = await validate(displayName + generatedId);
-    } else if (await validate(emailId + generatedId)) {
-      username = await validate(emailId + generatedId);
-    } else {
-      username = "user" + generatedId;
+      if (await validate(displayName)) {
+        username = await validate(displayName);
+      } else if (await validate(emailId)) {
+        username = await validate(emailId);
+      } else if (await validate(emailId + displayName)) {
+        username = await validate(emailId + displayName);
+      } else if (await validate(displayName + emailId)) {
+        username = await validate(displayName + emailId);
+      } else if (await validate(displayName + generatedId)) {
+        username = await validate(displayName + generatedId);
+      } else if (await validate(emailId + generatedId)) {
+        username = await validate(emailId + generatedId);
+      } else {
+        username = "user" + generatedId;
+      }
     }
-
     console.log(username);
   
     db.collection("users").doc(signedin_user.uid).set({

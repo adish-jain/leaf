@@ -197,6 +197,7 @@ export async function getUsernameFromUid(uid: string) {
   let userRef = await db.collection("users").doc(uid);
   let username = await userRef.get().then(function (userSnapshot: any) {
     let data = userSnapshot.data();
+    console.log(data);
     return data.username;
   });
   return username;
