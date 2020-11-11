@@ -18,6 +18,7 @@ export default function SignUp() {
     saveNewUsername,
     saveNewEmail,
     saveNewPassword,
+    saveNewEmailAndPassword,
     newUsername,
     newEmail,
     newPassword,
@@ -28,9 +29,11 @@ export default function SignUp() {
     userNameError,
     emailError,
     passwordStatus,
+    emailAndPasswordStatus,
     emailVerified,
     sendEmailVerification,
     sendEmailVerificationStatus,
+    signInMethod,
   } = useUserInfo(authenticated);
   return (
     <div className="container">
@@ -70,26 +73,45 @@ export default function SignUp() {
             saveNewUsername={saveNewUsername}
             userNameError={userNameError}
           />
-
-          <Password
-            password={password}
-            updatePassword={updatePassword}
-            newPassword={newPassword}
-            saveNewPassword={saveNewPassword}
-            changeNewPassword={changeNewPassword}
-            passwordStatus={passwordStatus}
-          />
-
-          <Email
-            email={email}
-            newEmail={newEmail}
-            changeNewEmail={changeNewEmail}
-            saveNewEmail={saveNewEmail}
-            emailError={emailError}
-            emailVerified={emailVerified}
-            sendEmailVerification={sendEmailVerification}
-            sendEmailVerificationStatus={sendEmailVerificationStatus}
-          />
+          {signInMethod != "google" ? (
+            <div>
+              <Password
+                password={password}
+                updatePassword={updatePassword}
+                newPassword={newPassword}
+                saveNewPassword={saveNewPassword}
+                changeNewPassword={changeNewPassword}
+                passwordStatus={passwordStatus}
+              />
+              <Email
+                email={email}
+                newEmail={newEmail}
+                changeNewEmail={changeNewEmail}
+                saveNewEmail={saveNewEmail}
+                emailError={emailError}
+                emailVerified={emailVerified}
+                sendEmailVerification={sendEmailVerification}
+                sendEmailVerificationStatus={sendEmailVerificationStatus}
+              />
+            </div>
+          ) : (
+            <SetEmailAndPassword
+              email={email}
+              newEmail={newEmail}
+              changeNewEmail={changeNewEmail}
+              saveNewEmail={saveNewEmail}
+              emailError={emailError}
+              emailVerified={emailVerified}
+              sendEmailVerification={sendEmailVerification}
+              sendEmailVerificationStatus={sendEmailVerificationStatus}
+              newPassword={newPassword}
+              saveNewPassword={saveNewPassword}
+              saveNewEmailAndPassword={saveNewEmailAndPassword}
+              changeNewPassword={changeNewPassword}
+              passwordStatus={passwordStatus}
+              emailAndPasswordStatus={emailAndPasswordStatus}
+            />
+          )}
         </div>
       </main>
     </div>
@@ -203,6 +225,54 @@ function Email(props: {
   );
 }
 
+function SetEmailAndPassword(props: {
+  email: string;
+  newEmail: string;
+  changeNewEmail: any;
+  saveNewEmail: any;
+  emailError: string;
+  emailVerified: boolean;
+  sendEmailVerification: any;
+  sendEmailVerificationStatus: string;
+  newPassword: string;
+  saveNewPassword: any;
+  saveNewEmailAndPassword: any;
+  changeNewPassword: any;
+  passwordStatus: string;
+  emailAndPasswordStatus: string;
+}) {
+  return (
+    <div className={"email-and-password"}>
+      <div>
+        <h2>Email & Password</h2>
+        <p>Your email is {props.email} & it is {props.emailVerified ? "verified" : "unverified"}</p>
+        <input
+          className={"default-input"}
+          value={props.newEmail}
+          placeholder={"new email"}
+          onChange={(e) => props.changeNewEmail(e.target.value)}
+        ></input>
+        {/* <EmailError emailError={props.emailError} /> */}
+      </div>
+      <div>
+        <input
+          className={"default-input"}
+          value={props.newPassword}
+          placeholder={"new password"}
+          onChange={(e) => props.changeNewPassword(e.target.value)}
+        ></input>
+        <button
+          className={"input-button"}
+          onClick={props.saveNewEmailAndPassword}
+        >
+          Change email & set password
+        </button>
+      </div>
+      <EmailAndPasswordStatus emailAndPasswordStatus={props.emailAndPasswordStatus} />
+    </div>
+  );
+}
+
 function UserNameError(props: { userNameError: string }) {
   return (
     <div>
@@ -240,6 +310,20 @@ function EmailVerificationStatus(props: {
         <div></div>
       ) : (
         <p>{props.sendEmailVerificationStatus}</p>
+      )}
+    </div>
+  );
+}
+
+function EmailAndPasswordStatus(props: {
+  emailAndPasswordStatus: string;
+}) {
+  return (
+    <div>
+      {props.emailAndPasswordStatus === "" ? (
+        <div></div>
+      ) : (
+        <p>{props.emailAndPasswordStatus}</p>
       )}
     </div>
   );

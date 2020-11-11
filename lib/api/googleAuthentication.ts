@@ -32,6 +32,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (type === "signup") {
     let currentUser = await firebase.auth().currentUser;
+    console.log("Current User");
     console.log(currentUser);
   
     // await currentUser.sendEmailVerification();
@@ -44,8 +45,15 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       If this does happen, user can reset their auto-generated username in 
       settings.
     */
-    var username = await getUsernameFromUid(signedin_user.uid);
-    if (!validate(username)) {
+
+    var username;
+    try {
+      username = await getUsernameFromUid(signedin_user.uid);
+    } catch (e) {
+      console.log("This is not a login, so username dne.");
+    }
+    
+    if (!(await validate(username))) {
       let indexOfAt = currentUser.email.indexOf("@");
       let emailId = currentUser.email.substring(0, indexOfAt);
       let displayName = currentUser.displayName;
@@ -72,6 +80,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     db.collection("users").doc(signedin_user.uid).set({
       email: signedin_user.email,
       username: username,
+      method: "google"
     });
   }
 
@@ -82,11 +91,16 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 async function validate(username: string) {
-  var desired = username.replace(/[\s~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g, '');
-  desired = desired.substring(0, 24);
-  let usernameDNE = await checkUsernameDNE(desired);
-  if (desired.length === 0 || !usernameDNE) { 
+  try{
+    var desired = username.replace(/[\s~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g, '');
+    desired = desired.substring(0, 24);
+    let usernameDNE = await checkUsernameDNE(desired);
+    if (desired.length === 0 || !usernameDNE) { 
+      return false;
+    }
+    return desired;
+  } catch (e) {
+    console.log("returning false");
     return false;
   }
-  return desired;
 }

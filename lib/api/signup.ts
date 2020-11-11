@@ -78,6 +78,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   db.collection("users").doc(signedin_user.uid).set({
     email: signedin_user.email,
     username: username,
+    method: "leaf"
   });
 
   let userToken = await signedin_user.getIdToken();
