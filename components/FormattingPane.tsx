@@ -23,6 +23,8 @@ import {
   useFocused,
   RenderLeafProps,
 } from "slate-react";
+import React, { useRef, useEffect, useState } from "react";
+
 import { HistoryEditor } from "slate-history";
 import "../styles/formattingpane.scss";
 import { isAncestor } from "@udecode/slate-plugins";
@@ -37,6 +39,8 @@ export default function FormattingPane(props: {
   Blocks: { display: string; blockType: blockType }[];
   addBlock: (blockType: blockType) => void;
 }) {
+  const formattingPaneRef = useRef<HTMLDivElement>(null);
+  const [leftPos, updateLeftPos] = useState(0);
   let {
     slashPosition,
     editor,
@@ -46,27 +50,39 @@ export default function FormattingPane(props: {
     addBlock,
   } = props;
 
+  useEffect(() => {
+    // reset leftPos if no slash position
+    if (!slashPosition) {
+      updateLeftPos(0);
+    }
+  }, [slashPosition]);
+
   // find position to place formatting pane
   let currentNodeEntry = Editor.above(editor, {
     match: (node) => Node.isNode(node),
   });
   let top: number = 0;
+  let transformOrigin = "top left";
   if (slashPosition && currentNodeEntry && editor.selection) {
     let currentNode = currentNodeEntry[0];
-    let domNode = ReactEditor.toDOMNode(editor, currentNode);
-    let domNodeDimensions = domNode.getBoundingClientRect();
-    top = domNodeDimensions.bottom;
-    console.log(domNodeDimensions);
-    // console.log(top);
-    // console.log(window.innerHeight);
-    if (top > window.innerHeight / 2) {
-      console.log("adjusting");
-      top = top - 240 - domNodeDimensions.height;
-      console.log(top + window.pageYOffset);
+    let sel = window.getSelection();
+    if (sel) {
+      let myRange = sel.getRangeAt(0);
+      let newDimensions = myRange.getBoundingClientRect();
+      // set leftpos at slash position
+      if (leftPos === 0) {
+        let newLeft = newDimensions.x;
+        updateLeftPos(newLeft);
+      }
+      // set proper top position, depending on whether selection
+      // is in bottom or top half of viewport
+      top = newDimensions.bottom;
+      if (top + 240 > window.innerHeight) {
+        top = top - 240 - newDimensions.height;
+        transformOrigin = "bottom left";
+      }
     }
-    let nodeFragment = Node.fragment(currentNode, slashPosition);
-    // let nodeString = Node.string(nodeFragment[0]);
-    // console.log(nodeString);
+  } else {
   }
 
   return (
@@ -77,7 +93,8 @@ export default function FormattingPane(props: {
             position: "absolute",
             zIndex: 1,
             top: top + window.pageYOffset,
-            transformOrigin: "top left",
+            transformOrigin: transformOrigin,
+            left: leftPos,
           }}
           initial={{
             opacity: 0,
@@ -95,7 +112,7 @@ export default function FormattingPane(props: {
             duration: 0.15,
           }}
         >
-          <div className={"formatting-pane"}>
+          <div ref={formattingPaneRef} className={"formatting-pane"}>
             <div className={"rich-text"}>
               <div className={"section-label"}>Rich Text</div>
               {Blocks.map((block, index) => {
@@ -130,8 +147,14 @@ function RichTextElement(props: {
   selected: boolean;
   addBlock: (blockType: blockType) => void;
 }) {
+  const richTextElementRef = useRef<HTMLDivElement>(null);
+
   let { elementName, blockType, selected, addBlock } = props;
+
   let style = selected ? { backgroundColor: "#edece9" } : {};
+
+  function scrollPane() {}
+
   return (
     <div
       className={"rich-text-element"}
@@ -139,6 +162,7 @@ function RichTextElement(props: {
         addBlock(blockType);
       }}
       style={style}
+      ref={richTextElementRef}
     >
       <div className={"element-img"}></div>
       <label className={"rich-text-label"}>{elementName}</label>
