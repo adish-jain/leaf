@@ -28,16 +28,16 @@ import { searchBlocks } from "../lib/blockUtils";
 import { HistoryEditor } from "slate-history";
 import "../styles/formattingpane.scss";
 import { isAncestor } from "@udecode/slate-plugins";
-import { blockType } from "../typescript/enums/app_enums";
-
+import { formattingPaneBlockType } from "../typescript/enums/app_enums";
+import { FormattingPaneBlockList } from "../typescript/types/app_types";
 let leftPos = 0;
 export default function FormattingPane(props: {
   editor: Editor & ReactEditor & HistoryEditor;
   updateSlashPosition: React.Dispatch<React.SetStateAction<Range | null>>;
   slashPosition: Range | null;
   selectedRichTextIndex: number;
-  searchedBlocks: { display: string; blockType: blockType }[];
-  addBlock: (blockType: blockType) => void;
+  searchedBlocks: FormattingPaneBlockList;
+  addBlock: (blockType: formattingPaneBlockType) => void;
 }) {
   const formattingPaneRef = useRef<HTMLDivElement>(null);
   let {
@@ -146,9 +146,9 @@ export default function FormattingPane(props: {
 
 function RichTextElement(props: {
   elementName: string;
-  blockType: blockType;
+  blockType: formattingPaneBlockType;
   selected: boolean;
-  addBlock: (blockType: blockType) => void;
+  addBlock: (blockType: formattingPaneBlockType) => void;
 }) {
   const richTextElementRef = useRef<HTMLDivElement>(null);
 
@@ -156,7 +156,11 @@ function RichTextElement(props: {
 
   let style = selected ? { backgroundColor: "#edece9" } : {};
 
-  function scrollPane() {}
+  useEffect(() => {
+    if (selected) {
+      richTextElementRef.current?.scrollIntoView(false);
+    }
+  }, [selected]);
 
   return (
     <div

@@ -63,7 +63,7 @@ function handleMiddleLine(
     Editor.after(editor, slashPosition!.focus) || slashPosition!.focus;
   let replaceRange: Range = {
     anchor: newBefore,
-    focus: newAfter,
+    focus: slashPosition!.focus,
   };
   // create the new node with desired block type
   let newNode: Node = {
@@ -100,18 +100,12 @@ function handleMiddleLine(
   let nextPath = Path.next(currentNodePath);
   let insertPathLineNum = insertPath?.path[0];
   if (insertPathLineNum !== lineNum) {
-    // slash is at end of line,
-    // Transforms.insertNodes(editor, newNode, {
-    //   at: Editor.before(editor, slashPosition!.focus),
-    // });
     Transforms.insertNodes(editor, newNode, {
       at: nextPath,
     });
   } else {
     Transforms.insertNodes(editor, newNode, {
-      at: Editor.after(editor, slashPosition!, {
-        unit: "line",
-      }),
+      at: nextPath,
     });
   }
 

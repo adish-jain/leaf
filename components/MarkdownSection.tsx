@@ -232,11 +232,6 @@ const MarkdownPreviewExample = () => {
         anchor: slashPosition.anchor,
         focus: editor.selection!.focus,
       };
-      if (Range.isCollapsed(newSlashPosition)) {
-        // console.log("collapsed");
-        // updateSlashPosition(null);
-      } else {
-      }
       updateSlashPosition(newSlashPosition);
 
       refreshSearchString(newSlashPosition);
@@ -252,7 +247,6 @@ const MarkdownPreviewExample = () => {
     if (searchString.length > 16) {
       updateSlashPosition(null);
     } else {
-      console.log(searchString);
       updateSearchString(searchString);
     }
   }
