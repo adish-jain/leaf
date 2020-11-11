@@ -30,6 +30,7 @@ import "../styles/formattingpane.scss";
 import { isAncestor } from "@udecode/slate-plugins";
 import { blockType } from "../typescript/enums/app_enums";
 
+let leftPos = 0;
 export default function FormattingPane(props: {
   editor: Editor & ReactEditor & HistoryEditor;
   updateSlashPosition: React.Dispatch<React.SetStateAction<Range | null>>;
@@ -40,7 +41,6 @@ export default function FormattingPane(props: {
   addBlock: (blockType: blockType) => void;
 }) {
   const formattingPaneRef = useRef<HTMLDivElement>(null);
-  const [leftPos, updateLeftPos] = useState(0);
   let {
     slashPosition,
     editor,
@@ -50,13 +50,9 @@ export default function FormattingPane(props: {
     addBlock,
   } = props;
 
-  useEffect(() => {
-    // reset leftPos if no slash position
-    if (!slashPosition) {
-      updateLeftPos(0);
-    }
-  }, [slashPosition]);
-
+  if (!slashPosition) {
+    leftPos = 0;
+  }
   // find position to place formatting pane
   let currentNodeEntry = Editor.above(editor, {
     match: (node) => Node.isNode(node),
@@ -72,7 +68,7 @@ export default function FormattingPane(props: {
       // set leftpos at slash position
       if (leftPos === 0) {
         let newLeft = newDimensions.x;
-        updateLeftPos(newLeft);
+        leftPos = newLeft;
       }
       // set proper top position, depending on whether selection
       // is in bottom or top half of viewport
