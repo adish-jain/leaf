@@ -40,6 +40,22 @@ import "../styles/slate-editor.scss";
 import { isCollapsed } from "@udecode/slate-plugins";
 import { motion, AnimatePresence } from "framer-motion";
 import { blockType } from "../typescript/enums/app_enums";
+import {
+  handleArrowLeft,
+  handleArrowRight,
+  handleArrowUp,
+  handleArrowDown,
+  handleEnter,
+  handleBackSpace,
+} from "../lib/handleKeyUtils";
+import {
+  CodeElement,
+  HeaderOneElement,
+  HeaderTwoElement,
+  HeaderThreeElement,
+  UnOrderedListElement,
+  BlockQuoteElement,
+} from "./BlockComponents";
 const Blocks = [
   {
     display: "Header 1",
@@ -56,6 +72,10 @@ const Blocks = [
   {
     display: "Bulleted List",
     blockType: blockType.UL,
+  },
+  {
+    display: "Block Quote",
+    blockType: blockType.Blockquote,
   },
 ];
 
@@ -96,6 +116,8 @@ const MarkdownPreviewExample = () => {
         return <HeaderThreeElement {...props} />;
       case "ul":
         return <UnOrderedListElement {...props} />;
+      case "blockquote":
+        return <BlockQuoteElement {...props} />;
       case "default":
         return <DefaultElement {...props} />;
       default:
@@ -155,6 +177,7 @@ const MarkdownPreviewExample = () => {
         anchor: slashPosition.anchor,
         focus: editor.selection!.anchor,
       };
+
       updateSlashPosition(newSlashPosition);
     }
     switch (event.key) {
@@ -166,15 +189,30 @@ const MarkdownPreviewExample = () => {
         }
         break;
       case "ArrowDown":
-        return handleArrowDown(event);
+        return handleArrowDown(
+          event,
+          selectedRichTextIndex,
+          slashPosition,
+          updateSelectedRichText
+        );
       case "ArrowUp":
-        return handleArrowUp(event);
+        return handleArrowUp(
+          event,
+          selectedRichTextIndex,
+          slashPosition,
+          updateSelectedRichText
+        );
       case "ArrowLeft":
-        return handleArrowLeft(event);
+        return handleArrowLeft(event, slashPosition, updateSlashPosition);
       case "ArrowRight":
-        return handleArrowRight(event);
+        return handleArrowRight(event, slashPosition);
       case "Backspace":
-        return handleBackSpace(event);
+        return handleBackSpace(
+          event,
+          slashPosition,
+          editor,
+          updateSlashPosition
+        );
       case "Escape":
         if (slashPosition) {
           event.preventDefault();
@@ -182,7 +220,8 @@ const MarkdownPreviewExample = () => {
         }
         break;
       case "Enter":
-        return handleEnter(event);
+        let blockType = Blocks[selectedRichTextIndex].blockType;
+        return handleEnter(event, editor, slashPosition, blockType, addBlock);
     }
   }
 
@@ -356,71 +395,6 @@ const initialValue: Node[] = [
     ],
   },
 ];
-
-// Define a React component renderer for our code blocks.
-const CodeElement = (props: any) => {
-  return (
-    <pre {...props.attributes}>
-      <code>{props.children}</code>
-    </pre>
-  );
-};
-
-// Define a React component renderer for h1 blocks.
-const HeaderOneElement = (props: RenderElementProps) => {
-  let currentNode = props.element.children[0];
-  let empty = currentNode.text === "";
-  return (
-    <div className={"headerOne"}>
-      <h1 {...props.attributes}>{props.children}</h1>
-      {empty && <HeadingPlaceHolder>Heading 1</HeadingPlaceHolder>}
-    </div>
-  );
-};
-
-function HeadingPlaceHolder(props: any) {
-  return (
-    <label contentEditable={false} onClick={(e) => e.preventDefault()}>
-      {props.children}
-    </label>
-  );
-}
-
-// Define a React component renderer for h2 blocks.
-const HeaderTwoElement = (props: any) => {
-  let currentNode = props.element.children[0];
-  let empty = currentNode.text === "";
-  return (
-    <div className={"headerTwo"}>
-      <h2 {...props.attributes}>{props.children}</h2>
-      {empty && <HeadingPlaceHolder>Heading 2</HeadingPlaceHolder>}
-    </div>
-  );
-};
-
-// Define a React component renderer for h2 blocks.
-const HeaderThreeElement = (props: RenderElementProps) => {
-  let currentNode = props.element.children[0];
-  let empty = currentNode.text === "";
-
-  return (
-    <div className={"headerThree"}>
-      <h3 {...props.attributes}>{props.children}</h3>
-      {empty && <HeadingPlaceHolder>Heading 3</HeadingPlaceHolder>}
-    </div>
-  );
-};
-
-const UnOrderedListElement = (props: RenderElementProps) => {
-  let currentNode = props.element.children[0];
-  let empty = currentNode.text === "";
-  return (
-    <div className={"unordered-list"}>
-      <div {...props.attributes}>{props.children}</div>
-      {empty && <HeadingPlaceHolder>List</HeadingPlaceHolder>}
-    </div>
-  );
-};
 
 function addMarkDown(tokens: Token[], path: Path) {
   const ranges: Range[] = [];

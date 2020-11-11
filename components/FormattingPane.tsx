@@ -56,9 +56,15 @@ export default function FormattingPane(props: {
     let domNode = ReactEditor.toDOMNode(editor, currentNode);
     let domNodeDimensions = domNode.getBoundingClientRect();
     top = domNodeDimensions.bottom;
-
+    console.log(domNodeDimensions);
+    // console.log(top);
+    // console.log(window.innerHeight);
+    if (top > window.innerHeight / 2) {
+      console.log("adjusting");
+      top = top - 240 - domNodeDimensions.height;
+      console.log(top + window.pageYOffset);
+    }
     let nodeFragment = Node.fragment(currentNode, slashPosition);
-    console.log(nodeFragment);
     // let nodeString = Node.string(nodeFragment[0]);
     // console.log(nodeString);
   }
@@ -125,7 +131,7 @@ function RichTextElement(props: {
   addBlock: (blockType: blockType) => void;
 }) {
   let { elementName, blockType, selected, addBlock } = props;
-  let style = selected ? { backgroundColor: "gray" } : {};
+  let style = selected ? { backgroundColor: "#edece9" } : {};
   return (
     <div
       className={"rich-text-element"}

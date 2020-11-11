@@ -10,4 +10,5 @@ export enum blockType {
   H2 = "h2",
   H3 = "h3",
   UL = "ul",
+  Blockquote = "blockquote",
 }
