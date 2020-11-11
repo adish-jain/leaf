@@ -214,3 +214,40 @@ function handleBeginningLine(
     Transforms.select(editor, currentNodePath);
   }
 }
+
+export function searchBlocks(
+  searchString: string,
+  Blocks: { display: string; blockType: blockType }[]
+) {
+  let shortCutIndex = shortCuts(searchString, Blocks);
+  if (shortCutIndex !== -1) {
+    let returnArray = [];
+    returnArray.push(Blocks[shortCutIndex]);
+    return returnArray;
+  }
+  let searchedBlocks = [];
+  for (let i = 0; i < Blocks.length; i++) {
+    let block = Blocks[i];
+    let elementName = block.display;
+    if (elementName.toLowerCase().includes(searchString.toLowerCase())) {
+      searchedBlocks.push(block);
+    }
+  }
+  return searchedBlocks;
+}
+
+function shortCuts(
+  searchString: string,
+  Blocks: { display: string; blockType: blockType }[]
+) {
+  switch (searchString.toLowerCase()) {
+    case "h1":
+      return 0;
+    case "h2":
+      return 1;
+    case "h3":
+      return 2;
+    default:
+      return -1;
+  }
+}

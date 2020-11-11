@@ -10,7 +10,7 @@ import React, {
   ReactElement,
   useRef,
 } from "react";
-import { useBlocks } from "../lib/blockUtils";
+import { useBlocks, searchBlocks } from "../lib/blockUtils";
 import {
   Slate,
   Editable,
@@ -85,7 +85,8 @@ const MarkdownPreviewExample = () => {
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
   const [selectedRichTextIndex, updateSelectedRichText] = useState(0);
   const { addBlock, slashPosition, updateSlashPosition } = useBlocks(editor);
-
+  const [searchString, updateSearchString] = useState("");
+  let searchedBlocks = searchBlocks(searchString, Blocks);
   useEffect(() => {
     let retrieveValue = JSON.parse(localStorage.getItem("draftStore")!);
     if (Array.isArray(retrieveValue) && retrieveValue.length === 0) {
@@ -95,14 +96,10 @@ const MarkdownPreviewExample = () => {
   }, [process.browser]);
 
   useEffect(() => {
-    window.addEventListener("keydown", handleKey);
-
-    return () => {
-      window.removeEventListener("keydown", handleKey);
-    };
-  }, [handleKey]);
-
-  function handleKey(this: Window, ev: KeyboardEvent) {}
+    if (slashPosition === null) {
+      updateSelectedRichText(0);
+    }
+  }, [slashPosition]);
 
   const renderElement = useCallback((props: RenderElementProps) => {
     switch (props.element.type) {
@@ -165,6 +162,8 @@ const MarkdownPreviewExample = () => {
     }
   }
 
+  // function handleSearchString() {}
+
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     // if (editor.selection && Range.isBackward(editor.selection)) {
     // }
@@ -177,7 +176,6 @@ const MarkdownPreviewExample = () => {
         anchor: slashPosition.anchor,
         focus: editor.selection!.anchor,
       };
-
       updateSlashPosition(newSlashPosition);
     }
     switch (event.key) {
@@ -193,14 +191,16 @@ const MarkdownPreviewExample = () => {
           event,
           selectedRichTextIndex,
           slashPosition,
-          updateSelectedRichText
+          updateSelectedRichText,
+          searchedBlocks.length
         );
       case "ArrowUp":
         return handleArrowUp(
           event,
           selectedRichTextIndex,
           slashPosition,
-          updateSelectedRichText
+          updateSelectedRichText,
+          searchedBlocks.length
         );
       case "ArrowLeft":
         return handleArrowLeft(event, slashPosition, updateSlashPosition);
@@ -220,15 +220,38 @@ const MarkdownPreviewExample = () => {
         }
         break;
       case "Enter":
-        let blockType = Blocks[selectedRichTextIndex].blockType;
-        return handleEnter(event, editor, slashPosition, blockType, addBlock);
+        let selectedBlock = searchedBlocks[selectedRichTextIndex].blockType;
+        return handleEnter(
+          event,
+          editor,
+          slashPosition,
+          selectedBlock,
+          addBlock
+        );
     }
   }
 
   function handleChange(value: Node[]) {
     let stringifyValue = JSON.stringify(value);
     localStorage.setItem("draftStore", stringifyValue);
+    refreshSearchString();
     setValue(value);
+  }
+
+  function refreshSearchString() {
+    if (slashPosition) {
+      let searchRange: Range = {
+        anchor: slashPosition.anchor,
+        focus: Editor.after(editor, slashPosition.focus)!,
+      };
+
+      let searchString = Editor.string(editor, searchRange);
+      if (searchString.length > 16) {
+        updateSlashPosition(null);
+      } else {
+        updateSearchString(searchString);
+      }
+    }
   }
 
   function handleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
@@ -247,8 +270,6 @@ const MarkdownPreviewExample = () => {
         // Transforms.select(editor, selection.anchor.path);
         // Transforms.deselect(editor);
       }
-
-      //   Transforms.select(editor, Editor.start(editor));
     }
   }
 
@@ -257,15 +278,6 @@ const MarkdownPreviewExample = () => {
     const focused = useFocused();
     let emptyText = props.element.children[0].text === "";
     const [hovered, toggleHover] = useState(false);
-    // const defaultElementRef = useRef<HTMLDivElement>(null);
-    // if (hovered && defaultElementRef) {
-    //   let dimensions = defaultElementRef.current?.getBoundingClientRect();
-    //   updateBlockHandleState({
-    //     hovered: true,
-    //     yPos: dimensions?.y || 0,
-    //     xPos: dimensions?.x || 0,
-    //   });
-    // }
     return (
       <div
         className={"prompt"}
@@ -306,8 +318,7 @@ const MarkdownPreviewExample = () => {
         slashPosition={slashPosition}
         updateSlashPosition={updateSlashPosition}
         selectedRichTextIndex={selectedRichTextIndex}
-        updateSelectedRichText={updateSelectedRichText}
-        Blocks={Blocks}
+        searchedBlocks={searchedBlocks}
         addBlock={addBlock}
       />
     </div>

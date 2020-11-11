@@ -30,6 +30,7 @@ import {
   Operation,
   Point,
 } from "slate";
+import { searchBlocks } from "../lib/blockUtils";
 import { HistoryEditor } from "slate-history";
 import { blockType } from "../typescript/enums/app_enums";
 
@@ -57,11 +58,17 @@ function handleArrowUp(
   event: React.KeyboardEvent<HTMLDivElement>,
   selectedRichTextIndex: number,
   slashPosition: Range | null,
-  updateSelectedRichText: React.Dispatch<React.SetStateAction<number>>
+  updateSelectedRichText: React.Dispatch<React.SetStateAction<number>>,
+  searchedBlocksLength: number
 ) {
   if (slashPosition) {
     event.preventDefault();
-    updateSelectedRichText(selectedRichTextIndex - 1);
+    safeUpdateSelectedRichText(
+      updateSelectedRichText,
+      searchedBlocksLength,
+      selectedRichTextIndex,
+      false
+    );
   }
   return;
 }
@@ -70,11 +77,17 @@ function handleArrowDown(
   event: React.KeyboardEvent<HTMLDivElement>,
   selectedRichTextIndex: number,
   slashPosition: Range | null,
-  updateSelectedRichText: React.Dispatch<React.SetStateAction<number>>
+  updateSelectedRichText: React.Dispatch<React.SetStateAction<number>>,
+  searchedBlocksLength: number
 ) {
   if (slashPosition) {
     event.preventDefault();
-    updateSelectedRichText(selectedRichTextIndex + 1);
+    safeUpdateSelectedRichText(
+      updateSelectedRichText,
+      searchedBlocksLength,
+      selectedRichTextIndex,
+      true
+    );
   }
   return;
 }
@@ -83,12 +96,12 @@ function handleEnter(
   event: React.KeyboardEvent<HTMLDivElement>,
   editor: Editor & ReactEditor & HistoryEditor,
   slashPosition: Range | null,
-  blockType: blockType,
+  selectedBlock: blockType,
   addBlock: (blockType: blockType) => void
 ) {
   if (slashPosition) {
     event.preventDefault();
-    addBlock(blockType);
+    addBlock(selectedBlock);
     return;
   }
   let currentNodeEntry = Editor.above(editor, {
@@ -105,7 +118,8 @@ function handleEnter(
   let isHeader =
     currentNode.type === "h1" ||
     currentNode.type === "h2" ||
-    currentNode.type === "h3";
+    currentNode.type === "h3" ||
+    currentNode.type === "blockquote";
   // if at beginning of line and header type and empty
   if (editor.selection?.anchor.offset === 0 && isHeader && nodeText === "") {
     event.preventDefault();
@@ -199,3 +213,27 @@ export {
   handleEnter,
   handleBackSpace,
 };
+
+// updates selected rich text index without array out of bounds
+function safeUpdateSelectedRichText(
+  updateSelectedRichText: React.Dispatch<React.SetStateAction<number>>,
+  searchedBlocksLength: number,
+  selectedRichTextIndex: number,
+  increment: boolean
+) {
+  if (increment) {
+    let newIndex = selectedRichTextIndex + 1;
+    if (newIndex > searchedBlocksLength - 1) {
+      newIndex = 0;
+    }
+    updateSelectedRichText(newIndex);
+    return;
+  } else {
+    let newIndex = selectedRichTextIndex - 1;
+    if (newIndex < 0) {
+      newIndex = 0;
+    }
+    updateSelectedRichText(newIndex);
+    return;
+  }
+}

@@ -168,3 +168,14 @@ $headerThreeFontSize: 1.17em;
 
 //   }
 // }
+
+.blockquote-element {
+  border-left: 2px $leaf-dark-blue solid;
+  padding-left: 4px;
+  margin-top: 4px;
+
+  @include header-placeholder;
+  label {
+    font-weight: normal;
+  }
+}

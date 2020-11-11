@@ -80,7 +80,7 @@ const BlockQuoteElement = (props: RenderElementProps) => {
     let currentNode = props.element.children[0];
     let empty = currentNode.text === "";
     return (
-      <div className={"unordered-list"}>
+      <div className={"blockquote-element"}>
         <div {...props.attributes}>{props.children}</div>
         {empty && <HeadingPlaceHolder>Block quote</HeadingPlaceHolder>}
       </div>

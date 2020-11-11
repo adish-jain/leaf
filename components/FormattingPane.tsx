@@ -24,7 +24,7 @@ import {
   RenderLeafProps,
 } from "slate-react";
 import React, { useRef, useEffect, useState } from "react";
-
+import { searchBlocks } from "../lib/blockUtils";
 import { HistoryEditor } from "slate-history";
 import "../styles/formattingpane.scss";
 import { isAncestor } from "@udecode/slate-plugins";
@@ -36,8 +36,7 @@ export default function FormattingPane(props: {
   updateSlashPosition: React.Dispatch<React.SetStateAction<Range | null>>;
   slashPosition: Range | null;
   selectedRichTextIndex: number;
-  updateSelectedRichText: React.Dispatch<React.SetStateAction<number>>;
-  Blocks: { display: string; blockType: blockType }[];
+  searchedBlocks: { display: string; blockType: blockType }[];
   addBlock: (blockType: blockType) => void;
 }) {
   const formattingPaneRef = useRef<HTMLDivElement>(null);
@@ -46,7 +45,7 @@ export default function FormattingPane(props: {
     editor,
     selectedRichTextIndex,
     updateSlashPosition,
-    Blocks,
+    searchedBlocks,
     addBlock,
   } = props;
 
@@ -54,13 +53,19 @@ export default function FormattingPane(props: {
     leftPos = 0;
   }
   // find position to place formatting pane
-  let currentNodeEntry = Editor.above(editor, {
-    match: (node) => Node.isNode(node),
-  });
   let top: number = 0;
   let transformOrigin = "top left";
-  if (slashPosition && currentNodeEntry && editor.selection) {
-    let currentNode = currentNodeEntry[0];
+  let searchString = "";
+  if (slashPosition) {
+    let newAfter =
+      Editor.after(editor, slashPosition!.focus) || slashPosition!.focus;
+    let fullRange: Range = {
+      anchor: slashPosition.anchor,
+      focus: newAfter,
+    };
+
+    searchString = Editor.string(editor, fullRange);
+
     let sel = window.getSelection();
     if (sel) {
       let myRange = sel.getRangeAt(0);
@@ -78,8 +83,8 @@ export default function FormattingPane(props: {
         transformOrigin = "bottom left";
       }
     }
-  } else {
   }
+  // let searchedBlocks = searchBlocks(slashPosition, editor, Blocks);
 
   return (
     <AnimatePresence>
@@ -111,16 +116,18 @@ export default function FormattingPane(props: {
           <div ref={formattingPaneRef} className={"formatting-pane"}>
             <div className={"rich-text"}>
               <div className={"section-label"}>Rich Text</div>
-              {Blocks.map((block, index) => {
-                return (
-                  <RichTextElement
-                    elementName={block.display}
-                    blockType={block.blockType}
-                    key={index}
-                    selected={index === selectedRichTextIndex}
-                    addBlock={addBlock}
-                  />
-                );
+              {searchedBlocks.map((block, index) => {
+                {
+                  return (
+                    <RichTextElement
+                      elementName={block.display}
+                      blockType={block.blockType}
+                      key={block.display}
+                      selected={index === selectedRichTextIndex}
+                      addBlock={addBlock}
+                    />
+                  );
+                }
               })}
               <div>Numbered List</div>
               <div>Blockquote</div>
