@@ -39,7 +39,8 @@ import { css } from "emotion";
 import "../styles/slate-editor.scss";
 import { isCollapsed } from "@udecode/slate-plugins";
 import { motion, AnimatePresence } from "framer-motion";
-import { blockType } from "../typescript/enums/app_enums";
+import { formattingPaneBlockType } from "../typescript/enums/app_enums";
+import { FormattingPaneBlockList } from "../typescript/types/app_types";
 import {
   handleArrowLeft,
   handleArrowRight,
@@ -56,26 +57,26 @@ import {
   UnOrderedListElement,
   BlockQuoteElement,
 } from "./BlockComponents";
-const Blocks = [
+const Blocks: FormattingPaneBlockList = [
   {
     display: "Header 1",
-    blockType: blockType.H1,
+    blockType: formattingPaneBlockType.H1,
   },
   {
     display: "Header 2",
-    blockType: blockType.H2,
+    blockType: formattingPaneBlockType.H2,
   },
   {
     display: "Header 3",
-    blockType: blockType.H3,
+    blockType: formattingPaneBlockType.H3,
   },
   {
     display: "Bulleted List",
-    blockType: blockType.UL,
+    blockType: formattingPaneBlockType.UL,
   },
   {
     display: "Block Quote",
-    blockType: blockType.Blockquote,
+    blockType: formattingPaneBlockType.Blockquote,
   },
 ];
 
@@ -170,14 +171,7 @@ const MarkdownPreviewExample = () => {
     if (event.metaKey) {
       handleCommandKey(event);
     }
-    // expand or contract slash positioning
-    if (slashPosition) {
-      let newSlashPosition = {
-        anchor: slashPosition.anchor,
-        focus: editor.selection!.anchor,
-      };
-      updateSlashPosition(newSlashPosition);
-    }
+
     switch (event.key) {
       case "/":
         if (!slashPosition) {
@@ -220,37 +214,46 @@ const MarkdownPreviewExample = () => {
         }
         break;
       case "Enter":
-        let selectedBlock = searchedBlocks[selectedRichTextIndex].blockType;
         return handleEnter(
           event,
           editor,
           slashPosition,
-          selectedBlock,
-          addBlock
+          addBlock,
+          searchedBlocks,
+          selectedRichTextIndex
         );
     }
   }
 
   function handleChange(value: Node[]) {
+    // expand or contract slash positioning
+    if (slashPosition) {
+      let newSlashPosition = {
+        anchor: slashPosition.anchor,
+        focus: editor.selection!.focus,
+      };
+      if (Range.isCollapsed(newSlashPosition)) {
+        // console.log("collapsed");
+        // updateSlashPosition(null);
+      } else {
+      }
+      updateSlashPosition(newSlashPosition);
+
+      refreshSearchString(newSlashPosition);
+    }
+
     let stringifyValue = JSON.stringify(value);
     localStorage.setItem("draftStore", stringifyValue);
-    refreshSearchString();
     setValue(value);
   }
 
-  function refreshSearchString() {
-    if (slashPosition) {
-      let searchRange: Range = {
-        anchor: slashPosition.anchor,
-        focus: Editor.after(editor, slashPosition.focus)!,
-      };
-
-      let searchString = Editor.string(editor, searchRange);
-      if (searchString.length > 16) {
-        updateSlashPosition(null);
-      } else {
-        updateSearchString(searchString);
-      }
+  function refreshSearchString(newSlashPosition: Range) {
+    let searchString = Editor.string(editor, newSlashPosition);
+    if (searchString.length > 16) {
+      updateSlashPosition(null);
+    } else {
+      console.log(searchString);
+      updateSearchString(searchString);
     }
   }
 

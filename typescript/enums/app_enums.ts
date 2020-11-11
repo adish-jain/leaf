@@ -5,7 +5,7 @@ export enum Block {
   Text = "Text",
 }
 
-export enum blockType {
+export enum formattingPaneBlockType {
   H1 = "h1",
   H2 = "h2",
   H3 = "h3",

@@ -1,4 +1,4 @@
-import { Block } from "../enums/app_enums";
+import { Block, formattingPaneBlockType } from "../enums/app_enums";
 import { SetStateAction } from "react";
 
 export type File = {
@@ -7,6 +7,11 @@ export type File = {
   code: string;
   name: string;
 };
+
+export type FormattingPaneBlockList = {
+  display: string;
+  blockType: formattingPaneBlockType;
+}[];
 
 export type Step = {
   text: string;

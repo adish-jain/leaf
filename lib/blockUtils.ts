@@ -155,13 +155,10 @@ function handleBeginningLine(
     Transforms.insertNodes(editor, newNode, {
       at: Path.next(currentNodePath),
     });
-    Transforms.delete(editor, {
-      at: slashPosition!,
-      distance: 1,
-
-      // reverse: true,
-    });
-    // Transforms.insertText(editor, "", { at: slashPosition! });
+    // Transforms.delete(editor, {
+    //   at: slashPosition!,
+    //   distance: 1,
+    // });
     // Replace the slash
     let newBefore =
       Editor.before(editor, slashPosition!.anchor) || slashPosition!.anchor;

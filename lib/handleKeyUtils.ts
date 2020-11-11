@@ -32,7 +32,8 @@ import {
 } from "slate";
 import { searchBlocks } from "../lib/blockUtils";
 import { HistoryEditor } from "slate-history";
-import { blockType } from "../typescript/enums/app_enums";
+import { formattingPaneBlockType } from "../typescript/enums/app_enums";
+import { FormattingPaneBlockList } from "../typescript/types/app_types";
 
 function handleArrowLeft(
   event: React.KeyboardEvent<HTMLDivElement>,
@@ -96,11 +97,13 @@ function handleEnter(
   event: React.KeyboardEvent<HTMLDivElement>,
   editor: Editor & ReactEditor & HistoryEditor,
   slashPosition: Range | null,
-  selectedBlock: blockType,
-  addBlock: (blockType: blockType) => void
+  addBlock: (blockType: formattingPaneBlockType) => void,
+  searchedBlocks: FormattingPaneBlockList,
+  selectedRichTextIndex: number
 ) {
   if (slashPosition) {
     event.preventDefault();
+    let selectedBlock = searchedBlocks[selectedRichTextIndex].blockType;
     addBlock(selectedBlock);
     return;
   }
@@ -120,7 +123,7 @@ function handleEnter(
     currentNode.type === "h2" ||
     currentNode.type === "h3" ||
     currentNode.type === "blockquote";
-  // if at beginning of line and header type and empty
+  // if at beginning of line and header type and empty, set back to default element
   if (editor.selection?.anchor.offset === 0 && isHeader && nodeText === "") {
     event.preventDefault();
     Transforms.setNodes(
@@ -133,16 +136,6 @@ function handleEnter(
         at: editor.selection,
       }
     );
-    let newNode: Node = {
-      type: "default",
-      children: [
-        {
-          text: "",
-        },
-      ],
-    };
-    Transforms.insertNodes(editor, newNode, {});
-    Transforms.select(editor, Editor.after(editor, editor.selection)!);
     return;
   }
 
@@ -168,16 +161,19 @@ function handleBackSpace(
   updateSlashPosition: React.Dispatch<React.SetStateAction<Range | null>>
 ) {
   if (slashPosition) {
-    let newSlashPosition = {
+    event.preventDefault();
+    Editor.deleteBackward(editor, { unit: "character" });
+    if (Range.isCollapsed(slashPosition)) {
+      updateSlashPosition(null);
+      return;
+    }
+    let newSlashPosition: Range = {
       anchor: slashPosition.anchor,
-      focus: editor.selection!.anchor,
+      focus: editor.selection!.focus,
     };
+
     // shorten slash selection
     updateSlashPosition(newSlashPosition);
-    // if slash is deleted, remove slashPosition
-    if (Range.equals(newSlashPosition, editor.selection!)) {
-      updateSlashPosition(null);
-    }
     return;
   }
   // if begining of line
