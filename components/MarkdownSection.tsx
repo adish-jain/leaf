@@ -8,7 +8,9 @@ import React, {
   useMemo,
   useEffect,
   ReactElement,
+  useRef,
 } from "react";
+import { useBlocks } from "../lib/blockUtils";
 import {
   Slate,
   Editable,
@@ -37,13 +39,32 @@ import { css } from "emotion";
 import "../styles/slate-editor.scss";
 import { isCollapsed } from "@udecode/slate-plugins";
 import { motion, AnimatePresence } from "framer-motion";
+import { blockType } from "../typescript/enums/app_enums";
+const Blocks = [
+  {
+    display: "Header 1",
+    blockType: blockType.H1,
+  },
+  {
+    display: "Header 2",
+    blockType: blockType.H2,
+  },
+  {
+    display: "Header 3",
+    blockType: blockType.H3,
+  },
+  {
+    display: "Bulleted List",
+    blockType: blockType.UL,
+  },
+];
 
-let slashDown = false;
 const MarkdownPreviewExample = () => {
   const [value, setValue] = useState<Node[]>(initialValue);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
-  const [slashPosition, updateSlashPosition] = useState<Range | null>(null);
+  const [selectedRichTextIndex, updateSelectedRichText] = useState(0);
+  const { addBlock, slashPosition, updateSlashPosition } = useBlocks(editor);
 
   useEffect(() => {
     let retrieveValue = JSON.parse(localStorage.getItem("draftStore")!);
@@ -92,24 +113,43 @@ const MarkdownPreviewExample = () => {
     return addMarkDown(tokens as Token[], path);
   }, []);
 
-  function addBlock() {
-    let newNode: Node = {
-      type: "prompt",
-      children: [
-        {
-          text: "",
-        },
-      ],
-    };
-    Transforms.insertNodes(editor, newNode);
-  }
-
   function reOrderBlock() {
     Transforms.moveNodes(editor, { at: [1], to: [3] });
   }
+
+  function handleCommandKey(event: React.KeyboardEvent<HTMLDivElement>) {
+    switch (event.key) {
+      case "b":
+        event.preventDefault();
+        const [match] = Editor.nodes(editor, {
+          match: (n) => {
+            return n.bold === true;
+          },
+        });
+        let shouldBold = match === undefined;
+        Transforms.setNodes(
+          editor,
+          { bold: shouldBold },
+          // Apply it to text nodes, and split the text node up if the
+          // selection is overlapping only part of it.
+          {
+            match: (n) => {
+              return Text.isText(n);
+            },
+            split: true,
+          }
+        );
+        break;
+    }
+  }
+
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     // if (editor.selection && Range.isBackward(editor.selection)) {
     // }
+    if (event.metaKey) {
+      handleCommandKey(event);
+    }
+    // expand or contract slash positioning
     if (slashPosition) {
       let newSlashPosition = {
         anchor: slashPosition.anchor,
@@ -125,45 +165,16 @@ const MarkdownPreviewExample = () => {
           updateSlashPosition(editor.selection!);
         }
         break;
+      case "ArrowDown":
+        return handleArrowDown(event);
+      case "ArrowUp":
+        return handleArrowUp(event);
+      case "ArrowLeft":
+        return handleArrowLeft(event);
+      case "ArrowRight":
+        return handleArrowRight(event);
       case "Backspace":
-        if (slashPosition) {
-          let newSlashPosition = {
-            anchor: slashPosition.anchor,
-            focus: editor.selection!.anchor,
-          };
-          // shorten slash selection
-          updateSlashPosition(newSlashPosition);
-          // if slash is deleted, remove slashPosition
-          if (Range.equals(newSlashPosition, editor.selection!)) {
-            updateSlashPosition(null);
-          }
-          break;
-        }
-        // if begining of line
-        if (editor.selection?.anchor.offset === 0) {
-          event.preventDefault();
-          let currentNodeEntry = Editor.above(editor, {
-            match: (node) => Node.isNode(node),
-          });
-          // if not a default element
-          if (currentNodeEntry && currentNodeEntry[0].type !== "default") {
-            event.preventDefault();
-            // set to a default element
-            Transforms.setNodes(
-              editor,
-              { type: "default" },
-              {
-                match: (n: Node) => {
-                  return Editor.isBlock(editor, n) && n.type !== "default";
-                },
-              }
-            );
-          } else {
-            // if is a default element
-            Transforms.removeNodes(editor);
-          }
-        }
-        break;
+        return handleBackSpace(event);
       case "Escape":
         if (slashPosition) {
           event.preventDefault();
@@ -171,39 +182,7 @@ const MarkdownPreviewExample = () => {
         }
         break;
       case "Enter":
-        let currentNodeEntry = Editor.above(editor, {
-          match: (node) => Node.isNode(node),
-        });
-        if (currentNodeEntry) {
-          let currentNode = currentNodeEntry[0];
-          let currentPath = currentNodeEntry[1];
-          let isHeader =
-            currentNode.type === "h1" ||
-            currentNode.type === "h2" ||
-            currentNode.type === "h3";
-          if (editor.selection?.anchor.offset === 1 && isHeader) {
-            Transforms.setNodes(
-              editor,
-              { type: "default" },
-              {
-                match: (n: Node) => {
-                  return Editor.isBlock(editor, n);
-                },
-                at: editor.selection,
-              }
-            );
-          }
-        }
-        event.preventDefault();
-        let newNode: Node = {
-          type: "default",
-          children: [
-            {
-              text: "",
-            },
-          ],
-        };
-        Transforms.insertNodes(editor, newNode);
+        return handleEnter(event);
     }
   }
 
@@ -211,46 +190,6 @@ const MarkdownPreviewExample = () => {
     let stringifyValue = JSON.stringify(value);
     localStorage.setItem("draftStore", stringifyValue);
     setValue(value);
-  }
-
-  function handleKeyUp(event: React.KeyboardEvent<HTMLDivElement>) {
-    // switch (event.key) {
-    //   case "ArrowUp": {
-    //     refreshPrompt();
-    //   }
-    //   case "ArrowDown": {
-    //     refreshPrompt();
-    //   }
-    // }
-  }
-
-  function refreshPrompt() {
-    let selection = editor.selection;
-    if (selection !== null) {
-      //   clear all prompts
-      Transforms.setNodes(
-        editor,
-        { type: "default" },
-        {
-          match: (n) => {
-            return n.type === "prompt";
-          },
-          at: [],
-        }
-      );
-      if (Range.isCollapsed(selection)) {
-        Transforms.setNodes(
-          editor,
-          { type: "prompt" },
-          {
-            // match: (n) => {
-            //   return Editor.isBlock(editor, n);
-            // },
-            at: selection.anchor,
-          }
-        );
-      }
-    }
   }
 
   function handleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
@@ -278,21 +217,36 @@ const MarkdownPreviewExample = () => {
     const selected = useSelected();
     const focused = useFocused();
     let emptyText = props.element.children[0].text === "";
-
+    const [hovered, toggleHover] = useState(false);
+    // const defaultElementRef = useRef<HTMLDivElement>(null);
+    // if (hovered && defaultElementRef) {
+    //   let dimensions = defaultElementRef.current?.getBoundingClientRect();
+    //   updateBlockHandleState({
+    //     hovered: true,
+    //     yPos: dimensions?.y || 0,
+    //     xPos: dimensions?.x || 0,
+    //   });
+    // }
     return (
-      <div className={"prompt"}>
+      <div
+        className={"prompt"}
+        onMouseLeave={(e) => toggleHover(false)}
+        onMouseEnter={(e) => toggleHover(true)}
+        // ref={defaultElementRef}
+      >
         <span className={"prompt-content"} {...props.attributes}>
           {props.children}
         </span>
         {focused && selected && emptyText && (
           <label
             contentEditable={false}
-            onClick={(e) => e.preventDefault()}
+            // onClick={(e) => e.preventDefault()}
             className={"placeholder-text"}
           >
             {"Press '/' for commands"}
           </label>
         )}
+        <BlockHandle hovered={hovered} />
       </div>
     );
   };
@@ -312,6 +266,10 @@ const MarkdownPreviewExample = () => {
         editor={editor}
         slashPosition={slashPosition}
         updateSlashPosition={updateSlashPosition}
+        selectedRichTextIndex={selectedRichTextIndex}
+        updateSelectedRichText={updateSelectedRichText}
+        Blocks={Blocks}
+        addBlock={addBlock}
       />
     </div>
   );
@@ -320,6 +278,7 @@ const MarkdownPreviewExample = () => {
 const Leaf = ({ attributes, children, leaf }: RenderLeafProps) => {
   switch (leaf.type) {
     case "bold":
+      console.log("bold");
       return <div {...attributes}>{children}</div>;
     // case "slashCapture":
     //   return (
@@ -453,9 +412,12 @@ const HeaderThreeElement = (props: RenderElementProps) => {
 };
 
 const UnOrderedListElement = (props: RenderElementProps) => {
+  let currentNode = props.element.children[0];
+  let empty = currentNode.text === "";
   return (
-    <div {...props.attributes} className={"unordered-list"}>
-      {props.children}
+    <div className={"unordered-list"}>
+      <div {...props.attributes}>{props.children}</div>
+      {empty && <HeadingPlaceHolder>List</HeadingPlaceHolder>}
     </div>
   );
 };
@@ -504,6 +466,52 @@ const getLength = (token: Token): number => {
   } else {
     return (token.content as Token[]).reduce((l, t) => l + getLength(t), 0);
   }
+};
+
+const BlockHandle = (props: {
+  hovered: boolean;
+  // yPos: number;
+  // xPos: number;
+}) => {
+  let {
+    hovered,
+    // yPos,
+    // xPos
+  } = props;
+
+  return (
+    <AnimatePresence>
+      {hovered && (
+        <motion.div
+          style={{
+            position: "absolute",
+            top: "-2px",
+            left: "4px",
+            // bottom: 0,
+            // top: `${yPos + window.pageYOffset - 26}px`,
+            // left: `${xPos + window.pageXOffset - 4}px`,
+            zIndex: 3,
+            cursor: "pointer",
+          }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{
+            duration: 0.2,
+          }}
+        >
+          <div
+            // onClick={(e) => e.preventDefault()}
+            contentEditable={false}
+            className={"handle"}
+            draggable={true}
+          >
+            <img src="/images/sixdots.svg" />
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
 };
 
 export default MarkdownPreviewExample;

@@ -263,7 +263,7 @@ export async function userNameErrorMessage(username: string) {
     return "Invalid username";
   } else if (!isValid(username)) {
     return "Username cannot contain special characters";
-  } else if (!unUnique) {
+} else if (!unUnique) {
     return "Username taken";
   } else {
     return "";

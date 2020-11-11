@@ -83,12 +83,15 @@ $headerThreeFontSize: 1.17em;
 .slate-wrapper {
   width: 800px;
   margin: auto;
-  border: 1px solid black;
+  // border: 1px solid black;
 }
 
 .prompt {
   position: relative;
   z-index: 1;
+  padding-left: 30px;
+  left: -30px;
+  // border-style: solid;
 
   br {
     display: none !important;
@@ -126,4 +129,42 @@ $headerThreeFontSize: 1.17em;
 .unordered-list {
   position: relative;
   margin-left: 20px;
+
+  @include header-placeholder;
+  label {
+    font-weight: normal;
+  }
 }
+
+.handle {
+  // position: absolute;
+  // position: relative;
+  // left: -4px;
+  // top: -26px;
+  // top: 0;
+  border-radius: 4px;
+  padding: 2px;
+  transition: background-color 0.2s ease-in-out;
+  // pointer-events: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  img {
+    height: 16px;
+  }
+}
+
+.handle:hover {
+  background-color: $leaf-light-gray;
+  transition: background-color 0.2s ease-in-out;
+}
+
+// .handle:hover {
+//   color: white;
+
+//   .dots {
+//     background-color: $gray-text;
+
+//   }
+// }

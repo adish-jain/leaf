@@ -33,8 +33,7 @@ import {
   Point,
 } from "slate";
 import { withHistory } from "slate-history";
-import { css } from "emotion";
-import "../styles/slate-editor.scss";
+import "../styles/slate-toolbar.scss";
 import { isCollapsed } from "@udecode/slate-plugins";
 import { motion, AnimatePresence } from "framer-motion";
 
