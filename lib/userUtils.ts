@@ -203,6 +203,20 @@ export async function getUsernameFromUid(uid: string) {
   return username;
 }
 
+// export async function checkUidDNE(uid: string) {
+//     let userRef = await db.collection("users").doc(uid);
+//     console.log("User Ref: ");
+//     console.log(userRef);
+
+//     console.log("User Ref data: ");
+//     let flag = await userRef.get().then(function (userSnapshot: any) {
+//       let data = userSnapshot.data();
+//       console.log(data);
+//       return data === undefined;
+//     });
+//     return flag;
+// }
+
 export async function checkUsernameDNE(username: string): Promise<boolean> {
   let size;
 

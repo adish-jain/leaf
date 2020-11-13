@@ -136,6 +136,7 @@ export function useUserInfo(authenticated: boolean) {
     .then((res) => {
       if (res.status === 200) {
         updateEmailAndPasswordStatus("Email & password were successfully reset");
+        sendEmailVerification();
       }
       if (res.status === 403) {
         res.json().then((resJson) => {

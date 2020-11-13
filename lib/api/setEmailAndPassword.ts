@@ -12,6 +12,7 @@ export default async function setEmailAndPasswordHandler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  console.log("in set email & pw handler");
   let newPassword = req.body.newPassword;
   let newEmail = req.body.newEmail;
   var errored = false;
@@ -84,6 +85,7 @@ export default async function setEmailAndPasswordHandler(
             password: newPassword
         })
         .then(async function () {
+            console.log("reset email & pw");
             await db.collection("users").doc(uid).set(
                 {
                 email: newEmail,
@@ -93,7 +95,22 @@ export default async function setEmailAndPasswordHandler(
             );
             let userDataReference = await db.collection("users").doc(uid).get();
             let userData = await userDataReference.data();
-            console.log(userData);
+
+            // await user.reload();
+            console.log(user);
+
+            // unlink google account 
+            // let providerData = user.getProviderData();
+            user.providerData.forEach(function (profile: any) {
+                console.log("provider " + profile.providerId);
+                if (profile.providerId === "google.com") {
+                    console.log("unlinking google");
+                    user.unlink(profile.providerId);
+                }
+            });
+            console.log(user);
+
+
             res.status(200).end();  
             return;
         })

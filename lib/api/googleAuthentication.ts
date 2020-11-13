@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import useSWR from "swr";
 import { initFirebase, initFirebaseAdmin } from "../initFirebase";
 import { setTokenCookies } from "../cookieUtils";
-import { userNameErrorMessage, handleLoginCookies, checkEmailDNE, checkUsernameDNE, getUsernameFromUid } from "../userUtils";
+import { userNameErrorMessage, handleLoginCookies, checkEmailDNE, checkUsernameDNE, getUsernameFromUid, checkUidDNE } from "../userUtils";
 import { request } from "http";
 
 const admin = require("firebase-admin");
@@ -28,9 +28,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   // console.log(userCredential);
 
   let signedin_user = userCredential.user;
-  // console.log(signedin_user);
+  console.log("signed in user: ");
+  console.log(signedin_user);
+
+  // signedin_user.uid
 
   if (type === "signup") {
+  // if (await checkUidDNE(signedin_user.uid)) {
     let currentUser = await firebase.auth().currentUser;
     console.log("Current User");
     console.log(currentUser);
