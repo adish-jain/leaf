@@ -50,8 +50,6 @@ const HeaderTwoElement = (props: any) => {
   );
 };
 
-
-
 // Define a React component renderer for h2 blocks.
 const HeaderThreeElement = (props: RenderElementProps) => {
   let currentNode = props.element.children[0];
@@ -77,16 +75,34 @@ const UnOrderedListElement = (props: RenderElementProps) => {
 };
 
 const BlockQuoteElement = (props: RenderElementProps) => {
-    let currentNode = props.element.children[0];
-    let empty = currentNode.text === "";
-    return (
-      <div className={"blockquote-element"}>
-        <div {...props.attributes}>{props.children}</div>
-        {empty && <HeadingPlaceHolder>Block quote</HeadingPlaceHolder>}
-      </div>
-    );
-  };
-  
+  let currentNode = props.element.children[0];
+  let empty = currentNode.text === "";
+  return (
+    <div className={"blockquote-element"}>
+      <div {...props.attributes}>{props.children}</div>
+      {empty && <HeadingPlaceHolder>Block quote</HeadingPlaceHolder>}
+    </div>
+  );
+};
+
+const NumberedListElement = (props: RenderElementProps) => {
+  let currentNode = props.element.children[0];
+  let empty = currentNode.text === "";
+  let order = props.element.order;
+  return (
+    <div className={"numbered-element"}>
+      <div {...props.attributes}>{props.children}</div>
+      <span
+        className={"number-label"}
+        onClick={(e) => e.preventDefault()}
+        contentEditable={false}
+      >
+        {order}.
+      </span>
+      {empty && <HeadingPlaceHolder>Ordered List Item</HeadingPlaceHolder>}
+    </div>
+  );
+};
 
 export {
   CodeElement,
@@ -94,5 +110,6 @@ export {
   HeaderTwoElement,
   HeaderThreeElement,
   UnOrderedListElement,
-  BlockQuoteElement
+  BlockQuoteElement,
+  NumberedListElement,
 };

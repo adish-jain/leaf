@@ -151,14 +151,19 @@ function RichTextElement(props: {
   addBlock: (blockType: formattingPaneBlockType) => void;
 }) {
   const richTextElementRef = useRef<HTMLDivElement>(null);
-
+  const [hovered, toggleHovered] = useState(false);
   let { elementName, blockType, selected, addBlock } = props;
 
-  let style = selected ? { backgroundColor: "#edece9" } : {};
+  let style = selected || hovered ? { backgroundColor: "#edece9" } : {};
 
   useEffect(() => {
     if (selected) {
-      richTextElementRef.current?.scrollIntoView(false);
+      // richTextElementRef.current?.scrollIntoView(false);
+      richTextElementRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "start",
+      });
     }
   }, [selected]);
 
@@ -166,10 +171,15 @@ function RichTextElement(props: {
     <div
       className={"rich-text-element"}
       onClick={(e) => {
+        console.log("clicking elem");
+        e.stopPropagation();
+        e.preventDefault();
         addBlock(blockType);
       }}
       style={style}
       ref={richTextElementRef}
+      onMouseEnter={(e) => toggleHovered(true)}
+      onMouseLeave={(e) => toggleHovered(false)}
     >
       <div className={"element-img"}></div>
       <label className={"rich-text-label"}>{elementName}</label>

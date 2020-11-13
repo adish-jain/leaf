@@ -34,7 +34,7 @@ import {
   Operation,
   Point,
 } from "slate";
-import { withHistory } from "slate-history";
+import { withHistory, HistoryEditor } from "slate-history";
 import { css } from "emotion";
 import "../styles/slate-editor.scss";
 import { isCollapsed } from "@udecode/slate-plugins";
@@ -56,6 +56,7 @@ import {
   HeaderThreeElement,
   UnOrderedListElement,
   BlockQuoteElement,
+  NumberedListElement,
 } from "./BlockComponents";
 const Blocks: FormattingPaneBlockList = [
   {
@@ -78,12 +79,19 @@ const Blocks: FormattingPaneBlockList = [
     display: "Block Quote",
     blockType: formattingPaneBlockType.Blockquote,
   },
+  {
+    display: "Ordered List",
+    blockType: formattingPaneBlockType.OL,
+  },
 ];
 
 const MarkdownPreviewExample = () => {
   const [value, setValue] = useState<Node[]>(initialValue);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
-  const editor = useMemo(() => withHistory(withReact(createEditor())), []);
+  const editor = useMemo(
+    () => withOrderedList(withHistory(withReact(createEditor()))),
+    []
+  );
   const [selectedRichTextIndex, updateSelectedRichText] = useState(0);
   const { addBlock, slashPosition, updateSlashPosition } = useBlocks(editor);
   const [searchString, updateSearchString] = useState("");
@@ -116,6 +124,8 @@ const MarkdownPreviewExample = () => {
         return <UnOrderedListElement {...props} />;
       case "blockquote":
         return <BlockQuoteElement {...props} />;
+      case "ol":
+        return <NumberedListElement {...props} />;
       case "default":
         return <DefaultElement {...props} />;
       default:
@@ -123,14 +133,29 @@ const MarkdownPreviewExample = () => {
     }
   }, []);
 
-  const decorate = useCallback((currentNodeEntry: NodeEntry) => {
+  const decorate1 = useCallback((currentNodeEntry: NodeEntry) => {
     let [node, path] = currentNodeEntry;
-
     if (!Text.isText(node)) {
       return [];
     }
     const tokens = Prism.tokenize(node.text, Prism.languages.markdown);
     return addMarkDown(tokens as Token[], path);
+  }, []);
+
+  let orderedListCount = 0;
+  const decorate = useCallback((currentNodeEntry: NodeEntry) => {
+    let [node, path] = currentNodeEntry;
+    // if (!Text.isText(node)) {
+    //   console.log(node);
+    //   return [];
+    // }
+    if (node.type === "ol") {
+      orderedListCount++;
+    }
+    else {
+      orderedListCount = 0;
+    }
+    return [];
   }, []);
 
   function reOrderBlock() {
@@ -227,10 +252,10 @@ const MarkdownPreviewExample = () => {
 
   function handleChange(value: Node[]) {
     // expand or contract slash positioning
-    if (slashPosition) {
+    if (slashPosition && editor.selection) {
       let newSlashPosition = {
         anchor: slashPosition.anchor,
-        focus: editor.selection!.focus,
+        focus: editor.selection.focus,
       };
       updateSlashPosition(newSlashPosition);
 
@@ -294,7 +319,7 @@ const MarkdownPreviewExample = () => {
             {"Press '/' for commands"}
           </label>
         )}
-        <BlockHandle hovered={hovered} />
+        {/* <BlockHandle hovered={hovered} /> */}
       </div>
     );
   };
@@ -303,7 +328,7 @@ const MarkdownPreviewExample = () => {
     <div className={"slate-wrapper"}>
       <Slate editor={editor} value={value} onChange={handleChange}>
         <Editable
-          // decorate={decorate}
+          decorate={decorate}
           renderLeaf={renderLeaf}
           renderElement={renderElement}
           onKeyDown={handleKeyDown}
@@ -494,6 +519,34 @@ const BlockHandle = (props: {
       )}
     </AnimatePresence>
   );
+};
+
+const withOrderedList = (editor: Editor & ReactEditor & HistoryEditor) => {
+  const { normalizeNode } = editor;
+
+  editor.normalizeNode = (entry) => {
+    const [node, path] = entry;
+
+    // If the element is a paragraph, ensure its children are valid.
+    // if (Element.isElement(node) && node.type === "paragraph") {
+    //   for (const [child, childPath] of Node.children(editor, path)) {
+    //     if (Element.isElement(child) && !editor.isInline(child)) {
+    //       Transforms.unwrapNodes(editor, { at: childPath });
+    //       return;
+    //     }
+    //   }
+    // }
+    if (Element.isElement(node)) {
+      // console.log(node);
+    }
+    // console.log(node);
+    // console.log(entry);
+
+    // Fall back to the original `normalizeNode` to enforce other constraints.
+    normalizeNode(entry);
+  };
+
+  return editor;
 };
 
 export default MarkdownPreviewExample;

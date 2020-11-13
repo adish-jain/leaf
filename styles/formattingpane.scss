@@ -35,10 +35,12 @@
 .rich-text-element {
   display: flex;
   align-items: center;
-  margin-bottom: 12px;
+  padding-bottom: 6px;
+  padding-top: 6px;
   // width: 100%;
   padding-left: 16px;
   padding-right: 16px;
+  cursor: pointer;
 }
 
 .rich-text-label {

@@ -104,6 +104,7 @@ function handleEnter(
   if (slashPosition) {
     event.preventDefault();
     let selectedBlock = searchedBlocks[selectedRichTextIndex].blockType;
+    console.log("if slash pos inside enter");
     addBlock(selectedBlock);
     return;
   }
@@ -122,6 +123,8 @@ function handleEnter(
     currentNode.type === "h1" ||
     currentNode.type === "h2" ||
     currentNode.type === "h3" ||
+    currentNode.type === "ul" ||
+    currentNode.type === "ol" ||
     currentNode.type === "blockquote";
   // if at beginning of line and header type and empty, set back to default element
   if (editor.selection?.anchor.offset === 0 && isHeader && nodeText === "") {
@@ -137,6 +140,24 @@ function handleEnter(
       }
     );
     return;
+  }
+
+  if (currentNode.type === "ol") {
+    console.log("inside curr");
+    event.preventDefault();
+    let newNode: Node = {
+      type: "ol",
+      order: (currentNode.order as number) + 1,
+      children: [
+        {
+          text: "",
+        },
+      ],
+    };
+    Transforms.insertNodes(editor, newNode, {});
+  }
+
+  if (currentNode.type === "ul") {
   }
 
   // if is header, disable header on new line
@@ -187,7 +208,7 @@ function handleBackSpace(
       // set to a default element
       Transforms.setNodes(
         editor,
-        { type: "default" },
+        { type: "default", order: undefined },
         {
           match: (n: Node) => {
             return Editor.isBlock(editor, n) && n.type !== "default";

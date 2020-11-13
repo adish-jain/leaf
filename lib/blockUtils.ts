@@ -1,4 +1,4 @@
-import { blockType } from "../typescript/enums/app_enums";
+import { formattingPaneBlockType } from "../typescript/enums/app_enums";
 import React, {
   useState,
   useCallback,
@@ -35,7 +35,7 @@ import { HistoryEditor } from "slate-history";
 export function useBlocks(editor: Editor & ReactEditor & HistoryEditor) {
   const [slashPosition, updateSlashPosition] = useState<Range | null>(null);
 
-  function addBlock(blockType: blockType) {
+  function addBlock(blockType: formattingPaneBlockType) {
     // if beginning of line
     if (slashPosition?.anchor.offset === 1) {
       handleBeginningLine(blockType, editor, slashPosition);
@@ -52,22 +52,38 @@ export function useBlocks(editor: Editor & ReactEditor & HistoryEditor) {
 
 // if in the middle of line
 function handleMiddleLine(
-  blockType: blockType,
+  blockType: formattingPaneBlockType,
   editor: Editor,
   slashPosition: Range | null
 ) {
+  let currentNodeEntry = Editor.above(editor, {
+    match: (node) => {
+      return Node.isNode(node);
+    },
+    at: slashPosition!,
+  })!;
+  let currentNode = currentNodeEntry[0];
+  let currentNodePath = currentNodeEntry[1];
+
   // extend slash selection so that all characters can be deleted
   let newBefore =
     Editor.before(editor, slashPosition!.anchor) || slashPosition!.anchor;
-  let newAfter =
-    Editor.after(editor, slashPosition!.focus) || slashPosition!.focus;
   let replaceRange: Range = {
     anchor: newBefore,
     focus: slashPosition!.focus,
   };
   // create the new node with desired block type
+  let order = undefined;
+  if (blockType === formattingPaneBlockType.OL) {
+    if (currentNode.type === "ol") {
+      order = (currentNode.order as number) + 1;
+    } else {
+      order = 1;
+    }
+  }
   let newNode: Node = {
     type: blockType,
+    order: order,
     children: [
       {
         text: "",
@@ -86,13 +102,6 @@ function handleMiddleLine(
   }
 
   // insert new block in
-  let currentNodeEntry = Editor.above(editor, {
-    match: (node) => {
-      return Node.isNode(node);
-    },
-    at: slashPosition!,
-  })!;
-  let currentNodePath = currentNodeEntry[1];
   let lineNum = slashPosition!.focus.path[0];
   let insertPath = Editor.after(editor, slashPosition!, {
     unit: "character",
@@ -119,7 +128,7 @@ function handleMiddleLine(
 }
 
 function handleBeginningLine(
-  blockType: blockType,
+  blockType: formattingPaneBlockType,
   editor: Editor,
   slashPosition: Range | null
 ) {
@@ -135,80 +144,24 @@ function handleBeginningLine(
   }
   let currentNode = currentNodeEntry[0];
   let currentNodePath = currentNodeEntry[1];
-  // if nondefault, add new block
-  let nodeText = Node.string(currentNode);
   if (currentNode.type !== "default") {
-    let newNode: Node = {
-      type: blockType,
-      children: [
-        {
-          text: "",
-        },
-      ],
-    };
-    Transforms.insertNodes(editor, newNode, {
-      at: Path.next(currentNodePath),
-    });
-    // Transforms.delete(editor, {
-    //   at: slashPosition!,
-    //   distance: 1,
-    // });
-    // Replace the slash
-    let newBefore =
-      Editor.before(editor, slashPosition!.anchor) || slashPosition!.anchor;
-    let newAfter =
-      Editor.after(editor, slashPosition!.focus) || slashPosition!.focus;
-    let replaceRange: Range = {
-      anchor: newBefore,
-      focus: newAfter,
-    };
-    Transforms.delete(editor, { at: replaceRange });
-    // Transforms.select(editor, currentNodePath);
-    Transforms.select(editor, Path.next(currentNodePath));
-  }
-  // if default, change default to header
-  else {
-    Transforms.setNodes(
+    addBlockUnderNonDefault(
+      currentNode,
+      currentNodePath,
+      blockType,
       editor,
-      { type: blockType },
-      {
-        match: (n: Node) => {
-          return Editor.isBlock(editor, n);
-        },
-        at: slashPosition!.anchor,
-      }
+      slashPosition
     );
-
-    // Replace the slash
-    let newBefore =
-      Editor.before(editor, slashPosition!.anchor) || slashPosition!.anchor;
-    let newAfter =
-      Editor.after(editor, slashPosition!.focus) || slashPosition!.focus;
-    let replaceRange: Range = {
-      anchor: newBefore,
-      focus: newAfter,
-    };
-
-    // deletes the slash range
-    if (Range.isCollapsed(replaceRange!)) {
-      Transforms.delete(editor, {
-        at: slashPosition!,
-        unit: "character",
-        reverse: true,
-      });
-    } else {
-      // Transforms.delete(editor, { at: replaceRange });
-      Transforms.insertText(editor, "", {
-        at: replaceRange,
-      });
-    }
-    Transforms.select(editor, currentNodePath);
+  }
+  // if default, change default to block
+  else {
+    addBlockAtDefault(blockType, editor, slashPosition, currentNodePath);
   }
 }
 
 export function searchBlocks(
   searchString: string,
-  Blocks: { display: string; blockType: blockType }[]
+  Blocks: { display: string; blockType: formattingPaneBlockType }[]
 ) {
   let shortCutIndex = shortCuts(searchString, Blocks);
   if (shortCutIndex !== -1) {
@@ -229,7 +182,7 @@ export function searchBlocks(
 
 function shortCuts(
   searchString: string,
-  Blocks: { display: string; blockType: blockType }[]
+  Blocks: { display: string; blockType: formattingPaneBlockType }[]
 ) {
   switch (searchString.toLowerCase()) {
     case "h1":
@@ -241,4 +194,108 @@ function shortCuts(
     default:
       return -1;
   }
+}
+
+function deleteSlash(slashPosition: Range | null, editor: Editor) {
+  // Replace the slash
+  let newBefore =
+    Editor.before(editor, slashPosition!.anchor) || slashPosition!.anchor;
+  let newAfter =
+    Editor.after(editor, slashPosition!.focus) || slashPosition!.focus;
+  let replaceRange: Range = {
+    anchor: newBefore,
+    focus: newAfter,
+  };
+
+  // deletes the slash range
+  if (Range.isCollapsed(replaceRange!)) {
+    Transforms.delete(editor, {
+      at: slashPosition!,
+      unit: "character",
+      reverse: true,
+    });
+  } else {
+    Transforms.insertText(editor, "", {
+      at: replaceRange,
+    });
+  }
+}
+
+// if nondefault, add new block
+/* 
+  If at beginning of line, and inside a non default block
+  add new block
+  */
+function addBlockUnderNonDefault(
+  currentNode: Node,
+  currentNodePath: Path,
+  blockType: formattingPaneBlockType,
+  editor: Editor,
+  slashPosition: Range | null
+) {
+  let newNode: Node;
+  if (currentNode.type === "ol") {
+    newNode = {
+      type: blockType,
+      order: (currentNode.order as number) + 1,
+      children: [
+        {
+          text: "",
+        },
+      ],
+    };
+  } else {
+    newNode = {
+      type: blockType,
+      order: blockType === "ol" ? 1 : undefined,
+      children: [
+        {
+          text: "",
+        },
+      ],
+    };
+  }
+
+  Transforms.insertNodes(editor, newNode, {
+    at: Path.next(currentNodePath),
+  });
+  // Replace the slash
+  let newBefore =
+    Editor.before(editor, slashPosition!.anchor) || slashPosition!.anchor;
+  let newAfter =
+    Editor.after(editor, slashPosition!.focus) || slashPosition!.focus;
+  let replaceRange: Range = {
+    anchor: newBefore,
+    focus: slashPosition!.focus,
+  };
+
+  Transforms.insertText(editor, "", {
+    at: replaceRange,
+  });
+  Transforms.select(editor, Path.next(currentNodePath));
+}
+
+function addBlockAtDefault(
+  blockType: formattingPaneBlockType,
+  editor: Editor,
+  slashPosition: Range | null,
+  currentNodePath: Path
+) {
+  console.log("adding default block");
+  Transforms.setNodes(
+    editor,
+    {
+      type: blockType,
+      order: blockType === formattingPaneBlockType.OL ? 1 : undefined,
+    },
+    {
+      match: (n: Node) => {
+        return Editor.isBlock(editor, n);
+      },
+      at: slashPosition!.anchor,
+    }
+  );
+
+  deleteSlash(slashPosition, editor);
+  Transforms.select(editor, currentNodePath);
 }

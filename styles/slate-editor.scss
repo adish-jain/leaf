@@ -179,3 +179,22 @@ $headerThreeFontSize: 1.17em;
     font-weight: normal;
   }
 }
+
+.numbered-element {
+  // border-left: 2px $leaf-dark-blue solid;
+  padding-left: 8px;
+  margin-top: 4px;
+  position: relative;
+
+  @include header-placeholder;
+  label {
+
+    font-weight: normal;
+  }
+}
+
+.number-label {
+  position: absolute;
+  left: -4px;
+  top: 0;
+}
