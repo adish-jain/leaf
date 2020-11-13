@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebaseAdmin, initFirebase } from "../initFirebase";
-import { getUser } from "../userUtils";
+import { getUser, refreshJWT } from "../userUtils";
 const admin = require("firebase-admin");
 
 let db = admin.firestore();
@@ -105,7 +105,17 @@ export default async function setEmailAndPasswordHandler(
                 console.log("provider " + profile.providerId);
                 if (profile.providerId === "google.com") {
                     console.log("unlinking google");
-                    user.unlink(profile.providerId);
+                    // user
+                    // .unlink(profile.providerId)
+                    // .catch(async function(error: any) {
+                    //     switch (error.code) {
+                    //         case "auth/id-token-expired":
+                    //             let updatedUserToken = await refreshJWT(refreshToken);
+                    //             // try again with refreshed token
+                    //             req.cookies.userToken = updatedUserToken;
+                    //             req.cookies.refreshToken = refreshToken;
+                    //     }
+                    // })
                 }
             });
             console.log(user);

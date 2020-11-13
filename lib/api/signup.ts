@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import useSWR from "swr";
 import { initFirebase, initFirebaseAdmin } from "../../lib/initFirebase";
 import { setTokenCookies } from "../../lib/cookieUtils";
-import { userNameErrorMessage } from "../userUtils";
+import { userNameErrorMessage, checkEmailAuthDNE } from "../userUtils";
 
 const admin = require("firebase-admin");
 const firebase = require("firebase/app");
@@ -22,6 +22,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   // check if username exists
   let errorMsg = await userNameErrorMessage(username);
+
+  if (!(await checkEmailAuthDNE(email))) {
+    errorMsg = "Email already in use.";
+  }
+
   if (errorMsg !== "") {
     res.status(403).send({
       errorMsg: errorMsg,

@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import useSWR from "swr";
 import { initFirebase, initFirebaseAdmin } from "../initFirebase";
 import { setTokenCookies } from "../cookieUtils";
-import { userNameErrorMessage, handleLoginCookies, checkEmailDNE, checkUsernameDNE, getUsernameFromUid, checkUidDNE } from "../userUtils";
+import { userNameErrorMessage, handleLoginCookies, checkEmailDNE, checkUsernameDNE, getUsernameFromUid, checkEmailAuthDNE } from "../userUtils";
 import { request } from "http";
 
 const admin = require("firebase-admin");
@@ -21,11 +21,16 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   let type = requestBody.type; //login or signup
   // console.log(tokenId);
 
+  console.log(await checkEmailAuthDNE("almondjoyx1@gmail.com"));
   var credential = await firebase.auth.GoogleAuthProvider.credential(tokenId);
-  // console.log(credential);
+  console.log("CREDENTIAL IS");
+  console.log(credential);
 
   let userCredential = await firebase.auth().signInWithCredential(credential);
-  // console.log(userCredential);
+  console.log("USER CREDENTIAL IS");
+  console.log(userCredential);
+
+  console.log(await checkEmailAuthDNE("almondjoyx1@gmail.com"));
 
   let signedin_user = userCredential.user;
   console.log("signed in user: ");
@@ -33,8 +38,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   // signedin_user.uid
 
-  if (type === "signup") {
+  // if (type === "signup") {
   // if (await checkUidDNE(signedin_user.uid)) {
+  if (await checkEmailAuthDNE(signedin_user.email)) {
     let currentUser = await firebase.auth().currentUser;
     console.log("Current User");
     console.log(currentUser);
