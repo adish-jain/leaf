@@ -282,22 +282,12 @@ part of the auth provider load as soon as we make
 a credential. We don't consider that email when checking
 if the email exists or not upon account creation.
 */
-function notNewAccount(creationTime: any) {
-  let currTime = convertDateToUTC(new Date());
-  creationTime = convertDateToUTC(new Date(creationTime));
+function notNewAccount(creationTime: string) {
+  let currTime = new Date();
+  let oldTime = new Date(creationTime);
   let THIRTY_SECONDS = 1 * 30 * 1000;
-  return (currTime.valueOf() - creationTime.valueOf()) > THIRTY_SECONDS;
-}
-
-function convertDateToUTC(date: any) { 
-  return new Date(
-    date.getUTCFullYear(), 
-    date.getUTCMonth(), 
-    date.getUTCDate(), 
-    date.getUTCHours(),
-    date.getUTCMinutes(),
-    date.getUTCSeconds()
-  ); 
+  console.log(currTime.valueOf() - oldTime.valueOf())
+  return (currTime.valueOf() - oldTime.valueOf()) > THIRTY_SECONDS;
 }
 
 export async function getDraftTitle(uid: string, draftId: string) {

@@ -198,12 +198,12 @@ export default function Login() {
 }
 
 function ForgotPassword(props: {
-  handleChangeEmail: any;
+  handleChangeEmail: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleResetClick: (e: React.MouseEvent<HTMLElement>) => void;
+  handleBackToLogin: (e: React.MouseEvent<HTMLElement>) => void;
   errored: boolean;
   errorMessage: string;
-  handleResetClick: any;
   resetting: boolean;
-  handleBackToLogin: any;
 }) {
   return (
     <div className={"LoginBox"}>
@@ -230,15 +230,15 @@ function ForgotPassword(props: {
 }
 
 function LoginScreen(props: {
-  handleChangeEmail: any;
+  handleChangeEmail: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleLoginClick: (e: React.MouseEvent<HTMLElement>) => void;
+  handleChangePassword: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleForgotPassword: (e: React.MouseEvent<HTMLElement>) => void;
   errored: boolean;
   loggingIn: boolean;
-  errorMessage: string;
-  handleLoginClick: any;
-  handleChangePassword: any;
-  handleForgotPassword: any;
-  router: any;
   normalLogin: boolean;
+  errorMessage: string;
+  router: any;
 }) {
   const responseGoogle = (response: any) => {
     let data = {
@@ -307,7 +307,7 @@ function LoginScreen(props: {
 }
 
 function NormalLogin (props: {
-  handleChangePassword: any;
+  handleChangePassword: (e: React.ChangeEvent<HTMLInputElement>) => void;
   errored: boolean;
   errorMessage: string;
 }) {

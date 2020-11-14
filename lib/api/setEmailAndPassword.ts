@@ -37,7 +37,6 @@ export default async function setEmailAndPasswordHandler(
   .auth()
   .signInWithCustomToken(customToken)
   .then(async function (firebaseUser: any) {
-        let user = firebaseUser.user;
         admin
         .auth()
         .updateUser(uid, {

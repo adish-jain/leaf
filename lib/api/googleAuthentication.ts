@@ -64,7 +64,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       } else if (await validate(emailId + generatedId)) {
         username = await validate(emailId + generatedId);
       } else {
-        username = "user" + generatedId;
+        username = "User-" + generatedId;
       }
     }
   
@@ -92,7 +92,7 @@ async function validate(username: string) {
     var desired = username.replace(/[\s~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g, '');
     desired = desired.substring(0, 24);
     let usernameDNE = await checkUsernameDNE(desired);
-    if (desired.length > 5 || !usernameDNE) { 
+    if (desired.length < 6 || !usernameDNE) { 
       return false;
     }
     return desired;

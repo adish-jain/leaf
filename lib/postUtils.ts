@@ -1,7 +1,7 @@
 import { initFirebaseAdmin } from "./initFirebase";
 import { getFilesForDraft } from "./fileUtils";
-initFirebaseAdmin();
 
+initFirebaseAdmin();
 const admin = require("firebase-admin");
 let db = admin.firestore();
 

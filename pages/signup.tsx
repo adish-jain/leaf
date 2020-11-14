@@ -224,9 +224,9 @@ export default function SignUp() {
 
 function NormalSignup (props: {
   username: string;
-  handleChangeUsername: any;
-  handleChangePassword: any;
-  handleChangeVerifyPassword: any;
+  handleChangeUsername: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleChangePassword: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleChangeVerifyPassword: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
   return (
     <AnimatePresence>
