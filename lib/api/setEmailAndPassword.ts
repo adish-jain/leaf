@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebaseAdmin, initFirebase } from "../initFirebase";
-import { getUser, refreshJWT } from "../userUtils";
-const admin = require("firebase-admin");
+import { getUser } from "../userUtils";
 
+const admin = require("firebase-admin");
 let db = admin.firestore();
 const firebase = require("firebase/app");
 initFirebaseAdmin();
@@ -12,54 +12,15 @@ export default async function setEmailAndPasswordHandler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  console.log("in set email & pw handler");
   let newPassword = req.body.newPassword;
   let newEmail = req.body.newEmail;
-  var errored = false;
-
-  let { uid, userRecord } = await getUser(req, res);
+  let { uid } = await getUser(req, res);
 
   if (uid === "") {
     res.statusCode = 403;
     res.end();
     return;
   }
-
-//   await admin
-//     .auth()
-//     .updateUser(uid, {
-//       email: email,
-//       emailVerified: false
-//     })
-//     .then()
-//     .catch(function(error: any) {
-//       switch (error.code) {
-//         case "auth/invalid-email":
-//           res.status(403).send({
-//             error:
-//               "Email address is poorly formatted.",
-//           });
-//           errored = true;
-//           return;
-//         case "auth/email-already-exists":
-//           res.status(403).send({
-//             error: "Email already in use by another account.",
-//           });
-//           errored = true;
-//           return;
-//         default:
-//           console.log(error);
-//           res.status(403).send({
-//             error: "Email reset failed",
-//           });
-//           errored = true;
-//           return;
-//       }
-//     });
-
-//   if (errored) {
-//     return;
-//   }
 
   let customToken = await admin
     .auth()
@@ -85,42 +46,12 @@ export default async function setEmailAndPasswordHandler(
             password: newPassword
         })
         .then(async function () {
-            console.log("reset email & pw");
-            await db.collection("users").doc(uid).set(
-                {
-                email: newEmail,
-                method: "leaf",
+            await db.collection("users").doc(uid).set({
+                    email: newEmail,
+                    method: "leaf",
                 },
                 { merge: true }
             );
-            let userDataReference = await db.collection("users").doc(uid).get();
-            let userData = await userDataReference.data();
-
-            // await user.reload();
-            console.log(user);
-
-            // unlink google account 
-            // let providerData = user.getProviderData();
-            user.providerData.forEach(function (profile: any) {
-                console.log("provider " + profile.providerId);
-                if (profile.providerId === "google.com") {
-                    console.log("unlinking google");
-                    // user
-                    // .unlink(profile.providerId)
-                    // .catch(async function(error: any) {
-                    //     switch (error.code) {
-                    //         case "auth/id-token-expired":
-                    //             let updatedUserToken = await refreshJWT(refreshToken);
-                    //             // try again with refreshed token
-                    //             req.cookies.userToken = updatedUserToken;
-                    //             req.cookies.refreshToken = refreshToken;
-                    //     }
-                    // })
-                }
-            });
-            console.log(user);
-
-
             res.status(200).end();  
             return;
         })
@@ -130,28 +61,22 @@ export default async function setEmailAndPasswordHandler(
                     res.status(403).send({
                         error: "Password should be longer than 6 characters.",
                     });
-                    errored = true;
                     return;
                 case "auth/invalid-email":
-                    console.log("We caught the error");
                     res.status(403).send({
                         error:
                         "Email address is poorly formatted.",
                     });
-                    errored = true;
                     return;
                 case "auth/email-already-exists":
                     res.status(403).send({
                         error: "Email already in use by another account.",
                     });
-                    errored = true;
                     return;
                 default:
-                    console.log(error);
                     res.status(403).send({
                         error: "Reset failed",
                     });
-                    errored = true;
                     return;
             }
         })

@@ -1,9 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import useSWR from "swr";
 import { initFirebase, initFirebaseAdmin } from "../initFirebase";
-import { setTokenCookies } from "../cookieUtils";
-import { userNameErrorMessage, handleLoginCookies, checkEmailDNE, checkUsernameDNE, getUsernameFromUid, checkEmailAuthDNE } from "../userUtils";
-import { request } from "http";
+import { handleLoginCookies, checkUsernameDNE, getUsernameFromUid, checkEmailAuthDNE } from "../userUtils";
 
 const admin = require("firebase-admin");
 const firebase = require("firebase/app");
@@ -18,45 +15,31 @@ shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWX
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   let requestBody = req.body;
   let tokenId = requestBody.tokenId;
-  let type = requestBody.type; //login or signup
-  // console.log(tokenId);
+
   var credential = await firebase.auth.GoogleAuthProvider.credential(tokenId);
-  console.log("CREDENTIAL IS");
-  console.log(credential);
-
   let userCredential = await firebase.auth().signInWithCredential(credential);
-  console.log("USER CREDENTIAL IS");
-  console.log(userCredential);
-
   let signedin_user = userCredential.user;
-  console.log("signed in user: ");
-  console.log(signedin_user);
 
-  // signedin_user.uid
-
-  // if (type === "signup") {
-  // if (await checkUidDNE(signedin_user.uid)) {
+  /*
+  Check if this email has been used before for authentication.
+  This determines if this Google authentication will be treated
+  like a login or a signup.
+  */
   if (await checkEmailAuthDNE(signedin_user.email)) {
     let currentUser = await firebase.auth().currentUser;
-    console.log("Current User");
-    console.log(currentUser);
-  
-    // await currentUser.sendEmailVerification();
-  
-    /* 
-      If user has already set a username, retrieve it. Else, we
-      try setting username by using email ID, display name, or combinations
-      of these two. If none are valid, use auto-generated username if 
-      neither email ID nor display name can give valid username. 
-      If this does happen, user can reset their auto-generated username in 
-      settings.
-    */
 
+    /* 
+    If user already has set a username, retrieve it. Else, we
+    try setting username by using email ID, display name, or combinations
+    of these two. If none are valid, we try appending a generatedId 
+    to the display name / email ID. If this does happen, 
+    user can reset their auto-generated username in settings.
+    */
     var username;
     try {
       username = await getUsernameFromUid(signedin_user.uid);
     } catch (e) {
-      console.log("This is not a login, so username dne.");
+      console.log("Username does not exist.");
     }
     
     if (!(await validate(username))) {
@@ -65,6 +48,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       let displayName = currentUser.displayName;
       let generatedId = shortid.generate();
 
+      /* 
+      Try making a username out of display name, email ID,
+      or combinations of the two
+      */
       if (await validate(displayName)) {
         username = await validate(displayName);
       } else if (await validate(emailId)) {
@@ -81,7 +68,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         username = "user" + generatedId;
       }
     }
-    console.log(username);
   
     db.collection("users").doc(signedin_user.uid).set({
       email: signedin_user.email,
@@ -96,17 +82,22 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   res.status(200).end();
 };
 
+/*
+Check if the username is valid. To be a valid username:
+1. Must not contain special characters
+2. Must be at least 6 characters and less than 30 characters
+3. Cannot already be taken
+*/
 async function validate(username: string) {
-  try{
+  try {
     var desired = username.replace(/[\s~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g, '');
     desired = desired.substring(0, 24);
     let usernameDNE = await checkUsernameDNE(desired);
-    if (desired.length === 0 || !usernameDNE) { 
+    if (desired.length > 5 || !usernameDNE) { 
       return false;
     }
     return desired;
   } catch (e) {
-    console.log("returning false");
     return false;
   }
 }

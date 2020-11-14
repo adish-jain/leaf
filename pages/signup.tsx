@@ -2,22 +2,18 @@ import Head from "next/head";
 import fetch from "isomorphic-unfetch";
 import React, { useState } from "react";
 import { useLoggedIn } from "../lib/UseLoggedIn";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { HeaderUnAuthenticated } from "../components/Header";
 import { GoogleLogin } from "react-google-login";
 import { motion, AnimatePresence } from "framer-motion";
-
 import "../styles/header.scss";
 import "../styles/login.scss";
-import { verify } from "crypto";
 
 let NEXT_PUBLIC_OAUTH_CLIENT_ID = process.env.NEXT_PUBLIC_OAUTH_CLIENT_ID;
 
 export default function SignUp() {
   const router = useRouter();
   const { authenticated, error } = useLoggedIn();
-
   const [email, changeEmail] = useState("");
   const [username, changeUsername] = useState("");
   const [password, changePassword] = useState("");
@@ -109,18 +105,10 @@ export default function SignUp() {
       });
   };
 
-  const goToIndex = (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-    router.push("/");
-  };
-
   const responseGoogle = (response: any) => {
-    // console.log(response);
-    // console.log(response.tokenId);
     let data = {
       requestedAPI: "googleAuthentication",
-      tokenId: response.tokenId,
-      type: "signup"
+      tokenId: response.tokenId
     };
     fetch("/api/endpoint", {
       method: "POST",
@@ -129,22 +117,22 @@ export default function SignUp() {
       credentials: "same-origin",
       body: JSON.stringify(data),
     })
-      .then((res) => {
-        if (res.status === 200) {
-          updateErrored(false);
-          router.push("/landing");
-        }
-        if (res.status === 403) {
-          res.json().then((resJson) => {
-            updateErrored(true);
-            updateErrorMsg(resJson.errorMsg);
-            changeSigningUp(false);
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    .then((res) => {
+      if (res.status === 200) {
+        updateErrored(false);
+        router.push("/landing");
+      }
+      if (res.status === 403) {
+        res.json().then((resJson) => {
+          updateErrored(true);
+          updateErrorMsg(resJson.errorMsg);
+          changeSigningUp(false);
+        });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   }  
 
   return (
@@ -161,17 +149,8 @@ export default function SignUp() {
         `,
           }}
         />
-        {/* <script src="https://apis.google.com/js/platform.js"></script>
-        <meta name="google-signin-client_id" content="969806278278-q6o19gcraf5rfqofo73b0loo9s88o1ln.apps.googleusercontent.com"></meta>
-        <meta name="google-signin-cookiepolicy" content="single_host_origin"></meta>
-        <meta name="google-signin-scope" content="profile email"></meta> */}
       </Head>
       <main className={"LoginMain"}>
-        {/* <script type="text/javascript">
-          function googleSignIn(googleUser: any) {
-            console.log("please work");
-          }
-        </script> */}
         <HeaderUnAuthenticated
           explore={true}
           login={true}
@@ -216,51 +195,14 @@ export default function SignUp() {
                     <label>Email</label>
                     <input id="email" value={email} onChange={handleChangeEmail} />
                   </div>
-                  {normalSignup && (
-                    <AnimatePresence>
-                    <motion.div
-                      initial={{
-                        opacity: 0,
-                      }}
-                      animate={{
-                        opacity: 1,
-                      }}
-                      exit={{
-                        opacity: 0,
-                      }}
-                      transition={{
-                        duration: 0.4,
-                      }}
-                    >
-                      <div>
-                        <div className={"InputBox"}>
-                          <label>Username</label>
-                          <input
-                            id="username"
-                            value={username}
-                            onChange={handleChangeUsername}
-                          />
-                        </div>
-                        <div className={"InputBox"}>
-                          <label>Password</label>
-                          <input
-                            onChange={handleChangePassword}
-                            type="password"
-                            id="password"
-                          ></input>
-                        </div>
-                        <div className={"InputBox"}>
-                          <label>Confirm Password</label>
-                          <input
-                            onChange={handleChangeVerifyPassword}
-                            type="password"
-                            id="verify-password"
-                          ></input>
-                        </div>
-                      </div>
-                    </motion.div>
-                    </AnimatePresence>
-                  )}
+                  {normalSignup && 
+                    <NormalSignup 
+                      username={username}
+                      handleChangeUsername={handleChangeUsername}
+                      handleChangePassword={handleChangePassword}
+                      handleChangeVerifyPassword={handleChangeVerifyPassword}
+                    />
+                  }
                   {!errored ? (
                     <div></div>
                   ) : (
@@ -280,10 +222,55 @@ export default function SignUp() {
   );
 }
 
-function Logo(props: { goToIndex: any }) {
+function NormalSignup (props: {
+  username: string;
+  handleChangeUsername: any;
+  handleChangePassword: any;
+  handleChangeVerifyPassword: any;
+}) {
   return (
-    <div className={"Logo"} onClick={props.goToIndex}>
-      <img src="/images/LeafLogo.svg" />
-    </div>
+    <AnimatePresence>
+      <motion.div
+        initial={{
+          opacity: 0,
+        }}
+        animate={{
+          opacity: 1,
+        }}
+        exit={{
+          opacity: 0,
+        }}
+        transition={{
+          duration: 0.4,
+        }}
+      >
+        <div>
+          <div className={"InputBox"}>
+            <label>Username</label>
+            <input
+              id="username"
+              value={props.username}
+              onChange={props.handleChangeUsername}
+            />
+          </div>
+          <div className={"InputBox"}>
+            <label>Password</label>
+            <input
+              onChange={props.handleChangePassword}
+              type="password"
+              id="password"
+            ></input>
+          </div>
+          <div className={"InputBox"}>
+            <label>Confirm Password</label>
+            <input
+              onChange={props.handleChangeVerifyPassword}
+              type="password"
+              id="verify-password"
+            ></input>
+          </div>
+        </div>
+      </motion.div>
+    </AnimatePresence>
   );
 }

@@ -1,18 +1,14 @@
 import Head from "next/head";
 import fetch from "isomorphic-unfetch";
-import InferGetStaticPropsType from "next";
-import Link from "next/link";
 import React, { useState } from "react";
 import { HeaderUnAuthenticated } from "../components/Header";
 import { useRouter } from "next/router";
 import { GoogleLogin } from "react-google-login";
 import { motion, AnimatePresence } from "framer-motion";
-
 import "../styles/header.scss";
 import "../styles/login.scss";
 
 let NEXT_PUBLIC_OAUTH_CLIENT_ID = process.env.NEXT_PUBLIC_OAUTH_CLIENT_ID;
-
 
 export default function Login() {
   const router = useRouter();
@@ -24,9 +20,6 @@ export default function Login() {
   const [errorMessage, updateErrorMessage] = useState("");
   const [errored, updateErrored] = useState(false);
   const [normalLogin, changeNormalLogin] = useState(false);
-
-  console.log("CLIENT ID IS");
-  console.log(NEXT_PUBLIC_OAUTH_CLIENT_ID);
 
   const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateErrored(false);
@@ -134,11 +127,6 @@ export default function Login() {
     changeLoggingIn(false);
     changeResetting(false);
     updateErrored(false);
-  };
-
-  const goToIndex = (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-    router.push("/");
   };
 
   return (
@@ -253,12 +241,9 @@ function LoginScreen(props: {
   normalLogin: boolean;
 }) {
   const responseGoogle = (response: any) => {
-    // console.log(response);
-    // console.log(response.tokenId);
     let data = {
       requestedAPI: "googleAuthentication",
-      tokenId: response.tokenId,
-      type: "login"
+      tokenId: response.tokenId
     };
     fetch("/api/endpoint", {
       method: "POST",
@@ -267,18 +252,18 @@ function LoginScreen(props: {
       credentials: "same-origin",
       body: JSON.stringify(data),
     })
-      .then((res) => {
-        if (res.status === 200) {
-          props.router.push("/landing");
-        }
-        if (res.status === 403) {
-          res.json().then((resJson) => {
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    .then((res) => {
+      if (res.status === 200) {
+        props.router.push("/landing");
+      }
+      if (res.status === 403) {
+        res.json().then((resJson) => {
+        });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   }  
   return (
     <div className={"LoginBox"}>
@@ -296,37 +281,19 @@ function LoginScreen(props: {
         <div className={"Bar"}></div>
         <div className={"InputBox"}>
           <label>Email</label>
-          <input autoComplete={"username email"} name={"email"} type={"text"} onChange={props.handleChangeEmail}></input>
+          <input 
+            autoComplete={"username email"} 
+            name={"email"} 
+            type={"text"} 
+            onChange={props.handleChangeEmail}
+          ></input>
         </div>
         {props.normalLogin && 
-         <AnimatePresence>
-         <motion.div
-           initial={{
-             opacity: 0,
-           }}
-           animate={{
-             opacity: 1,
-           }}
-           exit={{
-             opacity: 0,
-           }}
-           transition={{
-             duration: 0.4,
-           }}
-         >
-          <div>
-            <div className={"InputBox"}>
-              <label>Password</label>
-              <input name={"password"} autoComplete={"new-password"} type="password" onChange={props.handleChangePassword}></input>
-            </div>
-            {!props.errored ? (
-              <div></div>
-            ) : (
-              <p className={"ErrorMessage"}>{props.errorMessage}</p>
-            )}
-          </div>
-          </motion.div>
-          </AnimatePresence>
+          <NormalLogin 
+            handleChangePassword={props.handleChangePassword}
+            errored={props.errored}
+            errorMessage={props.errorMessage}
+          />
         }
         <button className={"LoginButton"} onClick={props.handleLoginClick}>
           {props.loggingIn ? "Logging In..." : "Login"}
@@ -338,3 +305,46 @@ function LoginScreen(props: {
     </div>
   );
 }
+
+function NormalLogin (props: {
+  handleChangePassword: any;
+  errored: boolean;
+  errorMessage: string;
+}) {
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{
+          opacity: 0,
+        }}
+        animate={{
+          opacity: 1,
+        }}
+        exit={{
+          opacity: 0,
+        }}
+        transition={{
+          duration: 0.4,
+        }}
+      >
+        <div>
+          <div className={"InputBox"}>
+            <label>Password</label>
+            <input 
+              name={"password"}
+              autoComplete={"new-password"} 
+              type="password" 
+              onChange={props.handleChangePassword}
+            ></input>
+          </div>
+          {!props.errored ? (
+            <div></div>
+          ) : (
+            <p className={"ErrorMessage"}>{props.errorMessage}</p>
+          )}
+        </div>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+

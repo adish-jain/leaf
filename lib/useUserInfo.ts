@@ -31,6 +31,7 @@ export function useUserInfo(authenticated: boolean) {
     sendEmailVerificationStatus,
     updateSendEmailVerificationStatus,
   ] = useState("");
+
   let { data: userInfo, mutate } = useSWR(
     authenticated ? "getUserInfo" : null,
     userInfoFetcher,
@@ -58,7 +59,6 @@ export function useUserInfo(authenticated: boolean) {
       "api/endpoint",
       changeUsernameRequest
     ).then((res: any) => res.json());
-    // console.log(updateUsernameResponse);
     if (!updateUsernameResponse.error) {
       updateUserNameError("");
       mutate({ username: newUsername }, true);
@@ -135,6 +135,7 @@ export function useUserInfo(authenticated: boolean) {
     await fetch("/api/endpoint", saveEmailAndPasswordRequest)
     .then((res) => {
       if (res.status === 200) {
+        mutate({ signInMethod: "leaf" }, true);
         updateEmailAndPasswordStatus("Email & password were successfully reset");
         sendEmailVerification();
       }

@@ -16,11 +16,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     .signInWithEmailAndPassword(email, password)
     .then(function (userCredential: any) {
       let signedin_user = userCredential.user;
-      console.log(signedin_user);
       let refreshToken = signedin_user.refreshToken;
       signedin_user.getIdToken().then(function (idToken: string) {
         userToken = idToken;
-
         handleLoginCookies(res, userToken, refreshToken);
         res.status(200).end();
         return;

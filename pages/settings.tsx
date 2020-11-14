@@ -1,11 +1,9 @@
 import Head from "next/head";
 import React, { useState } from "react";
 import { useLoggedIn } from "../lib/UseLoggedIn";
-import useSWR, { SWRConfig } from "swr";
 import { useUserInfo } from "../lib/useUserInfo";
 import Header from "../components/Header";
 import "../styles/Settings.module.scss";
-
 
 export default function SignUp() {
   const initialData: any = {};
@@ -197,7 +195,7 @@ function Email(props: {
     <div>
       <div>
         <h2>Email</h2>
-        <p>Your email is {props.email}</p>
+        <p>Your email is {props.email} & it is {props.emailVerified ? "verified" : "unverified"}</p>
         <input
           className={"default-input"}
           value={props.newEmail}
@@ -210,7 +208,6 @@ function Email(props: {
           Change email
         </button>
         <EmailError emailError={props.emailError} />
-        <p>Your email is {props.emailVerified ? "verified" : "unverified"}</p>
         <button
           className={"rounded-button"}
           onClick={(e) => props.sendEmailVerification()}
@@ -252,7 +249,6 @@ function SetEmailAndPassword(props: {
           placeholder={"new email"}
           onChange={(e) => props.changeNewEmail(e.target.value)}
         ></input>
-        {/* <EmailError emailError={props.emailError} /> */}
       </div>
       <div>
         <input

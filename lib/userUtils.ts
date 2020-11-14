@@ -1,11 +1,12 @@
 import { initFirebaseAdmin, initFirebase } from "./initFirebase";
-initFirebaseAdmin();
 import fetch from "isomorphic-fetch";
 import { NextApiRequest, NextApiResponse } from "next";
 import { setTokenCookies, removeTokenCookies } from "./cookieUtils";
+import { timeStamp } from "../typescript/types/app_types";
 
 const admin = require("firebase-admin");
 let db = admin.firestore();
+initFirebaseAdmin();
 
 type GetUserType = {
   uid: string;
@@ -204,23 +205,8 @@ export async function getUsernameFromUid(uid: string) {
   return username;
 }
 
-// export async function checkUidDNE(uid: string) {
-//     let userRef = await db.collection("users").doc(uid);
-//     console.log("User Ref: ");
-//     console.log(userRef);
-
-//     console.log("User Ref data: ");
-//     let flag = await userRef.get().then(function (userSnapshot: any) {
-//       let data = userSnapshot.data();
-//       console.log(data);
-//       return data === undefined;
-//     });
-//     return flag;
-// }
-
 export async function checkUsernameDNE(username: string): Promise<boolean> {
   let size;
-
   await db
     .collection("users")
     .where("username", "==", username)
@@ -239,6 +225,7 @@ export async function checkUsernameDNE(username: string): Promise<boolean> {
 
 /*
 Not used but keeping in case needed later.
+This function only checks emails in Firestore.
 */
 export async function checkEmailDNE(email: string) {
   let size;
@@ -259,95 +246,61 @@ export async function checkEmailDNE(email: string) {
 }
 
 /*
-Checks that the email is not used for authentication. 
-This is different than checkEmailDNE, which only checks
-emails in Firestore. 
+Checks if an email exists or not in our system.
+Check emails in Firestore & emails that were 
+once used for authentication and are still linked
+to accounts (i.e. Google emails). 
 */
 export async function checkEmailAuthDNE(email: string) {
-  let flag = await admin
+  let emailDNE = await admin
     .auth()
     .listUsers(1000)
-    .then((userRecords: any) => {
+    .then(function (userRecords: any) {
       let flag = true;
-      userRecords.users.forEach((user: any) => {
-        console.log(user.toJSON());
-        user.providerData.forEach((provider: any) => {
+      userRecords.users.forEach(function (user: any) {
+        user.providerData.forEach(function (provider: any) {
           if (provider.email === email) {
             if (provider.providerId === "password") {
-              console.log(user);
               flag = false;
             } else if (notNewAccount(user.metadata.creationTime)) {
-              console.log(user);
               flag = false;
-            } else {
-              flag = true;
-            }
+            } 
           }
         });
-        // if (user.email === email && notNewAccount(user.metadata.creationTime)) {
-        //   console.log("RETURNING FALSE");
-        //   console.log(user.toJSON());
-        //   flag = false;
-        // }
       })
       return flag;
     })
     .catch((error: any) => {
       console.log(error)
     });
-  console.log("FLAG IS " + flag);
-  return flag;
+  return emailDNE;
 }
 
+/* 
+Checks to see if the account creation was within 
+the past thirty seconds. This is because Google sign-ups
+will be list emails used to sign up as 
+part of the auth provider load as soon as we make 
+a credential. We don't consider that email when checking
+if the email exists or not upon account creation.
+*/
 function notNewAccount(creationTime: any) {
-  var currTime = convertDateToUTC(new Date());
+  let currTime = convertDateToUTC(new Date());
   creationTime = convertDateToUTC(new Date(creationTime));
-  console.log("creationTime " + creationTime);
-  console.log("currTime " + currTime);
-  var THIRTY_SECONDS = 1*30*1000;
-  console.log(currTime.valueOf() - creationTime.valueOf());
-  if ((currTime.valueOf() - creationTime.valueOf()) > THIRTY_SECONDS) {
-    console.log("Older than THIRTY_SECONDS old");
-    return true;
-  }
-  console.log("Newer than THIRTY_SECONDS old");
-  return false;
+  let THIRTY_SECONDS = 1 * 30 * 1000;
+  return (currTime.valueOf() - creationTime.valueOf()) > THIRTY_SECONDS;
 }
 
 function convertDateToUTC(date: any) { 
-  return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds()); 
+  return new Date(
+    date.getUTCFullYear(), 
+    date.getUTCMonth(), 
+    date.getUTCDate(), 
+    date.getUTCHours(),
+    date.getUTCMinutes(),
+    date.getUTCSeconds()
+  ); 
 }
-
-// export async function getAllPostsHandler() {
-//   let activeRef = await db.collectionGroup("drafts").where("published", "==", true).get();
-//   const arr: any[] = [];
-//   activeRef.forEach((child: any) => arr.push(child));
-//   var results: Post[] = [];
-//   for(const doc of arr) {
-//     let username = await doc.ref.parent.parent.get().then((docSnapshot: any) => {
-//       return docSnapshot.data().username;
-//     });
-//     let resultsJSON = doc.data();
-//     let postURL = "/" + username + "/" + resultsJSON.postId;
-//     results.push({
-//       postId: resultsJSON.postId,
-//       postURL: postURL,
-//       title: resultsJSON.title,
-//       publishedAt: resultsJSON.publishedAt.toDate(),
-//       tags: resultsJSON.tags,
-//       username: username,
-//     });
-//   }
-//   // sort by published date
-//   results.sort(function(a: Post, b: Post) {
-//     var keyA = a.publishedAt,
-//       keyB = b.publishedAt;
-//     if (keyA < keyB) return -1;
-//     if (keyA > keyB) return 1;
-//     return 0;
-//   });
-//   return results;
-// }
 
 export async function getDraftTitle(uid: string, draftId: string) {
   let draftData = await db
