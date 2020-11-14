@@ -20,8 +20,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   let tokenId = requestBody.tokenId;
   let type = requestBody.type; //login or signup
   // console.log(tokenId);
-
-  console.log(await checkEmailAuthDNE("almondjoyx1@gmail.com"));
   var credential = await firebase.auth.GoogleAuthProvider.credential(tokenId);
   console.log("CREDENTIAL IS");
   console.log(credential);
@@ -29,8 +27,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   let userCredential = await firebase.auth().signInWithCredential(credential);
   console.log("USER CREDENTIAL IS");
   console.log(userCredential);
-
-  console.log(await checkEmailAuthDNE("almondjoyx1@gmail.com"));
 
   let signedin_user = userCredential.user;
   console.log("signed in user: ");

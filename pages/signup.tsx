@@ -12,7 +12,7 @@ import "../styles/header.scss";
 import "../styles/login.scss";
 import { verify } from "crypto";
 
-
+let NEXT_PUBLIC_OAUTH_CLIENT_ID = process.env.NEXT_PUBLIC_OAUTH_CLIENT_ID;
 
 export default function SignUp() {
   const router = useRouter();
@@ -202,7 +202,8 @@ export default function SignUp() {
               <div className={"LoginBox"}>
                 <h1>Sign Up</h1>
                 <GoogleLogin
-                  clientId="969806278278-q6o19gcraf5rfqofo73b0loo9s88o1ln.apps.googleusercontent.com"
+                  // @ts-ignore
+                  clientId={NEXT_PUBLIC_OAUTH_CLIENT_ID}
                   buttonText="Continue with Google"
                   onSuccess={responseGoogle}
                   onFailure={responseGoogle}

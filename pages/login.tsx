@@ -11,15 +11,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import "../styles/header.scss";
 import "../styles/login.scss";
 
-function About() {
-  return (
-    <div className={"Login"}>
-      <Link href="/about">
-        <a>About</a>
-      </Link>
-    </div>
-  );
-}
+let NEXT_PUBLIC_OAUTH_CLIENT_ID = process.env.NEXT_PUBLIC_OAUTH_CLIENT_ID;
+
 
 export default function Login() {
   const router = useRouter();
@@ -31,6 +24,9 @@ export default function Login() {
   const [errorMessage, updateErrorMessage] = useState("");
   const [errored, updateErrored] = useState(false);
   const [normalLogin, changeNormalLogin] = useState(false);
+
+  console.log("CLIENT ID IS");
+  console.log(NEXT_PUBLIC_OAUTH_CLIENT_ID);
 
   const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateErrored(false);
@@ -288,7 +284,8 @@ function LoginScreen(props: {
     <div className={"LoginBox"}>
       <h1>Login</h1>
       <GoogleLogin
-        clientId="969806278278-q6o19gcraf5rfqofo73b0loo9s88o1ln.apps.googleusercontent.com"
+        // @ts-ignore
+        clientId={NEXT_PUBLIC_OAUTH_CLIENT_ID}
         buttonText="Continue with Google"
         onSuccess={responseGoogle}
         onFailure={responseGoogle}
