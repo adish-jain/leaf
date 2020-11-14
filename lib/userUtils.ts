@@ -286,7 +286,6 @@ function notNewAccount(creationTime: string) {
   let currTime = new Date();
   let oldTime = new Date(creationTime);
   let THIRTY_SECONDS = 1 * 30 * 1000;
-  console.log(currTime.valueOf() - oldTime.valueOf())
   return (currTime.valueOf() - oldTime.valueOf()) > THIRTY_SECONDS;
 }
 

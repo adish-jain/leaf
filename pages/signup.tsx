@@ -1,10 +1,12 @@
 import Head from "next/head";
 import fetch from "isomorphic-unfetch";
 import React, { useState } from "react";
+import dynamic from "next/dynamic";
 import { useLoggedIn } from "../lib/UseLoggedIn";
 import { useRouter } from "next/router";
 import { HeaderUnAuthenticated } from "../components/Header";
-import { GoogleLogin } from "react-google-login";
+// import { GoogleLogin } from "react-google-login";
+const GoogleLogin = dynamic(import("react-google-login"), { ssr: false });
 import { motion, AnimatePresence } from "framer-motion";
 import "../styles/header.scss";
 import "../styles/login.scss";
