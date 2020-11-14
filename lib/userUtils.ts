@@ -5,8 +5,8 @@ import { setTokenCookies, removeTokenCookies } from "./cookieUtils";
 import { timeStamp } from "../typescript/types/app_types";
 
 const admin = require("firebase-admin");
-let db = admin.firestore();
 initFirebaseAdmin();
+let db = admin.firestore();
 
 type GetUserType = {
   uid: string;
@@ -199,7 +199,6 @@ export async function getUsernameFromUid(uid: string) {
   let userRef = await db.collection("users").doc(uid);
   let username = await userRef.get().then(function (userSnapshot: any) {
     let data = userSnapshot.data();
-    console.log(data);
     return data.username;
   });
   return username;
@@ -212,7 +211,6 @@ export async function checkUsernameDNE(username: string): Promise<boolean> {
     .where("username", "==", username)
     .get()
     .then(function (snapshot: any) {
-      console.log(snapshot);
       size = snapshot.size;
     });
 

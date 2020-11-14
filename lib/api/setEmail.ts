@@ -2,11 +2,10 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebaseAdmin, initFirebase } from "../initFirebase";
 import { getUser, checkEmailAuthDNE } from "../userUtils";
 const admin = require("firebase-admin");
-
-let db = admin.firestore();
 const firebase = require("firebase/app");
 initFirebaseAdmin();
 initFirebase();
+let db = admin.firestore();
 
 export default async function setEmailHandler(
   req: NextApiRequest,

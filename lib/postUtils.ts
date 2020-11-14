@@ -1,7 +1,8 @@
 import { initFirebaseAdmin } from "./initFirebase";
 import { getFilesForDraft } from "./fileUtils";
-const admin = require("firebase-admin");
 initFirebaseAdmin();
+
+const admin = require("firebase-admin");
 let db = admin.firestore();
 
 import { getUidFromUsername, getUsernameFromUid } from "./userUtils";

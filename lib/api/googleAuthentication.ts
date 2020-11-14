@@ -4,11 +4,10 @@ import { handleLoginCookies, checkUsernameDNE, getUsernameFromUid, checkEmailAut
 
 const admin = require("firebase-admin");
 const firebase = require("firebase/app");
-
 initFirebase();
 initFirebaseAdmin();
-
 let db = admin.firestore();
+
 const shortid = require("shortid");
 shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_.');
 

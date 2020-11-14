@@ -4,9 +4,10 @@ import { userNameErrorMessage, checkEmailAuthDNE, handleLoginCookies } from "../
 
 const admin = require("firebase-admin");
 const firebase = require("firebase/app");
-let db = admin.firestore();
 initFirebase();
 initFirebaseAdmin();
+let db = admin.firestore();
+
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   let requestBody = req.body;
