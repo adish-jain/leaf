@@ -71,6 +71,10 @@ const toBase64 = (file: any) =>
   });
 const Blocks: FormattingPaneBlockList = [
   {
+    display: "Text",
+    blockType: formattingPaneBlockType.P,
+  },
+  {
     display: "Header 1",
     blockType: formattingPaneBlockType.H1,
   },
@@ -162,20 +166,36 @@ const MarkdownPreviewExample = () => {
     }
   }, []);
 
-  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleImageUpload(
+    e: React.ChangeEvent<HTMLInputElement>,
+    domNode: globalThis.Node
+  ) {
     let selectedImage = e.target.files![0];
+    let slateNode = ReactEditor.toSlateNode(editor, domNode);
+    let slatePath = ReactEditor.findPath(editor, slateNode);
 
     if (selectedImage.size > 5000000) {
       console.log("Image is too large");
     }
     let url = URL.createObjectURL(selectedImage);
-    console.log("original url is ", url);
+    Transforms.setNodes(
+      editor,
+      {
+        imageUrl: url,
+      },
+      {
+        match: (n: Node) => {
+          return Editor.isBlock(editor, n);
+        },
+        at: slatePath,
+      }
+    );
     let data = {
       requestedAPI: "saveImage",
       imageFile: await toBase64(selectedImage),
     };
 
-    await fetch("/api/endpoint", {
+    fetch("/api/endpoint", {
       method: "POST",
       headers: new Headers({
         "Content-Type": "application/json",
@@ -184,8 +204,20 @@ const MarkdownPreviewExample = () => {
     })
       .then(async (res: any) => {
         let resJSON = await res.json();
-        url = resJSON.url;
-        console.log("new url is ", url);
+        let newUrl = resJSON.url;
+
+        Transforms.setNodes(
+          editor,
+          {
+            imageUrl: newUrl,
+          },
+          {
+            match: (n: Node) => {
+              return Editor.isBlock(editor, n);
+            },
+            at: slatePath,
+          }
+        );
       })
       .catch((error: any) => {
         console.log(error);
@@ -219,18 +251,11 @@ const MarkdownPreviewExample = () => {
     if (!Text.isText(node)) {
       return [];
     }
-    // console.log(node);
-    // console.log(Node.has(node, path));
-    // console.log(Node.isNode(node));
-
-    // console.log(Node.parent(node, path));
-    // console.log(Node.matches(node, { type: "codeblock" }));
     let elementNodeEntry = Editor.parent(editor, path);
     let elementNode = elementNodeEntry[0];
     if (elementNode.type === "codeblock") {
       let language = elementNode.language as string;
       let prismLanguage = getPrismLanguageFromBackend(language);
-      // console.log(node);
       const tokens = Prism.tokenize(node.text, Prism.languages[prismLanguage]);
       return addSyntaxHighlighting(tokens as Token[], path);
     }
@@ -444,7 +469,7 @@ const Leaf = ({ attributes, children, leaf }: RenderLeafProps) => {
     case "url":
     case "string":
       style["color"] = "#a67f59";
-      style["background"] = "#ffffff";
+      // style["background"] = "#ffffff";
       break;
     case "atrule":
     case "attr-value":
@@ -479,51 +504,6 @@ const Leaf = ({ attributes, children, leaf }: RenderLeafProps) => {
 
   return (
     <span {...attributes} style={style}>
-      {children}
-    </span>
-  );
-  return (
-    <span
-      {...attributes}
-      className={css`
-        font-weight: ${leaf.bold && "bold"};
-        font-style: ${leaf.italic && "italic"};
-        text-decoration: ${leaf.underlined && "underline"};
-        ${leaf.title &&
-        css`
-          display: inline-block;
-          font-weight: bold;
-          font-size: 20px;
-          margin: 20px 0 10px 0;
-        `}
-        ${leaf.list &&
-        css`
-          padding-left: 10px;
-          font-size: 20px;
-          line-height: 10px;
-        `}
-        ${leaf.hr &&
-        css`
-          display: block;
-          text-align: center;
-          border-bottom: 2px solid #ddd;
-        `}
-        ${leaf.blockquote &&
-        css`
-          display: inline-block;
-          border-left: 2px solid #ddd;
-          padding-left: 10px;
-          color: #aaa;
-          font-style: italic;
-        `}
-        ${leaf.code &&
-        css`
-          font-family: monospace;
-          background-color: #eee;
-          padding: 3px;
-        `}
-      `}
-    >
       {children}
     </span>
   );

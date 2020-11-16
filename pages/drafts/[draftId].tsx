@@ -29,7 +29,6 @@ import { DraftJsButtonProps } from "draft-js-buttons";
 import { motion, AnimatePresence } from "framer-motion";
 import SlateEditor from "../../components/SlateSection";
 import MarkdownPreviewExample from "../../components/MarkdownSection";
-import PluginEditor from "../../components/SlatePlugins";
 
 const DraftView = () => {
   const { authenticated, error, loading } = useLoggedIn();

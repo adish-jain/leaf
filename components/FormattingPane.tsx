@@ -158,7 +158,7 @@ function RichTextElement(props: {
       richTextElementRef.current?.scrollIntoView({
         behavior: "smooth",
         block: "nearest",
-        inline: "start",
+        // inline: "start",
       });
     }
   }, [selected]);
@@ -167,7 +167,6 @@ function RichTextElement(props: {
     <div
       className={"rich-text-element"}
       onClick={(e) => {
-        console.log("clicking elem");
         e.stopPropagation();
         e.preventDefault();
         addBlock(blockType);

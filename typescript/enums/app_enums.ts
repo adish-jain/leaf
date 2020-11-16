@@ -6,6 +6,7 @@ export enum Block {
 }
 
 export enum formattingPaneBlockType {
+  P = "p",
   H1 = "h1",
   H2 = "h2",
   H3 = "h3",
@@ -13,5 +14,5 @@ export enum formattingPaneBlockType {
   Blockquote = "blockquote",
   OL = "ol",
   CodeBlock = "codeblock",
-  Image = "image"
+  Image = "image",
 }

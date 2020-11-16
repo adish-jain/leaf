@@ -90,6 +90,9 @@ module.exports = withSourceMaps(
 
         return config;
       },
+      images: {
+        domains: ["storage.googleapis.com"],
+      },
     })
   )
 );

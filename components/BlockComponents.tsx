@@ -11,6 +11,7 @@ import {
 import { getPrismLanguageFromBackend } from "../lib/utils/languageUtils";
 import { motion, AnimatePresence } from "framer-motion";
 import React, { useState, ChangeEvent } from "react";
+import Image from "next/image";
 
 //html, xml
 import "prismjs/components/prism-markup.min";
@@ -58,10 +59,60 @@ import "prismjs/components/prism-docker.min";
 
 const ImageElement = (
   props: RenderElementProps & {
-    handleImageUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    handleImageUpload: (
+      e: React.ChangeEvent<HTMLInputElement>,
+      domNode: globalThis.Node
+    ) => void;
   }
 ) => {
-  console.log(props.element);
+  let nodeRef: globalThis.Node = props.attributes.ref.current;
+  const [mouseDown, toggleMouseDown] = useState(false);
+  const selected = useSelected();
+  const focused = useFocused();
+  let imageUrl: string | undefined = props.element.imageUrl as
+    | string
+    | undefined;
+
+  // console.log("inside imageelement ", imageUrl);
+
+  // console.log(props.element);
+  let selectedStyle = {};
+  if (selected && focused) {
+    selectedStyle = {
+      boxShadow: "0 0 0 3px #B4D5FF",
+    };
+  }
+  if (imageUrl) {
+    return (
+      <div
+        {...props.attributes}
+        style={selectedStyle}
+        className={`${"image-element-uploaded"}`}
+        onMouseDown={(e) => {
+          toggleMouseDown(true);
+          e.persist();
+
+          let targetId = (e.target as HTMLDivElement).id;
+          if (targetId === "leftimagehandle") {
+            toggleMouseDown(true);
+          }
+        }}
+        onMouseUp={(e) => {
+          toggleMouseDown(false);
+        }}
+        onMouseMove={(e) => {
+          if (mouseDown) {
+            e.persist();
+          }
+        }}
+      >
+        <div contentEditable={false}>
+          <img src={imageUrl} />
+        </div>
+        {props.children}
+      </div>
+    );
+  }
   return (
     <div {...props.attributes} className={"image-element"}>
       <label className={"add-image"}>
@@ -71,7 +122,9 @@ const ImageElement = (
           id="myFile"
           name="filename"
           accept="image/*"
-          onChange={props.handleImageUpload}
+          onChange={(e) => {
+            props.handleImageUpload(e, nodeRef);
+          }}
         />
       </label>
       {props.children}
@@ -79,17 +132,17 @@ const ImageElement = (
   );
 };
 
+function LeftImageHandle() {
+  const [xShift, updateXShift] = useState(0);
+  return <div id={"leftimagehandle"} className={"img-handle"}></div>;
+}
+
 // Define a React component renderer for h1 blocks.
 const HeaderOneElement = (props: RenderElementProps) => {
   let currentNode = props.element.children[0];
   let empty = currentNode.text === "";
   return (
-    <div
-      className={"headerOne"}
-      onClick={(e) => {
-        console.log("1 clicked");
-      }}
-    >
+    <div className={"headerOne"}>
       <h1 {...props.attributes}>{props.children}</h1>
       {empty && <HeadingPlaceHolder>Heading 1</HeadingPlaceHolder>}
     </div>
@@ -172,7 +225,10 @@ const NumberedListElement = (props: RenderElementProps) => {
 
 const CodeBlockElement = (
   props: RenderElementProps & {
-    changeLanguage: (event: ChangeEvent<HTMLSelectElement>) => void;
+    changeLanguage: (
+      event: ChangeEvent<HTMLSelectElement>,
+      domNode: globalThis.Node
+    ) => void;
   }
 ) => {
   const selected = useSelected();

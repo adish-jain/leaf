@@ -299,3 +299,26 @@ $headerThreeFontSize: 1.17em;
   background-color: $leaf-light-gray;
   transition: background-color 0.2s ease-in-out;
 }
+
+.image-element-uploaded {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  img {
+    max-width: 100%;
+    resize: both;
+    overflow: auto;
+  }
+}
+
+.img-handle {
+  height: 80px;
+  width: 8px;
+  border-radius: 4px;
+  background-color: gray;
+  cursor: col-resize;
+  position: absolute;
+  top: 50%;
+  left: -10px;
+}
