@@ -129,7 +129,6 @@ export default function FormattingPane(props: {
                   );
                 }
               })}
-              <div>Image</div>
             </div>
             <div>
               <label className={"section-label"}>Interactivity</label>

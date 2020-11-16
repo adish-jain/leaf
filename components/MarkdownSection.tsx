@@ -59,6 +59,7 @@ import {
   BlockQuoteElement,
   NumberedListElement,
   DefaultElement,
+  ImageElement,
 } from "./BlockComponents";
 import { getPrismLanguageFromBackend } from "../lib/utils/languageUtils";
 const Blocks: FormattingPaneBlockList = [
@@ -90,13 +91,20 @@ const Blocks: FormattingPaneBlockList = [
     display: "Code Block",
     blockType: formattingPaneBlockType.CodeBlock,
   },
+  {
+    display: "Image",
+    blockType: formattingPaneBlockType.Image,
+  },
 ];
 
 const MarkdownPreviewExample = () => {
   const [value, setValue] = useState<Node[]>(initialValue);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
   const editor = useMemo(
-    () => withCodeBlockCopyPaste(withHistory(withReact(createEditor()))),
+    () =>
+      withImages(
+        withCodeBlockCopyPaste(withHistory(withReact(createEditor())))
+      ),
     []
   );
   const [selectedRichTextIndex, updateSelectedRichText] = useState(0);
@@ -136,12 +144,20 @@ const MarkdownPreviewExample = () => {
         return <NumberedListElement {...props} />;
       case "codeblock":
         return <CodeBlockElement changeLanguage={changeLanguage} {...props} />;
+      case "image":
+        return (
+          <ImageElement {...props} handleImageUpload={handleImageUpload} />
+        );
       case "default":
         return <DefaultElement {...props} />;
       default:
         return <DefaultElement {...props} />;
     }
   }, []);
+
+  function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    let selectedImage = e.target.files![0];
+  }
 
   function changeLanguage(
     event: ChangeEvent<HTMLSelectElement>,
@@ -599,7 +615,6 @@ const withCodeBlockCopyPaste = (
     });
     if (currentNodeEntry) {
       let currentNode = currentNodeEntry[0];
-      let currentNodePath = currentNodeEntry[1];
       if (currentNode.type === "codeblock") {
         const plain = data.getData("text/plain");
         insertText(plain);
@@ -607,19 +622,16 @@ const withCodeBlockCopyPaste = (
       }
     }
     insertData(data);
+  };
 
-    // if (selection) {
-    //   let currentNode = editor.children[selection!.anchor.path[0]];
-    //   console.log(currentNode);
+  return editor;
+};
 
-    //   if (currentNode.type === "codeblock") {
-    //     const plain = data.getData("text/plain");
+const withImages = (editor: Editor & ReactEditor & HistoryEditor) => {
+  const { insertData, isVoid } = editor;
 
-    //     Editor.insertText(editor, plain);
-    //   } else {
-    //     editor.insertData(data);
-    //   }
-    // }
+  editor.isVoid = (element) => {
+    return element.type === "image" ? true : isVoid(element);
   };
 
   return editor;

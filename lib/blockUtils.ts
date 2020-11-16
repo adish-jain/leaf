@@ -81,15 +81,42 @@ function handleMiddleLine(
       order = 1;
     }
   }
-  let newNode: Node = {
-    type: blockType,
-    order: order,
-    children: [
+  let newNode: Node | Node[];
+  if (
+    blockType === formattingPaneBlockType.Image ||
+    blockType === formattingPaneBlockType.CodeBlock
+  ) {
+    newNode = [
       {
-        text: "",
+        type: blockType,
+        order: order,
+        children: [
+          {
+            text: "",
+          },
+        ],
       },
-    ],
-  };
+      {
+        type: "default",
+        order: order,
+        children: [
+          {
+            text: "",
+          },
+        ],
+      },
+    ];
+  } else {
+    newNode = {
+      type: blockType,
+      order: order,
+      children: [
+        {
+          text: "",
+        },
+      ],
+    };
+  }
   // deletes the slash range
   if (Range.isCollapsed(slashPosition!)) {
     Transforms.delete(editor, {
@@ -233,7 +260,7 @@ function addBlockUnderNonDefault(
   editor: Editor,
   slashPosition: Range | null
 ) {
-  let newNode: Node;
+  let newNode: Node | Node[];
   if (currentNode.type === "ol") {
     newNode = {
       type: blockType,
@@ -244,6 +271,30 @@ function addBlockUnderNonDefault(
         },
       ],
     };
+  } else if (
+    blockType === formattingPaneBlockType.CodeBlock ||
+    blockType === formattingPaneBlockType.Image
+  ) {
+    newNode = [
+      {
+        type: blockType,
+        order: undefined,
+        children: [
+          {
+            text: "",
+          },
+        ],
+      },
+      {
+        type: "default",
+        order: undefined,
+        children: [
+          {
+            text: "",
+          },
+        ],
+      },
+    ];
   } else {
     newNode = {
       type: blockType,
@@ -295,6 +346,26 @@ function addBlockAtDefault(
     }
   );
 
-  deleteSlash(slashPosition, editor);
-  Transforms.select(editor, currentNodePath);
+  if (
+    blockType === formattingPaneBlockType.Image ||
+    blockType === formattingPaneBlockType.CodeBlock
+  ) {
+    let newNode = {
+      type: "default",
+      order: undefined,
+      children: [
+        {
+          text: "",
+        },
+      ],
+    };
+
+    Transforms.insertNodes(editor, newNode, {
+      at: Editor.after(editor, currentNodePath),
+    });
+  }
+  if (blockType !== formattingPaneBlockType.Image) {
+    deleteSlash(slashPosition, editor);
+    Transforms.select(editor, currentNodePath);
+  }
 }

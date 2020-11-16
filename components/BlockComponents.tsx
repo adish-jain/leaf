@@ -56,6 +56,28 @@ import "prismjs/components/prism-markdown.min";
 // dockerfile
 import "prismjs/components/prism-docker.min";
 
+const ImageElement = (
+  props: RenderElementProps & {
+    handleImageUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  }
+) => {
+  return (
+    <div {...props.attributes} className={"image-element"}>
+      <label className={"add-image"}>
+        + Add Image
+        <input
+          type="file"
+          id="myFile"
+          name="filename"
+          accept="image/*"
+          onChange={props.handleImageUpload}
+        />
+      </label>
+      {props.children}
+    </div>
+  );
+};
+
 // Define a React component renderer for h1 blocks.
 const HeaderOneElement = (props: RenderElementProps) => {
   let currentNode = props.element.children[0];
@@ -345,6 +367,7 @@ export {
   BlockQuoteElement,
   NumberedListElement,
   DefaultElement,
+  ImageElement,
 };
 
 function LanguageOptions(props: {
