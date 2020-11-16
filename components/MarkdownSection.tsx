@@ -651,4 +651,8 @@ const withImages = (editor: Editor & ReactEditor & HistoryEditor) => {
   return editor;
 };
 
+function handleTokens() {
+  
+}
+
 export default MarkdownPreviewExample;
