@@ -129,9 +129,6 @@ export default function FormattingPane(props: {
                   );
                 }
               })}
-              <div>Numbered List</div>
-              <div>Blockquote</div>
-              <div>Code Block</div>
               <div>Image</div>
             </div>
             <div>

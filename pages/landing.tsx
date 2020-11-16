@@ -10,7 +10,6 @@ import { usePosts, goToPost } from "../lib/usePosts";
 import Header from "../components/Header";
 const dayjs = require("dayjs");
 import { LandingHeader } from "../components/Headers";
-
 type DraftType = {
   id: string;
   title: string;

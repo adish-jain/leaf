@@ -9,6 +9,7 @@ import React, {
   useEffect,
   ReactElement,
   useRef,
+  ChangeEvent,
 } from "react";
 import { useBlocks, searchBlocks } from "../lib/blockUtils";
 import {
@@ -50,14 +51,16 @@ import {
   handleBackSpace,
 } from "../lib/handleKeyUtils";
 import {
-  CodeElement,
+  CodeBlockElement,
   HeaderOneElement,
   HeaderTwoElement,
   HeaderThreeElement,
   UnOrderedListElement,
   BlockQuoteElement,
   NumberedListElement,
+  DefaultElement,
 } from "./BlockComponents";
+import { getPrismLanguageFromBackend } from "../lib/utils/languageUtils";
 const Blocks: FormattingPaneBlockList = [
   {
     display: "Header 1",
@@ -83,13 +86,17 @@ const Blocks: FormattingPaneBlockList = [
     display: "Ordered List",
     blockType: formattingPaneBlockType.OL,
   },
+  {
+    display: "Code Block",
+    blockType: formattingPaneBlockType.CodeBlock,
+  },
 ];
 
 const MarkdownPreviewExample = () => {
   const [value, setValue] = useState<Node[]>(initialValue);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
   const editor = useMemo(
-    () => withOrderedList(withHistory(withReact(createEditor()))),
+    () => withCodeBlockCopyPaste(withHistory(withReact(createEditor()))),
     []
   );
   const [selectedRichTextIndex, updateSelectedRichText] = useState(0);
@@ -98,7 +105,10 @@ const MarkdownPreviewExample = () => {
   let searchedBlocks = searchBlocks(searchString, Blocks);
   useEffect(() => {
     let retrieveValue = JSON.parse(localStorage.getItem("draftStore")!);
-    if (Array.isArray(retrieveValue) && retrieveValue.length === 0) {
+    if (
+      (Array.isArray(retrieveValue) && retrieveValue.length === 0) ||
+      retrieveValue === null
+    ) {
       retrieveValue = initialValue;
     }
     setValue(retrieveValue);
@@ -112,8 +122,6 @@ const MarkdownPreviewExample = () => {
 
   const renderElement = useCallback((props: RenderElementProps) => {
     switch (props.element.type) {
-      case "code":
-        return <CodeElement {...props} />;
       case "h1":
         return <HeaderOneElement {...props} />;
       case "h2":
@@ -126,6 +134,8 @@ const MarkdownPreviewExample = () => {
         return <BlockQuoteElement {...props} />;
       case "ol":
         return <NumberedListElement {...props} />;
+      case "codeblock":
+        return <CodeBlockElement changeLanguage={changeLanguage} {...props} />;
       case "default":
         return <DefaultElement {...props} />;
       default:
@@ -133,27 +143,46 @@ const MarkdownPreviewExample = () => {
     }
   }, []);
 
-  const decorate1 = useCallback((currentNodeEntry: NodeEntry) => {
+  function changeLanguage(
+    event: ChangeEvent<HTMLSelectElement>,
+    domNode: globalThis.Node
+  ) {
+    let slateNode = ReactEditor.toSlateNode(editor, domNode);
+    let slatePath = ReactEditor.findPath(editor, slateNode);
+    let newLanguage = event.currentTarget.value;
+    Transforms.setNodes(
+      editor,
+      {
+        language: newLanguage,
+      },
+      {
+        match: (n: Node) => {
+          return Editor.isBlock(editor, n);
+        },
+        at: slatePath,
+      }
+    );
+  }
+
+  const decorate = useCallback((currentNodeEntry: NodeEntry) => {
     let [node, path] = currentNodeEntry;
     if (!Text.isText(node)) {
       return [];
     }
-    const tokens = Prism.tokenize(node.text, Prism.languages.markdown);
-    return addMarkDown(tokens as Token[], path);
-  }, []);
+    // console.log(node);
+    // console.log(Node.has(node, path));
+    // console.log(Node.isNode(node));
 
-  let orderedListCount = 0;
-  const decorate = useCallback((currentNodeEntry: NodeEntry) => {
-    let [node, path] = currentNodeEntry;
-    // if (!Text.isText(node)) {
-    //   console.log(node);
-    //   return [];
-    // }
-    if (node.type === "ol") {
-      orderedListCount++;
-    }
-    else {
-      orderedListCount = 0;
+    // console.log(Node.parent(node, path));
+    // console.log(Node.matches(node, { type: "codeblock" }));
+    let elementNodeEntry = Editor.parent(editor, path);
+    let elementNode = elementNodeEntry[0];
+    if (elementNode.type === "codeblock") {
+      let language = elementNode.language as string;
+      let prismLanguage = getPrismLanguageFromBackend(language);
+      // console.log(node);
+      const tokens = Prism.tokenize(node.text, Prism.languages[prismLanguage]);
+      return addSyntaxHighlighting(tokens as Token[], path);
     }
     return [];
   }, []);
@@ -295,35 +324,6 @@ const MarkdownPreviewExample = () => {
     }
   }
 
-  const DefaultElement = (props: RenderElementProps) => {
-    const selected = useSelected();
-    const focused = useFocused();
-    let emptyText = props.element.children[0].text === "";
-    const [hovered, toggleHover] = useState(false);
-    return (
-      <div
-        className={"prompt"}
-        onMouseLeave={(e) => toggleHover(false)}
-        onMouseEnter={(e) => toggleHover(true)}
-        // ref={defaultElementRef}
-      >
-        <span className={"prompt-content"} {...props.attributes}>
-          {props.children}
-        </span>
-        {focused && selected && emptyText && (
-          <label
-            contentEditable={false}
-            // onClick={(e) => e.preventDefault()}
-            className={"placeholder-text"}
-          >
-            {"Press '/' for commands"}
-          </label>
-        )}
-        {/* <BlockHandle hovered={hovered} /> */}
-      </div>
-    );
-  };
-
   return (
     <div className={"slate-wrapper"}>
       <Slate editor={editor} value={value} onChange={handleChange}>
@@ -348,29 +348,90 @@ const MarkdownPreviewExample = () => {
 };
 
 const Leaf = ({ attributes, children, leaf }: RenderLeafProps) => {
-  switch (leaf.type) {
+  // switch (leaf.type) {
+  //   case "bold":
+  //     return <div {...attributes}>{children}</div>;
+  // }
+  let style: {
+    color?: string;
+    fontFamily: string;
+    background?: string;
+    fontStyle?: string;
+    cursor?: string;
+  } = {
+    fontFamily: "monospace",
+  };
+
+  switch (leaf.prismType) {
+    case "comment":
+    case "prolog":
+    case "doctype":
+    case "cdata":
+      style["color"] = "#93a1a1";
+      break;
+    case "punctuation":
+      style["color"] = "#999999";
+      break;
+    case "property":
+    case "tag":
+    case "boolean":
+    case "number":
+    case "constant":
+    case "symbol":
+    case "deleted":
+      style["color"] = "#990055";
+      break;
+    case "selector":
+    case "attr-name":
+    case "string":
+    case "char":
+    case "builtin":
+    case "inserted":
+      style["color"] = "#669900";
+      break;
+    case "operator":
+    case "entity":
+    case "url":
+    case "string":
+      style["color"] = "#a67f59";
+      style["background"] = "#ffffff";
+      break;
+    case "atrule":
+    case "attr-value":
+    case "keyword":
+      style["color"] = "#0077aa";
+      break;
+    case "function":
+      style["color"] = "#dd4a68";
+      break;
+    case "regex":
+    case "important":
+    case "variable":
+      style["color"] = "#ee9900";
+      break;
+    case "important":
     case "bold":
-      console.log("bold");
-      return <div {...attributes}>{children}</div>;
-    // case "slashCapture":
-    //   return (
-    //     <span {...attributes} style={{ color: "red" }}>
-    //       {children}
-    //     </span>
-    //   );
-    case "h1":
-      return (
-        <h1
-          style={{
-            display: "inline-block",
-          }}
-          {...attributes}
-        >
-          {children}
-        </h1>
-      );
+      style["fontStyle"] = "bold";
+      break;
+    case "italic":
+      style["fontStyle"] = "italic";
+      break;
+    case "entity":
+      style["cursor"] = "help";
+      break;
+    case "prismDefault":
+      style["fontFamily"] = "monospace";
+      break;
     default:
+      style["fontFamily"] = "Arial, Helvetica, sans-serif";
+      break;
   }
+
+  return (
+    <span {...attributes} style={style}>
+      {children}
+    </span>
+  );
   return (
     <span
       {...attributes}
@@ -465,6 +526,56 @@ function addMarkDown(tokens: Token[], path: Path) {
   return ranges;
 }
 
+function addSyntaxHighlighting(tokens: Token[], path: Path) {
+  const ranges: Range[] = [];
+  let start = 0;
+
+  for (const token of tokens) {
+    let length = getLength(token);
+    let end = start + length;
+    if (Array.isArray(token.content)) {
+      let innerStart = start;
+      for (let i = 0; i < (token.content as Token[]).length; i++) {
+        let currentToken = (token.content as Token[])[i];
+        let innerLength = getLength(currentToken);
+        let innerEnd = innerStart + innerLength;
+        if (typeof currentToken !== "string") {
+          ranges.push({
+            prismType: currentToken.type,
+            anchor: { path, offset: innerStart },
+            focus: { path, offset: innerEnd },
+          });
+        } else {
+          ranges.push({
+            prismType: "prismDefault",
+            anchor: { path, offset: innerStart },
+            focus: { path, offset: innerEnd },
+          });
+        }
+
+        innerStart = innerEnd;
+      }
+    } else if (typeof token !== "string") {
+      ranges.push({
+        // type: token.type,
+        prismType: token.type,
+        anchor: { path, offset: start },
+        focus: { path, offset: end },
+      });
+    } else {
+      ranges.push({
+        // type: token.type,
+        prismType: "prismDefault",
+        anchor: { path, offset: start },
+        focus: { path, offset: end },
+      });
+    }
+    start = end;
+  }
+
+  return ranges;
+}
+
 const getLength = (token: Token): number => {
   if (typeof token === "string") {
     return (token as string).length;
@@ -475,75 +586,40 @@ const getLength = (token: Token): number => {
   }
 };
 
-const BlockHandle = (props: {
-  hovered: boolean;
-  // yPos: number;
-  // xPos: number;
-}) => {
-  let {
-    hovered,
-    // yPos,
-    // xPos
-  } = props;
+const withCodeBlockCopyPaste = (
+  editor: Editor & ReactEditor & HistoryEditor
+) => {
+  const { insertData, insertText } = editor;
+  editor.insertData = (data: DataTransfer) => {
+    // let selection = editor.selection;
+    let currentNodeEntry = Editor.above(editor, {
+      match: (node) => {
+        return Node.isNode(node);
+      },
+    });
+    if (currentNodeEntry) {
+      let currentNode = currentNodeEntry[0];
+      let currentNodePath = currentNodeEntry[1];
+      if (currentNode.type === "codeblock") {
+        const plain = data.getData("text/plain");
+        insertText(plain);
+        return;
+      }
+    }
+    insertData(data);
 
-  return (
-    <AnimatePresence>
-      {hovered && (
-        <motion.div
-          style={{
-            position: "absolute",
-            top: "-2px",
-            left: "4px",
-            // bottom: 0,
-            // top: `${yPos + window.pageYOffset - 26}px`,
-            // left: `${xPos + window.pageXOffset - 4}px`,
-            zIndex: 3,
-            cursor: "pointer",
-          }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{
-            duration: 0.2,
-          }}
-        >
-          <div
-            // onClick={(e) => e.preventDefault()}
-            contentEditable={false}
-            className={"handle"}
-            draggable={true}
-          >
-            <img src="/images/sixdots.svg" />
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-};
+    // if (selection) {
+    //   let currentNode = editor.children[selection!.anchor.path[0]];
+    //   console.log(currentNode);
 
-const withOrderedList = (editor: Editor & ReactEditor & HistoryEditor) => {
-  const { normalizeNode } = editor;
+    //   if (currentNode.type === "codeblock") {
+    //     const plain = data.getData("text/plain");
 
-  editor.normalizeNode = (entry) => {
-    const [node, path] = entry;
-
-    // If the element is a paragraph, ensure its children are valid.
-    // if (Element.isElement(node) && node.type === "paragraph") {
-    //   for (const [child, childPath] of Node.children(editor, path)) {
-    //     if (Element.isElement(child) && !editor.isInline(child)) {
-    //       Transforms.unwrapNodes(editor, { at: childPath });
-    //       return;
-    //     }
+    //     Editor.insertText(editor, plain);
+    //   } else {
+    //     editor.insertData(data);
     //   }
     // }
-    if (Element.isElement(node)) {
-      // console.log(node);
-    }
-    // console.log(node);
-    // console.log(entry);
-
-    // Fall back to the original `normalizeNode` to enforce other constraints.
-    normalizeNode(entry);
   };
 
   return editor;

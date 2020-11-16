@@ -281,7 +281,6 @@ function addBlockAtDefault(
   slashPosition: Range | null,
   currentNodePath: Path
 ) {
-  console.log("adding default block");
   Transforms.setNodes(
     editor,
     {

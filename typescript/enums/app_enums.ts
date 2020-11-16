@@ -12,4 +12,5 @@ export enum formattingPaneBlockType {
   UL = "ul",
   Blockquote = "blockquote",
   OL = "ol",
+  CodeBlock = "codeblock",
 }
