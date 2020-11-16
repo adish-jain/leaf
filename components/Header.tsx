@@ -11,7 +11,7 @@ type HeaderProps = {
   settings?: boolean;
   profile?: boolean;
   logout?: boolean;
-  examples?: boolean;
+  explore?: boolean;
 };
 
 export class HeaderUnAuthenticated extends Component<HeaderProps> {
@@ -20,7 +20,7 @@ export class HeaderUnAuthenticated extends Component<HeaderProps> {
   }
 
   render() {
-    const { signup, login, about, examples } = this.props;
+    const { signup, login, about, explore } = this.props;
     return (
       <div className={"header"}>
         <div className={"navbar"}>
@@ -48,9 +48,9 @@ export class HeaderUnAuthenticated extends Component<HeaderProps> {
             ) : (
               <div></div>
             )}
-            {examples ? (
-              <Link href="/examples">
-                <a>Examples</a>
+            {explore ? (
+              <Link href="/explore">
+                <a>Explore</a>
               </Link>
             ) : (
               <div></div>
@@ -68,7 +68,7 @@ export default class Header extends Component<HeaderProps> {
   }
 
   render() {
-    let { username, profile, settings, logout } = this.props;
+    let { username, profile, settings, explore, logout } = this.props;
     return (
       <div className={"header"}>
         <div className={"navbar"}>
@@ -84,6 +84,13 @@ export default class Header extends Component<HeaderProps> {
             {settings ? (
               <Link href="/settings">
                 <a>Settings</a>
+              </Link>
+            ) : (
+              <div></div>
+            )}
+            {explore ? (
+              <Link href="/explore">
+                <a>Explore</a>
               </Link>
             ) : (
               <div></div>

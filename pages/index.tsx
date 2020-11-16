@@ -70,7 +70,7 @@ function NavBar(props: { goToIndex: any }) {
       <Logo goToIndex={props.goToIndex} />
       <Signup />
       <Login />
-      <Examples />
+      <Explore />
       <About />
     </div>
   );
@@ -98,7 +98,7 @@ function NavBarDropDown(props: { goToIndex: any }) {
             <div>
               <Signup />
               <Login />
-              <Examples />
+              <Explore />
               <About />
             </div>
           ) : (
@@ -138,11 +138,11 @@ function Signup() {
   );
 }
 
-function Examples() {
+function Explore() {
   return (
     <div className={"Login"}>
-      <Link href="/examples">
-        <a>Examples</a>
+      <Link href="/explore">
+        <a>Explore</a>
       </Link>
     </div>
   );
@@ -184,8 +184,8 @@ function TitleText() {
                 </div>
               </div>
             </Link>
-            <Link href="/examples">
-              <div className={"Examples"}>
+            <Link href="/explore">
+              <div className={"Explore"}>
                 <div className={"button"}>
                   Learn More
                   <img src="/images/arrow.svg" />
@@ -282,7 +282,7 @@ function Footer(props: { goToIndex: any }) {
         <Logo goToIndex={props.goToIndex} />
         <Signup />
         <Login />
-        <Examples />
+        <Explore />
         <About />
       </div>
     </div>

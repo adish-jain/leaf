@@ -6,7 +6,7 @@ import { File, Step } from "../typescript/types/app_types";
 import PrismEditor from "./PrismEditor";
 import PublishedImageView from "./PublishedImageView";
 import animateScrollTo from "animated-scroll-to";
-import {SPEED_SCROLL_LIMIT} from '../components/FinishedPost'
+import { SPEED_SCROLL_LIMIT } from "../components/FinishedPost";
 
 type PublishedCodeEditorProps = {
   // changeStep: (newStep: number) => void;
@@ -21,7 +21,6 @@ type PublishedCodeEditorProps = {
 type PublishedCodeEditorState = {
   language: string;
 };
-
 
 export default class PublishedCodeEditor extends Component<
   PublishedCodeEditorProps,

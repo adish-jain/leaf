@@ -110,7 +110,7 @@ export default function SignUp() {
       </Head>
       <main className={"LoginMain"}>
         <HeaderUnAuthenticated
-          examples={true}
+          explore={true}
           login={true}
           about={true}
           signup={false}
