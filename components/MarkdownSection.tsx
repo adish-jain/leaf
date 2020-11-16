@@ -62,6 +62,13 @@ import {
   ImageElement,
 } from "./BlockComponents";
 import { getPrismLanguageFromBackend } from "../lib/utils/languageUtils";
+const toBase64 = (file: any) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
 const Blocks: FormattingPaneBlockList = [
   {
     display: "Header 1",
@@ -155,8 +162,35 @@ const MarkdownPreviewExample = () => {
     }
   }, []);
 
-  function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
     let selectedImage = e.target.files![0];
+
+    if (selectedImage.size > 5000000) {
+      console.log("Image is too large");
+    }
+    let url = URL.createObjectURL(selectedImage);
+    console.log("original url is ", url);
+    let data = {
+      requestedAPI: "saveImage",
+      imageFile: await toBase64(selectedImage),
+    };
+
+    await fetch("/api/endpoint", {
+      method: "POST",
+      headers: new Headers({
+        "Content-Type": "application/json",
+      }),
+      body: JSON.stringify(data),
+    })
+      .then(async (res: any) => {
+        let resJSON = await res.json();
+        url = resJSON.url;
+        console.log("new url is ", url);
+      })
+      .catch((error: any) => {
+        console.log(error);
+        console.log("upload failed.");
+      });
   }
 
   function changeLanguage(

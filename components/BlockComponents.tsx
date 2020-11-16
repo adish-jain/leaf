@@ -61,6 +61,7 @@ const ImageElement = (
     handleImageUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
   }
 ) => {
+  console.log(props.element);
   return (
     <div {...props.attributes} className={"image-element"}>
       <label className={"add-image"}>

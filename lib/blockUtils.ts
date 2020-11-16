@@ -32,6 +32,16 @@ import {
 } from "slate-react";
 import { HistoryEditor } from "slate-history";
 
+const defaultNode = {
+  type: "default",
+  order: undefined,
+  children: [
+    {
+      text: "",
+    },
+  ],
+};
+
 export function useBlocks(editor: Editor & ReactEditor & HistoryEditor) {
   const [slashPosition, updateSlashPosition] = useState<Range | null>(null);
 
@@ -96,15 +106,7 @@ function handleMiddleLine(
           },
         ],
       },
-      {
-        type: "default",
-        order: order,
-        children: [
-          {
-            text: "",
-          },
-        ],
-      },
+      defaultNode,
     ];
   } else {
     newNode = {
@@ -285,15 +287,7 @@ function addBlockUnderNonDefault(
           },
         ],
       },
-      {
-        type: "default",
-        order: undefined,
-        children: [
-          {
-            text: "",
-          },
-        ],
-      },
+      defaultNode,
     ];
   } else {
     newNode = {
@@ -350,17 +344,7 @@ function addBlockAtDefault(
     blockType === formattingPaneBlockType.Image ||
     blockType === formattingPaneBlockType.CodeBlock
   ) {
-    let newNode = {
-      type: "default",
-      order: undefined,
-      children: [
-        {
-          text: "",
-        },
-      ],
-    };
-
-    Transforms.insertNodes(editor, newNode, {
+    Transforms.insertNodes(editor, defaultNode, {
       at: Editor.after(editor, currentNodePath),
     });
   }
