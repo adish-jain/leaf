@@ -187,6 +187,8 @@ export default function Login() {
                 handleLoginClick={handleLoginClick}
                 handleChangePassword={handleChangePassword}
                 handleForgotPassword={handleForgotPassword}
+                updateErrorMessage={updateErrorMessage}
+                updateErrored={updateErrored}
                 router={router}
                 normalLogin={normalLogin}
               />
@@ -236,6 +238,8 @@ function LoginScreen(props: {
   handleLoginClick: (e: React.MouseEvent<HTMLElement>) => void;
   handleChangePassword: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleForgotPassword: (e: React.MouseEvent<HTMLElement>) => void;
+  updateErrorMessage: React.Dispatch<React.SetStateAction<string>>;
+  updateErrored: React.Dispatch<React.SetStateAction<boolean>>;
   errored: boolean;
   loggingIn: boolean;
   normalLogin: boolean;
@@ -243,6 +247,13 @@ function LoginScreen(props: {
   router: any;
 }) {
   const responseGoogle = (response: any) => {
+    if (response.error) {
+      if (response.error === "idpiframe_initialization_failed") {
+        props.updateErrorMessage("Please enable 3rd party cookies to login with Google");
+        props.updateErrored(true);
+      } 
+      return;
+    }
     let data = {
       requestedAPI: "googleAuthentication",
       tokenId: response.tokenId
@@ -297,6 +308,11 @@ function LoginScreen(props: {
             errorMessage={props.errorMessage}
           />
         }
+        {!props.errored ? (
+          <div></div>
+        ) : (
+          <p className={"ErrorMessage"}>{props.errorMessage}</p>
+        )}
         <button className={"LoginButton"} onClick={props.handleLoginClick}>
           {props.loggingIn ? "Logging In..." : "Login"}
         </button>
@@ -339,11 +355,6 @@ function NormalLogin (props: {
               onChange={props.handleChangePassword}
             ></input>
           </div>
-          {!props.errored ? (
-            <div></div>
-          ) : (
-            <p className={"ErrorMessage"}>{props.errorMessage}</p>
-          )}
         </div>
       </motion.div>
     </AnimatePresence>

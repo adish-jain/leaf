@@ -108,6 +108,13 @@ export default function SignUp() {
   };
 
   const responseGoogle = (response: any) => {
+    if (response.error) {
+      if (response.error === "idpiframe_initialization_failed") {
+        updateErrorMsg("Please enable 3rd party cookies to sign up with Google");
+        updateErrored(true);
+      } 
+      return;
+    }
     let data = {
       requestedAPI: "googleAuthentication",
       tokenId: response.tokenId
