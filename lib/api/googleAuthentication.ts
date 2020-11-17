@@ -34,7 +34,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     to the display name / email ID. If this does happen, 
     user can reset their auto-generated username in settings.
     */
-    var username;
+    let username;
     try {
       username = await getUsernameFromUid(signedin_user.uid);
     } catch (e) {
