@@ -79,6 +79,19 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   let refreshToken = signedin_user.refreshToken;
   handleLoginCookies(res, userToken, refreshToken);
   res.status(200).end();
+
+  await firebase
+  .auth()
+  .signOut()
+  .then(
+    function () {
+      // Sign-out successful.
+      console.log("signed out success");
+    },
+    function (error: any) {
+      // An error happened.
+    }
+  );
 };
 
 /*

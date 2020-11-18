@@ -132,35 +132,20 @@ export default function Login() {
   };
 
   return (
-    <AnimatePresence>
-      <motion.div
-        initial={{
-          opacity: 0,
-        }}
-        animate={{
-          opacity: 1,
-        }}
-        exit={{
-          opacity: 0,
-        }}
-        transition={{
-          duration: 0.4,
-        }}
-      >
-      <div className="container">
-        <Head>
-          <title>Login</title>
-          <link rel="icon" href="/favicon.ico" />
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `
-            if (document.cookie && document.cookie.includes('authed')) {
-              window.location.href = "/landing"
-            }
-          `,
-            }}
-          />
-        </Head>
+    <div className="container">
+      <Head>
+        <title>Login</title>
+        <link rel="icon" href="/favicon.ico" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+          if (document.cookie && document.cookie.includes('authed')) {
+            window.location.href = "/landing"
+          }
+        `,
+          }}
+        />
+      </Head>
         <main className={"LoginMain"}>
           <HeaderUnAuthenticated
             signup={true}
@@ -168,36 +153,51 @@ export default function Login() {
             explore={true}
             login={false}
           />
-          <div className={"Login"}>
-            {forgotPassword ? (
-              <ForgotPassword
-                handleChangeEmail={handleChangeEmail}
-                errored={errored}
-                errorMessage={errorMessage}
-                handleResetClick={handleResetClick}
-                resetting={resetting}
-                handleBackToLogin={handleBackToLogin}
-              />
-            ) : (
-              <LoginScreen
-                handleChangeEmail={handleChangeEmail}
-                errored={errored}
-                loggingIn={loggingIn}
-                errorMessage={errorMessage}
-                handleLoginClick={handleLoginClick}
-                handleChangePassword={handleChangePassword}
-                handleForgotPassword={handleForgotPassword}
-                updateErrorMessage={updateErrorMessage}
-                updateErrored={updateErrored}
-                router={router}
-                normalLogin={normalLogin}
-              />
-            )}
-          </div>
-        </main>
-      </div>
-      </motion.div>
-    </AnimatePresence>
+          <AnimatePresence>
+            <motion.div
+              initial={{
+                opacity: 0,
+              }}
+              animate={{
+                opacity: 1,
+              }}
+              exit={{
+                opacity: 0,
+              }}
+              transition={{
+                duration: 0.4,
+              }}
+            >
+              <div className={"Login"}>
+                {forgotPassword ? (
+                  <ForgotPassword
+                    handleChangeEmail={handleChangeEmail}
+                    errored={errored}
+                    errorMessage={errorMessage}
+                    handleResetClick={handleResetClick}
+                    resetting={resetting}
+                    handleBackToLogin={handleBackToLogin}
+                  />
+                ) : (
+                  <LoginScreen
+                    handleChangeEmail={handleChangeEmail}
+                    errored={errored}
+                    loggingIn={loggingIn}
+                    errorMessage={errorMessage}
+                    handleLoginClick={handleLoginClick}
+                    handleChangePassword={handleChangePassword}
+                    handleForgotPassword={handleForgotPassword}
+                    updateErrorMessage={updateErrorMessage}
+                    updateErrored={updateErrored}
+                    router={router}
+                    normalLogin={normalLogin}
+                  />
+                )}
+              </div>
+            </motion.div>
+          </AnimatePresence>
+      </main>
+    </div>
   );
 }
 

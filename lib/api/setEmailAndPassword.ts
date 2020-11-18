@@ -8,6 +8,12 @@ initFirebaseAdmin();
 initFirebase();
 let db = admin.firestore();
 
+/*
+Set the email & password of the user simultaneously.
+This is necessary for when a user is signed up through Google, 
+and wants to change their email. They must, at the same time,
+set a password. 
+*/
 export default async function setEmailAndPasswordHandler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -22,6 +28,9 @@ export default async function setEmailAndPasswordHandler(
     return;
   }
 
+  /*
+  Create custom token for user to sign in with.
+  */
   let customToken = await admin
     .auth()
     .createCustomToken(uid)
@@ -33,6 +42,12 @@ export default async function setEmailAndPasswordHandler(
       return "";
     });
 
+  /*
+  Sign user in with custom token & update their 
+  email & password. Their email will no longer
+  be verified. Also update their signup 
+  method to Leaf instead of Google.
+  */
   await firebase
   .auth()
   .signInWithCustomToken(customToken)
