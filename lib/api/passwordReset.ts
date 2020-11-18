@@ -15,7 +15,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   try {
     uid = await getUidFromEmail(email);
-    console.log(uid);
   } catch (error) {
     res.status(403).send({
       error: "Password Reset failed."

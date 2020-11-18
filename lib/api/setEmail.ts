@@ -1,25 +1,32 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebaseAdmin, initFirebase } from "../initFirebase";
-import { getUser, checkEmailDNE } from "../userUtils";
+import { getUser, checkEmailAuthDNE } from "../userUtils";
 const admin = require("firebase-admin");
-
-let db = admin.firestore();
 const firebase = require("firebase/app");
 initFirebaseAdmin();
 initFirebase();
+let db = admin.firestore();
 
 export default async function setEmailHandler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   let email = req.body.email;
-  let errored = false;
-
   let { uid, userRecord } = await getUser(req, res);
+  let errored = false;
 
   if (uid === "") {
     res.statusCode = 403;
     res.end();
+    return;
+  }
+
+  // check if email exists
+  if (!(await checkEmailAuthDNE(email))) {
+    let errorMsg = "Email already in use.";
+    res.status(403).send({
+      error: errorMsg,
+    });
     return;
   }
 
@@ -41,7 +48,7 @@ export default async function setEmailHandler(
           return;
         case "auth/email-already-exists":
           res.status(403).send({
-            error: "Email already in use by another account.",
+            error: "Email already in use.",
           });
           errored = true;
           return;

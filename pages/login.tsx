@@ -1,23 +1,16 @@
 import Head from "next/head";
 import fetch from "isomorphic-unfetch";
-import InferGetStaticPropsType from "next";
-import Link from "next/link";
 import React, { useState } from "react";
+import dynamic from "next/dynamic";
 import { HeaderUnAuthenticated } from "../components/Header";
 import { useRouter } from "next/router";
-
+// import { GoogleLogin } from "react-google-login";
+import { motion, AnimatePresence } from "framer-motion";
+const GoogleLogin = dynamic(import("react-google-login"), { ssr: false });
 import "../styles/header.scss";
 import "../styles/login.scss";
 
-function About() {
-  return (
-    <div className={"Login"}>
-      <Link href="/about">
-        <a>About</a>
-      </Link>
-    </div>
-  );
-}
+let NEXT_PUBLIC_OAUTH_CLIENT_ID = process.env.NEXT_PUBLIC_OAUTH_CLIENT_ID;
 
 export default function Login() {
   const router = useRouter();
@@ -28,14 +21,24 @@ export default function Login() {
   const [resetting, changeResetting] = useState(false);
   const [errorMessage, updateErrorMessage] = useState("");
   const [errored, updateErrored] = useState(false);
+  const [normalLogin, changeNormalLogin] = useState(false);
 
   const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateErrored(false);
+    if (e.target.value !== "") {
+      changeNormalLogin(true);
+    }
+    if (e.target.value === "" && password == "") {
+      changeNormalLogin(false);
+    }
     changeEmail(e.target.value);
   };
 
   const handleChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateErrored(false);
+    if (e.target.value === "" && email == "") {
+      changeNormalLogin(false);
+    }
     changePassword(e.target.value);
   };
 
@@ -128,11 +131,6 @@ export default function Login() {
     updateErrored(false);
   };
 
-  const goToIndex = (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-    router.push("/");
-  };
-
   return (
     <div className="container">
       <Head>
@@ -148,47 +146,68 @@ export default function Login() {
           }}
         />
       </Head>
-      <main className={"LoginMain"}>
-        <HeaderUnAuthenticated
-          signup={true}
-          about={true}
-          explore={true}
-          login={false}
-        />
-        <div className={"Login"}>
-          {forgotPassword ? (
-            <ForgotPassword
-              handleChangeEmail={handleChangeEmail}
-              errored={errored}
-              errorMessage={errorMessage}
-              handleResetClick={handleResetClick}
-              resetting={resetting}
-              handleBackToLogin={handleBackToLogin}
-            />
-          ) : (
-            <LoginScreen
-              handleChangeEmail={handleChangeEmail}
-              errored={errored}
-              loggingIn={loggingIn}
-              errorMessage={errorMessage}
-              handleLoginClick={handleLoginClick}
-              handleChangePassword={handleChangePassword}
-              handleForgotPassword={handleForgotPassword}
-            />
-          )}
-        </div>
+        <main className={"LoginMain"}>
+          <HeaderUnAuthenticated
+            signup={true}
+            about={true}
+            explore={true}
+            login={false}
+          />
+          <AnimatePresence>
+            <motion.div
+              initial={{
+                opacity: 0,
+              }}
+              animate={{
+                opacity: 1,
+              }}
+              exit={{
+                opacity: 0,
+              }}
+              transition={{
+                duration: 0.4,
+              }}
+            >
+              <div className={"Login"}>
+                {forgotPassword ? (
+                  <ForgotPassword
+                    handleChangeEmail={handleChangeEmail}
+                    errored={errored}
+                    errorMessage={errorMessage}
+                    handleResetClick={handleResetClick}
+                    resetting={resetting}
+                    handleBackToLogin={handleBackToLogin}
+                  />
+                ) : (
+                  <LoginScreen
+                    handleChangeEmail={handleChangeEmail}
+                    errored={errored}
+                    loggingIn={loggingIn}
+                    errorMessage={errorMessage}
+                    handleLoginClick={handleLoginClick}
+                    handleChangePassword={handleChangePassword}
+                    handleForgotPassword={handleForgotPassword}
+                    updateErrorMessage={updateErrorMessage}
+                    updateErrored={updateErrored}
+                    router={router}
+                    normalLogin={normalLogin}
+                  />
+                )}
+              </div>
+            </motion.div>
+          </AnimatePresence>
       </main>
     </div>
   );
 }
 
 function ForgotPassword(props: {
-  handleChangeEmail: any;
+  handleChangeEmail: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleResetClick: (e: React.MouseEvent<HTMLElement>) => void;
+  handleBackToLogin: (e: React.MouseEvent<HTMLElement>) => void;
   errored: boolean;
   errorMessage: string;
-  handleResetClick: any;
   resetting: boolean;
-  handleBackToLogin: any;
 }) {
   return (
     <div className={"LoginBox"}>
@@ -215,26 +234,80 @@ function ForgotPassword(props: {
 }
 
 function LoginScreen(props: {
-  handleChangeEmail: any;
+  handleChangeEmail: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleLoginClick: (e: React.MouseEvent<HTMLElement>) => void;
+  handleChangePassword: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleForgotPassword: (e: React.MouseEvent<HTMLElement>) => void;
+  updateErrorMessage: React.Dispatch<React.SetStateAction<string>>;
+  updateErrored: React.Dispatch<React.SetStateAction<boolean>>;
   errored: boolean;
   loggingIn: boolean;
+  normalLogin: boolean;
   errorMessage: string;
-  handleLoginClick: any;
-  handleChangePassword: any;
-  handleForgotPassword: any;
+  router: any;
 }) {
+  const responseGoogle = (response: any) => {
+    if (response.error) {
+      if (response.error === "idpiframe_initialization_failed") {
+        props.updateErrorMessage("Please enable 3rd party cookies to login with Google");
+        props.updateErrored(true);
+      } 
+      return;
+    }
+    let data = {
+      requestedAPI: "googleAuthentication",
+      tokenId: response.tokenId
+    };
+    fetch("/api/endpoint", {
+      method: "POST",
+      // eslint-disable-next-line no-undef
+      headers: new Headers({ "Content-Type": "application/json" }),
+      credentials: "same-origin",
+      body: JSON.stringify(data),
+    })
+    .then((res) => {
+      if (res.status === 200) {
+        props.router.push("/landing");
+      }
+      if (res.status === 403) {
+        res.json().then((resJson) => {
+        });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }  
   return (
     <div className={"LoginBox"}>
       <h1>Login</h1>
+      <GoogleLogin
+        // @ts-ignore
+        clientId={NEXT_PUBLIC_OAUTH_CLIENT_ID}
+        buttonText="Continue with Google"
+        onSuccess={responseGoogle}
+        onFailure={responseGoogle}
+        cookiePolicy={'single_host_origin'}
+        theme="light"
+      />
       <div className={"FormWrapper"}>
+        <div className={"Bar"}></div>
         <div className={"InputBox"}>
           <label>Email</label>
-          <input autoComplete={"username email"} name={"email"} type={"text"} onChange={props.handleChangeEmail}></input>
+          <input 
+            autoComplete={"username email"} 
+            name={"email"} 
+            type={"text"} 
+            onChange={props.handleChangeEmail}
+          ></input>
         </div>
-        <div className={"InputBox"}>
-          <label>Password</label>
-          <input name={"password"} autoComplete={"new-password"} type="password" onChange={props.handleChangePassword}></input>
-        </div>
+        {props.normalLogin && 
+          <NormalLogin 
+            handleChangePassword={props.handleChangePassword}
+            errored={props.errored}
+            errorMessage={props.errorMessage}
+          />
+        }
         {!props.errored ? (
           <div></div>
         ) : (
@@ -250,3 +323,41 @@ function LoginScreen(props: {
     </div>
   );
 }
+
+function NormalLogin (props: {
+  handleChangePassword: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  errored: boolean;
+  errorMessage: string;
+}) {
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{
+          opacity: 0,
+        }}
+        animate={{
+          opacity: 1,
+        }}
+        exit={{
+          opacity: 0,
+        }}
+        transition={{
+          duration: 0.4,
+        }}
+      >
+        <div>
+          <div className={"InputBox"}>
+            <label>Password</label>
+            <input 
+              name={"password"}
+              autoComplete={"new-password"} 
+              type="password" 
+              onChange={props.handleChangePassword}
+            ></input>
+          </div>
+        </div>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+

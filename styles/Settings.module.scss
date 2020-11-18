@@ -45,9 +45,15 @@
   border-radius: 4px;
 }
 
+.verification-rounded-button {
+  @extend .input-button;
+  border-radius: 4px;
+  margin-top: 14px;
+}
+
 .round-input {
   @extend .default-input;
   border-radius: 4px;
   display: block;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
