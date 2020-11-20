@@ -12,20 +12,13 @@ export default async function setIdHandler(
   res: NextApiResponse
 ) {
   let username = req.body.username;
-  let errorMsg = await userNameErrorMessage(username);
-  if (errorMsg !== "") {
-    res.statusCode = 200;
-    res.send({
-      error: errorMsg,
-    });
-    return;
-  }
   let { uid } = await getUser(req, res);
 
-  if (uid === "") {
+  let errorMsg = await userNameErrorMessage(username);
+  if (errorMsg !== "") {
     res.statusCode = 403;
     res.send({
-      error: "Username taken",
+      error: errorMsg,
     });
     return;
   }
@@ -42,8 +35,4 @@ export default async function setIdHandler(
     usernameUpdated: true,
   });
   return;
-}
-
-function isValid(username: string) {
-  return !/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(username);
 }

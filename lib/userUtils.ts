@@ -1,10 +1,12 @@
 import { initFirebaseAdmin, initFirebase } from "./initFirebase";
-const admin = require("firebase-admin");
-initFirebaseAdmin();
 import fetch from "isomorphic-fetch";
 import { NextApiRequest, NextApiResponse } from "next";
-let db = admin.firestore();
 import { setTokenCookies, removeTokenCookies } from "./cookieUtils";
+import { timeStamp } from "../typescript/types/app_types";
+
+const admin = require("firebase-admin");
+initFirebaseAdmin();
+let db = admin.firestore();
 
 type GetUserType = {
   uid: string;
@@ -204,7 +206,6 @@ export async function getUsernameFromUid(uid: string) {
 
 export async function checkUsernameDNE(username: string): Promise<boolean> {
   let size;
-
   await db
     .collection("users")
     .where("username", "==", username)
@@ -222,6 +223,7 @@ export async function checkUsernameDNE(username: string): Promise<boolean> {
 
 /*
 Not used but keeping in case needed later.
+This function only checks emails in Firestore.
 */
 export async function checkEmailDNE(email: string) {
   let size;
@@ -241,6 +243,52 @@ export async function checkEmailDNE(email: string) {
   }
 }
 
+/*
+Checks if an email exists or not in our system.
+Check emails in Firestore & emails that were 
+once used for authentication and are still linked
+to accounts (i.e. Google emails). 
+*/
+export async function checkEmailAuthDNE(email: string) {
+  let emailDNE = await admin
+    .auth()
+    .listUsers(1000)
+    .then(function (userRecords: any) {
+      let flag = true;
+      userRecords.users.forEach(function (user: any) {
+        user.providerData.forEach(function (provider: any) {
+          if (provider.email === email) {
+            if (provider.providerId === "password") {
+              flag = false;
+            } else if (notNewAccount(user.metadata.creationTime)) {
+              flag = false;
+            } 
+          }
+        });
+      })
+      return flag;
+    })
+    .catch((error: any) => {
+      console.log(error)
+    });
+  return emailDNE;
+}
+
+/* 
+Checks to see if the account creation was within 
+the past thirty seconds. This is because Google sign-ups
+will be list emails used to sign up as 
+part of the auth provider load as soon as we make 
+a credential. We don't consider that email when checking
+if the email exists or not upon account creation.
+*/
+function notNewAccount(creationTime: string) {
+  let currTime = new Date();
+  let oldTime = new Date(creationTime);
+  let THIRTY_SECONDS = 1 * 30 * 1000;
+  return (currTime.valueOf() - oldTime.valueOf()) > THIRTY_SECONDS;
+}
+
 export async function getDraftTitle(uid: string, draftId: string) {
   let draftData = await db
     .collection("users")
@@ -253,15 +301,15 @@ export async function getDraftTitle(uid: string, draftId: string) {
 }
 
 export async function userNameErrorMessage(username: string) {
-  function isValid(username: string) {
-    return !/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(username);
+  function isNotValid(username: string) {
+    return /[\s~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(username);
   }
   let unUnique = await checkUsernameDNE(username);
-  if (username.length > 16) {
-    return "Username cannot be longer than 16 characters";
-  } else if (username.length === 0) {
-    return "Invalid username";
-  } else if (!isValid(username)) {
+  if (username.length > 30) {
+    return "Username cannot be longer than 30 characters";
+  } else if (username.length < 6) {
+    return "Username is too short";
+  } else if (isNotValid(username)) {
     return "Username cannot contain special characters";
   } else if (!unUnique) {
     return "Username taken";

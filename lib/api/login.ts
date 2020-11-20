@@ -19,7 +19,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       let refreshToken = signedin_user.refreshToken;
       signedin_user.getIdToken().then(function (idToken: string) {
         userToken = idToken;
-
         handleLoginCookies(res, userToken, refreshToken);
         res.status(200).end();
         return;
