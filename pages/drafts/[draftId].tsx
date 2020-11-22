@@ -9,6 +9,7 @@ import {
 import { useLoggedIn, logOut } from "../../lib/UseLoggedIn";
 import { useFiles } from "../../lib/useFiles";
 import { useSteps } from "../../lib/useSteps";
+import { useBackend } from "../../lib/useBackend";
 import { useTags } from "../../lib/useTags";
 import { useDraftTitle } from "../../lib/useDraftTitle";
 import useSWR from "swr";
@@ -20,7 +21,15 @@ import Head from "next/head";
 import FinishedPost from "../../components/FinishedPost";
 import { goToPost } from "../../lib/usePosts";
 const fetch = require("node-fetch");
-import { File, Step, Lines } from "../../typescript/types/app_types";
+import {
+  File,
+  Step,
+  Lines,
+  draftBackendRepresentation,
+  publishedPostBackendRepresentation,
+  backendType,
+  timeStamp,
+} from "../../typescript/types/app_types";
 global.Headers = fetch.Headers;
 import Router from "next/router";
 import Link from "next/link";
@@ -29,7 +38,9 @@ import "../../styles/draftheader.scss";
 import { DraftHeader } from "../../components/Headers";
 import { DraftJsButtonProps } from "draft-js-buttons";
 import { motion, AnimatePresence } from "framer-motion";
-import SlateEditor from "../../components/SlateSection";
+import TextareaAutosize from "react-autosize-textarea";
+
+// import SlateEditor from "../../components/SlateSection";
 import MarkdownPreviewExample from "../../components/MarkdownSection";
 
 const DraftView = () => {
@@ -41,7 +52,7 @@ const DraftView = () => {
 
   // if there are any steps in this draft, they will be fetched & repopulated
   const rawData = {
-    requestedAPI: "get_draft_data",
+    requestedAPI: "getDraftMetadata",
     draftId: draftId,
   };
 
@@ -54,19 +65,14 @@ const DraftView = () => {
   const fetcher = (url: string) =>
     fetch("/api/endpoint", myRequest).then((res: any) => res.json());
 
-  const initialData: any = {
-    files: [
-      {
-        id: "",
-        name: "",
-        code: "",
-        language: "",
-      },
-    ],
-    errored: false,
+  const initialData: {
+    published: boolean;
+    title: string;
+    createdAt: timeStamp;
+    username: string;
+  } = {
+    title: "",
     published: false,
-    postId: "",
-    tags: [],
     username: "",
     createdAt: {
       _nanoseconds: 0,
@@ -74,67 +80,24 @@ const DraftView = () => {
     },
   };
 
+  const { draftContent, updateSlateSectionToBackend } = useBackend(
+    authenticated,
+    draftId as string
+  );
+
   let { data: draftData, mutate } = useSWR(
-    authenticated ? "getDraftData" : null,
+    authenticated ? "getDraftMetadata" : null,
     fetcher,
     { initialData, revalidateOnMount: true }
   );
-
-  let draftFiles = draftData["files"];
-  let errored = draftData["errored"];
-  const draftPublished = draftData["published"];
-  const postId = draftData["postId"];
-  const tags = draftData["tags"];
-  const username = draftData["username"];
-  const createdAt = draftData["createdAt"];
 
   let { onTitleChange, draftTitle } = useDraftTitle(
     draftId as string,
     authenticated
   );
 
-  let {
-    saveStep,
-    mutateStoredStep,
-    saveStepToBackend,
-    deleteStoredStep,
-    moveStepUp,
-    moveStepDown,
-    realSteps,
-    editingStep,
-    changeEditingStep,
-    lines,
-    changeLines,
-    saveLines,
-    removeLines,
-    addStepImage,
-    deleteStepImage,
-  } = useSteps(draftId as string, authenticated);
-
-  let {
-    selectedFileIndex,
-    codeFiles,
-    addFile,
-    removeFile,
-    changeCode,
-    changeSelectedFileIndex,
-    changeFileLanguage,
-    saveFileName,
-    onNameChange,
-    saveFileCode,
-  } = useFiles(draftId, draftFiles, mutate);
-
-  let { toggleTag } = useTags(
-    tags, 
-    draftId as string, 
-    draftFiles, 
-    errored, 
-    draftPublished, 
-    postId, 
-    username, 
-    createdAt,
-    mutate
-  );
+  const errored = draftData["errored"];
+  let { toggleTag, tags } = useTags(draftId as string, authenticated);
 
   // const [shouldShowBlock, updateShowBlock] = useState(false);
   const [showPreview, updateShowPreview] = useState(false);
@@ -142,15 +105,6 @@ const DraftView = () => {
 
   // wrapper function for deleting a file.
   // when a file is deleted, make sure all associated steps remove that file
-  function deleteStepAndFile(toDeleteIndex: number) {
-    let fileId: string = draftFiles[toDeleteIndex].id;
-    for (let i = 0; i < realSteps!.length; i++) {
-      if (realSteps![i].fileId === fileId) {
-        removeLines(i);
-      }
-    }
-    removeFile(toDeleteIndex);
-  }
 
   if (errored) {
     return <DefaultErrorPage statusCode={404} />;
@@ -194,10 +148,9 @@ const DraftView = () => {
               }}
             >
               <FinishedPost
-                steps={realSteps!}
                 title={draftTitle}
-                tags={tags}
-                username={username}
+                // tags={tags}
+                // username={username}
                 files={draftFiles}
                 updateShowPreview={updateShowPreview}
                 previewMode={true}
@@ -206,100 +159,38 @@ const DraftView = () => {
             </motion.div>
           )}
         </AnimatePresence>
-        {showTags ? 
-          (<Tags 
+        {showTags ? (
+          <Tags
             showTags={showTags}
             updateShowTags={updateShowTags}
             title={draftTitle}
-            selectedTags={tags}
+            selectedTags={tags as string[]}
             toggleTag={toggleTag}
-          />) : 
-          (<DraftContent
+          />
+        ) : (
+          <DraftContent
             showPreview={showPreview}
             showTags={showTags}
-            username={username}
-            postId={postId}
-            codeFiles={codeFiles}
-            selectedFileIndex={selectedFileIndex}
-            draftFiles={draftFiles}
-            realSteps={realSteps}
-            editingStep={editingStep}
-            lines={lines}
+            // username={username}
             tags={tags}
-            changeEditingStep={changeEditingStep}
-            mutateStoredStep={mutateStoredStep}
-            changeLines={changeLines}
-            saveStepToBackend={saveStepToBackend}
-            deleteStoredStep={deleteStoredStep}
-            moveStepDown={moveStepDown}
             onTitleChange={onTitleChange}
-            deleteStepAndFile={deleteStepAndFile}
-            draftPublished={draftPublished}
             draftTitle={draftTitle}
-            saveFileCode={saveFileCode}
-            onNameChange={onNameChange}
-            saveFileName={saveFileName}
-            changeFileLanguage={changeFileLanguage}
-            changeSelectedFileIndex={changeSelectedFileIndex}
-            changeCode={changeCode}
-            removeFile={removeFile}
-            addFile={addFile}
             draftId={draftId as string}
-            saveStep={saveStep}
-            moveStepUp={moveStepUp}
-            saveLines={saveLines}
-            removeLines={removeLines}
-            addStepImage={addStepImage}
-            deleteStepImage={deleteStepImage}
             updateShowPreview={updateShowPreview}
             updateShowTags={updateShowTags}
-            mutate={mutate}
-        />)}
+            draftData={draftData}
+            draftContent={draftContent}
+            updateSlateSectionToBackend={updateSlateSectionToBackend}
+          />
+        )}
       </main>
     </div>
   );
 };
 
 type DraftContentProps = {
-  showPreview: boolean;
-  showTags: boolean;
-  username: string;
-  postId: string;
-  draftId: string;
-  saveStep: (stepId: string, text: string) => void;
-  mutateStoredStep: (stepId: any, text: any) => void;
-  saveStepToBackend: (stepId: string, text: string) => Promise<void>;
-  deleteStoredStep: (stepId: any) => void;
-  moveStepUp: (stepId: any) => void;
-  moveStepDown: (stepId: any) => void;
-  realSteps: Step[] | undefined;
-  editingStep: number;
-  changeEditingStep: Dispatch<SetStateAction<number>>;
-  lines: Lines;
-  tags: any;
-  changeLines: Dispatch<SetStateAction<Lines>>;
-  saveLines: (fileId: string, remove: boolean) => void;
-  removeLines: (stepIndex: number) => void;
-  addStepImage: (selectedImage: any, stepId: string) => Promise<void>;
-  deleteStepImage: (stepId: string) => Promise<void>;
-  selectedFileIndex: number;
-  codeFiles: File[];
-  addFile: () => void;
-  removeFile: (toDeleteIndex: number) => void;
-  changeCode: (value: string) => void;
-  changeSelectedFileIndex: Dispatch<SetStateAction<number>>;
-  changeFileLanguage: (language: string, external: boolean) => void;
-  saveFileName: (value: string, external: boolean) => void;
-  onNameChange: (name: string) => void;
-  saveFileCode: () => void;
-  draftTitle: string;
-  draftPublished: boolean;
-  deleteStepAndFile: (toDeleteIndex: number) => void;
-  draftFiles: File[];
-  onTitleChange: (updatedtitle: string) => Promise<void>;
-  updateShowPreview: Dispatch<SetStateAction<boolean>>;
-  updateShowTags: Dispatch<SetStateAction<boolean>>;
-  mutate: any;
+  draftContent: backendType[] | undefined;
+  updateSlateSectionToBackend: any;
 };
 
 type DraftContentState = {
@@ -347,41 +238,45 @@ class DraftContent extends Component<DraftContentProps, DraftContentState> {
     window.location.href = `/${username}/${postId}`;
   }
 
+  PublishingHeader = () => {
+    let { draftTitle, onTitleChange } = this.props;
+    return (
+      <div className={"publishing-header"}>
+        <TitleLabel />
+        <TextareaAutosize
+          placeholder={draftTitle}
+          value={draftTitle}
+          onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
+            let myTarget = e.target as HTMLTextAreaElement;
+            onTitleChange(myTarget.value);
+          }}
+          style={{
+            fontWeight: "bold",
+            fontSize: "40px",
+            color: "D0D0D0",
+            fontFamily: "sans-serif",
+          }}
+          name="title"
+        />
+      </div>
+    );
+  };
+
   DraftComponent() {
     let {
-      username,
-      draftPublished,
-      draftId,
-      draftTitle,
-      realSteps,
-      saveStep,
-      mutateStoredStep,
-      saveStepToBackend,
-      deleteStoredStep,
-      moveStepUp,
-      onTitleChange,
-      editingStep,
-      changeEditingStep,
-      selectedFileIndex,
-      lines,
-      draftFiles,
-      saveLines,
-      addStepImage,
-      deleteStepImage,
-      saveFileCode,
-      codeFiles,
-      addFile,
-      deleteStepAndFile,
-      changeCode,
-      changeSelectedFileIndex,
-      changeFileLanguage,
-      saveFileName,
-      onNameChange,
-      changeLines,
-      moveStepDown,
       updateShowPreview,
       updateShowTags,
+      draftData,
+      draftContent,
+      updateSlateSectionToBackend,
     } = this.props;
+
+    let errored = draftData["errored"];
+    const draftPublished = draftData["published"];
+    const postId = draftData["postId"];
+    const username = draftData["username"];
+    const createdAt = draftData["createdAt"];
+
     return (
       <div>
         <DraftHeader
@@ -394,55 +289,35 @@ class DraftContent extends Component<DraftContentProps, DraftContentState> {
         />
         <div className={"App"}>
           <div className={"center-divs"}>
-            <SlateEditor />
-            {/* <MarkdownPreviewExample /> */}
-            {/* <PluginEditor /> */}
-            <MarkdownPreviewExample />
+            <this.PublishingHeader />
+
             <div className={"draft-content"}>
-              <Publishing
-                draftId={draftId as string}
-                title={draftTitle}
-                storedSteps={realSteps!}
-                saveStep={saveStep}
-                mutateStoredStep={mutateStoredStep}
-                saveStepToBackend={saveStepToBackend}
-                deleteStoredStep={deleteStoredStep}
-                moveStepUp={moveStepUp}
-                moveStepDown={moveStepDown}
-                onTitleChange={onTitleChange}
-                editingStep={editingStep}
-                changeEditingStep={changeEditingStep}
-                selectedFileIndex={selectedFileIndex}
-                lines={lines}
-                files={draftFiles}
-                saveLines={saveLines}
-                published={draftPublished}
-                goToPublishedPost={this.goToPublishedPost}
-              />
-              <div className={"RightPane"}>
-                <CodeEditor
-                  addStepImage={addStepImage}
-                  deleteStepImage={deleteStepImage}
-                  draftId={draftId as string}
-                  editingStep={editingStep}
-                  saveFileCode={saveFileCode}
-                  draftCode={codeFiles[selectedFileIndex].code}
-                  files={draftFiles}
-                  addFile={addFile}
-                  removeFile={deleteStepAndFile}
-                  selectedFileIndex={selectedFileIndex}
-                  changeCode={changeCode}
-                  changeSelectedFile={changeSelectedFileIndex}
-                  changeFileLanguage={changeFileLanguage}
-                  saveFileName={saveFileName}
-                  onNameChange={onNameChange}
-                  language={draftFiles[selectedFileIndex].language}
-                  changeLines={changeLines}
-                  saveLines={saveLines}
-                  lines={lines}
-                  currentlyEditingStep={realSteps![editingStep]}
-                />
-              </div>
+              {draftContent ? (
+                draftContent.map(
+                  (contentElement: backendType, index: number) => {
+                    switch (contentElement.type) {
+                      case "text":
+                        return (
+                          <MarkdownPreviewExample
+                            slateContent={contentElement.slateContent}
+                            key={contentElement.backendId}
+                            backendId={contentElement.backendId}
+                            sectionIndex={index}
+                            updateSlateSectionToBackend={
+                              updateSlateSectionToBackend
+                            }
+                          />
+                        );
+                      case "codestep":
+                        return "hi";
+                      default:
+                        return "test";
+                    }
+                  }
+                )
+              ) : (
+                <div></div>
+              )}
             </div>
           </div>
         </div>
@@ -477,5 +352,9 @@ class DraftContent extends Component<DraftContentProps, DraftContentState> {
     );
   }
 }
+
+const TitleLabel = () => {
+  return <label className={"title-label"}>Title</label>;
+};
 
 export default DraftView;

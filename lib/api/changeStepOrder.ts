@@ -43,6 +43,8 @@ async function changeStepOrderHandler(
     return;
   }
 
+  console.log(oldIdx);
+  console.log(newIdx);
   // update order in firebase
   db.collection("users")
     .doc(uid)

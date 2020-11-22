@@ -17,7 +17,7 @@ type codeFile = {
   code: string;
 };
 
-export function useFiles(draftId: any, draftFiles: any, mutate: any) {
+export function useFiles(draftId: any) {
   /*
     Manages the files within filebar.
     The id, language, & name fields are guaranteed to be correct.

@@ -43,7 +43,8 @@ export function logOut() {
     headers: new Headers({ "Content-Type": "application/json" }),
   }).then((res) => {
     console.log(res);
-    Router.replace(`/login`);
+    // Router.replace(`/login`);
+    window.location.href = "/login";
   });
 }
 

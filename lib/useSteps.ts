@@ -59,7 +59,7 @@ export function useSteps(draftId: string, authenticated: boolean) {
   Saves a step into Firebase. Triggered from `Step.tsx`.
   */
   function saveStep(stepId: string, text: string) {
-    var data = {
+    let data = {
       requestedAPI: "save_step",
       text: text,
       draftId: draftId,

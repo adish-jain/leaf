@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebaseAdmin, initFirebase } from "../initFirebase";
-import { getUser } from "../userUtils";
+import { getUser, getDraftTitle } from "../userUtils";
 const admin = require("firebase-admin");
 
 let db = admin.firestore();
@@ -8,11 +8,6 @@ initFirebaseAdmin();
 initFirebase();
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  // console.log("in saveStep");
-  return getTitleHandler(req, res);
-};
-
-async function getTitleHandler(req: NextApiRequest, res: NextApiResponse) {
   let draftId = req.body.draftId;
   let { uid } = await getUser(req, res);
 
@@ -22,21 +17,16 @@ async function getTitleHandler(req: NextApiRequest, res: NextApiResponse) {
     return;
   }
 
-  let draftData = await db
+  // update tags in firebase
+  const tagsRef = await db
     .collection("users")
     .doc(uid)
     .collection("drafts")
     .doc(draftId)
     .get();
-  
-  let title;
-  try {
-    title = draftData.data().title;
-  } catch {
-    title = "";
-  }
-
+  const draftData = tagsRef.data();
+  const tags = draftData["tags"];
   res.statusCode = 200;
-  res.send({draftTitle: title});
+  res.json(tags);
   return;
-}
+};

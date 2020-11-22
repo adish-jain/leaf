@@ -16,3 +16,8 @@ export enum formattingPaneBlockType {
   CodeBlock = "codeblock",
   Image = "image",
 }
+
+export enum backendDraftBlockEnum {
+  Text = "text",
+  CodeSteps = "codestep"
+}

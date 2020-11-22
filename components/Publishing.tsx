@@ -84,32 +84,6 @@ export default class Publishing extends Component<
     this.props.saveStep(stepId, JSON.stringify(emptyJSON));
   }
 
-  TitleLabel() {
-    return <label className={"title-label"}>Title</label>;
-  }
-
-  PublishingHeader = () => {
-    return (
-      <div className={"publishing-header"}>
-        <this.TitleLabel />
-        <TextareaAutosize
-          placeholder={this.props.title}
-          value={this.props.title}
-          onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
-            let myTarget = e.target as HTMLTextAreaElement;
-            this.props.onTitleChange(myTarget.value);
-          }}
-          style={{
-            fontWeight: "bold",
-            fontSize: "40px",
-            color: "D0D0D0",
-          }}
-          name="title"
-        />
-      </div>
-    );
-  };
-
   render() {
     let {
       storedSteps,
@@ -126,8 +100,6 @@ export default class Publishing extends Component<
 
     return (
       <div className={"publishing"}>
-        {/* <this.PublishingButtons /> */}
-        <this.PublishingHeader />
         {storedSteps.map((storedStep, index) => {
           return (
             <StoredStep

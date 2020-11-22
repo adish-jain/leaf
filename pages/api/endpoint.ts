@@ -33,9 +33,14 @@ import handleDeletePost from "../../lib/api/deletePost";
 import handleSaveTitle from "../../lib/api/saveTitle";
 import handleGetTitle from "../../lib/api/getTitle";
 
+// editing draft content
+import handleGetDraftContent from "../../lib/api/getDraftContent";
+import handleSaveDraftContent from "../../lib/api/saveDraftContent";
+
 // editing drafts steps
 import handleGetSteps from "../../lib/api/getDraftSteps";
-import handleGetDraftData from "../../lib/api/getDraftData";
+import handleGetAllDraftData from "../../lib/api/getAllDraftData";
+import handleGetDraftMetadata from "../../lib/api/getDraftMetadata";
 import handleSaveStep from "../../lib/api/saveStep";
 import handleDeleteStep from "../../lib/api/deleteStep";
 import handleUpdateStep from "../../lib/api/updateStep";
@@ -59,9 +64,13 @@ import handleGetImages from "../../lib/api/getDraftImages";
 // tags
 import handleUpdateTags from "../../lib/api/updateTags";
 import handleGetAllPostsData from "../../lib/api/getAllPostsData";
+import handleGetPostTags from "../../lib/api/getPostTags";
 
 // email
 import handlePasswordReset from "../../lib/api/passwordReset";
+
+// slate
+import handleUpdateDraftText from "../../lib/api/updateDraftText";
 
 import sentryHandler from "../../lib/sentryHandler";
 
@@ -146,12 +155,28 @@ export default sentryHandler(
         return handleDeleteDraft(req, res);
       }
 
-      case "get_draft_data": {
-        return handleGetDraftData(req, res);
+      case "getAllDraftData": {
+        return handleGetAllDraftData(req, res);
+      }
+
+      case "getDraftMetadata": {
+        return handleGetDraftMetadata(req, res);
+      }
+
+      case "handleGetDraftContent": {
+        return handleGetDraftContent(req, res);
+      }
+
+      case "handleSaveDraftContent": {
+        return handleSaveDraftContent(req, res);
       }
 
       case "getDraftSteps": {
         return handleGetSteps(req, res);
+      }
+
+      case "getDraftContent": {
+        return handleGetDraftContent(req, res);
       }
 
       case "save_step": {
@@ -254,11 +279,15 @@ export default sentryHandler(
         return handleUpdateTags(req, res);
       }
 
+      case "getPostTags": {
+        return handleGetPostTags(req, res);
+      }
+
       case "getAllPostsData": {
         return handleGetAllPostsData(req, res);
       }
 
-      default: 
+      default:
         res.statusCode = 403;
         res.end();
     }

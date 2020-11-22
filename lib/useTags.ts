@@ -1,16 +1,37 @@
 import { timeStamp } from "../typescript/types/app_types";
+import useSWR, { SWRConfig } from "swr";
 
-export function useTags(
-  tags: string[],
-  draftId: string,
-  draftFiles: any,
-  errored: boolean,
-  draftPublished: boolean,
-  postId: string,
-  username: string,
-  createdAt: timeStamp,
-  mutate: any
-) {
+function prepareFetching(draftId: string) {
+  const myRequest = (requestedAPI: string) => {
+    return {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify({
+        requestedAPI: requestedAPI,
+        draftId,
+      }),
+    };
+  };
+
+  const contentFetcher = () =>
+    fetch("../api/endpoint", myRequest("getPostTags")).then((res: any) =>
+      res.json()
+    );
+  return contentFetcher;
+}
+
+export function useTags(draftId: string, authenticated: boolean) {
+  const initialTags: string[] = [];
+  const contentFetcher = prepareFetching(draftId);
+  let { data: tags, mutate } = useSWR<string[]>(
+    authenticated ? "getTags" : null,
+    contentFetcher,
+    {
+      initialData: initialTags,
+      revalidateOnMount: true,
+    }
+  );
+
   function toggleTag(tag: string) {
     if (typeof tags === "undefined") {
       let data = {
@@ -22,18 +43,9 @@ export function useTags(
       let selectedTags: string[] = [tag];
 
       // optimistic mutate
-      mutate(
-        {
-          files: draftFiles,
-          errored: errored,
-          published: draftPublished,
-          postId: postId,
-          tags: selectedTags,
-          createdAt: createdAt,
-          username: username,
-        },
-        false
-      );
+      mutate(async (mutateState: any) => {
+        return { ...mutateState, tags: selectedTags };
+      }, false);
 
       fetch("/api/endpoint", {
         method: "POST",
@@ -59,19 +71,9 @@ export function useTags(
           tags: selectedTags,
         };
 
-        // optimistic mutate
-        mutate(
-          {
-            files: draftFiles,
-            errored: errored,
-            published: draftPublished,
-            postId: postId,
-            tags: selectedTags,
-            createdAt: createdAt,
-            username: username,
-          },
-          false
-        );
+        mutate(async (mutateState: any) => {
+          return { ...mutateState, tags: selectedTags };
+        }, false);
 
         fetch("/api/endpoint", {
           method: "POST",
@@ -86,5 +88,6 @@ export function useTags(
 
   return {
     toggleTag,
+    tags,
   };
 }

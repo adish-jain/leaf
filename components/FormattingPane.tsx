@@ -40,6 +40,7 @@ export default function FormattingPane(props: {
   addBlock: (blockType: formattingPaneBlockType) => void;
 }) {
   const formattingPaneRef = useRef<HTMLDivElement>(null);
+  let formattingPaneHeight = 240;
   let {
     slashPosition,
     editor,
@@ -77,9 +78,12 @@ export default function FormattingPane(props: {
       }
       // set proper top position, depending on whether selection
       // is in bottom or top half of viewport
+      if (window.innerHeight < 350) {
+        formattingPaneHeight = 120;
+      }
       top = newDimensions.bottom;
-      if (top + 240 > window.innerHeight) {
-        top = top - 240 - newDimensions.height;
+      if (top + formattingPaneHeight > window.innerHeight) {
+        top = top - formattingPaneHeight - newDimensions.height;
         transformOrigin = "bottom left";
       }
     }
@@ -92,7 +96,7 @@ export default function FormattingPane(props: {
         <motion.div
           style={{
             position: "absolute",
-            zIndex: 1,
+            zIndex: 10,
             top: top + window.pageYOffset,
             transformOrigin: transformOrigin,
             left: leftPos,
@@ -113,7 +117,11 @@ export default function FormattingPane(props: {
             duration: 0.15,
           }}
         >
-          <div ref={formattingPaneRef} className={"formatting-pane"}>
+          <div
+            ref={formattingPaneRef}
+            className={"formatting-pane"}
+            style={{ height: `${formattingPaneHeight}px` }}
+          >
             <div className={"rich-text"}>
               <div className={"section-label"}>Rich Text</div>
               {searchedBlocks.map((block, index) => {
@@ -130,14 +138,19 @@ export default function FormattingPane(props: {
                 }
               })}
             </div>
-            <div>
-              <label className={"section-label"}>Interactivity</label>
+            <div className={"rich-text"}>
+              <div className={"section-label"}>Interactivity</div>
+              <InteractiveElement elementName={"Code Steps"} />
             </div>
           </div>
         </motion.div>
       )}
     </AnimatePresence>
   );
+}
+
+function InteractiveElement(props: { elementName: string }) {
+  return <div className={"interactive-element"}>{props.elementName}</div>;
 }
 
 function RichTextElement(props: {

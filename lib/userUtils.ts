@@ -5,6 +5,10 @@ import fetch from "isomorphic-fetch";
 import { NextApiRequest, NextApiResponse } from "next";
 let db = admin.firestore();
 import { setTokenCookies, removeTokenCookies } from "./cookieUtils";
+import {
+  draftBackendRepresentation,
+  timeStamp,
+} from "../typescript/types/app_types";
 
 type GetUserType = {
   uid: string;
@@ -102,7 +106,15 @@ export async function refreshJWT(refreshToken: string) {
   }
 }
 
-export async function getUserDrafts(uid: string) {
+type landingDraft = {
+  createdAt: timeStamp;
+  title: string;
+  id: string;
+};
+
+export async function getUserDraftsForLanding(
+  uid: string
+): Promise<landingDraft[]> {
   let draftsRef = db
     .collection("users")
     .doc(uid)
@@ -112,14 +124,18 @@ export async function getUserDrafts(uid: string) {
   return await draftsRef
     .get()
     .then(function (draftsCollection: any) {
-      let results: any[] = [];
+      let results: landingDraft[] = [];
       draftsCollection.forEach(function (result: any) {
         let resultsJSON = result.data();
 
         //published posts have published set to true, so we ignore these
         if (!resultsJSON.published) {
           resultsJSON.id = result.id;
-          results.push(resultsJSON);
+          results.push({
+            createdAt: resultsJSON.createdAt,
+            title: resultsJSON.title,
+            id: resultsJSON.id,
+          });
         }
       });
       results.reverse();
@@ -131,7 +147,7 @@ export async function getUserDrafts(uid: string) {
     });
 }
 
-export async function getUidFromUsername(username: string) {
+export async function getUidFromUsername(username: string): Promise<string> {
   let userRef = db.collection("users").where("username", "==", username);
   let uid = await userRef.get().then(function (userSnapshot: any) {
     let user = userSnapshot.docs[0];
@@ -140,7 +156,7 @@ export async function getUidFromUsername(username: string) {
   return uid;
 }
 
-export async function getUidFromEmail(email: string) {
+export async function getUidFromEmail(email: string): Promise<string> {
   let userRef = db.collection("users").where("email", "==", email);
   let uid = await userRef.get().then(function (userSnapshot: any) {
     let user = userSnapshot.docs[0];
@@ -149,7 +165,16 @@ export async function getUidFromEmail(email: string) {
   return uid;
 }
 
-export async function getUserPosts(uid: string) {
+type landingPagePosts = {
+  published: boolean;
+  created: timeStamp;
+  title: string;
+  postId: string;
+  publishedAt: timeStamp;
+  id: string;
+};
+
+export async function getUserPosts(uid: string): Promise<landingPagePosts> {
   let draftsRef = db
     .collection("users")
     .doc(uid)
@@ -159,7 +184,7 @@ export async function getUserPosts(uid: string) {
   return await draftsRef
     .get()
     .then(function (draftsCollection: any) {
-      let results: any[] = [];
+      let results: landingPagePosts[] = [];
       draftsCollection.forEach(function (result: any) {
         let resultsJSON = result.data();
 
@@ -170,6 +195,7 @@ export async function getUserPosts(uid: string) {
         }
       });
       results.reverse();
+      console.log(results);
       return results;
     })
     .catch(function (error: any) {
@@ -193,7 +219,7 @@ export async function getArticlesFromUid(uid: string) {
   return results;
 }
 
-export async function getUsernameFromUid(uid: string) {
+export async function getUsernameFromUid(uid: string): Promise<string> {
   let userRef = await db.collection("users").doc(uid);
   let username = await userRef.get().then(function (userSnapshot: any) {
     let data = userSnapshot.data();
@@ -263,7 +289,7 @@ export async function userNameErrorMessage(username: string) {
     return "Invalid username";
   } else if (!isValid(username)) {
     return "Username cannot contain special characters";
-} else if (!unUnique) {
+  } else if (!unUnique) {
     return "Username taken";
   } else {
     return "";

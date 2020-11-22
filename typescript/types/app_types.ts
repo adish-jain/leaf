@@ -1,4 +1,12 @@
-import { Block, formattingPaneBlockType } from "../enums/app_enums";
+import {
+  Block,
+  formattingPaneBlockType,
+  backendDraftBlockEnum,
+} from "../enums/app_enums";
+import { ProgrammingLanguage } from "../types/language_types";
+import {
+  Node,
+} from "slate";
 import { SetStateAction } from "react";
 
 export type File = {
@@ -51,3 +59,55 @@ export type timeStamp = {
   _nanoseconds: number;
   _seconds: number;
 };
+
+export type backendType = {
+  order: number;
+  type: backendDraftBlockEnum;
+  backendId: string;
+} & (textEditorObject | codeStepObject);
+
+// backend representation of Slate Editor
+type textEditorObject = {
+  slateContent: Node[];
+};
+
+// backend representation of a code step section
+type codeStepObject = {
+  fileId: string;
+  slateContent: Node[];
+  lines?: Lines;
+  stepId: string;
+};
+
+export type fileObject = {
+  fileId: string;
+  fileName: string;
+  language: string;
+  code: string;
+  parentFolderId?: string;
+  order: number;
+};
+
+export type folderObject = {
+  folderName: string;
+  folderId: string;
+};
+
+export type draftBackendRepresentation = {
+  title: string;
+  draftContent: backendType[];
+  folders: folderObject[];
+  files: fileObject[];
+  createdAt: timeStamp;
+  published: boolean;
+  tags: string[];
+  username: string;
+  errored: boolean;
+};
+
+export type publishedPostBackendRepresentation = {
+  private: boolean;
+  publishedAt: timeStamp;
+  postId: string;
+  postURL: string;
+} & draftBackendRepresentation;

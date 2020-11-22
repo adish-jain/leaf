@@ -5,8 +5,15 @@ initFirebaseAdmin();
 let db = admin.firestore();
 
 import { getUidFromUsername, getUsernameFromUid } from "./userUtils";
-import { timeStamp, Post } from "../typescript/types/app_types";
-
+import {
+  timeStamp,
+  Post,
+  draftBackendRepresentation,
+  publishedPostBackendRepresentation,
+  backendType,
+} from "../typescript/types/app_types";
+import ErroredPage from "../pages/404";
+import { backendDraftBlockEnum } from "../typescript/enums/app_enums";
 export async function adjustStepOrder(
   uid: string,
   draftId: string,
@@ -25,55 +32,129 @@ export async function adjustStepOrder(
   return;
 }
 
-export async function getDraftDataHandler(uid: string, draftId: string) {
+export async function getDraftMetadata(
+  uid: string,
+  draftId: string
+): Promise<{
+  published: boolean;
+  title: string;
+  createdAt: timeStamp;
+  username: string;
+}> {
+  let draftRef = await db
+    .collection("users")
+    .doc(uid)
+    .collection("drafts")
+    .doc(draftId)
+    .get();
+  let draftData:
+    | draftBackendRepresentation
+    | publishedPostBackendRepresentation = draftRef.data();
+  let title = draftData.title as string;
+  let published: boolean = draftData.published;
+  let createdAt: timeStamp = draftData.createdAt;
+
+  const [username] = await Promise.all([getUsernameFromUid(uid)]);
+
+  let result = {
+    title: title,
+    published: published,
+    createdAt: createdAt,
+    username: username,
+  };
+  return result;
+}
+
+export async function getAllDraftDataHandler(
+  uid: string,
+  draftId: string
+): Promise<draftBackendRepresentation | publishedPostBackendRepresentation> {
   try {
-    let draftData = await db
+    let draftRef = await db
       .collection("users")
       .doc(uid)
       .collection("drafts")
       .doc(draftId)
       .get();
-    let title = draftData.data().title;
-    let published: boolean = draftData.data().published;
-    let postId: string = draftData.data().postId;
-    let tags = draftData.data().tags;
-    let createdAt: timeStamp = draftData.data().createdAt;
-    let publishedAt: timeStamp = draftData.data().publishedAt;
-    let files = await getFilesForDraft(uid, draftId);
-    let username: string = await getUsernameFromUid(uid);
-    let results = {
+    let draftData:
+      | draftBackendRepresentation
+      | publishedPostBackendRepresentation = draftRef.data();
+    let title = draftData.title as string;
+    let published: boolean = draftData.published;
+    let tags = draftData.tags as string[];
+    let createdAt: timeStamp = draftData.createdAt;
+
+    const [files, username, draftContent] = await Promise.all([
+      getFilesForDraft(uid, draftId),
+      getUsernameFromUid(uid),
+      getDraftContent(uid, draftId),
+    ]);
+
+    let result = {
       title: title,
+      draftContent: draftContent,
+      folders: [],
       files: files,
+      createdAt: createdAt,
+      published: published,
+      tags: tags,
+      username: username,
       errored: false,
-      published,
-      postId,
-      tags,
-      username,
-      createdAt,
-      publishedAt,
     };
-    return results;
+    return result;
   } catch (error) {
-    // console.log(error);
-    let results = {
+    console.log(error);
+    let result = {
       title: "",
+      draftContent: [],
+      folders: [],
       files: [],
-      tags: [],
-      errored: true,
-      published: false,
-      postId: "",
-      username: "",
       createdAt: {
         _seconds: 0,
         _nanoseconds: 0,
       },
-      publishedAt: {
-        _seconds: 0,
-        _nanoseconds: 0,
-      },
+      published: false,
+      tags: [],
+      username: "",
+      errored: true,
     };
-    return results;
+    return result;
   }
+}
+
+export async function getDraftContent(
+  uid: string,
+  draftId: string
+): Promise<backendType[]> {
+  let draftContentRef = await db
+    .collection("users")
+    .doc(uid)
+    .collection("drafts")
+    .doc(draftId)
+    .collection("draftContent")
+    .orderBy("order");
+  return await draftContentRef
+    .get()
+    .then(function (draftContentCollection: firebase.firestore.QuerySnapshot) {
+      let results: backendType[] = [];
+      draftContentCollection.forEach(function (result) {
+        let resultsJSON = result.data();
+        results.push({
+          order: resultsJSON.order as number,
+          type: resultsJSON.type,
+          slateContent: JSON.parse(resultsJSON.slateContent),
+          fileId: resultsJSON.fileId as string,
+          lines: resultsJSON.line,
+          stepId: resultsJSON.stepId,
+          backendId: result.id,
+        });
+      });
+      return results;
+    })
+    .catch(function (error: any) {
+      console.log(error);
+      return [];
+    });
 }
 
 export async function getUserStepsForDraft(uid: string, draftId: string) {
@@ -123,7 +204,7 @@ export async function getDraftDataFromPostId(username: string, postId: string) {
     });
 
   let steps = await getUserStepsForDraft(uid, draftId);
-  let otherDraftData = await getDraftDataHandler(uid, draftId);
+  let otherDraftData = await getAllDraftDataHandler(uid, draftId);
 
   // merge steps with main draft data
   return { ...otherDraftData, steps };
@@ -161,14 +242,19 @@ export async function getDraftImages(uid: string, draftId: string) {
 }
 
 export async function getAllPostsHandler() {
-  let activeRef = await db.collectionGroup("drafts").where("published", "==", true).get();
+  let activeRef = await db
+    .collectionGroup("drafts")
+    .where("published", "==", true)
+    .get();
   const arr: any[] = [];
   activeRef.forEach((child: any) => arr.push(child));
   var results: Post[] = [];
-  for(const doc of arr) {
-    let username = await doc.ref.parent.parent.get().then((docSnapshot: any) => {
-      return docSnapshot.data().username;
-    });
+  for (const doc of arr) {
+    let username = await doc.ref.parent.parent
+      .get()
+      .then((docSnapshot: any) => {
+        return docSnapshot.data().username;
+      });
     let resultsJSON = doc.data();
     let postURL = "/" + username + "/" + resultsJSON.postId;
     results.push({
@@ -181,7 +267,7 @@ export async function getAllPostsHandler() {
     });
   }
   // sort by published date
-  results.sort(function(a: Post, b: Post) {
+  results.sort(function (a: Post, b: Post) {
     var keyA = a.publishedAt,
       keyB = b.publishedAt;
     if (keyA < keyB) return -1;

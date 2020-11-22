@@ -36,12 +36,11 @@ import {
   Point,
 } from "slate";
 import { withHistory, HistoryEditor } from "slate-history";
-import { css } from "emotion";
 import "../styles/slate-editor.scss";
 import { isCollapsed } from "@udecode/slate-plugins";
 import { motion, AnimatePresence } from "framer-motion";
 import { formattingPaneBlockType } from "../typescript/enums/app_enums";
-import { FormattingPaneBlockList } from "../typescript/types/app_types";
+import { FormattingPaneBlockList, Lines } from "../typescript/types/app_types";
 import {
   handleArrowLeft,
   handleArrowRight,
@@ -108,8 +107,35 @@ const Blocks: FormattingPaneBlockList = [
   },
 ];
 
-const MarkdownPreviewExample = () => {
-  const [value, setValue] = useState<Node[]>(initialValue);
+function arraysAreEqual(ary1: Node[], ary2: Node[]) {
+  if (ary1.length !== ary2.length) {
+  }
+  return ary1.join("") == ary2.join("");
+}
+
+enum saveStatusEnum {
+  saved = "saved",
+  notsaved = "Not Saved",
+  saving = "saving",
+}
+
+const WAIT_INTERVAL = 5000;
+const MarkdownPreviewExample = (props: {
+  slateContent: Node[];
+  sectionIndex: number;
+  backendId: string;
+  updateSlateSectionToBackend: (
+    value: Node[],
+    backendId: string,
+    order: number,
+    lines?: Lines
+  ) => void;
+}) => {
+  const [saveStatus, updateSaveStatus] = useState<saveStatusEnum>(
+    saveStatusEnum.notsaved
+  );
+  let timer: NodeJS.Timeout | null = null;
+  const [value, setValue] = useState<Node[]>(props.slateContent);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
   const editor = useMemo(
     () =>
@@ -122,22 +148,15 @@ const MarkdownPreviewExample = () => {
   const { addBlock, slashPosition, updateSlashPosition } = useBlocks(editor);
   const [searchString, updateSearchString] = useState("");
   let searchedBlocks = searchBlocks(searchString, Blocks);
-  useEffect(() => {
-    let retrieveValue = JSON.parse(localStorage.getItem("draftStore")!);
-    if (
-      (Array.isArray(retrieveValue) && retrieveValue.length === 0) ||
-      retrieveValue === null
-    ) {
-      retrieveValue = initialValue;
-    }
-    setValue(retrieveValue);
-  }, [process.browser]);
 
+  // when slashposition is removed, reset the selected rich text block
   useEffect(() => {
     if (slashPosition === null) {
       updateSelectedRichText(0);
     }
   }, [slashPosition]);
+
+  function saveValue() {}
 
   const renderElement = useCallback((props: RenderElementProps) => {
     switch (props.element.type) {
@@ -195,7 +214,7 @@ const MarkdownPreviewExample = () => {
       imageFile: await toBase64(selectedImage),
     };
 
-    fetch("/api/endpoint", {
+    await fetch("/api/endpoint", {
       method: "POST",
       headers: new Headers({
         "Content-Type": "application/json",
@@ -354,8 +373,36 @@ const MarkdownPreviewExample = () => {
     }
   }
 
+  // save to backend
+  useEffect(() => {
+    const timeOutId = setTimeout(() => {
+      const fetchProduct = async () => {
+        try {
+          await props.updateSlateSectionToBackend(
+            value,
+            props.backendId,
+            props.sectionIndex
+          );
+        } catch (err) {}
+      };
+      updateSaveStatus(saveStatusEnum.saving);
+
+      fetchProduct().then(() => {
+        updateSaveStatus(saveStatusEnum.saved);
+      });
+    }, WAIT_INTERVAL);
+    return () => {
+      clearTimeout(timeOutId);
+      updateSaveStatus(saveStatusEnum.notsaved);
+    };
+  }, [value]);
+
   function handleChange(value: Node[]) {
-    // expand or contract slash positioning
+    setCorrectSlashPosition();
+    setValue(value);
+  }
+
+  function setCorrectSlashPosition() {
     if (slashPosition && editor.selection) {
       let newSlashPosition = {
         anchor: slashPosition.anchor,
@@ -365,10 +412,6 @@ const MarkdownPreviewExample = () => {
 
       refreshSearchString(newSlashPosition);
     }
-
-    let stringifyValue = JSON.stringify(value);
-    localStorage.setItem("draftStore", stringifyValue);
-    setValue(value);
   }
 
   function refreshSearchString(newSlashPosition: Range) {
@@ -410,6 +453,7 @@ const MarkdownPreviewExample = () => {
           onClick={handleClick}
         />
       </Slate>
+      {saveStatus}
       <FormattingPane
         editor={editor}
         slashPosition={slashPosition}
@@ -433,9 +477,13 @@ const Leaf = ({ attributes, children, leaf }: RenderLeafProps) => {
     background?: string;
     fontStyle?: string;
     cursor?: string;
+    fontWeight?: string;
   } = {
     fontFamily: "monospace",
   };
+  if (leaf.bold) {
+    style["fontWeight"] = "bold";
+  }
 
   switch (leaf.prismType) {
     case "comment":
@@ -651,8 +699,6 @@ const withImages = (editor: Editor & ReactEditor & HistoryEditor) => {
   return editor;
 };
 
-function handleTokens() {
-  
-}
+function handleTokens() {}
 
 export default MarkdownPreviewExample;

@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebaseAdmin, initFirebase } from "../initFirebase";
 const admin = require("firebase-admin");
 import { getUser } from "../userUtils";
-import { getDraftDataHandler } from "../postUtils";
+import { getAllDraftDataHandler } from "../postUtils";
 
 let db = admin.firestore();
 
@@ -17,7 +17,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     res.end();
     return;
   }
-  let results = await getDraftDataHandler(uid, draftId);
+  let results = await getAllDraftDataHandler(uid, draftId);
   res.statusCode = 200;
   res.send(results);
 };
