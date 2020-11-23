@@ -36,6 +36,7 @@ import handleGetTitle from "../../lib/api/getTitle";
 // editing draft content
 import handleGetDraftContent from "../../lib/api/getDraftContent";
 import handleSaveDraftContent from "../../lib/api/saveDraftContent";
+import handleAddDraftContent from "../../lib/api/addDraftContent";
 
 // editing drafts steps
 import handleGetSteps from "../../lib/api/getDraftSteps";
@@ -134,6 +135,20 @@ export default sentryHandler(
       }
 
       /* 
+    ------ Manage Draft Content ------
+    */
+      case "handleGetDraftContent": {
+        return handleGetDraftContent(req, res);
+      }
+
+      case "handleSaveDraftContent": {
+        return handleSaveDraftContent(req, res);
+      }
+
+      case "addDraftContent": {
+        return handleAddDraftContent(req, res);
+      }
+      /* 
     ------ Drafts ------
     */
 
@@ -161,14 +176,6 @@ export default sentryHandler(
 
       case "getDraftMetadata": {
         return handleGetDraftMetadata(req, res);
-      }
-
-      case "handleGetDraftContent": {
-        return handleGetDraftContent(req, res);
-      }
-
-      case "handleSaveDraftContent": {
-        return handleSaveDraftContent(req, res);
       }
 
       case "getDraftSteps": {

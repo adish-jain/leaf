@@ -222,6 +222,7 @@ function handleBackSpace(
       );
     } else {
       // if is a default element
+      console.log("default element");
     }
   }
   return;

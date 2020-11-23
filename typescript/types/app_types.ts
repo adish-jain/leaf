@@ -4,9 +4,7 @@ import {
   backendDraftBlockEnum,
 } from "../enums/app_enums";
 import { ProgrammingLanguage } from "../types/language_types";
-import {
-  Node,
-} from "slate";
+import { Node } from "slate";
 import { SetStateAction } from "react";
 
 export type File = {
@@ -63,20 +61,19 @@ export type timeStamp = {
 export type backendType = {
   order: number;
   type: backendDraftBlockEnum;
-  backendId: string;
+  backendId?: string;
 } & (textEditorObject | codeStepObject);
 
 // backend representation of Slate Editor
 type textEditorObject = {
-  slateContent: Node[];
+  slateContent: string;
 };
 
 // backend representation of a code step section
 type codeStepObject = {
-  fileId: string;
-  slateContent: Node[];
+  fileId?: string;
+  slateContent: string;
   lines?: Lines;
-  stepId: string;
 };
 
 export type fileObject = {

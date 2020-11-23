@@ -35,6 +35,7 @@ export default async function saveDraftContentHandler(
     .doc(draftId)
     .collection("draftContent")
     .doc(backendId);
+  console.log(backendId);
 
   draftContentRef.set(
     {
@@ -48,9 +49,10 @@ export default async function saveDraftContentHandler(
     }
   );
 
-  const draftContent = await getDraftContent(uid, draftId);
+  //   const draftContent = await getDraftContent(uid, draftId);
 
   res.statusCode = 200;
-  res.json(draftContent);
+  res.end();
+  //   res.json(draftContent);
   return;
 }

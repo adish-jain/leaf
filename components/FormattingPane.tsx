@@ -28,7 +28,10 @@ import { searchBlocks } from "../lib/blockUtils";
 import { HistoryEditor } from "slate-history";
 import "../styles/formattingpane.scss";
 import { isAncestor } from "@udecode/slate-plugins";
-import { formattingPaneBlockType } from "../typescript/enums/app_enums";
+import {
+  backendDraftBlockEnum,
+  formattingPaneBlockType,
+} from "../typescript/enums/app_enums";
 import { FormattingPaneBlockList } from "../typescript/types/app_types";
 let leftPos = 0;
 export default function FormattingPane(props: {
@@ -38,6 +41,7 @@ export default function FormattingPane(props: {
   selectedRichTextIndex: number;
   searchedBlocks: FormattingPaneBlockList;
   addBlock: (blockType: formattingPaneBlockType) => void;
+  sectionIndex: number;
 }) {
   const formattingPaneRef = useRef<HTMLDivElement>(null);
   let formattingPaneHeight = 240;
@@ -48,6 +52,8 @@ export default function FormattingPane(props: {
     updateSlashPosition,
     searchedBlocks,
     addBlock,
+    addBackendBlock,
+    sectionIndex,
   } = props;
 
   if (!slashPosition) {
@@ -78,8 +84,8 @@ export default function FormattingPane(props: {
       }
       // set proper top position, depending on whether selection
       // is in bottom or top half of viewport
-      if (window.innerHeight < 350) {
-        formattingPaneHeight = 120;
+      if (window.innerHeight < 420) {
+        formattingPaneHeight = 160;
       }
       top = newDimensions.bottom;
       if (top + formattingPaneHeight > window.innerHeight) {
@@ -140,7 +146,12 @@ export default function FormattingPane(props: {
             </div>
             <div className={"rich-text"}>
               <div className={"section-label"}>Interactivity</div>
-              <InteractiveElement elementName={"Code Steps"} />
+              <InteractiveElement
+                elementName={"Code Steps"}
+                addBackendBlock={addBackendBlock}
+                sectionIndex={sectionIndex}
+                updateSlashPosition={updateSlashPosition}
+              />
             </div>
           </div>
         </motion.div>
@@ -149,8 +160,29 @@ export default function FormattingPane(props: {
   );
 }
 
-function InteractiveElement(props: { elementName: string }) {
-  return <div className={"interactive-element"}>{props.elementName}</div>;
+function InteractiveElement(props: {
+  elementName: string;
+  addBackendBlock: (
+    backendDraftBlockEnum: backendDraftBlockEnum,
+    atIndex: number
+  ) => void;
+  sectionIndex: number;
+  updateSlashPosition: any;
+}) {
+  return (
+    <div
+      onClick={async (e) => {
+        await props.addBackendBlock(
+          backendDraftBlockEnum.CodeSteps,
+          props.sectionIndex
+        );
+        props.updateSlashPosition(null);
+      }}
+      className={"interactive-element"}
+    >
+      {props.elementName}
+    </div>
+  );
 }
 
 function RichTextElement(props: {

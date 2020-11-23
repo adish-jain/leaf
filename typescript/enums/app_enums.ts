@@ -6,7 +6,7 @@ export enum Block {
 }
 
 export enum formattingPaneBlockType {
-  P = "p",
+  P = "default",
   H1 = "h1",
   H2 = "h2",
   H3 = "h3",
@@ -19,5 +19,5 @@ export enum formattingPaneBlockType {
 
 export enum backendDraftBlockEnum {
   Text = "text",
-  CodeSteps = "codestep"
+  CodeSteps = "codestep",
 }

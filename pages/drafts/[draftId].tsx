@@ -13,8 +13,7 @@ import { useBackend } from "../../lib/useBackend";
 import { useTags } from "../../lib/useTags";
 import { useDraftTitle } from "../../lib/useDraftTitle";
 import useSWR from "swr";
-import Publishing from "../../components/Publishing";
-import CodeEditor from "../../components/CodeEditor";
+
 import Tags from "../../components/Tags";
 import DefaultErrorPage from "next/error";
 import Head from "next/head";
@@ -35,14 +34,15 @@ import Router from "next/router";
 import Link from "next/link";
 import "../../styles/app.scss";
 import "../../styles/draftheader.scss";
+import "../../styles/publishing.scss";
 import { DraftHeader } from "../../components/Headers";
 import { DraftJsButtonProps } from "draft-js-buttons";
 import { motion, AnimatePresence } from "framer-motion";
 import TextareaAutosize from "react-autosize-textarea";
 
 // import SlateEditor from "../../components/SlateSection";
-import MarkdownPreviewExample from "../../components/MarkdownSection";
-
+import MarkdownSection from "../../components/MarkdownSection";
+import CodeStepSection from "../../components/CodeStepSection";
 const DraftView = () => {
   const { authenticated, error, loading } = useLoggedIn();
   const router = useRouter();
@@ -80,10 +80,11 @@ const DraftView = () => {
     },
   };
 
-  const { draftContent, updateSlateSectionToBackend } = useBackend(
-    authenticated,
-    draftId as string
-  );
+  const {
+    draftContent,
+    updateSlateSectionToBackend,
+    addBackendBlock,
+  } = useBackend(authenticated, draftId as string);
 
   let { data: draftData, mutate } = useSWR(
     authenticated ? "getDraftMetadata" : null,
@@ -181,6 +182,7 @@ const DraftView = () => {
             draftData={draftData}
             draftContent={draftContent}
             updateSlateSectionToBackend={updateSlateSectionToBackend}
+            addBackendBlock={addBackendBlock}
           />
         )}
       </main>
@@ -262,6 +264,34 @@ class DraftContent extends Component<DraftContentProps, DraftContentState> {
     );
   };
 
+  arrangeContentList = (draftContent: backendType[]) => {
+    // iterate through array
+
+    // if code step type
+    // add to sub array
+
+    // if not code step type, break sub array
+    let finalArray = [];
+    let subArray = [];
+    let adding: boolean = false;
+    for (let i = 0; i < draftContent.length; i++) {
+      if (draftContent[i].type === "codestep") {
+        subArray.push(draftContent[i]);
+      } else {
+        if (subArray.length > 0) {
+          finalArray.push(subArray);
+        }
+        subArray = [];
+        finalArray.push(draftContent[i]);
+      }
+    }
+    if (subArray.length > 0) {
+      finalArray.push(subArray);
+    }
+    console.log("final array is");
+    console.log(finalArray);
+  };
+
   DraftComponent() {
     let {
       updateShowPreview,
@@ -269,6 +299,7 @@ class DraftContent extends Component<DraftContentProps, DraftContentState> {
       draftData,
       draftContent,
       updateSlateSectionToBackend,
+      addBackendBlock,
     } = this.props;
 
     let errored = draftData["errored"];
@@ -276,7 +307,7 @@ class DraftContent extends Component<DraftContentProps, DraftContentState> {
     const postId = draftData["postId"];
     const username = draftData["username"];
     const createdAt = draftData["createdAt"];
-
+    this.arrangeContentList(draftContent);
     return (
       <div>
         <DraftHeader
@@ -298,7 +329,7 @@ class DraftContent extends Component<DraftContentProps, DraftContentState> {
                     switch (contentElement.type) {
                       case "text":
                         return (
-                          <MarkdownPreviewExample
+                          <MarkdownSection
                             slateContent={contentElement.slateContent}
                             key={contentElement.backendId}
                             backendId={contentElement.backendId}
@@ -306,10 +337,23 @@ class DraftContent extends Component<DraftContentProps, DraftContentState> {
                             updateSlateSectionToBackend={
                               updateSlateSectionToBackend
                             }
+                            addBackendBlock={addBackendBlock}
+                            contentType={contentElement.type}
                           />
                         );
                       case "codestep":
-                        return "hi";
+                        return (
+                          <CodeStepSection
+                            slateContent={contentElement.slateContent}
+                            key={contentElement.backendId}
+                            backendId={contentElement.backendId}
+                            sectionIndex={index}
+                            updateSlateSectionToBackend={
+                              updateSlateSectionToBackend
+                            }
+                            addBackendBlock={addBackendBlock}
+                          />
+                        );
                       default:
                         return "test";
                     }

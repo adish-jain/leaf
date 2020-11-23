@@ -39,7 +39,10 @@ import { withHistory, HistoryEditor } from "slate-history";
 import "../styles/slate-editor.scss";
 import { isCollapsed } from "@udecode/slate-plugins";
 import { motion, AnimatePresence } from "framer-motion";
-import { formattingPaneBlockType } from "../typescript/enums/app_enums";
+import {
+  formattingPaneBlockType,
+  backendDraftBlockEnum,
+} from "../typescript/enums/app_enums";
 import { FormattingPaneBlockList, Lines } from "../typescript/types/app_types";
 import {
   handleArrowLeft,
@@ -114,16 +117,21 @@ function arraysAreEqual(ary1: Node[], ary2: Node[]) {
 }
 
 enum saveStatusEnum {
-  saved = "saved",
-  notsaved = "Not Saved",
-  saving = "saving",
+  saved = "Content saved",
+  notsaved = "Unsaved content",
+  saving = "Saving...",
 }
 
 const WAIT_INTERVAL = 5000;
 const MarkdownPreviewExample = (props: {
-  slateContent: Node[];
+  slateContent: string;
   sectionIndex: number;
   backendId: string;
+  addBackendBlock: (
+    backendDraftBlockEnum: backendDraftBlockEnum,
+    atIndex: number
+  ) => void;
+  contentType: backendDraftBlockEnum;
   updateSlateSectionToBackend: (
     value: Node[],
     backendId: string,
@@ -134,8 +142,10 @@ const MarkdownPreviewExample = (props: {
   const [saveStatus, updateSaveStatus] = useState<saveStatusEnum>(
     saveStatusEnum.notsaved
   );
+  const [searchString, updateSearchString] = useState("");
+  const [selectedRichTextIndex, updateSelectedRichText] = useState(0);
   let timer: NodeJS.Timeout | null = null;
-  const [value, setValue] = useState<Node[]>(props.slateContent);
+  const [value, setValue] = useState<Node[]>(JSON.parse(props.slateContent));
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
   const editor = useMemo(
     () =>
@@ -144,9 +154,7 @@ const MarkdownPreviewExample = (props: {
       ),
     []
   );
-  const [selectedRichTextIndex, updateSelectedRichText] = useState(0);
   const { addBlock, slashPosition, updateSlashPosition } = useBlocks(editor);
-  const [searchString, updateSearchString] = useState("");
   let searchedBlocks = searchBlocks(searchString, Blocks);
 
   // when slashposition is removed, reset the selected rich text block
@@ -461,6 +469,8 @@ const MarkdownPreviewExample = (props: {
         selectedRichTextIndex={selectedRichTextIndex}
         searchedBlocks={searchedBlocks}
         addBlock={addBlock}
+        addBackendBlock={props.addBackendBlock}
+        sectionIndex={props.sectionIndex}
       />
     </div>
   );

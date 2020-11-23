@@ -142,10 +142,9 @@ export async function getDraftContent(
         results.push({
           order: resultsJSON.order as number,
           type: resultsJSON.type,
-          slateContent: JSON.parse(resultsJSON.slateContent),
+          slateContent: resultsJSON.slateContent,
           fileId: resultsJSON.fileId as string,
           lines: resultsJSON.line,
-          stepId: resultsJSON.stepId,
           backendId: result.id,
         });
       });

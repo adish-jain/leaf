@@ -34,7 +34,7 @@ export default async function createDraftHandler(
       {
         order: 0,
         type: backendDraftBlockEnum.Text,
-        slateContent: slateNode,
+        slateContent: JSON.stringify(slateNode),
         backendId: "",
       },
     ],
