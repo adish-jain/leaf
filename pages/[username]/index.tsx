@@ -9,8 +9,9 @@ import "../../styles/profile.scss";
 import Header, { HeaderUnAuthenticated } from "../../components/Header";
 import ErroredPage from "../404";
 import { Post } from "../../typescript/types/app_types";
+import { useUserInfo } from "../../lib/useUserInfo";
+// import About from "../about";
 const dayjs = require("dayjs");
-
 
 export async function getStaticPaths() {
   return {
@@ -86,8 +87,27 @@ type UserPageProps = {
 };
 
 export default function UserPage(props: UserPageProps) {
+  const [editingBio, toggleEditingBio] = useState(false);
+
+  const { authenticated, error, loading } = useLoggedIn();
+  const {
+    about,
+    twitter,
+    github,
+    website,
+    newAbout,
+    newTwitter,
+    newGithub,
+    newWebsite,
+    changeNewAbout,
+    changeNewTwitter,
+    changeNewGithub,
+    changeNewWebsite,
+    saveNewProfile,
+  } = useUserInfo(authenticated);
+
   const rawData = {
-    requestedAPI: "getAllPostsData",
+    requestedAPI: "getPosts",
   };
 
   const myRequest = {
@@ -107,18 +127,15 @@ export default function UserPage(props: UserPageProps) {
         title: "",
         publishedAt: "",
         tags: [],
-        username: "",
       },
     ],
   };
 
-  let { data: postsData, mutate } = useSWR("getAllPostsData", fetcher, {
+  let { data: postsData, mutate } = useSWR("getPosts", fetcher, {
     initialData,
     revalidateOnMount: true,
   });
 
-  const { authenticated, error, loading } = useLoggedIn();
-  
   return (
     <div className="container">
       <Head>
@@ -135,19 +152,26 @@ export default function UserPage(props: UserPageProps) {
         <div className={"profile-content"}>
           <div className={"profile-left-pane"}>
             <div className={"profile-img"}>AJ</div>
-            <div className={"profile-about-header"}>ABOUT</div>
-            <div className={"profile-about-content"}>
-              I am really interested in problems having to do with educational systems, and how tech can be used to foster better learning and improve the transfer of knowledge. I'm located in the San Francisco, Bay Area 📌 and am always down to discuss big ideas over a cup of coffee ☕️
-            </div>
-            <div className={"profile-about-icons"}>
-              <img src="/images/twittericon.svg" />
-              <img src="/images/githubicon.svg" />
-              <img src="/images/webicon.svg" />
-            </div>
-            <div className={"profile-edit-button"}>Edit Profile</div>
+            <About
+              editingBio={editingBio}
+              about={about}
+              twitter={twitter}
+              github={github}
+              website={website}
+              newAbout={newAbout}
+              newTwitter={newTwitter}
+              newGithub={newGithub}
+              newWebsite={newWebsite}
+              toggleEditingBio={toggleEditingBio}
+              changeNewAbout={changeNewAbout}
+              changeNewTwitter={changeNewTwitter}
+              changeNewGithub={changeNewGithub}
+              changeNewWebsite={changeNewWebsite}
+              saveNewProfile={saveNewProfile}
+            />
           </div>
           <div className={"profile-right-pane"}>
-            <DisplayPosts posts={postsData} />
+            <DisplayPosts posts={postsData} username={props.username}/>
           </div>
           {/* {posts.length === 0 ? (
             <p>This user has not published anything yet.</p>
@@ -167,6 +191,138 @@ export default function UserPage(props: UserPageProps) {
     </div>
   )
 }
+
+function About(props: {
+  editingBio: boolean,
+  about: string,
+  twitter: string,
+  github: string,
+  website: string,
+  newAbout: string,
+  newTwitter: string,
+  newGithub: string,
+  newWebsite: string,
+  toggleEditingBio: React.Dispatch<React.SetStateAction<boolean>>,
+  changeNewAbout: React.Dispatch<React.SetStateAction<string>>,
+  changeNewTwitter: React.Dispatch<React.SetStateAction<string>>,
+  changeNewGithub: React.Dispatch<React.SetStateAction<string>>,
+  changeNewWebsite: React.Dispatch<React.SetStateAction<string>>,
+  saveNewProfile: any,
+}) {
+  return (
+    <div className={"profile-left-pane"}>
+      <div className={"profile-about-header"}>ABOUT</div>
+        <div className={"profile-about-content"}>
+          {props.about}
+          {props.editingBio && (
+           <input 
+            className={"default-input"}
+            value={props.newAbout}
+            onChange={(e) => props.changeNewAbout(e.target.value)}
+            ></input>
+          )}
+          {/* I am really interested in problems having to do with educational systems, and how tech can be used to foster better learning and improve the transfer of knowledge. I'm located in the San Francisco, Bay Area 📌 and am always down to discuss big ideas over a cup of coffee ☕️ */}
+        </div>
+        <div className={"profile-about-icons"}>
+          <img src="/images/twittericon.svg" />
+          {props.twitter}
+          {props.editingBio && (
+           <input 
+            className={"default-input"}
+            value={props.newTwitter}
+            onChange={(e) => props.changeNewTwitter(e.target.value)}
+            ></input>
+          )}
+          <img src="/images/githubicon.svg" />
+          {props.github}
+          {props.editingBio && (
+           <input 
+            className={"default-input"}
+            value={props.newGithub}
+            onChange={(e) => props.changeNewGithub(e.target.value)}
+            ></input>
+          )}
+          <img src="/images/webicon.svg" />
+          {props.website}
+          {props.editingBio && (
+           <input 
+            className={"default-input"}
+            value={props.newWebsite}
+            onChange={(e) => props.changeNewWebsite(e.target.value)}
+            ></input>
+          )}
+        </div>
+        {props.editingBio ? 
+          (<div 
+            className={"profile-edit-button"} 
+            onClick={(e) => {props.toggleEditingBio(!props.editingBio); props.saveNewProfile()}}
+          >
+            Save Profile
+          </div>
+          )
+        :
+          (<div 
+            className={"profile-edit-button"} 
+            onClick={(e) => props.toggleEditingBio(!props.editingBio)}
+          >
+            Edit Profile
+          </div>
+        )}
+    </div>
+  );
+}
+
+function DisplayPosts(props: {
+  posts: Post[];
+  username: string;
+}) {
+  try {
+    const router = useRouter();
+    return (
+      <div>
+        {props.posts.length === 0 ? (
+          <h3>No posts found</h3>
+        ) : (
+          <div>
+            {Array.from(props.posts).map((post: Post) => {
+              return (
+                <div
+                  className={"profile-post"}
+                  onClick={() => router.push(post["postURL"])}
+                >
+                  <div className={"profile-post-title"}>{post["title"]}</div>
+                  <div className={"profile-post-date"}>
+                    {dayjs(post["publishedAt"]).format("MMMM D YYYY")}
+                  </div>
+                  <div className={"profile-post-tags-author"}>
+                    {post["tags"] !== undefined ? (
+                      post["tags"].map((tag: string) => {
+                        return (
+                          <div
+                            className={"profile-post-tag"}
+                          >
+                            {tag}
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <div></div>
+                    )}
+                    {/* <div className={"profile-post-author"}>{props.username}</div> */}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    );
+  } catch {
+    console.log("error fetching posts");
+    return <div><h3>Error Fetching Posts</h3></div>;
+  }
+}
+
 
 // const UserPage = (props: UserPageProps) => {
 //   const [currentStep, updateStep] = useState(0);
@@ -230,56 +386,6 @@ export default function UserPage(props: UserPageProps) {
 //     </div>
 //   );
 // };
-
-function DisplayPosts(props: {
-  posts: Post[];
-}) {
-  try {
-    const router = useRouter();
-    return (
-      <div>
-        {props.posts.length === 0 ? (
-          <h3>No posts found</h3>
-        ) : (
-          <div>
-            {Array.from(props.posts).map((post: Post) => {
-              return (
-                <div
-                  className={"profile-post"}
-                  onClick={() => router.push(post["postURL"])}
-                >
-                  <div className={"profile-post-title"}>{post["title"]}</div>
-                  <div className={"profile-post-date"}>
-                    {dayjs(post["publishedAt"]).format("MMMM D YYYY")}
-                  </div>
-                  <div className={"profile-post-tags-author"}>
-                    {post["tags"] !== undefined ? (
-                      post["tags"].map((tag: string) => {
-                        return (
-                          <div
-                            className={"profile-post-tag"}
-                          >
-                            {tag}
-                          </div>
-                        );
-                      })
-                    ) : (
-                      <div></div>
-                    )}
-                    <div className={"profile-post-author"}>{post["username"]}</div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-    );
-  } catch {
-    console.log("error fetching posts");
-    return <div><h3>Error Fetching Posts</h3></div>;
-  }
-}
 
 // function Post(props: { title: string; postId: string; username: string }) {
 //   let router = useRouter();

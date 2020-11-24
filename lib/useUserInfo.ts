@@ -32,6 +32,11 @@ export function useUserInfo(authenticated: boolean) {
     updateSendEmailVerificationStatus,
   ] = useState("");
 
+  const [newAbout, changeNewAbout] = useState("");
+  const [newTwitter, changeNewTwitter] = useState("");
+  const [newGithub, changeNewGithub] = useState("");
+  const [newWebsite, changeNewWebsite] = useState("");
+
   let { data: userInfo, mutate } = useSWR(
     authenticated ? "getUserInfo" : null,
     userInfoFetcher,
@@ -44,6 +49,54 @@ export function useUserInfo(authenticated: boolean) {
   const email = userInfo.email;
   const signInMethod = userInfo.method;
   const emailVerified = userInfo.emailVerified;
+
+  /* Profile Page information */
+  const about = userInfo.about;
+  const twitter = userInfo.twitter;
+  const github = userInfo.github;
+  const website = userInfo.website;
+
+  async function saveNewProfile() {
+    const changeProfileRequest = {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify({
+        requestedAPI: "set_userProfile",
+        about: newAbout,
+        twitter: newTwitter,
+        github: newGithub,
+        website: newWebsite,
+      }),
+    };
+    // updateChangeUsernameLoading(true);
+    await fetch(
+      "api/endpoint",
+      changeProfileRequest
+    ).then((res) => {
+      if (res.status === 200) {
+        mutate({ 
+          about: newAbout,
+          twitter: newTwitter,
+          github: newGithub,
+          website: newWebsite, 
+        }, true);
+      }
+      if (res.status === 403) {
+        res.json().then((resJson) => {
+          // updateEmailError(resJson.error);
+        });
+      }
+    })
+    .catch(function (error: any) {
+      console.log(error);
+    });
+    // if (!updateUsernameResponse.error) {
+    //   updateUserNameError("");
+    //   mutate({ username: newUsername }, true);
+    // } else {
+    //   updateUserNameError(updateUsernameResponse.error);
+    // }
+  }
 
   async function saveNewUsername() {
     const changeUsernameRequest = {
@@ -199,5 +252,18 @@ export function useUserInfo(authenticated: boolean) {
     sendEmailVerification,
     sendEmailVerificationStatus,
     signInMethod,
+    about,
+    twitter,
+    github,
+    website,
+    newAbout,
+    newTwitter,
+    newGithub,
+    newWebsite,
+    changeNewAbout,
+    changeNewTwitter,
+    changeNewGithub,
+    changeNewWebsite,
+    saveNewProfile,
   };
 }

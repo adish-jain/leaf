@@ -174,6 +174,7 @@ export async function getAllPostsHandler() {
       return docSnapshot.data().username;
     });
     let resultsJSON = doc.data();
+    console.log(resultsJSON.publishedAt.toDate());
     let postURL = "/" + username + "/" + resultsJSON.postId;
     results.push({
       postId: resultsJSON.postId,

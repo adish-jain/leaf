@@ -19,6 +19,9 @@ import handlecheckId from "../../lib/api/checkId";
 import handleSetPassword from "../../lib/api/setPassword";
 import handleSetEmailAndPassword from "../../lib/api/setEmailAndPassword";
 
+// handle profile data
+import handleSetProfile from "../../lib/api/setProfile";
+
 // user info
 import handleGetUserInfo from "../../lib/api/getUserInfo";
 
@@ -103,7 +106,7 @@ export default sentryHandler(
       }
 
       /*
-    ------ Settings ------
+    ------ Settings & Profile------
     */
 
       case "check_userId": {
@@ -132,6 +135,10 @@ export default sentryHandler(
 
       case "sendEmailVerification": {
         return handleSendEmailVerification(req, res);
+      }
+
+      case "set_userProfile": {
+        return handleSetProfile(req, res);
       }
 
       /* 

@@ -17,7 +17,7 @@ export default async function getUserInfoHandler(
   let userDataReference = await db.collection("users").doc(uid).get();
   let userData = await userDataReference.data();
 
-  // console.log(userData);
+  console.log(userData);
   // console.log(userRecord);
 
   res.send({
