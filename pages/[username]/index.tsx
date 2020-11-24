@@ -1,9 +1,9 @@
-import React, { useState, Component } from "react";
+import React, { useState, Component, useEffect } from "react";
 import useSWR from "swr";
 import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import { getUserPosts, getUidFromUsername } from "../../lib/userUtils";
+import { getUserPosts, getUidFromUsername, userNameErrorMessage } from "../../lib/userUtils";
 import { useLoggedIn } from "../../lib/UseLoggedIn";
 import "../../styles/profile.scss";
 import Header, { HeaderUnAuthenticated } from "../../components/Header";
@@ -12,6 +12,7 @@ import { Post } from "../../typescript/types/app_types";
 import { useUserInfo } from "../../lib/useUserInfo";
 // import About from "../about";
 const dayjs = require("dayjs");
+import TextareaAutosize from "react-autosize-textarea";
 
 export async function getStaticPaths() {
   return {
@@ -88,7 +89,6 @@ type UserPageProps = {
 
 export default function UserPage(props: UserPageProps) {
   const [editingBio, toggleEditingBio] = useState(false);
-
   const { authenticated, error, loading } = useLoggedIn();
   const {
     about,
@@ -106,8 +106,11 @@ export default function UserPage(props: UserPageProps) {
     saveNewProfile,
   } = useUserInfo(authenticated);
 
+  console.log(props.username);
+
   const rawData = {
-    requestedAPI: "getPosts",
+    requestedAPI: "getProfilePosts",
+    username: props.username,
   };
 
   const myRequest = {
@@ -131,10 +134,20 @@ export default function UserPage(props: UserPageProps) {
     ],
   };
 
-  let { data: postsData, mutate } = useSWR("getPosts", fetcher, {
+  let { data: postsData, mutate } = useSWR("getProfilePosts", fetcher, {
     initialData,
     revalidateOnMount: true,
   });
+
+  // const [filteredPosts, filterPosts] = useState(postsData);
+
+  // useEffect(() => {
+  //   let { data: postsData, mutate } = useSWR("getProfilePosts", fetcher, {
+  //     initialData,
+  //     revalidateOnMount: true,
+  //   });
+  //   filterPosts(postsData);
+  // }, [props.username]);
 
   return (
     <div className="container">
@@ -213,43 +226,139 @@ function About(props: {
     <div className={"profile-left-pane"}>
       <div className={"profile-about-header"}>ABOUT</div>
         <div className={"profile-about-content"}>
-          {props.about}
-          {props.editingBio && (
-           <input 
-            className={"default-input"}
-            value={props.newAbout}
-            onChange={(e) => props.changeNewAbout(e.target.value)}
-            ></input>
+          {props.editingBio ? (
+            <div className={"about-icon-and-input"}>
+              <img src="/images/usericon.svg" />
+              <TextareaAutosize
+                placeholder={props.about !== "" ? props.about : "About yourself"}
+                value={props.newAbout}
+                onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
+                  let myTarget = e.target as HTMLTextAreaElement;
+                  props.changeNewAbout(myTarget.value);
+                }}
+                style={{
+                  fontSize: "15px",
+                  color: "D0D0D0",
+                }}
+                maxLength={240}
+                name="title"
+              />
+            </div>
+          //  <input 
+          //   className={"default-input"}
+          //   value={props.newAbout}
+          //   onChange={(e) => props.changeNewAbout(e.target.value)}
+          //   ></input>
+          ) : (
+            props.about
           )}
           {/* I am really interested in problems having to do with educational systems, and how tech can be used to foster better learning and improve the transfer of knowledge. I'm located in the San Francisco, Bay Area 📌 and am always down to discuss big ideas over a cup of coffee ☕️ */}
         </div>
         <div className={"profile-about-icons"}>
-          <img src="/images/twittericon.svg" />
-          {props.twitter}
-          {props.editingBio && (
-           <input 
-            className={"default-input"}
-            value={props.newTwitter}
-            onChange={(e) => props.changeNewTwitter(e.target.value)}
-            ></input>
+          {props.editingBio ? (
+            <div className={"profile-icon-and-input"}>
+              <img src="/images/twittericon.svg" />
+              <TextareaAutosize
+                placeholder={props.twitter !== "" ? props.twitter : "Twitter Profile"}
+                value={props.newTwitter}
+                onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
+                  let myTarget = e.target as HTMLTextAreaElement;
+                  props.changeNewTwitter(myTarget.value);
+                }}
+                style={{
+                  fontSize: "15px",
+                  color: "D0D0D0",
+                }}
+                name="twitter"
+              />
+            </div>
+          //  <input 
+          //   className={"default-input"}
+          //   value={props.newTwitter}
+          //   placeholder="Twitter Profile"
+          //   onChange={(e) => props.changeNewTwitter(e.target.value)}
+          //   ></input>
+          ) : (
+            props.twitter !== "" ? (
+              <a 
+                href={props.twitter}
+                target="blank"
+              >
+                <img src="/images/twittericon.svg" />
+              </a>
+            ) : (
+              <div></div>
+            )
           )}
-          <img src="/images/githubicon.svg" />
-          {props.github}
-          {props.editingBio && (
-           <input 
-            className={"default-input"}
-            value={props.newGithub}
-            onChange={(e) => props.changeNewGithub(e.target.value)}
-            ></input>
+          {props.editingBio ? (
+            <div className={"profile-icon-and-input"}>
+              <img src="/images/githubicon.svg" />
+              <TextareaAutosize
+              placeholder={props.github !== "" ? props.github : "Github Profile"}
+              value={props.newGithub}
+              onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
+                let myTarget = e.target as HTMLTextAreaElement;
+                props.changeNewGithub(myTarget.value);
+              }}
+              style={{
+                fontSize: "15px",
+                color: "D0D0D0",
+              }}
+              name="github"
+            />
+          </div>
+          //  <input 
+          //   className={"default-input"}
+          //   value={props.newGithub}
+          //   placeholder="Github Profile"
+          //   onChange={(e) => props.changeNewGithub(e.target.value)}
+          //   ></input>
+          ) : (
+            props.github !== "" ? (
+              <a 
+                href={props.github}
+                target="blank"
+              >
+                <img src="/images/githubicon.svg" />
+              </a>
+            ) : (
+              <div></div>
+            )
           )}
-          <img src="/images/webicon.svg" />
-          {props.website}
-          {props.editingBio && (
-           <input 
-            className={"default-input"}
-            value={props.newWebsite}
-            onChange={(e) => props.changeNewWebsite(e.target.value)}
-            ></input>
+          {props.editingBio ? (
+            <div className={"profile-icon-and-input"}>
+              <img src="/images/webicon.svg" />
+              <TextareaAutosize
+                placeholder={props.website !== "" ? props.website : "Personal Website"}
+                value={props.newWebsite}
+                onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
+                  let myTarget = e.target as HTMLTextAreaElement;
+                  props.changeNewWebsite(myTarget.value);
+                }}
+                style={{
+                  fontSize: "15px",
+                  color: "D0D0D0",
+                }}
+                name="website"
+              />
+            </div>
+          //  <input 
+          //   className={"default-input"}
+          //   value={props.newWebsite}
+          //   placeholder="Website"
+          //   onChange={(e) => props.changeNewWebsite(e.target.value)}
+          //   ></input>
+          ) : (
+            props.website !== "" ? (
+              <a 
+                href={props.website}
+                target="blank"
+              >
+                <img src="/images/webicon.svg" />
+              </a>
+            ) : (
+              <div></div>
+            )
           )}
         </div>
         {props.editingBio ? 

@@ -23,6 +23,15 @@
   }
 }
 
+.profile-input {
+  padding: 7px;
+  background: #ffffff;
+  border: 1px solid rgba(159, 159, 159, 0.25);
+  box-sizing: border-box;
+  box-shadow: inset 0px 4px 4px rgba(237, 236, 233, 0.25);
+  border-radius: 4px 0px 0px 4px;
+}
+
 .profile-header {
   font-size: 100px;
   text-align: center;
@@ -111,7 +120,7 @@
   // width: 205.87px;
   // height: 96.17px;
   left: 12.14%;
-  margin-top: 450px;
+  margin-top: 400px;
 
   img {
     display: flex;
@@ -259,4 +268,92 @@
   cursor: pointer;
 }
 
+.profile-icon-and-input {
+  display: flex;
+  flex-direction: row;
+  // position: relative;
+
+  img {
+    position: absolute;
+    margin: 13px;
+  }
+
+  textarea {
+    padding-left: 40px;
+    padding-top: 13px;
+    // margin: 5px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    box-shadow: 1;
+    outline: none;
+    // border: none;
+    // border-radius: 10px;
+    box-sizing: content-box;
+    background-color: transparent;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 40px;
+    width: 220px;
+    height: 30px;
+    margin-bottom: 20px;
+    margin-left: 1px;
+    font-size: 18px;
+    // line-height: 48px;
+    // min-height: 50px;
+    // height: auto; // padding: 1.5rem 0;
+    resize: none;
+  }
+}
+
+.about-icon-and-input {
+  display: flex;
+  flex-direction: row;
+  // position: relative;
+
+  img {
+    position: absolute;
+    margin: 13px;
+  }
+
+  textarea {
+    padding-left: 40px;
+    padding-top: 13px;
+    // margin: 5px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    box-shadow: 1;
+    outline: none;
+    // border: none;
+    // border-radius: 10px;
+    box-sizing: content-box;
+    background-color: transparent;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 40px;
+    width: 220px;
+    height: 137px;
+    max-height: 137px;
+    margin-bottom: 20px;
+    margin-left: 1px;
+    font-size: 18px;
+    // line-height: 48px;
+    // min-height: 50px;
+    // height: auto; // padding: 1.5rem 0;
+    resize: none;
+    overflow-y: scroll;
+  }
+}
+
+// textarea {
+//   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+//   box-shadow: 1;
+//   outline: none;
+//   // border: none;
+//   // border-radius: 10px;
+//   box-sizing: content-box;
+//   background-color: transparent;
+//   font-family: Arial, Helvetica, sans-serif;
+//   font-size: 40px;
+//   width: 220px;
+//   // line-height: 48px;
+//   // min-height: 50px;
+//   // height: auto; // padding: 1.5rem 0;
+//   resize: none;
+// }
 
