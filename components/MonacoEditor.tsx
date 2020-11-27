@@ -6,6 +6,12 @@ import { editor } from "monaco-editor";
 const MonacoEditor = dynamic(import("react-monaco-editor"), { ssr: false });
 import { motion, AnimatePresence } from "framer-motion";
 import { getMonacoLanguageFromBackend } from "../lib/utils/languageUtils";
+import { DraftContext } from "../contexts/draft-context";
+import { FilesContext } from "../contexts/files-context";
+import {
+  contentBlock,
+  fileObject,
+} from "../typescript/types/frontend/postTypes";
 const shortid = require("shortid");
 
 type MonacoEditorWrapperState = {
@@ -16,16 +22,13 @@ type MonacoEditorWrapperState = {
 
 type MonacoEditorWrapperProps = {
   // highlightLines: (start: any, end: any) => void;
-  saveFileCode: () => void;
   draftCode: string;
+  selectedFile: fileObject | undefined;
+  currentlySelectedLines: Lines;
+  changeSelectedLines: React.Dispatch<React.SetStateAction<Lines>>;
+  currentlyEditingBlock: contentBlock | undefined;
+  saveFileCode: () => void;
   changeCode: (value: string) => void;
-  changeLines: (lines: Lines) => void;
-  saveLines: (fileName: string, remove: boolean) => void;
-  language: string;
-  editing: boolean;
-  lines: Lines;
-  selectedFile: File;
-  currentlyEditingStep?: Step;
 };
 
 var decorations: string[] = [];
@@ -34,6 +37,8 @@ export default class MonacoEditorWrapper extends Component<
   MonacoEditorWrapperProps,
   MonacoEditorWrapperState
 > {
+  // static contextType = DraftContext;
+  // context!: React.ContextType<typeof DraftContext>;
   private monacoInstance = createRef<editor.IStandaloneCodeEditor>();
   private monacoTypesWrapper!: typeof import("monaco-editor");
 
@@ -65,14 +70,14 @@ export default class MonacoEditorWrapper extends Component<
       return;
     }
 
+    const { currentlyEditingBlock } = this.props;
+
     // if selected file changes
-    if (prevProps.selectedFile.id !== this.props.selectedFile.id) {
+    if (prevProps.selectedFile?.fileId !== this.props.selectedFile?.fileId) {
       // clear selections
 
       this.clearLines();
-      if (
-        this.props.selectedFile.id === this.props.currentlyEditingStep?.fileId
-      ) {
+      if (this.props.selectedFile?.fileId === currentlyEditingBlock?.fileId) {
         this.updateLines();
       }
 
@@ -81,14 +86,15 @@ export default class MonacoEditorWrapper extends Component<
     }
 
     // if no step is selected
-    if (this.props.currentlyEditingStep === undefined) {
+    if (currentlyEditingBlock === undefined) {
       this.clearLines();
       return;
     }
 
     // if current step changes
     if (
-      prevProps.currentlyEditingStep?.id !== this.props.currentlyEditingStep.id
+      prevProps.currentlyEditingBlock?.backendId !==
+      this.props.currentlyEditingBlock?.backendId
     ) {
       this.clearLines();
       this.updateLines();
@@ -96,16 +102,19 @@ export default class MonacoEditorWrapper extends Component<
     }
 
     // if current file is not the step file, clear lines
-    if (this.props.currentlyEditingStep.fileId !== this.props.selectedFile.id) {
+    if (
+      this.props.currentlyEditingBlock?.fileId !==
+      this.props.selectedFile?.fileId
+    ) {
       return;
     }
 
     // if lines update
-    let oldLines = prevProps.currentlyEditingStep.lines;
+    let oldLines = prevProps.currentlyEditingBlock?.lines;
     let oldStart = oldLines?.start;
     let oldEnd = oldLines?.end;
 
-    let currentLines = this.props.currentlyEditingStep.lines;
+    let currentLines = this.props.currentlyEditingBlock?.lines;
     let currentStart = currentLines?.start;
     let currentEnd = currentLines?.end;
 
@@ -117,11 +126,11 @@ export default class MonacoEditorWrapper extends Component<
   }
 
   updateLines() {
-    let { currentlyEditingStep } = this.props;
-    if (!currentlyEditingStep) {
+    let { currentlyEditingBlock } = this.props;
+    if (!currentlyEditingBlock) {
       return;
     }
-    let lines = currentlyEditingStep.lines;
+    let lines = currentlyEditingBlock.lines;
     if (lines) {
       decorations = this.monacoInstance.current!.deltaDecorations(decorations, [
         {
@@ -161,9 +170,8 @@ export default class MonacoEditorWrapper extends Component<
     editor: editor.IStandaloneCodeEditor,
     monaco: typeof import("monaco-editor")
   ) {
-    (this.monacoInstance as React.MutableRefObject<
-      editor.IStandaloneCodeEditor
-    >).current = editor;
+    (this
+      .monacoInstance as React.MutableRefObject<editor.IStandaloneCodeEditor>).current = editor;
     this.monacoTypesWrapper = monaco;
     this.updateLines();
 
@@ -188,7 +196,7 @@ export default class MonacoEditorWrapper extends Component<
 
   handleCursor(e: editor.ICursorSelectionChangedEvent) {
     let newSelection = e.selection;
-    let { changeLines } = this.props;
+    let { changeSelectedLines } = this.props;
     let {
       startLineNumber,
       endLineNumber,
@@ -200,7 +208,7 @@ export default class MonacoEditorWrapper extends Component<
       this.setState({
         showModal: true,
       });
-      changeLines({
+      changeSelectedLines({
         start: startLineNumber,
         end: endLineNumber,
       });
@@ -210,11 +218,11 @@ export default class MonacoEditorWrapper extends Component<
   }
 
   saveLines() {
-    let { changeLines } = this.props;
+    let { changeSelectedLines } = this.props;
     this.props.saveLines(this.props.selectedFile.id, false);
     let selection = this.monacoInstance.current?.getSelection();
     let { startLineNumber, startColumn, endLineNumber, endColumn } = selection!;
-    changeLines({
+    changeSelectedLines({
       start: startLineNumber,
       end: endLineNumber,
     });
@@ -225,8 +233,7 @@ export default class MonacoEditorWrapper extends Component<
   }
 
   LineModal = () => {
-    let { start, end } = this.props.lines;
-
+    const { currentlyEditingStep } = this.props;
     return (
       <AnimatePresence>
         {this.state.showModal && this.props.editing && (
@@ -279,7 +286,10 @@ export default class MonacoEditorWrapper extends Component<
   };
 
   render() {
-    let { draftCode, language, selectedFile } = this.props;
+    // const { selectedFile } = this.fileContext;
+    const { selectedFile } = this.props;
+    const code = selectedFile?.code;
+    const language = selectedFile?.language;
     return (
       <div>
         <style jsx>{`
@@ -292,10 +302,10 @@ export default class MonacoEditorWrapper extends Component<
         `}</style>
         <this.LineModal />
         <MonacoEditor
-          key={selectedFile.id}
+          // key={selectedFile.id}
           height={"100%"}
-          language={getMonacoLanguageFromBackend(language)}
-          value={draftCode}
+          language={getMonacoLanguageFromBackend(language || "")}
+          value={code || ""}
           onChange={(value) => this.props.changeCode(value)}
           options={{
             selectOnLineNumbers: true,

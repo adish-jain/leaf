@@ -1,15 +1,12 @@
-import React, { useState, Component, ReactElement } from "react";
+import React, { useState, Component, useContext, createContext } from "react";
 const fetch = require("node-fetch");
 import "../styles/imageview.scss";
 let selectedImage: any;
 import { File, Step, Lines } from "../typescript/types/app_types";
 import { motion, AnimatePresence } from "framer-motion";
+import { DraftContext } from "../contexts/draft-context";
 
-type ImageViewProps = {
-  addStepImage: (image: any, stepId: string) => void;
-  deleteStepImage: (stepId: string) => void;
-  currentlyEditingStep: Step;
-};
+type ImageViewProps = {};
 
 type ImageViewState = {
   upload: boolean;
@@ -17,122 +14,69 @@ type ImageViewState = {
   imageName: string;
 };
 
-export default class ImageView extends Component<
-  ImageViewProps,
-  ImageViewState
-> {
-  constructor(props: ImageViewProps) {
-    super(props);
-    this.state = {
-      upload: false,
-      uploadFailed: false,
-      imageName: "",
-    };
+export default function ImageView(props: ImageViewProps) {
+  const { currentlyEditingBlock } = useContext(DraftContext);
+  const [state, setState] = useState({
+    upload: false,
+    uploadFailed: false,
+    imageName: "",
+  });
 
-    this.UploadScreen = this.UploadScreen.bind(this);
-    this.SelectScreen = this.SelectScreen.bind(this);
-    this.ImageScreen = this.ImageScreen.bind(this);
-
-    this.handleImageUpload = this.handleImageUpload.bind(this);
-    this.handleImageSelect = this.handleImageSelect.bind(this);
-    this.handleImageSubmit = this.handleImageSubmit.bind(this);
-    this.handleImageDelete = this.handleImageDelete.bind(this);
-    this.chooseScreen = this.chooseScreen.bind(this);
-  }
-
-  handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
     selectedImage = e.target.files![0];
-    this.setState({
+    setState({
       upload: true,
       uploadFailed: false,
       imageName: selectedImage.name,
     });
   }
 
-  handleImageSelect() {
-    this.setState({ upload: false, imageName: "" });
-    this.setState({ uploadFailed: false });
+  function handleImageSelect() {
+    setState({ ...state, upload: false, imageName: "", uploadFailed: false });
   }
 
-  async handleImageSubmit() {
-    // 5 MB max on image uploads
-    if (selectedImage.size > 5000000) {
-      this.setState({ uploadFailed: true });
-    } else {
-      // optimistic mutate
-      var url = URL.createObjectURL(selectedImage);
-      this.props.currentlyEditingStep.imageURL = url;
-      this.setState({ upload: false });
-      let stepId = this.props.currentlyEditingStep.id;
-      await this.props.addStepImage(selectedImage, stepId);
-      // this.setState({ upload: false });
-    }
-  }
-
-  async handleImageDelete() {
-    let stepId = this.props.currentlyEditingStep.id;
-    this.props.deleteStepImage(stepId);
-    this.setState({ upload: false });
-  }
-
-  ImageScreen() {
+  const ImageScreen = () => {
     return (
       <div className={"img-view"}>
         <button
           className={"remove-button"}
-          onClick={(e) => this.handleImageDelete()}
+          onClick={(e) => handleImageDelete()}
         >
           X
         </button>
-        <img src={this.props.currentlyEditingStep.imageURL}></img>
+        <img src={currentlyEditingStep.imageURL}></img>
       </div>
     );
+  };
+
+  async function handleImageDelete() {
+    deleteStepImage();
+    setState({ ...state, upload: false });
   }
 
-  //   UploadScreen() {
-  //     return (
-  //       <div className={"preview"}>
-  //         <label className={"previewButtons"}>
-  //           Upload File
-  //           <input
-  //             type="file"
-  //             id="myFile"
-  //             name="filename"
-  //             accept="image/*"
-  //             onChange={this.handleImageUpload}
-  //           />
-  //         </label>
-  //       </div>
-  //     );
-  //   }
-
-  UploadScreen() {
-    return (
-      <div>
-        <label className={"add-image"}>
-          + Add Image
-          <input
-            type="file"
-            id="myFile"
-            name="filename"
-            accept="image/*"
-            onChange={this.handleImageUpload}
-          />
-        </label>
-      </div>
-    );
+  async function handleImageSubmit() {
+    // 5 MB max on image uploads
+    if (selectedImage.size > 5000000) {
+      setState({ ...state, uploadFailed: true });
+    } else {
+      // optimistic mutate
+      let url = URL.createObjectURL(selectedImage);
+      setState({ ...state, upload: false });
+      await addStepImage(selectedImage, currentlyEditingStep.stepId);
+      // this.setState({ upload: false });
+    }
   }
 
-  SelectScreen() {
+  const SelectScreen = () => {
     return (
       <div className={"preview"}>
         <div className={"submit"}>
-          <p>Selected {this.state.imageName}</p>
+          <p>Selected {state.imageName}</p>
           <div className={"submitButtons"}>
-            <button onClick={(e) => this.handleImageSelect()}>Go Back</button>
-            <button onClick={(e) => this.handleImageSubmit()}>Submit</button>
+            <button onClick={(e) => handleImageSelect()}>Go Back</button>
+            <button onClick={(e) => handleImageSubmit()}>Submit</button>
           </div>
-          {this.state.uploadFailed ? (
+          {state.uploadFailed ? (
             <div>
               <br></br>Image size is too big! Select an image size up to 5mb.
             </div>
@@ -142,62 +86,76 @@ export default class ImageView extends Component<
         </div>
       </div>
     );
-  }
+  };
 
-  chooseScreen() {
-    let { upload } = this.state;
-    let { currentlyEditingStep } = this.props;
+  const ChooseScreen = () => {
+    let { upload } = state;
 
-    let imageUrlPresent = currentlyEditingStep?.imageURL !== undefined;
+    let imageUrlPresent = currentlyEditingStep?.imageUrl !== undefined;
 
     if (!upload) {
       // Image is in display or the upload option is available
       if (imageUrlPresent) {
         // Image is in display
-        return <this.ImageScreen />;
+        return <ImageScreen />;
       } else {
         // Upload screen is in display
-        return <this.UploadScreen />;
+        return <UploadScreen />;
       }
     }
     // Image has been selected, and "Go Back" & "Submit" options are available
     // If selected file size was too big, error is displayed
-    return <this.SelectScreen />;
-  }
+    return <SelectScreen />;
+  };
 
-  render() {
-    let { currentlyEditingStep } = this.props;
-    let show = currentlyEditingStep !== undefined;
+  const UploadScreen = () => {
     return (
-      <div className={"options-wrapper"}>
-        <AnimatePresence>
-          {show && (
-            <motion.div
-              style={{
-                // overflow: "hidden",
-                paddingBottom: "8px",
-              }}
-              initial={
-                {
-                  height: 0,
-                  opacity: 0,
-                } as any
-              }
-              animate={{ isOpen: show, height: "auto", opacity: 1 } as any}
-              exit={{
-                height: 0,
-                opacity: 0,
-              }}
-              transition={{ duration: 0.3 }}
-            >
-              <TitleAndDivider />
-              <this.chooseScreen />
-            </motion.div>
-          )}
-        </AnimatePresence>
+      <div>
+        <label className={"add-image"}>
+          + Add Image
+          <input
+            type="file"
+            id="myFile"
+            name="filename"
+            accept="image/*"
+            onChange={handleImageUpload}
+          />
+        </label>
       </div>
     );
-  }
+  };
+
+  const show = currentlyEditingBlock?.imageUrl ? true : false;
+
+  return (
+    <div className={"options-wrapper"}>
+      <AnimatePresence>
+        {show && (
+          <motion.div
+            style={{
+              // overflow: "hidden",
+              paddingBottom: "8px",
+            }}
+            initial={
+              {
+                height: 0,
+                opacity: 0,
+              } as any
+            }
+            animate={{ isOpen: show, height: "auto", opacity: 1 } as any}
+            exit={{
+              height: 0,
+              opacity: 0,
+            }}
+            transition={{ duration: 0.3 }}
+          >
+            <TitleAndDivider />
+            <ChooseScreen />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
 }
 
 function TitleAndDivider() {

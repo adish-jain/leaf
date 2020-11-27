@@ -1,13 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import "firebase";
 import { initFirebaseAdmin } from "../initFirebase";
-import {
-  backendType,
-  draftBackendRepresentation,
-  timeStamp,
-  folderObject,
-  fileObject,
-} from "../../typescript/types/app_types";
+import { timeStamp } from "../../typescript/types/app_types";
 const admin = require("firebase-admin");
 import {
   getUser,
@@ -17,7 +11,11 @@ import {
 var shortId = require("shortid");
 initFirebaseAdmin();
 import { Node } from "slate";
-import { backendDraftBlockEnum } from "../../typescript/enums/app_enums";
+import {
+  contentBlock,
+  draftBackendRepresentation,
+} from "../../typescript/types/backend/postTypes";
+import { ContentBlockType } from "../../typescript/enums/backend/postEnums";
 let db = admin.firestore();
 
 export default async function createDraftHandler(
@@ -33,15 +31,13 @@ export default async function createDraftHandler(
     draftContent: [
       {
         order: 0,
-        type: backendDraftBlockEnum.Text,
+        type: ContentBlockType.Text,
         slateContent: JSON.stringify(slateNode),
-        backendId: "",
       },
     ],
     folders: [],
     files: [
       {
-        fileId: shortId.generate(),
         fileName: "untitled",
         language: "text",
         code: "// Write some code here ...",
@@ -66,7 +62,7 @@ export default async function createDraftHandler(
   await Promise.all([
     docRef.collection("draftContent").add({
       order: 0,
-      type: backendDraftBlockEnum.Text,
+      type: ContentBlockType.Text,
       slateContent: JSON.stringify(slateNode),
     }),
   ]);

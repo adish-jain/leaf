@@ -79,6 +79,8 @@
   // padding-bottom: 8px;
   width: 100%;
   margin-right: 16px;
+  width: 800px;
+  margin: auto;
 
   position: relative;
   // position: fixed;
@@ -88,7 +90,6 @@
     bottom: 8px;
     left: -40px;
     font-size: 14px;
-
     color: $gray-text;
   }
 

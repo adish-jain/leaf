@@ -2,7 +2,7 @@ import { initFirebaseAdmin } from "./initFirebase";
 const admin = require("firebase-admin");
 initFirebaseAdmin();
 let db = admin.firestore();
-import { fileObject } from "../typescript/types/app_types";
+import { fileObject } from "../typescript/types/frontend/postTypes";
 
 export async function getFilesForDraft(
   uid: string,

@@ -1,8 +1,16 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { fileObject } from "../typescript/types/frontend/postTypes";
 import {
   getLanguageFromExtension,
   getExtensionFromLanguage,
 } from "./utils/languageUtils";
+import useSWR, { SWRConfig } from "swr";
+import { FilesContext } from "../contexts/files-context";
+import {
+  ProgrammingLanguage,
+  supportedLanguages,
+} from "../typescript/types/language_types";
+import { Lines } from "../typescript/types/app_types";
 var shortId = require("shortid");
 const fetch = require("node-fetch");
 
@@ -17,45 +25,76 @@ type codeFile = {
   code: string;
 };
 
-export function useFiles(draftId: any) {
-  /*
-    Manages the files within filebar.
-    The id, language, & name fields are guaranteed to be correct.
-    */
-  let files = [...draftFiles];
+function prepareFetching(draftId: string) {
+  const myRequest = (requestedAPI: string) => {
+    return {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify({
+        requestedAPI: requestedAPI,
+        draftId,
+      }),
+    };
+  };
 
-  /*
-    Manages the code within the files. 
-    The code field is guaranteed to be correct.
-    Create this separation to maintain consistency between local state 
-    of `files` and Firebase `files` collection. `codeFiles` maintains 
-    local changes to code until it is saved, propagated to Firebase,
-    and then `files` is updated to reflect the new code changes. 
-    */
-  var [codeFiles, updateFiles] = useState<File[]>(files.slice());
-  if (
-    (files.length != 0 && files[0]["id"] !== codeFiles[0]["id"]) ||
-    files.length !== codeFiles.length
-  ) {
-    updateFiles(files.slice());
-  }
+  const contentFetcher = () =>
+    fetch("../api/endpoint", myRequest("getFiles")).then((res: any) =>
+      res.json()
+    );
+  return contentFetcher;
+}
+/*
+ * Manages the files within filebar.
+ */
+export function useFiles(draftId: any, authenticated: boolean) {
+  const contentFetcher = prepareFetching(draftId);
+  const initialFilesData: fileObject[] = [];
+  let { data, mutate } = useSWR<fileObject[]>(
+    authenticated ? "getFiles" : null,
+    contentFetcher,
+    {
+      initialData: initialFilesData,
+      revalidateOnMount: true,
+      revalidateOnFocus: false,
+    }
+  );
+  const files = data || [];
 
+  // What lines are currently highlighted?
+  const [currentlySelectedLines, changeSelectedLines] = useState<Lines>({
+    start: 0,
+    end: 0,
+  });
   // Need to fix this to be maxNum of files so far to avoid duplicate keys
-  let numOfUntitleds = files.length;
+  let numOfUntitleds = files?.length || 0;
 
   /* 
     Manages which file is selected in the filebar.
     files[selectedfileIndex] will give you the current selected file
     */
   const [selectedFileIndex, changeSelectedFileIndex] = useState(0);
-
+  let selectedFile: fileObject | undefined;
+  // if out of bounds
+  if (selectedFileIndex < 0 || selectedFileIndex > files.length - 1) {
+    selectedFile = undefined;
+  } else {
+    selectedFile = files[selectedFileIndex];
+  }
   /*
     Update the code in DynamicCodeEditor in the correct file
     */
   function changeCode(value: string) {
-    let duplicateFiles = [...codeFiles];
-    duplicateFiles[selectedFileIndex].code = value;
-    updateFiles(duplicateFiles);
+    // updateFiles(duplicateFiles);
+
+    mutate(async (mutateState) => {
+      const modifiedItem: fileObject = mutateState[selectedFileIndex];
+      modifiedItem.code = value;
+      return [
+        ...mutateState.slice(0, selectedFileIndex - 1),
+        modifiedItem,
+        ...mutateState.slice(selectedFileIndex),
+      ];
+    }, false);
   }
 
   /*
@@ -65,7 +104,7 @@ export function useFiles(draftId: any) {
   function getFileNames() {
     let names: string[] = [];
     files.forEach((file) => {
-      names.push(file.name);
+      names.push(file.fileName);
     });
     return names;
   }
@@ -73,10 +112,10 @@ export function useFiles(draftId: any) {
   /*
     Checks to see if the fileName already exists in our list of files.
     */
-  function fileNameExistsFullSearch(name: string): boolean {
+  function fileNameExistsFullSearch(fileName: string): boolean {
     let exists = false;
     files.forEach((file) => {
-      if (file.name == name) {
+      if (file.fileName == name) {
         exists = true;
       }
     });
@@ -106,7 +145,7 @@ export function useFiles(draftId: any) {
     return newFileName;
   }
 
-  /*
+  /** 
     When a files name is changed, we update the name field.
     Triggered from `FileName.tsx`.
     */
@@ -116,7 +155,7 @@ export function useFiles(draftId: any) {
     updateFiles(duplicateFiles);
   }
 
-  /*
+  /** 
     Saves the file name to Firebase. Triggered from `FileName.tsx`. 
     Also updates the language selection for the file to match the new file name.
     If the file name is already taken, use `getNewFileName` to name file & throw alert.
@@ -125,7 +164,6 @@ export function useFiles(draftId: any) {
       `external` is true when triggered from `FileName.tsx` & false otherwise.
     */
   function saveFileName(value: string, external: boolean) {
-    let duplicateFiles = [...files];
     value = value.trim();
 
     if (fileNameExistsPartialSearch(value)) {
@@ -135,8 +173,6 @@ export function useFiles(draftId: any) {
       duplicateFiles[selectedFileIndex].name = value;
     }
 
-    files = duplicateFiles;
-    updateFiles(duplicateFiles);
     if (external) {
       setLangFromName(files[selectedFileIndex].name);
     }
@@ -159,13 +195,13 @@ export function useFiles(draftId: any) {
     }).then(async (res: any) => {});
   }
 
-  /*
+  /** 
     Saves the language selection to Firebase. Triggered from `LanguageBar.tsx`. 
     Also updates the file name to match the new language selection. 
       `language` is the language selection as a string.
       `external` is true when triggered from `LanguageBar.tsx` & false otherwise.
     */
-  function changeFileLanguage(language: string, external: boolean) {
+  function changeFileLanguage(language: supportedLanguages, external: boolean) {
     let fileId = files[selectedFileIndex].id;
     let duplicateFiles = [...files];
     duplicateFiles[selectedFileIndex].language = language;
@@ -193,7 +229,7 @@ export function useFiles(draftId: any) {
     }).then(async (res: any) => {});
   }
 
-  /*
+  /** 
     Sets the language of the file given the file name. 
     Called by saveFileName (defined above) when `external` is true. 
     If no extension is included in the filename, default to text file.
@@ -213,7 +249,7 @@ export function useFiles(draftId: any) {
     changeFileLanguage(newLanguage, false);
   }
 
-  /*
+  /** 
     Sets the extension of the file given the language selection. 
     Called by changeFileLanguage (defined above) when `external` is true.
     */
@@ -236,7 +272,7 @@ export function useFiles(draftId: any) {
     saveFileName(newName, false);
   }
 
-  /*
+  /** 
     Adds a new file to the Filebar. 
     Calls saveFile to save file to Firebase.
     New files are by default text files. 
@@ -271,7 +307,7 @@ export function useFiles(draftId: any) {
     saveFile(newFileId, newFileName, newFileCode, newFileLang);
   }
 
-  /*
+  /** 
     Saves a file to Firebase. 
     */
   function saveFile(
@@ -299,11 +335,10 @@ export function useFiles(draftId: any) {
     });
   }
 
-  /*
-    Deletes a file in the filebar. 
-    Makes sure that the selected file is set correctly after deletion.
-    Triggered from `FileName.tsx`.
-    */
+  /**
+   * Remove a file.
+   * @param toDeleteIndex Index of file to be deleted.
+   */
   function removeFile(toDeleteIndex: number) {
     // can have minimum one file
     if (files.length === 1) {
@@ -332,7 +367,7 @@ export function useFiles(draftId: any) {
     deleteFile(toDeleteFileId);
   }
 
-  /*
+  /** 
     Removes file from Firebase.
     */
   function deleteFile(fileId: string) {
@@ -351,18 +386,18 @@ export function useFiles(draftId: any) {
     });
   }
 
-  /*
+  /** 
     Saves file code to Firebase. Triggered from `DynamicCodeEditor.tsx`. 
     */
   function saveFileCode() {
-    let fileId = files[selectedFileIndex].id;
-    let code = codeFiles[selectedFileIndex].code;
+    let fileId = files[selectedFileIndex].fileId;
+    let code = files[selectedFileIndex].code;
 
     files[selectedFileIndex].code = code;
 
-    mutate(async (mutateState: any) => {
-      return { ...mutateState, files };
-    }, false);
+    // mutate(async (mutateState: fileObject[]) => {
+    //   return { ...mutateState, files };
+    // }, false);
 
     var data = {
       requestedAPI: "save_file_code",
@@ -380,14 +415,17 @@ export function useFiles(draftId: any) {
 
   return {
     selectedFileIndex,
-    codeFiles,
+    files,
+    onNameChange,
     addFile,
-    removeFile,
     changeCode,
+    removeFile,
     changeSelectedFileIndex,
     changeFileLanguage,
     saveFileName,
-    onNameChange,
+    selectedFile,
+    currentlySelectedLines,
+    changeSelectedLines,
     saveFileCode,
   };
 }

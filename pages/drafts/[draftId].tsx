@@ -1,56 +1,40 @@
 import { useRouter } from "next/router";
-import {
-  useState,
-  useCallback,
-  Component,
-  Dispatch,
-  SetStateAction,
-} from "react";
-import { useLoggedIn, logOut } from "../../lib/UseLoggedIn";
-import { useFiles } from "../../lib/useFiles";
-import { useSteps } from "../../lib/useSteps";
+import { useState } from "react";
+import { useLoggedIn } from "../../lib/UseLoggedIn";
 import { useBackend } from "../../lib/useBackend";
 import { useTags } from "../../lib/useTags";
+import { useFiles } from "../../lib/useFiles";
+import { useSteps } from "../../lib/useSteps";
 import { useDraftTitle } from "../../lib/useDraftTitle";
 import useSWR from "swr";
-
+import { DraftContext } from "../../contexts/draft-context";
 import Tags from "../../components/Tags";
 import DefaultErrorPage from "next/error";
 import Head from "next/head";
+import { DraftContent } from "../../components/DraftContent";
 import FinishedPost from "../../components/FinishedPost";
-import { goToPost } from "../../lib/usePosts";
+import { opacityFade } from "../../styles/framer_animations/opacityFade";
 const fetch = require("node-fetch");
-import {
-  File,
-  Step,
-  Lines,
-  draftBackendRepresentation,
-  publishedPostBackendRepresentation,
-  backendType,
-  timeStamp,
-} from "../../typescript/types/app_types";
+import { draftMetaData } from "../../typescript/types/frontend/postTypes";
 global.Headers = fetch.Headers;
-import Router from "next/router";
-import Link from "next/link";
 import "../../styles/app.scss";
 import "../../styles/draftheader.scss";
 import "../../styles/publishing.scss";
-import { DraftHeader } from "../../components/Headers";
-import { DraftJsButtonProps } from "draft-js-buttons";
 import { motion, AnimatePresence } from "framer-motion";
-import TextareaAutosize from "react-autosize-textarea";
+import { FilesContext } from "../../contexts/files-context";
 
-// import SlateEditor from "../../components/SlateSection";
-import MarkdownSection from "../../components/MarkdownSection";
-import CodeStepSection from "../../components/CodeStepSection";
-const DraftView = () => {
-  const { authenticated, error, loading } = useLoggedIn();
-  const router = useRouter();
-  // Draft ID
-  const { draftId } = router.query;
-  // highlighting lines for steps
+const initialMetaData: draftMetaData = {
+  title: "",
+  errored: false,
+  published: false,
+  username: "",
+  createdAt: {
+    _nanoseconds: 0,
+    _seconds: 0,
+  },
+};
 
-  // if there are any steps in this draft, they will be fetched & repopulated
+const prepareFetcher = (draftId: string) => {
   const rawData = {
     requestedAPI: "getDraftMetadata",
     draftId: draftId,
@@ -62,47 +46,59 @@ const DraftView = () => {
     body: JSON.stringify(rawData),
   };
 
-  const fetcher = (url: string) =>
+  const fetcher = () =>
     fetch("/api/endpoint", myRequest).then((res: any) => res.json());
 
-  const initialData: {
-    published: boolean;
-    title: string;
-    createdAt: timeStamp;
-    username: string;
-  } = {
-    title: "",
-    published: false,
-    username: "",
-    createdAt: {
-      _nanoseconds: 0,
-      _seconds: 0,
-    },
-  };
+  return fetcher;
+};
 
+const DraftView = () => {
+  const { authenticated, error, loading } = useLoggedIn();
+  const router = useRouter();
+  const { draftId } = router.query;
   const {
     draftContent,
     updateSlateSectionToBackend,
     addBackendBlock,
+    currentlyEditingBlock,
   } = useBackend(authenticated, draftId as string);
-
-  let { data: draftData, mutate } = useSWR(
+  const fetcher = prepareFetcher(draftId as string);
+  let { data: draftData, mutate } = useSWR<draftMetaData>(
     authenticated ? "getDraftMetadata" : null,
     fetcher,
-    { initialData, revalidateOnMount: true }
+    {
+      initialData: initialMetaData,
+      revalidateOnMount: true,
+    }
   );
-
-  let { onTitleChange, draftTitle } = useDraftTitle(
+  const { onTitleChange, draftTitle } = useDraftTitle(
     draftId as string,
     authenticated
   );
-
-  const errored = draftData["errored"];
-  let { toggleTag, tags } = useTags(draftId as string, authenticated);
-
-  // const [shouldShowBlock, updateShowBlock] = useState(false);
+  const errored = draftData?.errored || false;
+  const published = draftData?.published || false;
+  const username = draftData?.username || "";
+  const postId = draftData?.postId || "";
+  const { toggleTag, tags } = useTags(draftId as string, authenticated);
   const [showPreview, updateShowPreview] = useState(false);
   const [showTags, updateShowTags] = useState(false);
+  const {
+    selectedFileIndex,
+    files,
+    onNameChange,
+    addFile,
+    changeCode,
+    removeFile,
+    changeSelectedFileIndex,
+    changeFileLanguage,
+    saveFileName,
+    selectedFile,
+    currentlySelectedLines,
+    changeSelectedLines,
+    saveFileCode,
+  } = useFiles(draftId, authenticated);
+  console.log(files);
+  const {} = useSteps(draftId as string, authenticated);
 
   // wrapper function for deleting a file.
   // when a file is deleted, make sure all associated steps remove that file
@@ -131,274 +127,76 @@ const DraftView = () => {
           }}
         />
       </Head>
-      <main className={"AppWrapper"}>
-        <AnimatePresence>
-          {showPreview && (
-            <motion.div
-              initial={{
-                opacity: 0,
-              }}
-              animate={{
-                opacity: 1,
-              }}
-              exit={{
-                opacity: 0,
-              }}
-              transition={{
-                duration: 0.4,
-              }}
-            >
-              <FinishedPost
+      <FilesContext.Provider
+        value={{
+          addFile: addFile,
+          changeCode: changeCode,
+          removeFile: removeFile,
+          changeSelectedFileIndex: changeSelectedFileIndex,
+          changeFileLanguage: changeFileLanguage,
+          saveFileName: saveFileName,
+          selectedFile: selectedFile,
+          currentlySelectedLines: currentlySelectedLines,
+          changeSelectedLines: changeSelectedLines,
+          files: files,
+          saveFileCode: saveFileCode,
+        }}
+      >
+        <DraftContext.Provider
+          value={{
+            addBackendBlock: addBackendBlock,
+            updateSlateSectionToBackend: updateSlateSectionToBackend,
+            previewMode: showPreview,
+            updatePreviewMode: updateShowPreview,
+            published: published,
+            username: username,
+            postId: postId,
+            draftId: draftId as string,
+            currentlyEditingBlock: currentlyEditingBlock,
+          }}
+        >
+          <main className={"AppWrapper"}>
+            <AnimatePresence>
+              {showPreview && (
+                <motion.div
+                  initial={"hidden"}
+                  animate={"visible"}
+                  exit={"hidden"}
+                  variants={opacityFade}
+                >
+                  {/* <FinishedPost
+                  title={draftTitle}
+                  // tags={tags}
+                  // username={username}
+                  files={draftFiles}
+                  updateShowPreview={updateShowPreview}
+                  previewMode={true}
+                  publishedAtSeconds={createdAt.publishedAtSeconds}
+                /> */}
+                </motion.div>
+              )}
+            </AnimatePresence>
+            {showTags ? (
+              <Tags
+                showTags={showTags}
+                updateShowTags={updateShowTags}
                 title={draftTitle}
-                // tags={tags}
-                // username={username}
-                files={draftFiles}
-                updateShowPreview={updateShowPreview}
-                previewMode={true}
-                publishedAtSeconds={createdAt.publishedAtSeconds}
+                selectedTags={tags as string[]}
+                toggleTag={toggleTag}
               />
-            </motion.div>
-          )}
-        </AnimatePresence>
-        {showTags ? (
-          <Tags
-            showTags={showTags}
-            updateShowTags={updateShowTags}
-            title={draftTitle}
-            selectedTags={tags as string[]}
-            toggleTag={toggleTag}
-          />
-        ) : (
-          <DraftContent
-            showPreview={showPreview}
-            showTags={showTags}
-            // username={username}
-            tags={tags}
-            onTitleChange={onTitleChange}
-            draftTitle={draftTitle}
-            draftId={draftId as string}
-            updateShowPreview={updateShowPreview}
-            updateShowTags={updateShowTags}
-            draftData={draftData}
-            draftContent={draftContent}
-            updateSlateSectionToBackend={updateSlateSectionToBackend}
-            addBackendBlock={addBackendBlock}
-          />
-        )}
-      </main>
+            ) : (
+              <DraftContent
+                onTitleChange={onTitleChange}
+                draftTitle={draftTitle}
+                updateShowTags={updateShowTags}
+                draftContent={draftContent}
+              />
+            )}
+          </main>
+        </DraftContext.Provider>
+      </FilesContext.Provider>
     </div>
   );
-};
-
-type DraftContentProps = {
-  draftContent: backendType[] | undefined;
-  updateSlateSectionToBackend: any;
-};
-
-type DraftContentState = {
-  showPreview: boolean;
-};
-
-class DraftContent extends Component<DraftContentProps, DraftContentState> {
-  constructor(props: DraftContentProps) {
-    super(props);
-
-    this.state = {
-      showPreview: false,
-    };
-
-    this.goToPublishedPost = this.goToPublishedPost.bind(this);
-    this.publishDraft = this.publishDraft.bind(this);
-    this.DraftComponent = this.DraftComponent.bind(this);
-  }
-
-  publishDraft() {
-    let { draftId } = this.props;
-    fetch("/api/endpoint", {
-      method: "POST",
-      redirect: "follow",
-      headers: new Headers({ "Content-Type": "application/json" }),
-      body: JSON.stringify({ requestedAPI: "publishPost", draftId: draftId }),
-    })
-      .then(async (res: any) => {
-        let resJson = await res.json();
-        let newUrl = resJson.newURL;
-        if (newUrl === "unverified") {
-          alert("Please verify your email before publishing.");
-        } else {
-          Router.push(newUrl);
-        }
-        // Router.push(newUrl);
-      })
-      .catch(function (err: any) {
-        console.log(err);
-      });
-  }
-
-  async goToPublishedPost() {
-    let { username, postId } = this.props;
-    window.location.href = `/${username}/${postId}`;
-  }
-
-  PublishingHeader = () => {
-    let { draftTitle, onTitleChange } = this.props;
-    return (
-      <div className={"publishing-header"}>
-        <TitleLabel />
-        <TextareaAutosize
-          placeholder={draftTitle}
-          value={draftTitle}
-          onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
-            let myTarget = e.target as HTMLTextAreaElement;
-            onTitleChange(myTarget.value);
-          }}
-          style={{
-            fontWeight: "bold",
-            fontSize: "40px",
-            color: "D0D0D0",
-            fontFamily: "sans-serif",
-          }}
-          name="title"
-        />
-      </div>
-    );
-  };
-
-  arrangeContentList = (draftContent: backendType[]) => {
-    // iterate through array
-
-    // if code step type
-    // add to sub array
-
-    // if not code step type, break sub array
-    let finalArray = [];
-    let subArray = [];
-    let adding: boolean = false;
-    for (let i = 0; i < draftContent.length; i++) {
-      if (draftContent[i].type === "codestep") {
-        subArray.push(draftContent[i]);
-      } else {
-        if (subArray.length > 0) {
-          finalArray.push(subArray);
-        }
-        subArray = [];
-        finalArray.push(draftContent[i]);
-      }
-    }
-    if (subArray.length > 0) {
-      finalArray.push(subArray);
-    }
-    console.log("final array is");
-    console.log(finalArray);
-  };
-
-  DraftComponent() {
-    let {
-      updateShowPreview,
-      updateShowTags,
-      draftData,
-      draftContent,
-      updateSlateSectionToBackend,
-      addBackendBlock,
-    } = this.props;
-
-    let errored = draftData["errored"];
-    const draftPublished = draftData["published"];
-    const postId = draftData["postId"];
-    const username = draftData["username"];
-    const createdAt = draftData["createdAt"];
-    this.arrangeContentList(draftContent);
-    return (
-      <div>
-        <DraftHeader
-          username={username}
-          updateShowPreview={updateShowPreview}
-          updateShowTags={updateShowTags}
-          goToPublishedPost={this.goToPublishedPost}
-          published={draftPublished}
-          publishPost={this.publishDraft}
-        />
-        <div className={"App"}>
-          <div className={"center-divs"}>
-            <this.PublishingHeader />
-
-            <div className={"draft-content"}>
-              {draftContent ? (
-                draftContent.map(
-                  (contentElement: backendType, index: number) => {
-                    switch (contentElement.type) {
-                      case "text":
-                        return (
-                          <MarkdownSection
-                            slateContent={contentElement.slateContent}
-                            key={contentElement.backendId}
-                            backendId={contentElement.backendId}
-                            sectionIndex={index}
-                            updateSlateSectionToBackend={
-                              updateSlateSectionToBackend
-                            }
-                            addBackendBlock={addBackendBlock}
-                            contentType={contentElement.type}
-                          />
-                        );
-                      case "codestep":
-                        return (
-                          <CodeStepSection
-                            slateContent={contentElement.slateContent}
-                            key={contentElement.backendId}
-                            backendId={contentElement.backendId}
-                            sectionIndex={index}
-                            updateSlateSectionToBackend={
-                              updateSlateSectionToBackend
-                            }
-                            addBackendBlock={addBackendBlock}
-                          />
-                        );
-                      default:
-                        return "test";
-                    }
-                  }
-                )
-              ) : (
-                <div></div>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  render() {
-    let { showPreview } = this.props;
-
-    return (
-      <AnimatePresence>
-        {!showPreview && (
-          <motion.div
-            initial={{
-              opacity: 0,
-            }}
-            animate={{
-              opacity: 1,
-            }}
-            exit={{
-              opacity: 0,
-            }}
-            transition={{
-              duration: 0.4,
-            }}
-          >
-            <this.DraftComponent />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    );
-  }
-}
-
-const TitleLabel = () => {
-  return <label className={"title-label"}>Title</label>;
 };
 
 export default DraftView;

@@ -6,30 +6,11 @@ import "../styles/codeeditor.scss";
 import MonacoEditor from "./MonacoEditor";
 import ImageView from "./ImageView";
 import { File, Step as StepType, Lines } from "../typescript/types/app_types";
+import { FilesContext } from "../contexts/files-context";
+import { fileObject } from "../typescript/types/frontend/postTypes";
+import { DraftContext } from "../contexts/draft-context";
 
-type CodeEditorProps = {
-  draftId: string;
-  saveFileCode: () => void;
-  editingStep: number;
-  changeFileLanguage: (language: string, external: boolean) => void;
-  saveFileName: (value: string, external: boolean) => void;
-  onNameChange: (name: string) => void;
-  draftCode: string;
-  changeLines: (lines: Lines) => void;
-  saveLines: (fileName: string, remove: boolean) => void;
-  // filenames map to language
-  files: File[];
-  addFile: () => void;
-  removeFile: (toDeleteIndex: number) => void;
-  selectedFileIndex: number;
-  changeCode: (value: string) => void;
-  changeSelectedFile: (fileIndex: number) => void;
-  language: string;
-  lines: Lines;
-  currentlyEditingStep: StepType;
-  deleteStepImage: (stepId: string) => void;
-  addStepImage: (selectedImage: any, stepId: string) => void;
-};
+type CodeEditorProps = {};
 
 type CodeEditorState = {};
 
@@ -44,66 +25,39 @@ export default class CodeEditor extends Component<
       // everytime we need to remount the monaco editor for resizing, we increment this key
       monacoKey: 0,
     };
-
   }
 
   render() {
-    let {
-      draftId,
-      saveFileCode,
-      draftCode,
-      files,
-      changeCode,
-      addFile,
-      removeFile,
-      selectedFileIndex,
-      changeSelectedFile,
-      changeFileLanguage,
-      saveFileName,
-      onNameChange,
-      language,
-      editingStep,
-      changeLines,
-      saveLines,
-      lines,
-      currentlyEditingStep,
-      addStepImage,
-      deleteStepImage,
-    } = this.props;
+    let {} = this.props;
 
     return (
       <div className={"CodeEditor"}>
-        <ImageView
-          addStepImage={addStepImage}
-          currentlyEditingStep={currentlyEditingStep}
-          deleteStepImage={deleteStepImage}
-        />
-        <FileBar
-          draftId={draftId}
-          files={files}
-          addFile={addFile}
-          removeFile={removeFile}
-          selectedFileIndex={selectedFileIndex}
-          changeSelectedFile={changeSelectedFile}
-          saveFileName={saveFileName}
-          onNameChange={onNameChange}
-        />
-        <MonacoEditor
-          saveFileCode={saveFileCode}
-          draftCode={draftCode}
-          changeCode={changeCode}
-          language={language}
-          editing={editingStep !== -1}
-          changeLines={changeLines}
-          saveLines={saveLines}
-          lines={lines}
-          selectedFile={files[selectedFileIndex]}
-          currentlyEditingStep={currentlyEditingStep}
-        />
-        <LanguageBar
-          language={language}
-          changeFileLanguage={changeFileLanguage}
-        />
+        <ImageView />
+        <FileBar />
+        <DraftContext.Consumer>
+          {({ currentlyEditingBlock }) => (
+            <FilesContext.Consumer>
+              {({
+                selectedFile,
+                currentlySelectedLines,
+                changeSelectedLines,
+                saveFileCode,
+                changeCode
+              }) => (
+                <MonacoEditor
+                  draftCode={selectedFile?.code || ""}
+                  currentlySelectedLines={currentlySelectedLines}
+                  selectedFile={selectedFile}
+                  currentlyEditingBlock={currentlyEditingBlock}
+                  changeSelectedLines={changeSelectedLines}
+                  saveFileCode={saveFileCode}
+                  changeCode={changeCode}
+                />
+              )}
+            </FilesContext.Consumer>
+          )}
+        </DraftContext.Consumer>
+        <LanguageBar />
       </div>
     );
   }

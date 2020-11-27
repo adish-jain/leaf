@@ -2,6 +2,8 @@ import React, { Component, useEffect, useRef, useState } from "react";
 import FileName from "./FileName";
 import "../styles/filebar.scss";
 import { AnimatePresence, motion } from "framer-motion";
+import { fileObject } from "../typescript/types/frontend/postTypes";
+import { FilesContext } from "../contexts/files-context";
 
 type File = {
   id: string;
@@ -12,8 +14,7 @@ type File = {
 };
 
 type FileBarProps = {
-  draftId: string;
-  files: File[];
+  files: fileObject[];
   changeSelectedFile: (fileIndex: number) => void;
   saveFileName: (value: string, external: boolean) => void;
   onNameChange: (name: string) => void;
@@ -53,8 +54,6 @@ export default class FileBar extends Component<FileBarProps> {
     }
 
     let {
-      files,
-      saveFileName,
       onNameChange,
       selectedFileIndex,
       removeFile,
@@ -63,26 +62,33 @@ export default class FileBar extends Component<FileBarProps> {
     } = this.props;
 
     return (
-      <div className={"filebar"}>
-        <div ref={FileBarRef} onScroll={handleScroll} className={"files"}>
-          {files.map((file, index) => (
-            <FileName
-              name={file.name}
-              key={file.id}
-              changeSelectedFile={changeSelectedFile}
-              saveFileName={saveFileName}
-              onNameChange={onNameChange}
-              selected={selectedFileIndex === index}
-              removeFile={removeFile}
-              index={index}
+      <FilesContext.Consumer>
+        {({ files, removeFile, selectedFile, saveFileName }) => (
+          <div className={"filebar"}>
+            <div ref={FileBarRef} onScroll={handleScroll} className={"files"}>
+              {files.map((file, index) => (
+                <FileName
+                  name={file.fileName}
+                  key={file.fileId}
+                  changeSelectedFile={changeSelectedFile}
+                  saveFileName={saveFileName}
+                  onNameChange={onNameChange}
+                  selected={selectedFile?.fileId === file.fileId}
+                  removeFile={removeFile}
+                  index={index}
+                />
+              ))}
+            </div>
+            <Scrollbar
+              scrollPos={scrollOffset}
+              scrollBarWidth={scrollBarWidth}
             />
-          ))}
-        </div>
-        <Scrollbar scrollPos={scrollOffset} scrollBarWidth={scrollBarWidth} />
-        <button className={"new-file"} onClick={(e) => addFile()}>
-          +
-        </button>
-      </div>
+            <button className={"new-file"} onClick={(e) => addFile()}>
+              +
+            </button>
+          </div>
+        )}
+      </FilesContext.Consumer>
     );
   };
 

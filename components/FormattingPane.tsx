@@ -23,16 +23,15 @@ import {
   useFocused,
   RenderLeafProps,
 } from "slate-react";
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useContext } from "react";
 import { searchBlocks } from "../lib/blockUtils";
 import { HistoryEditor } from "slate-history";
 import "../styles/formattingpane.scss";
 import { isAncestor } from "@udecode/slate-plugins";
-import {
-  backendDraftBlockEnum,
-  formattingPaneBlockType,
-} from "../typescript/enums/app_enums";
+import { formattingPaneBlockType } from "../typescript/enums/app_enums";
+import { ContentBlockType } from "../typescript/enums/backend/postEnums";
 import { FormattingPaneBlockList } from "../typescript/types/app_types";
+import { DraftContext } from "../contexts/draft-context";
 let leftPos = 0;
 export default function FormattingPane(props: {
   editor: Editor & ReactEditor & HistoryEditor;
@@ -42,8 +41,11 @@ export default function FormattingPane(props: {
   searchedBlocks: FormattingPaneBlockList;
   addBlock: (blockType: formattingPaneBlockType) => void;
   sectionIndex: number;
+  contentType: ContentBlockType;
 }) {
   const formattingPaneRef = useRef<HTMLDivElement>(null);
+  const draftContext = useContext(DraftContext);
+  const { addBackendBlock } = draftContext;
   let formattingPaneHeight = 240;
   let {
     slashPosition,
@@ -52,7 +54,6 @@ export default function FormattingPane(props: {
     updateSlashPosition,
     searchedBlocks,
     addBlock,
-    addBackendBlock,
     sectionIndex,
   } = props;
 
@@ -95,7 +96,6 @@ export default function FormattingPane(props: {
     }
   }
   // let searchedBlocks = searchBlocks(slashPosition, editor, Blocks);
-
   return (
     <AnimatePresence>
       {slashPosition && (
@@ -146,11 +146,21 @@ export default function FormattingPane(props: {
             </div>
             <div className={"rich-text"}>
               <div className={"section-label"}>Interactivity</div>
+              {props.contentType === "codestep" && (
+                <InteractiveElement
+                  elementName={"Single Column Text"}
+                  addBackendBlock={addBackendBlock}
+                  sectionIndex={sectionIndex}
+                  updateSlashPosition={updateSlashPosition}
+                  blockToAdd={ContentBlockType.Text}
+                />
+              )}
               <InteractiveElement
                 elementName={"Code Steps"}
                 addBackendBlock={addBackendBlock}
                 sectionIndex={sectionIndex}
                 updateSlashPosition={updateSlashPosition}
+                blockToAdd={ContentBlockType.CodeSteps}
               />
             </div>
           </div>
@@ -163,19 +173,17 @@ export default function FormattingPane(props: {
 function InteractiveElement(props: {
   elementName: string;
   addBackendBlock: (
-    backendDraftBlockEnum: backendDraftBlockEnum,
+    backendDraftBlockEnum: ContentBlockType,
     atIndex: number
   ) => void;
   sectionIndex: number;
   updateSlashPosition: any;
+  blockToAdd: ContentBlockType;
 }) {
   return (
     <div
       onClick={async (e) => {
-        await props.addBackendBlock(
-          backendDraftBlockEnum.CodeSteps,
-          props.sectionIndex
-        );
+        await props.addBackendBlock(props.blockToAdd, props.sectionIndex);
         props.updateSlashPosition(null);
       }}
       className={"interactive-element"}

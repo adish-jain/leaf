@@ -33,12 +33,6 @@ export function useSteps(draftId: string, authenticated: boolean) {
   // What step is currently being edited?
   const [editingStep, changeEditingStep] = useState(-1);
 
-  // What lines are currently highlighted?
-  const [lines, changeLines] = useState<Lines>({
-    start: 0,
-    end: 0,
-  });
-
   /*
   Helper function to find the step with the associated stepId in `storedSteps`
   */
@@ -85,7 +79,7 @@ export function useSteps(draftId: string, authenticated: boolean) {
     });
   }
 
-  /*
+  /**  
   mutates content inside a desired step. Does not save text to backend.
   */
   function mutateStoredStep(stepId: any, text: any) {
@@ -161,7 +155,7 @@ export function useSteps(draftId: string, authenticated: boolean) {
     });
   }
 
-  /* 
+  /** 
   Attach lines selected in the code editor to the current editing step.
   if remove is true, fileName and lines are cleared from the step
   if renameFile is true, only the fileName is updated (lines are untouched)
@@ -360,30 +354,11 @@ export function useSteps(draftId: string, authenticated: boolean) {
       stepId: stepId,
       imageFile: await toBase64(selectedImage),
     };
-
-    await fetch("/api/endpoint", {
-      method: "POST",
-      headers: new Headers({
-        "Content-Type": "application/json",
-      }),
-      body: JSON.stringify(data),
-    })
-      .then(async (res: any) => {
-        let resJSON = await res.json();
-        let url = resJSON.url;
-        console.log("new url is ", url);
-        let optimisticSteps = storedSteps!.slice();
-        optimisticSteps[editingStep].imageURL = url;
-        console.log("updated image");
-        mutate(optimisticSteps, false);
-      })
-      .catch((error: any) => {
-        console.log(error);
-        console.log("upload failed.");
-      });
   }
 
-  async function deleteStepImage(stepId: string) {
+  async function deleteStepImage() {
+    const stepId = storedSteps![editingStep];
+
     let data = {
       requestedAPI: "deleteImage",
       draftId: draftId,
@@ -403,20 +378,6 @@ export function useSteps(draftId: string, authenticated: boolean) {
   }
 
   return {
-    saveStep,
-    mutateStoredStep,
-    saveStepToBackend,
-    deleteStoredStep,
-    moveStepUp,
-    moveStepDown,
-    realSteps: storedSteps,
-    editingStep,
-    changeEditingStep,
-    lines,
-    changeLines,
-    saveLines,
-    removeLines,
-    renameStepFileName,
     addStepImage,
     deleteStepImage,
   };

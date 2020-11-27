@@ -10,6 +10,7 @@ import React, {
   ReactElement,
   useRef,
   ChangeEvent,
+  useContext,
 } from "react";
 import { useBlocks, searchBlocks } from "../lib/blockUtils";
 import {
@@ -64,6 +65,9 @@ import {
   ImageElement,
 } from "./BlockComponents";
 import { getPrismLanguageFromBackend } from "../lib/utils/languageUtils";
+import { contentBlock } from "../typescript/types/frontend/postTypes";
+import { ContentBlockType } from "../typescript/enums/backend/postEnums";
+import { DraftContext } from "../contexts/draft-context";
 const toBase64 = (file: any) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -110,12 +114,6 @@ const Blocks: FormattingPaneBlockList = [
   },
 ];
 
-function arraysAreEqual(ary1: Node[], ary2: Node[]) {
-  if (ary1.length !== ary2.length) {
-  }
-  return ary1.join("") == ary2.join("");
-}
-
 enum saveStatusEnum {
   saved = "Content saved",
   notsaved = "Unsaved content",
@@ -127,17 +125,7 @@ const MarkdownPreviewExample = (props: {
   slateContent: string;
   sectionIndex: number;
   backendId: string;
-  addBackendBlock: (
-    backendDraftBlockEnum: backendDraftBlockEnum,
-    atIndex: number
-  ) => void;
-  contentType: backendDraftBlockEnum;
-  updateSlateSectionToBackend: (
-    value: Node[],
-    backendId: string,
-    order: number,
-    lines?: Lines
-  ) => void;
+  contentType: ContentBlockType;
 }) => {
   const [saveStatus, updateSaveStatus] = useState<saveStatusEnum>(
     saveStatusEnum.notsaved
@@ -147,6 +135,8 @@ const MarkdownPreviewExample = (props: {
   let timer: NodeJS.Timeout | null = null;
   const [value, setValue] = useState<Node[]>(JSON.parse(props.slateContent));
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
+  const draftContext = useContext(DraftContext);
+  const { updateSlateSectionToBackend } = draftContext;
   const editor = useMemo(
     () =>
       withImages(
@@ -386,12 +376,14 @@ const MarkdownPreviewExample = (props: {
     const timeOutId = setTimeout(() => {
       const fetchProduct = async () => {
         try {
-          await props.updateSlateSectionToBackend(
-            value,
+          updateSlateSectionToBackend(
             props.backendId,
-            props.sectionIndex
+            props.sectionIndex,
+            value
           );
-        } catch (err) {}
+        } catch (err) {
+          console.log(err);
+        }
       };
       updateSaveStatus(saveStatusEnum.saving);
 
@@ -469,8 +461,8 @@ const MarkdownPreviewExample = (props: {
         selectedRichTextIndex={selectedRichTextIndex}
         searchedBlocks={searchedBlocks}
         addBlock={addBlock}
-        addBackendBlock={props.addBackendBlock}
         sectionIndex={props.sectionIndex}
+        contentType={props.contentType}
       />
     </div>
   );

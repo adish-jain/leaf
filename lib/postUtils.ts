@@ -1,19 +1,19 @@
 import { initFirebaseAdmin } from "./initFirebase";
 import { getFilesForDraft } from "./fileUtils";
+import {
+  contentBlock,
+  draftFrontendRepresentation,
+  publishedPostFrontendRepresentation,
+} from "../typescript/types/frontend/postTypes";
+import { draftMetaData } from "../typescript/types/frontend/postTypes";
+
 const admin = require("firebase-admin");
 initFirebaseAdmin();
 let db = admin.firestore();
 
 import { getUidFromUsername, getUsernameFromUid } from "./userUtils";
-import {
-  timeStamp,
-  Post,
-  draftBackendRepresentation,
-  publishedPostBackendRepresentation,
-  backendType,
-} from "../typescript/types/app_types";
+import { timeStamp, Post } from "../typescript/types/app_types";
 import ErroredPage from "../pages/404";
-import { backendDraftBlockEnum } from "../typescript/enums/app_enums";
 export async function adjustStepOrder(
   uid: string,
   draftId: string,
@@ -35,40 +35,47 @@ export async function adjustStepOrder(
 export async function getDraftMetadata(
   uid: string,
   draftId: string
-): Promise<{
-  published: boolean;
-  title: string;
-  createdAt: timeStamp;
-  username: string;
-}> {
-  let draftRef = await db
-    .collection("users")
-    .doc(uid)
-    .collection("drafts")
-    .doc(draftId)
-    .get();
-  let draftData:
-    | draftBackendRepresentation
-    | publishedPostBackendRepresentation = draftRef.data();
-  let title = draftData.title as string;
-  let published: boolean = draftData.published;
-  let createdAt: timeStamp = draftData.createdAt;
+): Promise<draftMetaData> {
+  let result: draftMetaData;
+  try {
+    const [draftRef, username] = await Promise.all([
+      db.collection("users").doc(uid).collection("drafts").doc(draftId).get(),
+      getUsernameFromUid(uid),
+    ]);
+    let draftData:
+      | draftFrontendRepresentation
+      | publishedPostFrontendRepresentation = draftRef.data();
+    let title = draftData.title as string;
+    let published: boolean = draftData.published;
+    let createdAt: timeStamp = draftData.createdAt;
+    let postId: string = draftData.postId;
+    result = {
+      title: title,
+      published: published,
+      createdAt: createdAt,
+      username: username,
+      errored: false,
+    };
+  } catch {
+    result = {
+      title: "title",
+      published: false,
+      createdAt: {
+        _nanoseconds: 0,
+        _seconds: 0,
+      },
+      username: "username",
+      errored: true,
+    };
+  }
 
-  const [username] = await Promise.all([getUsernameFromUid(uid)]);
-
-  let result = {
-    title: title,
-    published: published,
-    createdAt: createdAt,
-    username: username,
-  };
   return result;
 }
 
 export async function getAllDraftDataHandler(
   uid: string,
   draftId: string
-): Promise<draftBackendRepresentation | publishedPostBackendRepresentation> {
+): Promise<draftFrontendRepresentation> {
   try {
     let draftRef = await db
       .collection("users")
@@ -76,9 +83,7 @@ export async function getAllDraftDataHandler(
       .collection("drafts")
       .doc(draftId)
       .get();
-    let draftData:
-      | draftBackendRepresentation
-      | publishedPostBackendRepresentation = draftRef.data();
+    let draftData: draftFrontendRepresentation = draftRef.data();
     let title = draftData.title as string;
     let published: boolean = draftData.published;
     let tags = draftData.tags as string[];
@@ -125,7 +130,7 @@ export async function getAllDraftDataHandler(
 export async function getDraftContent(
   uid: string,
   draftId: string
-): Promise<backendType[]> {
+): Promise<contentBlock[]> {
   let draftContentRef = await db
     .collection("users")
     .doc(uid)
@@ -136,11 +141,10 @@ export async function getDraftContent(
   return await draftContentRef
     .get()
     .then(function (draftContentCollection: firebase.firestore.QuerySnapshot) {
-      let results: backendType[] = [];
+      let results: contentBlock[] = [];
       draftContentCollection.forEach(function (result) {
         let resultsJSON = result.data();
         results.push({
-          order: resultsJSON.order as number,
           type: resultsJSON.type,
           slateContent: resultsJSON.slateContent,
           fileId: resultsJSON.fileId as string,

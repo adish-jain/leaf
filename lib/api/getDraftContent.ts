@@ -3,7 +3,6 @@ import "firebase";
 import { initFirebaseAdmin } from "../initFirebase";
 import { getDraftContent } from "../postUtils";
 import {
-  backendType,
   draftBackendRepresentation,
   timeStamp,
   folderObject,

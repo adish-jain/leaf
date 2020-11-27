@@ -3,14 +3,10 @@ import "../styles/landingheader.scss";
 import { SetStateAction } from "react";
 import Link from "next/link";
 import { goToIndex, goToLanding, logOut } from "../lib/UseLoggedIn";
+import { DraftContext } from "../contexts/draft-context";
 
 type DraftHeaderProps = {
-  username: string;
-  updateShowPreview: (shouldShowPreview: boolean) => void;
   updateShowTags: (value: SetStateAction<boolean>) => void;
-  goToPublishedPost: () => void;
-  publishPost: () => void;
-  published: boolean;
 };
 
 type LandingHeaderProps = {
@@ -44,36 +40,82 @@ export function LandingHeader(props: LandingHeaderProps) {
 export function DraftHeader(props: DraftHeaderProps) {
   function Links() {
     return (
-      <div className={"links"}>
-        <Link href="/landing">
-          <a>Home</a>
-        </Link>
-        <Link href={`/${props.username}`}>
-          <a>Profile</a>
-        </Link>
-      </div>
+      <DraftContext.Consumer>
+        {({ username }) => (
+          <div className={"links"}>
+            <Link href="/landing">
+              <a>Home</a>
+            </Link>
+            <Link href={`/${username}`}>
+              <a>Profile</a>
+            </Link>
+          </div>
+        )}
+      </DraftContext.Consumer>
     );
   }
 
   function PublishButtonChoice() {
-    if (props.published) {
-      return (
-        <button className={"publish-button"} onClick={props.goToPublishedPost}>
-          Go To Published Post
-        </button>
-      );
-    } else {
-      return (
-        <button className={"publish-button"} onClick={props.publishPost}>
-          Publish Post
-        </button>
-      );
+    function publishPost() {
+      let { draftId } = props;
+      fetch("/api/endpoint", {
+        method: "POST",
+        redirect: "follow",
+        headers: new Headers({ "Content-Type": "application/json" }),
+        body: JSON.stringify({ requestedAPI: "publishPost", draftId: draftId }),
+      })
+        .then(async (res: any) => {
+          let resJson = await res.json();
+          let newUrl = resJson.newURL;
+          if (newUrl === "unverified") {
+            alert("Please verify your email before publishing.");
+          } else {
+            Router.push(newUrl);
+          }
+          // Router.push(newUrl);
+        })
+        .catch(function (err: any) {
+          console.log(err);
+        });
     }
+
+    function goToPublishedPost(username: string, postId: string) {
+      window.location.href = `/${username}/${postId}`;
+    }
+    const publishButton = (
+      <button className={"publish-button"} onClick={props.publishPost}>
+        {"Publish Post"}
+      </button>
+    );
+
+    const goToPublishedPostButton = (username: string, postId: string) => (
+      <button
+        className={"publish-button"}
+        onClick={(e) => goToPublishedPost(username, postId)}
+      >
+        {"Go to Published Post"}
+      </button>
+    );
+
+    return (
+      <DraftContext.Consumer>
+        {({ published, username, postId }) => {
+          if (published) {
+            return goToPublishedPostButton(username, postId);
+          } else {
+            return publishButton;
+          }
+        }}
+      </DraftContext.Consumer>
+    );
   }
 
   function TagsButton() {
     return (
-      <button onClick={() => props.updateShowTags(true)} className={"publish-button"}>
+      <button
+        onClick={() => props.updateShowTags(true)}
+        className={"publish-button"}
+      >
         Tags
       </button>
     );
@@ -81,18 +123,22 @@ export function DraftHeader(props: DraftHeaderProps) {
 
   function Buttons() {
     return (
-      <div className={"buttons"}>
-         <TagsButton />
-        <button
-          className={"preview-button"}
-          onClick={(e) => {
-            props.updateShowPreview(true);
-          }}
-        >
-          Preview Post
-        </button>
-        <PublishButtonChoice />
-      </div>
+      <DraftContext.Consumer>
+        {({ updatePreviewMode, published }) => (
+          <div className={"buttons"}>
+            <TagsButton />
+            <button
+              className={"preview-button"}
+              onClick={(e) => {
+                updatePreviewMode(true);
+              }}
+            >
+              Preview Post
+            </button>
+            <PublishButtonChoice />
+          </div>
+        )}
+      </DraftContext.Consumer>
     );
   }
 

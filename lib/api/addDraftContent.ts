@@ -10,7 +10,8 @@ import {
   fileObject,
 } from "../../typescript/types/app_types";
 import { Node } from "slate";
-import { backendDraftBlockEnum as draftBlockEnum } from "../../typescript/enums/app_enums";
+import { ContentBlockType } from "../../typescript/enums/backend/postEnums";
+
 const admin = require("firebase-admin");
 import { getUser, getUsernameFromUid } from "../userUtils";
 import { firestore } from "firebase";
@@ -41,13 +42,13 @@ export default async function addDraftContentHandler(
 
   let newContent;
   switch (backendDraftBlockEnum) {
-    case draftBlockEnum.Text:
+    case ContentBlockType.Text:
       newContent = {
         order: atIndex + 1,
         type: backendDraftBlockEnum,
         slateContent: JSON.stringify(slateNode),
       };
-    case draftBlockEnum.CodeSteps:
+    case ContentBlockType.CodeSteps:
       newContent = {
         order: atIndex + 1,
         type: backendDraftBlockEnum,
