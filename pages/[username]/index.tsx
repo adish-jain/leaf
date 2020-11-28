@@ -306,7 +306,7 @@ function About(props: {
   // props.changeNewGithub(props.github);
   // props.changeNewWebsite(props.website);
   return (
-    <div className={"profile-left-pane"}>
+    <div>
       <div className={"profile-about-header"}>ABOUT</div>
         <div className={"profile-about-content"}>
           {props.editingBio ? (
@@ -324,7 +324,7 @@ function About(props: {
                   fontSize: "15px",
                   color: "D0D0D0",
                 }}
-                maxLength={240}
+                maxLength={300}
                 name="title"
               />
             </div>
@@ -343,7 +343,7 @@ function About(props: {
             <div className={"profile-icon-and-input"}>
               <img src="/images/twittericon.svg" />
               <TextareaAutosize
-                placeholder={"Twitter Profile"}
+                placeholder={"Twitter Handle"}
                 value={props.twitter}
                 onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
                   let myTarget = e.target as HTMLTextAreaElement;
@@ -365,12 +365,20 @@ function About(props: {
           //   ></input>
           ) : (
             props.twitter !== "" ? (
-              <a 
-                href={props.twitter}
-                target="blank"
-              >
-                <img src="/images/twittericon.svg" />
-              </a>
+              <div className={"profile-icon-and-link"}>
+                <a 
+                  href={"https://twitter.com/" + props.twitter}
+                  target="blank"
+                >
+                  <img src="/images/twittericon.svg" />
+                </a>
+                <a 
+                  href={"https://twitter.com/" + props.twitter}
+                  target="blank"
+                >
+                  <p>@{props.twitter}</p>
+                </a>
+              </div>
             ) : (
               <div></div>
             )
@@ -379,7 +387,7 @@ function About(props: {
             <div className={"profile-icon-and-input"}>
               <img src="/images/githubicon.svg" />
               <TextareaAutosize
-              placeholder={"Github Profile"}
+              placeholder={"Github Username"}
               value={props.github}
               onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
                 let myTarget = e.target as HTMLTextAreaElement;
@@ -401,12 +409,19 @@ function About(props: {
           //   ></input>
           ) : (
             props.github !== "" ? (
-              <a 
-                href={props.github}
-                target="blank"
-              >
-                <img src="/images/githubicon.svg" />
-              </a>
+              <div className={"profile-icon-and-link"}>
+                <a 
+                  href={"https://github.com/" + props.github}
+                  target="blank"
+                >
+                  <img src="/images/githubicon.svg" />
+                </a>
+                <a 
+                  href={"https://github.com/" + props.github}
+                  target="blank"
+                ><p>{props.github}</p></a>
+                
+              </div>
             ) : (
               <div></div>
             )
@@ -437,12 +452,18 @@ function About(props: {
           //   ></input>
           ) : (
             props.website !== "" ? (
-              <a 
-                href={props.website}
-                target="blank"
-              >
-                <img src="/images/webicon.svg" />
-              </a>
+              <div className={"profile-icon-and-link"}>
+                <a 
+                  href={props.website}
+                  target="blank"
+                >
+                  <img src="/images/webicon.svg" />
+                </a>
+                <a 
+                  href={props.website}
+                  target="blank"
+                ><p>{props.website}</p></a>
+              </div>
             ) : (
               <div></div>
             )
