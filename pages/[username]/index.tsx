@@ -105,21 +105,26 @@ export default function UserPage(props: UserPageProps) {
   // const { username } = await getStaticProps();
   const [editingBio, toggleEditingBio] = useState(false);
   const [canEditBio, toggleCanEditBio] = useState(false);
-  const [about, changeAbout] = useState("");
-  const [twitter, changeTwitter] = useState("");
-  const [github, changeGithub] = useState("");
-  const [website, changeWebsite] = useState("");
+  
   const { authenticated, error, loading } = useLoggedIn();
   const {
     username,
-    newAbout,
-    newTwitter,
-    newGithub,
-    newWebsite,
-    changeNewAbout,
-    changeNewTwitter,
-    changeNewGithub,
-    changeNewWebsite,
+    about,
+    twitter,
+    github,
+    website,
+    // newAbout,
+    // newTwitter,
+    // newGithub,
+    // newWebsite,
+    changeAbout,
+    changeTwitter,
+    changeGithub,
+    changeWebsite,
+    // changeNewAbout,
+    // changeNewTwitter,
+    // changeNewGithub,
+    // changeNewWebsite,
     saveNewProfile,
   } = useUserInfo(authenticated);
   console.log(username);
@@ -178,12 +183,19 @@ export default function UserPage(props: UserPageProps) {
   //   // changeWebsite(props.profileData.website);
   // }, [props.profileData.about]);
 
-  // useEffect(() => {
-  //   changeNewAbout(about);
-  //   changeNewTwitter(twitter);
-  //   changeNewGithub(github);
-  //   changeNewWebsite(website);
-  // }, [props.profileData]);
+  useEffect(() => {
+    console.log("IN USE EFFECT");
+    console.log(props.profileData);
+    if (props.profileData !== undefined) {
+      props.profileData.about !== undefined ? changeAbout(props.profileData.about) : changeAbout("404, About not found");
+      props.profileData.twitter !== undefined ? changeTwitter(props.profileData.twitter) : null;
+      props.profileData.github !== undefined ? changeGithub(props.profileData.github) : null;
+      props.profileData.website !== undefined ? changeWebsite(props.profileData.website) : null;
+    }
+    
+    // changeGithub(props.profileData.github);
+    // changeWebsite(props.profileData.website);
+  }, [props.profileData]);
 
   return (
     <div className="container">
@@ -197,34 +209,37 @@ export default function UserPage(props: UserPageProps) {
         ) : (
           <HeaderUnAuthenticated />
         )}
-        <h1 className={"profile-header"}>{props.profileUsername}</h1>
+        <h1 className={"profile-header"}></h1>
         <div className={"profile-content"}>
           <div className={"profile-left-pane"}>
-            <div className={"profile-img"}>AJ</div>
-            <About
-              editingBio={editingBio}
-              canEditBio={canEditBio}
-              profileData={props.profileData}
-              about={about}
-              twitter={twitter}
-              github={github}
-              website={website}
-              changeAbout={changeAbout}
-              changeTwitter={changeTwitter}
-              changeGithub={changeGithub}
-              changeWebsite={changeWebsite}
-              newAbout={newAbout}
-              newTwitter={newTwitter}
-              newGithub={newGithub}
-              newWebsite={newWebsite}
-              toggleEditingBio={toggleEditingBio}
-              changeNewAbout={changeNewAbout}
-              changeNewTwitter={changeNewTwitter}
-              changeNewGithub={changeNewGithub}
-              changeNewWebsite={changeNewWebsite}
-              saveNewProfile={saveNewProfile}
-            />
-          </div>
+            <div className={"profile-img"}>
+              {props.profileUsername !== undefined ? props.profileUsername.substr(0,2) : ""}
+            </div>
+            <div className={"profile-name"}>{props.profileUsername}</div>
+              <About
+                editingBio={editingBio}
+                canEditBio={canEditBio}
+                // profileData={props.profileData}
+                about={about}
+                twitter={twitter}
+                github={github}
+                website={website}
+                changeAbout={changeAbout}
+                changeTwitter={changeTwitter}
+                changeGithub={changeGithub}
+                changeWebsite={changeWebsite}
+                // newAbout={newAbout}
+                // newTwitter={newTwitter}
+                // newGithub={newGithub}
+                // newWebsite={newWebsite}
+                toggleEditingBio={toggleEditingBio}
+                // changeNewAbout={changeNewAbout}
+                // changeNewTwitter={changeNewTwitter}
+                // changeNewGithub={changeNewGithub}
+                // changeNewWebsite={changeNewWebsite}
+                saveNewProfile={saveNewProfile}
+              />
+            </div>
           <div className={"profile-right-pane"}>
              {// @ts-ignore 
             <DisplayPosts posts={props.posts} username={props.profileUsername}/>
@@ -252,7 +267,7 @@ export default function UserPage(props: UserPageProps) {
 function About(props: {
   editingBio: boolean,
   canEditBio: boolean,
-  profileData: any;
+  // profileData: any;
   about: string,
   twitter: string,
   github: string,
@@ -261,15 +276,15 @@ function About(props: {
   changeTwitter: React.Dispatch<React.SetStateAction<string>>,
   changeGithub: React.Dispatch<React.SetStateAction<string>>,
   changeWebsite: React.Dispatch<React.SetStateAction<string>>,
-  newAbout: string,
-  newTwitter: string,
-  newGithub: string,
-  newWebsite: string,
+  // newAbout: string,
+  // newTwitter: string,
+  // newGithub: string,
+  // newWebsite: string,
   toggleEditingBio: React.Dispatch<React.SetStateAction<boolean>>,
-  changeNewAbout: React.Dispatch<React.SetStateAction<string>>,
-  changeNewTwitter: React.Dispatch<React.SetStateAction<string>>,
-  changeNewGithub: React.Dispatch<React.SetStateAction<string>>,
-  changeNewWebsite: React.Dispatch<React.SetStateAction<string>>,
+  // changeNewAbout: React.Dispatch<React.SetStateAction<string>>,
+  // changeNewTwitter: React.Dispatch<React.SetStateAction<string>>,
+  // changeNewGithub: React.Dispatch<React.SetStateAction<string>>,
+  // changeNewWebsite: React.Dispatch<React.SetStateAction<string>>,
   saveNewProfile: any,
 }) {
   // if (props.profileData !== undefined) {
@@ -286,6 +301,10 @@ function About(props: {
   // const twitter = props.profileData !== undefined ? props.profileData.twitter : "";
   // const github = props.profileData !== undefined ? props.profileData.github : "";
   // const website = props.profileData !== undefined ? props.profileData.website : "";
+  // props.changeNewAbout(props.about);
+  // props.changeNewTwitter(props.twitter);
+  // props.changeNewGithub(props.github);
+  // props.changeNewWebsite(props.website);
   return (
     <div className={"profile-left-pane"}>
       <div className={"profile-about-header"}>ABOUT</div>
@@ -295,11 +314,11 @@ function About(props: {
               <img src="/images/usericon.svg" />
               <TextareaAutosize
                 placeholder={"About yourself"}
-                value={props.newAbout}
+                value={props.about}
                 onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
                   let myTarget = e.target as HTMLTextAreaElement;
-                  props.changeNewAbout(myTarget.value);
                   props.changeAbout(myTarget.value);
+                  // props.changeAbout(myTarget.value);
                 }}
                 style={{
                   fontSize: "15px",
@@ -325,11 +344,11 @@ function About(props: {
               <img src="/images/twittericon.svg" />
               <TextareaAutosize
                 placeholder={"Twitter Profile"}
-                value={props.newTwitter}
+                value={props.twitter}
                 onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
                   let myTarget = e.target as HTMLTextAreaElement;
-                  props.changeNewTwitter(myTarget.value);
                   props.changeTwitter(myTarget.value);
+                  // props.changeTwitter(myTarget.value);
                 }}
                 style={{
                   fontSize: "15px",
@@ -361,11 +380,11 @@ function About(props: {
               <img src="/images/githubicon.svg" />
               <TextareaAutosize
               placeholder={"Github Profile"}
-              value={props.newGithub}
+              value={props.github}
               onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
                 let myTarget = e.target as HTMLTextAreaElement;
-                props.changeNewGithub(myTarget.value);
                 props.changeGithub(myTarget.value);
+                // props.changeGithub(myTarget.value);
               }}
               style={{
                 fontSize: "15px",
@@ -397,11 +416,11 @@ function About(props: {
               <img src="/images/webicon.svg" />
               <TextareaAutosize
                 placeholder={"Personal Website"}
-                value={props.newWebsite}
+                value={props.website}
                 onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
                   let myTarget = e.target as HTMLTextAreaElement;
-                  props.changeNewWebsite(myTarget.value);
                   props.changeWebsite(myTarget.value);
+                  // props.changeWebsite(myTarget.value);
                 }}
                 style={{
                   fontSize: "15px",

@@ -32,10 +32,14 @@ export function useUserInfo(authenticated: boolean) {
     updateSendEmailVerificationStatus,
   ] = useState("");
 
-  const [newAbout, changeNewAbout] = useState("");
-  const [newTwitter, changeNewTwitter] = useState("");
-  const [newGithub, changeNewGithub] = useState("");
-  const [newWebsite, changeNewWebsite] = useState("");
+  const [about, changeAbout] = useState("");
+  const [twitter, changeTwitter] = useState("");
+  const [github, changeGithub] = useState("");
+  const [website, changeWebsite] = useState("");
+  // const [newAbout, changeNewAbout] = useState("");
+  // const [newTwitter, changeNewTwitter] = useState("");
+  // const [newGithub, changeNewGithub] = useState("");
+  // const [newWebsite, changeNewWebsite] = useState("");
 
   let { data: userInfo, mutate } = useSWR(
     authenticated ? "getUserInfo" : null,
@@ -62,10 +66,14 @@ export function useUserInfo(authenticated: boolean) {
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify({
         requestedAPI: "set_userProfile",
-        about: newAbout,
-        twitter: newTwitter,
-        github: newGithub,
-        website: newWebsite,
+        about: about,
+        twitter: twitter,
+        github: github,
+        website: website,
+        // about: newAbout,
+        // twitter: newTwitter,
+        // github: newGithub,
+        // website: newWebsite,
       }),
     };
     // updateChangeUsernameLoading(true);
@@ -74,12 +82,16 @@ export function useUserInfo(authenticated: boolean) {
       changeProfileRequest
     ).then((res) => {
       if (res.status === 200) {
-        mutate({ 
-          about: newAbout,
-          twitter: newTwitter,
-          github: newGithub,
-          website: newWebsite, 
-        }, true);
+        // changeAbout(newAbout);
+        // changeTwitter(newTwitter);
+        // changeGithub(newGithub);
+        // changeWebsite(newWebsite);
+        // mutate({ 
+        //   about: newAbout,
+        //   twitter: newTwitter,
+        //   github: newGithub,
+        //   website: newWebsite, 
+        // }, true);
       }
       if (res.status === 403) {
         res.json().then((resJson) => {
@@ -253,14 +265,22 @@ export function useUserInfo(authenticated: boolean) {
     sendEmailVerification,
     sendEmailVerificationStatus,
     signInMethod,
-    newAbout,
-    newTwitter,
-    newGithub,
-    newWebsite,
-    changeNewAbout,
-    changeNewTwitter,
-    changeNewGithub,
-    changeNewWebsite,
+    about,
+    twitter,
+    github,
+    website,
+    // newAbout,
+    // newTwitter,
+    // newGithub,
+    // newWebsite,
+    changeAbout,
+    changeTwitter,
+    changeGithub,
+    changeWebsite,
+    // changeNewAbout,
+    // changeNewTwitter,
+    // changeNewGithub,
+    // changeNewWebsite,
     saveNewProfile,
   };
 }
