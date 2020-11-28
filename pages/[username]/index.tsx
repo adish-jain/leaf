@@ -3,7 +3,7 @@ import useSWR from "swr";
 import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import { getUserPosts, getUidFromUsername, userNameErrorMessage } from "../../lib/userUtils";
+import { getUserPosts, getUidFromUsername, userNameErrorMessage, getProfileData } from "../../lib/userUtils";
 import { useLoggedIn } from "../../lib/UseLoggedIn";
 import "../../styles/profile.scss";
 import Header, { HeaderUnAuthenticated } from "../../components/Header";
@@ -13,6 +13,8 @@ import { useUserInfo } from "../../lib/useUserInfo";
 // import About from "../about";
 const dayjs = require("dayjs");
 import TextareaAutosize from "react-autosize-textarea";
+import getProfileDataHandler from "../../lib/api/getProfileData";
+import { lastEventId } from "@sentry/node";
 
 export async function getStaticPaths() {
   return {
@@ -35,29 +37,35 @@ export const getStaticProps: GetStaticProps = async (context) => {
   let username = params.username as string;
   let uid: string;
   try {
-    // uid = await getUidFromUsername(username);
-    // let posts = await getUserPosts(uid);
-    // let publishedPosts = [];
-    // for (let i = 0; i < posts.length; i++) {
-    //   let currentPost = posts[i];
-    //   publishedPosts.push({
-    //     uid: uid,
-    //     title: currentPost.title,
-    //     postId: currentPost.postId,
-    //     id: currentPost.id,
-    //     published: currentPost.published,
-    //     // postId: currentPost.postId,
-    //     // postURL: "/" + username + "/" + currentPost.postId,
-    //     // title: currentPost.title,
-    //     // publishedAt: currentPost.publishedAt,
-    //     // tags: currentPost.tags,
-    //     // likes: currentPost.likes,
-    //     // username: username,
-    //   });
-    // }
+    uid = await getUidFromUsername(username);
+    let posts = await getUserPosts(uid);
+    let profileData = await getProfileData(uid);
+    let publishedPosts = [];
+    for (let i = 0; i < posts.length; i++) {
+      let currentPost = posts[i];
+      publishedPosts.push({
+        title: currentPost.title,
+        postId: currentPost.postId,
+        postURL: "/" + username + "/" + currentPost.postId,
+        publishedAt: dayjs(currentPost.publishedAt).format("MMMM D YYYY"),
+        tags: currentPost.tags !== undefined ? currentPost.tags.join(",") : null,
+        // tags: currentPost.tags !== undefined ? JSON.stringify(currentPost.tags) : null,
+        // postId: currentPost.postId,
+        // postURL: "/" + username + "/" + currentPost.postId,
+        // title: currentPost.title,
+        // publishedAt: currentPost.publishedAt,
+        // tags: currentPost.tags,
+        // likes: currentPost.likes,
+        // username: username,
+      });
+    }
     return {
       props: {
-        username: username,
+        profileUsername: username,
+        profileData: profileData,
+        // about: profileData.about,
+        uid: uid,
+        posts: publishedPosts,
         errored: false,
       },
       revalidate: 1,
@@ -83,18 +91,27 @@ export const getStaticProps: GetStaticProps = async (context) => {
 // };
 
 type UserPageProps = {
-  username: string;
+  profileUsername: string;
+  profileData: any;
   errored: boolean;
+  uid: string;
+  posts: any;
 };
 
 export default function UserPage(props: UserPageProps) {
+  console.log(props.posts);
+  const router = useRouter();
+  // const { username } = router.query;
+  // const { username } = await getStaticProps();
   const [editingBio, toggleEditingBio] = useState(false);
+  const [canEditBio, toggleCanEditBio] = useState(false);
+  const [about, changeAbout] = useState("");
+  const [twitter, changeTwitter] = useState("");
+  const [github, changeGithub] = useState("");
+  const [website, changeWebsite] = useState("");
   const { authenticated, error, loading } = useLoggedIn();
   const {
-    about,
-    twitter,
-    github,
-    website,
+    username,
     newAbout,
     newTwitter,
     newGithub,
@@ -105,54 +122,73 @@ export default function UserPage(props: UserPageProps) {
     changeNewWebsite,
     saveNewProfile,
   } = useUserInfo(authenticated);
+  console.log(username);
+  console.log(props.profileUsername);
+  console.log(props.uid);
+  console.log("PROPS PROFILE DATA");
+  console.log(props.profileData);
 
-  console.log(props.username);
+  // console.log("Router username: " + username);
+  // console.log("Props username: " + props.username);
 
-  const rawData = {
-    requestedAPI: "getProfilePosts",
-    username: props.username,
-  };
+  // const rawData = {
+  //   requestedAPI: "getProfileData",
+  //   uid: props.uid,
+  // };
 
-  const myRequest = {
-    method: "POST",
-    headers: new Headers({ "Content-Type": "application/json" }),
-    body: JSON.stringify(rawData),
-  };
+  // const myRequest = {
+  //   method: "POST",
+  //   headers: new Headers({ "Content-Type": "application/json" }),
+  //   body: JSON.stringify(rawData),
+  // };
 
-  const fetcher = (url: string) =>
-    fetch("/api/endpoint", myRequest).then((res: any) => res.json());
+  // const fetcher = (url: string) =>
+  //   fetch("/api/endpoint", myRequest).then((res: any) => res.json());
 
-  const initialData: any = {
-    posts: [
-      {
-        postId: "",
-        postURL: "",
-        title: "",
-        publishedAt: "",
-        tags: [],
-      },
-    ],
-  };
+  // const initialData: any = {
+  //   about: "",
+  //   email: "",
+  //   github: "",
+  //   twitter: "",
+  //   username: "",
+  //   website: "",
+  // };
 
-  let { data: postsData, mutate } = useSWR("getProfilePosts", fetcher, {
-    initialData,
-    revalidateOnMount: true,
-  });
+  // let { data: userInfo, mutate } = useSWR("getProfileData", fetcher, {
+  //   initialData,
+  //   revalidateOnMount: true,
+  // });
+
+  // const about = props.profileData.about;
+  // const twitter = props.profileData.twitter;
+  // const github = props.profileData.github;
+  // const website = props.profileData.website;
 
   // const [filteredPosts, filterPosts] = useState(postsData);
 
+  useEffect(() => {
+    toggleCanEditBio(username === props.profileUsername);
+  }, [username, props.profileUsername]);
+
   // useEffect(() => {
-  //   let { data: postsData, mutate } = useSWR("getProfilePosts", fetcher, {
-  //     initialData,
-  //     revalidateOnMount: true,
-  //   });
-  //   filterPosts(postsData);
-  // }, [props.username]);
+  //   console.log(props.profileData.about);
+  //   changeAbout(props.profileData.about);
+  //   // changeTwitter(props.profileData.twitter);
+  //   // changeGithub(props.profileData.github);
+  //   // changeWebsite(props.profileData.website);
+  // }, [props.profileData.about]);
+
+  // useEffect(() => {
+  //   changeNewAbout(about);
+  //   changeNewTwitter(twitter);
+  //   changeNewGithub(github);
+  //   changeNewWebsite(website);
+  // }, [props.profileData]);
 
   return (
     <div className="container">
       <Head>
-        <title>{props.username}'s Leaf</title>
+        <title>{props.profileUsername}'s Leaf</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
@@ -161,16 +197,22 @@ export default function UserPage(props: UserPageProps) {
         ) : (
           <HeaderUnAuthenticated />
         )}
-        <h1 className={"profile-header"}>{props.username}</h1>
+        <h1 className={"profile-header"}>{props.profileUsername}</h1>
         <div className={"profile-content"}>
           <div className={"profile-left-pane"}>
             <div className={"profile-img"}>AJ</div>
             <About
               editingBio={editingBio}
+              canEditBio={canEditBio}
+              profileData={props.profileData}
               about={about}
               twitter={twitter}
               github={github}
               website={website}
+              changeAbout={changeAbout}
+              changeTwitter={changeTwitter}
+              changeGithub={changeGithub}
+              changeWebsite={changeWebsite}
               newAbout={newAbout}
               newTwitter={newTwitter}
               newGithub={newGithub}
@@ -184,7 +226,9 @@ export default function UserPage(props: UserPageProps) {
             />
           </div>
           <div className={"profile-right-pane"}>
-            <DisplayPosts posts={postsData} username={props.username}/>
+             {// @ts-ignore 
+            <DisplayPosts posts={props.posts} username={props.profileUsername}/>
+             }
           </div>
           {/* {posts.length === 0 ? (
             <p>This user has not published anything yet.</p>
@@ -207,10 +251,16 @@ export default function UserPage(props: UserPageProps) {
 
 function About(props: {
   editingBio: boolean,
+  canEditBio: boolean,
+  profileData: any;
   about: string,
   twitter: string,
   github: string,
   website: string,
+  changeAbout: React.Dispatch<React.SetStateAction<string>>,
+  changeTwitter: React.Dispatch<React.SetStateAction<string>>,
+  changeGithub: React.Dispatch<React.SetStateAction<string>>,
+  changeWebsite: React.Dispatch<React.SetStateAction<string>>,
   newAbout: string,
   newTwitter: string,
   newGithub: string,
@@ -222,6 +272,20 @@ function About(props: {
   changeNewWebsite: React.Dispatch<React.SetStateAction<string>>,
   saveNewProfile: any,
 }) {
+  // if (props.profileData !== undefined) {
+  //   props.changeAbout(props.profileData.about); 
+  //   props.changeTwitter(props.profileData.twitter); 
+  //   props.changeGithub(props.profileData.github); 
+  //   props.changeWebsite(props.profileData.website); 
+  //   // props.changeNewAbout(props.about);
+  //   // props.changeNewTwitter(props.twitter);
+  //   // props.changeNewGithub(props.github);
+  //   // props.changeNewWebsite(props.website);
+  // }
+  // const about = props.profileData !== undefined ? props.profileData.about : "";
+  // const twitter = props.profileData !== undefined ? props.profileData.twitter : "";
+  // const github = props.profileData !== undefined ? props.profileData.github : "";
+  // const website = props.profileData !== undefined ? props.profileData.website : "";
   return (
     <div className={"profile-left-pane"}>
       <div className={"profile-about-header"}>ABOUT</div>
@@ -230,11 +294,12 @@ function About(props: {
             <div className={"about-icon-and-input"}>
               <img src="/images/usericon.svg" />
               <TextareaAutosize
-                placeholder={props.about !== "" ? props.about : "About yourself"}
+                placeholder={"About yourself"}
                 value={props.newAbout}
                 onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
                   let myTarget = e.target as HTMLTextAreaElement;
                   props.changeNewAbout(myTarget.value);
+                  props.changeAbout(myTarget.value);
                 }}
                 style={{
                   fontSize: "15px",
@@ -259,11 +324,12 @@ function About(props: {
             <div className={"profile-icon-and-input"}>
               <img src="/images/twittericon.svg" />
               <TextareaAutosize
-                placeholder={props.twitter !== "" ? props.twitter : "Twitter Profile"}
+                placeholder={"Twitter Profile"}
                 value={props.newTwitter}
                 onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
                   let myTarget = e.target as HTMLTextAreaElement;
                   props.changeNewTwitter(myTarget.value);
+                  props.changeTwitter(myTarget.value);
                 }}
                 style={{
                   fontSize: "15px",
@@ -294,11 +360,12 @@ function About(props: {
             <div className={"profile-icon-and-input"}>
               <img src="/images/githubicon.svg" />
               <TextareaAutosize
-              placeholder={props.github !== "" ? props.github : "Github Profile"}
+              placeholder={"Github Profile"}
               value={props.newGithub}
               onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
                 let myTarget = e.target as HTMLTextAreaElement;
                 props.changeNewGithub(myTarget.value);
+                props.changeGithub(myTarget.value);
               }}
               style={{
                 fontSize: "15px",
@@ -329,11 +396,12 @@ function About(props: {
             <div className={"profile-icon-and-input"}>
               <img src="/images/webicon.svg" />
               <TextareaAutosize
-                placeholder={props.website !== "" ? props.website : "Personal Website"}
+                placeholder={"Personal Website"}
                 value={props.newWebsite}
                 onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
                   let myTarget = e.target as HTMLTextAreaElement;
                   props.changeNewWebsite(myTarget.value);
+                  props.changeWebsite(myTarget.value);
                 }}
                 style={{
                   fontSize: "15px",
@@ -361,39 +429,48 @@ function About(props: {
             )
           )}
         </div>
-        {props.editingBio ? 
-          (<div 
-            className={"profile-edit-button"} 
-            onClick={(e) => {props.toggleEditingBio(!props.editingBio); props.saveNewProfile()}}
-          >
-            Save Profile
-          </div>
-          )
-        :
-          (<div 
-            className={"profile-edit-button"} 
-            onClick={(e) => props.toggleEditingBio(!props.editingBio)}
-          >
-            Edit Profile
-          </div>
-        )}
+        {props.canEditBio ? 
+          (props.editingBio ? 
+            (<div 
+              className={"profile-edit-button"} 
+              onClick={(e) => {props.toggleEditingBio(!props.editingBio); props.saveNewProfile()}}
+            >
+              Save Profile
+            </div>
+            )
+          :
+            (<div 
+              className={"profile-edit-button"} 
+              onClick={(e) => props.toggleEditingBio(!props.editingBio)}
+            >
+              Edit Profile
+            </div>
+          )) : (<div></div>)
+        }
     </div>
   );
 }
 
 function DisplayPosts(props: {
-  posts: Post[];
+  posts: any;
   username: string;
 }) {
+  // console.log(props.posts);
   try {
     const router = useRouter();
     return (
       <div>
-        {props.posts.length === 0 ? (
+        {props.posts === undefined || props.posts.length === 0 ? (
           <h3>No posts found</h3>
         ) : (
           <div>
-            {Array.from(props.posts).map((post: Post) => {
+            {Array.from(props.posts).map((post: any) => {
+              // console.log(post["tags"]);
+              // console.log(typeof post["tags"]);
+              // const tags = post["tags"].split(",");
+              // post["tags"] = JSON.
+              const tags = post["tags"] === null ? null : post["tags"].split(",");
+              // console.log("AFTER" + post["tags"]);
               return (
                 <div
                   className={"profile-post"}
@@ -401,11 +478,11 @@ function DisplayPosts(props: {
                 >
                   <div className={"profile-post-title"}>{post["title"]}</div>
                   <div className={"profile-post-date"}>
-                    {dayjs(post["publishedAt"]).format("MMMM D YYYY")}
+                    {post["publishedAt"]}
                   </div>
                   <div className={"profile-post-tags-author"}>
-                    {post["tags"] !== undefined ? (
-                      post["tags"].map((tag: string) => {
+                    {tags !== null ? (
+                      tags.map((tag: any) => {
                         return (
                           <div
                             className={"profile-post-tag"}

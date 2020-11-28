@@ -21,7 +21,7 @@ import handleSetEmailAndPassword from "../../lib/api/setEmailAndPassword";
 
 // handle profile data
 import handleSetProfile from "../../lib/api/setProfile";
-import handleGetProfilePosts from "../../lib/api/getProfilePosts";
+import handleGetProfileData from "../../lib/api/getProfileData";
 
 // user info
 import handleGetUserInfo from "../../lib/api/getUserInfo";
@@ -204,8 +204,8 @@ export default sentryHandler(
         return handleGetPosts(req, res);
       }
 
-      case "getProfilePosts": {
-        return handleGetProfilePosts(req, res);
+      case "getProfileData": {
+        return handleGetProfileData(req, res);
       }
 
       case "deletePost": {

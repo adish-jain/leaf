@@ -51,10 +51,10 @@ export function useUserInfo(authenticated: boolean) {
   const emailVerified = userInfo.emailVerified;
 
   /* Profile Page information */
-  const about = userInfo.about;
-  const twitter = userInfo.twitter;
-  const github = userInfo.github;
-  const website = userInfo.website;
+  // const about = userInfo.about;
+  // const twitter = userInfo.twitter;
+  // const github = userInfo.github;
+  // const website = userInfo.website;
 
   async function saveNewProfile() {
     const changeProfileRequest = {
@@ -232,6 +232,7 @@ export function useUserInfo(authenticated: boolean) {
     username,
     email,
     password,
+    // uid,
     updatePassword,
     saveNewUsername,
     saveNewEmail,
@@ -252,10 +253,6 @@ export function useUserInfo(authenticated: boolean) {
     sendEmailVerification,
     sendEmailVerificationStatus,
     signInMethod,
-    about,
-    twitter,
-    github,
-    website,
     newAbout,
     newTwitter,
     newGithub,

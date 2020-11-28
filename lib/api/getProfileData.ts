@@ -7,13 +7,14 @@ let db = admin.firestore();
 initFirebaseAdmin();
 initFirebase();
 
-export default async function getUserInfoHandler(
+export default async function getProfileDataHandler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  let { uid, userRecord } = await getUser(req, res);
+  // let { uid, userRecord } = await getUser(req, res);
   // console.log(userRecord);
-
+  let uid = req.body.uid;
+  console.log("UID is " + uid);
   let userDataReference = await db.collection("users").doc(uid).get();
   let userData = await userDataReference.data();
 
@@ -22,9 +23,6 @@ export default async function getUserInfoHandler(
 
   res.send({
     ...userData,
-    uid: uid,
-    email: userRecord.email,
-    emailVerified: userRecord.emailVerified,
   });
   return;
 }

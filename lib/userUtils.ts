@@ -188,6 +188,14 @@ export async function getUserPosts(uid: string) {
     });
 }
 
+export async function getProfileData(uid: string) {
+  let userDataReference = await db.collection("users").doc(uid).get();
+  let userData = await userDataReference.data();
+  console.log("PROFILE DATA IS ");
+  console.log(userData);
+  return userData;
+}
+
 export async function getArticlesFromUid(uid: string) {
   let postsRef = await db.collection("posts").where("uid", "==", uid);
   let results = await postsRef.get().then(function (postsCollection: any) {
