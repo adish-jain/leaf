@@ -60,6 +60,7 @@ const DraftView = () => {
     errored: false,
     published: false,
     postId: "",
+    likes: 0,
     tags: [],
     username: "",
     createdAt: {
@@ -78,6 +79,7 @@ const DraftView = () => {
   let errored = draftData["errored"];
   const draftPublished = draftData["published"];
   const postId = draftData["postId"];
+  const likes = draftData["likes"];
   const tags = draftData["tags"];
   const username = draftData["username"];
   const createdAt = draftData["createdAt"];
@@ -191,6 +193,7 @@ const DraftView = () => {
               <FinishedPost
                 steps={realSteps!}
                 title={draftTitle}
+                likes={likes}
                 tags={tags}
                 username={username}
                 files={draftFiles}
