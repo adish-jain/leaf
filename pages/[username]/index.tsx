@@ -6,6 +6,7 @@ import Head from "next/head";
 import { getUserPosts, getUidFromUsername, userNameErrorMessage, getProfileData } from "../../lib/userUtils";
 import { useLoggedIn } from "../../lib/UseLoggedIn";
 import "../../styles/profile.scss";
+import "../../styles/imageview.scss";
 import Header, { HeaderUnAuthenticated } from "../../components/Header";
 import ErroredPage from "../404";
 import { Post } from "../../typescript/types/app_types";
@@ -98,6 +99,57 @@ type UserPageProps = {
   posts: any;
 };
 
+async function saveProfileImage(selectedImage: any, changeProfileImage: any) {
+  const toBase64 = (file: any) =>
+      new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (error) => reject(error);
+      });
+
+    let data = {
+      requestedAPI: "saveProfileImage",
+      imageFile: await toBase64(selectedImage),
+    };
+
+    await fetch("/api/endpoint", {
+      method: "POST",
+      headers: new Headers({
+        "Content-Type": "application/json",
+      }),
+      body: JSON.stringify(data),
+    })
+      .then(async (res: any) => {
+        let resJSON = await res.json();
+        let url = resJSON.url;
+        console.log("new url is ", url);
+        changeProfileImage(url);
+        // mutate(optimisticSteps, false);
+      })
+      .catch((error: any) => {
+        console.log(error);
+        console.log("upload failed.");
+      });
+}
+
+function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>, changeImageName: any,
+  changeUpload: any, changeUploadFailed: any, changeProfileImage: any) {
+  let selectedImage = e.target.files![0];
+  console.log(selectedImage);
+
+  if (selectedImage.size > 5000000) {
+    changeUploadFailed(true);
+  } else {
+    // var url = URL.createObjectURL(selectedImage);
+    saveProfileImage(selectedImage, changeProfileImage);
+    changeUploadFailed(false);
+  }
+  changeUpload(true);
+  changeImageName(selectedImage.name);
+}
+
+
 export default function UserPage(props: UserPageProps) {
   console.log(props.posts);
   const router = useRouter();
@@ -105,6 +157,10 @@ export default function UserPage(props: UserPageProps) {
   // const { username } = await getStaticProps();
   const [editingBio, toggleEditingBio] = useState(false);
   const [canEditBio, toggleCanEditBio] = useState(false);
+  const [profileImage, changeProfileImage] = useState("");
+  const [upload, changeUpload] = useState(false);
+  const [uploadFailed, changeUploadFailed] = useState(false);
+  const [imageName, changeImageName] = useState("");
   
   const { authenticated, error, loading } = useLoggedIn();
   const {
@@ -191,6 +247,7 @@ export default function UserPage(props: UserPageProps) {
       props.profileData.twitter !== undefined ? changeTwitter(props.profileData.twitter) : null;
       props.profileData.github !== undefined ? changeGithub(props.profileData.github) : null;
       props.profileData.website !== undefined ? changeWebsite(props.profileData.website) : null;
+      props.profileData.profileImage !== undefined ? changeProfileImage(props.profileData.profileImage) : "";
     }
     
     // changeGithub(props.profileData.github);
@@ -212,9 +269,38 @@ export default function UserPage(props: UserPageProps) {
         <h1 className={"profile-header"}></h1>
         <div className={"profile-content"}>
           <div className={"profile-left-pane"}>
-            <div className={"profile-img"}>
-              {props.profileUsername !== undefined ? props.profileUsername.substr(0,2) : ""}
+          {canEditBio ? 
+            (<div className={"profile-img"}>
+              {profileImage === "" ? 
+                (props.profileUsername !== undefined ? props.profileUsername.substr(0,2) : "")
+                : 
+                (<img src={profileImage}/>)
+              }
+              <div className={"profile-img-shade"}></div>
+              <div className={"profile-img-button"}>
+                <label className={"add-image"}>
+                  Upload Photo
+                  <input
+                    type="file"
+                    id="myFile"
+                    name="filename"
+                    accept="image/*"
+                    onChange={(e) => handleImageUpload(e, changeImageName, changeUpload, changeUploadFailed, changeProfileImage)}
+                  />
+                </label>
+              </div>
+            </div>) 
+            : 
+            (
+            <div className={"profile-img-uneditable"}>
+              {profileImage === "" ? 
+                (props.profileUsername !== undefined ? props.profileUsername.substr(0,2) : "")
+                : 
+                (<img src={profileImage}/>)
+              }
             </div>
+            )
+            }
             <div className={"profile-name"}>{props.profileUsername}</div>
               <About
                 editingBio={editingBio}

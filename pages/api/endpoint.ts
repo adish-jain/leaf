@@ -22,6 +22,7 @@ import handleSetEmailAndPassword from "../../lib/api/setEmailAndPassword";
 // handle profile data
 import handleSetProfile from "../../lib/api/setProfile";
 import handleGetProfileData from "../../lib/api/getProfileData";
+import handleSaveProfileImage from "../../lib/api/saveProfileImage";
 
 // user info
 import handleGetUserInfo from "../../lib/api/getUserInfo";
@@ -138,8 +139,14 @@ export default sentryHandler(
         return handleSendEmailVerification(req, res);
       }
 
+      /* PROFILE */
+
       case "set_userProfile": {
         return handleSetProfile(req, res);
+      }
+
+      case "saveProfileImage": {
+        return handleSaveProfileImage(req, res);
       }
 
       /* 
