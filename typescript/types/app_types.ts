@@ -43,6 +43,7 @@ export type Post = {
   tags: string[];
   likes: number;
   username: string;
+  profileImage: string;
 };
 
 export type timeStamp = {

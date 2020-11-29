@@ -173,6 +173,9 @@ export async function getAllPostsHandler() {
     let username = await doc.ref.parent.parent.get().then((docSnapshot: any) => {
       return docSnapshot.data().username;
     });
+    let profileImage = await doc.ref.parent.parent.get().then((docSnapshot: any) => {
+      return docSnapshot.data().profileImage;
+    });
     let resultsJSON = doc.data();
     console.log(resultsJSON.publishedAt.toDate());
     let postURL = "/" + username + "/" + resultsJSON.postId;
@@ -184,6 +187,7 @@ export async function getAllPostsHandler() {
       tags: resultsJSON.tags,
       likes: resultsJSON.likes,
       username: username,
+      profileImage: profileImage,
     });
   }
   // sort by published date

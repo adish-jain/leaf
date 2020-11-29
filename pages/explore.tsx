@@ -34,6 +34,7 @@ export default function Pages() {
         publishedAt: "",
         tags: [],
         username: "",
+        profileImage: "",
       },
     ],
   };
@@ -475,7 +476,21 @@ function DisplayPosts(props: {
                     ) : (
                       <div></div>
                     )}
-                    <div className={"post-author"}>{post["username"]}</div>
+                     <div 
+                      className={"post-author-name-and-img"}
+                      onClick={function (e) {
+                        router.push(post["username"]);
+                        e.stopPropagation();
+                      }}
+                     >
+                      {post["profileImage"] !== undefined &&
+                        <div className={"published-post-author-img"}>
+                          <img src={post["profileImage"]}/>
+                        </div>
+                      }
+                      <div>{post["username"]}</div>
+                    </div>
+                    {/* <div className={"post-author"}>{post["username"]}</div> */}
                   </div>
                 </div>
               );

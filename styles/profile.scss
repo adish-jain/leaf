@@ -431,13 +431,13 @@
   flex-direction: row;
   // position: relative;
 
-  img {
-    position: absolute;
-    margin: 13px;
-  }
+  // img {
+  //   position: absolute;
+  //   margin: 13px;
+  // }
 
   textarea {
-    padding-left: 40px;
+    // padding-left: 40px;
     padding-top: 13px;
     // margin: 5px;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
@@ -452,7 +452,7 @@
     background-color: transparent;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 40px;
-    width: 220px;
+    width: 260px;
     height: 137px;
     max-height: 137px;
     margin-bottom: 10px;
@@ -491,4 +491,11 @@ a {
 
 a:hover {
   color: #37abda;
+}
+
+.profile-no-posts {
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 280px;
+  margin-left: 200px;
 }

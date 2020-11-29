@@ -161,6 +161,15 @@ async function handleProfileImageDelete(changeProfileImage: any) {
   }).then(async (res: any) => {});
 }
 
+function validateWebsite(websiteURL: string): string {
+  var match = websiteURL.match(/^(http|https|ftp)?(?:[\:\/]*)([a-z0-9\.-]*)(?:\:([0-9]+))?(\/[^?#]*)?(?:\?([^#]*))?(?:#(.*))?$/i);
+  let protocol = match![1];
+  if (protocol === undefined) {
+    websiteURL = "http://" + websiteURL;
+  }
+  return websiteURL;
+}
+
 
 export default function UserPage(props: UserPageProps) {
   console.log(props.posts);
@@ -416,20 +425,21 @@ function About(props: {
         <div className={"profile-about-content"}>
           {props.editingBio ? (
             <div className={"about-icon-and-input"}>
-              <img src="/images/usericon.svg" />
+              {/* <img src="/images/usericon.svg" /> */}
               <TextareaAutosize
                 placeholder={"About yourself"}
                 value={props.about}
                 onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
                   let myTarget = e.target as HTMLTextAreaElement;
-                  props.changeAbout(myTarget.value);
+                  let myTargetConstrained = myTarget.value.replace(/[\r\n\v]+/g, '');
+                  props.changeAbout(myTargetConstrained);
                   // props.changeAbout(myTarget.value);
                 }}
                 style={{
                   fontSize: "15px",
                   color: "D0D0D0",
                 }}
-                maxLength={300}
+                maxLength={250}
                 name="title"
               />
             </div>
@@ -481,7 +491,7 @@ function About(props: {
                   href={"https://twitter.com/" + props.twitter}
                   target="blank"
                 >
-                  <p>@{props.twitter}</p>
+                  <p>{props.twitter}</p>
                 </a>
               </div>
             ) : (
@@ -559,13 +569,13 @@ function About(props: {
             props.website !== "" ? (
               <div className={"profile-icon-and-link"}>
                 <a 
-                  href={props.website}
+                  href={validateWebsite(props.website)}
                   target="blank"
                 >
                   <img src="/images/webicon.svg" />
                 </a>
                 <a 
-                  href={props.website}
+                  href={validateWebsite(props.website)}
                   target="blank"
                 ><p>{props.website}</p></a>
               </div>
@@ -606,7 +616,8 @@ function DisplayPosts(props: {
     return (
       <div>
         {props.posts === undefined || props.posts.length === 0 ? (
-          <h3>No posts found</h3>
+          <div className={"profile-no-posts"}>{props.username} hasn't published anything yet</div>
+          // <h3>No posts found</h3>
         ) : (
           <div>
             {Array.from(props.posts).map((post: any) => {
