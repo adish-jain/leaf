@@ -133,8 +133,7 @@ async function saveProfileImage(selectedImage: any, changeProfileImage: any) {
       });
 }
 
-function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>, changeImageName: any,
-  changeUpload: any, changeUploadFailed: any, changeProfileImage: any) {
+function handleProfileImageUpload(e: React.ChangeEvent<HTMLInputElement>, changeUploadFailed: any, changeProfileImage: any) {
   let selectedImage = e.target.files![0];
   console.log(selectedImage);
 
@@ -145,8 +144,21 @@ function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>, changeImageNa
     saveProfileImage(selectedImage, changeProfileImage);
     changeUploadFailed(false);
   }
-  changeUpload(true);
-  changeImageName(selectedImage.name);
+}
+
+async function handleProfileImageDelete(changeProfileImage: any) {
+  let data = {
+    requestedAPI: "deleteProfileImage"
+  };
+
+  //optimistic mutate
+  changeProfileImage("");
+
+  await fetch("/api/endpoint", {
+    method: "POST",
+    headers: new Headers({ "Content-Type": "application/json" }),
+    body: JSON.stringify(data),
+  }).then(async (res: any) => {});
 }
 
 
@@ -158,9 +170,7 @@ export default function UserPage(props: UserPageProps) {
   const [editingBio, toggleEditingBio] = useState(false);
   const [canEditBio, toggleCanEditBio] = useState(false);
   const [profileImage, changeProfileImage] = useState("");
-  const [upload, changeUpload] = useState(false);
   const [uploadFailed, changeUploadFailed] = useState(false);
-  const [imageName, changeImageName] = useState("");
   
   const { authenticated, error, loading } = useLoggedIn();
   const {
@@ -279,15 +289,24 @@ export default function UserPage(props: UserPageProps) {
               <div className={"profile-img-shade"}></div>
               <div className={"profile-img-button"}>
                 <label className={"add-image"}>
-                  Upload Photo
+                  {uploadFailed ? 
+                    "Try Image < 5MB" 
+                    :
+                    "Upload Photo"
+                  }
                   <input
                     type="file"
                     id="myFile"
                     name="filename"
                     accept="image/*"
-                    onChange={(e) => handleImageUpload(e, changeImageName, changeUpload, changeUploadFailed, changeProfileImage)}
+                    onChange={(e) => handleProfileImageUpload(e, changeUploadFailed, changeProfileImage)}
                   />
                 </label>
+                {profileImage !== "" && 
+                <label className={"add-image"} onClick={(e) => handleProfileImageDelete(changeProfileImage)}>
+                  Delete Photo
+                </label>
+                }
               </div>
             </div>) 
             : 

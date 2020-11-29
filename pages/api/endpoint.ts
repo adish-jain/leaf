@@ -23,6 +23,7 @@ import handleSetEmailAndPassword from "../../lib/api/setEmailAndPassword";
 import handleSetProfile from "../../lib/api/setProfile";
 import handleGetProfileData from "../../lib/api/getProfileData";
 import handleSaveProfileImage from "../../lib/api/saveProfileImage";
+import handleDeleteProfileImage from "../../lib/api/deleteProfileImage";
 
 // user info
 import handleGetUserInfo from "../../lib/api/getUserInfo";
@@ -147,6 +148,10 @@ export default sentryHandler(
 
       case "saveProfileImage": {
         return handleSaveProfileImage(req, res);
+      }
+
+      case "deleteProfileImage": {
+        return handleDeleteProfileImage(req, res);
       }
 
       /* 
