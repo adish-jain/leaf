@@ -42,6 +42,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     let likes = postData.likes;
     let publishedAt = postData.publishedAt;
     let errored = postData.errored;
+    let profileImage = profileData.profileImage;
     // replace undefineds with null to prevent nextJS errors
     for (let i = 0; i < steps.length; i++) {
       if (steps[i].lines === undefined || steps[i].lines === null) {
@@ -70,7 +71,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
         files,
         errored,
         username,
-        profileData,
+        profileImage,
         publishedAtSeconds: publishedAt._seconds,
       },
     };
@@ -92,7 +93,7 @@ type PostPageProps = {
   errored: boolean;
   files: File[];
   username: string;
-  profileData: any,
+  profileImage: string,
   publishedAtSeconds: number;
 };
 
@@ -117,7 +118,7 @@ const Post = (props: PostPageProps) => {
       <main>
         <FinishedPost
           username={props.username}
-          profileData={props.profileData}
+          profileImage={props.profileImage}
           steps={props.steps}
           files={props.files}
           title={props.title}

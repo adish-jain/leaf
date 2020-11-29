@@ -5,7 +5,7 @@ initFirebaseAdmin();
 const admin = require("firebase-admin");
 let db = admin.firestore();
 
-import { getUidFromUsername, getUsernameFromUid } from "./userUtils";
+import { getUidFromUsername, getUsernameFromUid, getProfileImageFromUid } from "./userUtils";
 import { timeStamp, Post } from "../typescript/types/app_types";
 
 export async function adjustStepOrder(
@@ -43,6 +43,7 @@ export async function getDraftDataHandler(uid: string, draftId: string) {
     let publishedAt: timeStamp = draftData.data().publishedAt;
     let files = await getFilesForDraft(uid, draftId);
     let username: string = await getUsernameFromUid(uid);
+    let profileImage: string = await getProfileImageFromUid(uid);
     let results = {
       title: title,
       files: files,
@@ -52,6 +53,7 @@ export async function getDraftDataHandler(uid: string, draftId: string) {
       tags,
       likes,
       username,
+      profileImage,
       createdAt,
       publishedAt,
     };
@@ -67,6 +69,7 @@ export async function getDraftDataHandler(uid: string, draftId: string) {
       published: false,
       postId: "",
       username: "",
+      profileImage: "",
       createdAt: {
         _seconds: 0,
         _nanoseconds: 0,
@@ -177,7 +180,6 @@ export async function getAllPostsHandler() {
       return docSnapshot.data().profileImage;
     });
     let resultsJSON = doc.data();
-    console.log(resultsJSON.publishedAt.toDate());
     let postURL = "/" + username + "/" + resultsJSON.postId;
     results.push({
       postId: resultsJSON.postId,

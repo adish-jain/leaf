@@ -131,7 +131,7 @@ const FinishedPost = (props: FinishedPostProps) => {
           currentStepIndex={currentStepIndex}
           steps={props.steps}
           username={props.username}
-          profileData={props.profileData}
+          profileImage={props.profileImage}
           scrollingRef={scrollingRef}
           publishedAtSeconds={props.publishedAtSeconds}
           pageYOffset={scrollPosition}

@@ -29,7 +29,7 @@ export type FinishedPostProps = {
   likes: number;
   files: File[];
   username: string;
-  profileData: any;
+  profileImage: string;
   previewMode: boolean;
   updateShowPreview?: (value: SetStateAction<boolean>) => void;
   publishedAtSeconds: number;
