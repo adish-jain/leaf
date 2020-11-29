@@ -284,7 +284,7 @@ export default function UserPage(props: UserPageProps) {
               {profileImage === "" ? 
                 (props.profileUsername !== undefined ? props.profileUsername.substr(0,2) : "")
                 : 
-                (<img src={profileImage}/>)
+                (<div className={"profile-img-wrapper"}><img src={profileImage}/></div>)
               }
               <div className={"profile-img-shade"}></div>
               <div className={"profile-img-button"}>
@@ -319,7 +319,7 @@ export default function UserPage(props: UserPageProps) {
               }
             </div>
             )
-            }
+          }
             <div className={"profile-name"}>{props.profileUsername}</div>
               <About
                 editingBio={editingBio}
