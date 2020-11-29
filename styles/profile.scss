@@ -63,6 +63,13 @@
   // background: #bbbbbb;
   justify-content: center;
   align-items: center;
+  // width: 100%;
+  width: 200px;
+  // flex-wrap: wrap;
+  // overflow-x: auto;
+  word-wrap: break-word;
+  white-space: pre-line;
+  // overflow: auto;
 }
 
 .profile-img {
@@ -159,8 +166,9 @@
 .profile-name {
   display: flex;
   margin-top: 20px;
-  font-size: 30px;
+  font-size: 28px;
   font-weight: bold;
+  word-wrap: break-word;
   // margin-right: 50px;
 }
 

@@ -14,6 +14,7 @@ type ScrollingProps = {
   currentStepIndex: number;
   title: string;
   username: string;
+  profileData: any;
   publishedAtSeconds: number;
   scrollingRef: React.RefObject<HTMLDivElement>;
   pageYOffset: number;
@@ -68,12 +69,12 @@ export default class Scrolling extends Component<
     }
   };
 
-  incrementLike = () => {
-    // let data = {
-    //   requestedAPI: "updateTags",
-    //   tags: [tag],
-    // };
-  }
+  // incrementLike = () => {
+  //   // let data = {
+  //   //   requestedAPI: "updateTags",
+  //   //   tags: [tag],
+  //   // };
+  // }
 
   ScrollDown = () => {
     let { pageYOffset } = this.props;
@@ -94,22 +95,28 @@ export default class Scrolling extends Component<
   };
 
   TitleSection() {
-    let { username, title, tags, publishedAtSeconds } = this.props;
+    let { username, profileData, title, tags, publishedAtSeconds } = this.props;
     let date = new Date(publishedAtSeconds * 1000);
     let formattedDate = dayjs(date).format("MMMM D YYYY");
     return (
       <div>
         <h1 className={"post-title"}>{title}</h1>
         <p className={"published-by"}>
-          Published by
           <Link href={`/${username}`}>
-            <a>{username}</a>
+            <div className={"author-name-and-img"}>
+              {profileData.profileImage !== undefined &&
+                <div className={"published-post-author-img"}>
+                  <img src={profileData.profileImage}/>
+                </div>
+              }
+              <a>{username}</a>
+            </div>
           </Link>
           on {formattedDate}
         </p>
         <PostTags tags={tags} />
-        <button onClick={this.incrementLike}>like</button>
-        <p>Likes: {this.props.likes === null ? "No likes yet" : this.props.likes}</p>
+        {/* <button onClick={this.incrementLike}>like</button> */}
+        {/* <p>Likes: {this.props.likes === null ? "No likes yet" : this.props.likes}</p> */}
         <this.ScrollDown />
       </div>
     );

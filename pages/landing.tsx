@@ -149,8 +149,8 @@ function YourPosts(props: {
       return (
         <div>
           {posts!.map((post: any) => {
-            let date = new Date(post.publishedAt._seconds * 1000);
-            let formattedDate = dayjs(date).format("MMMM D YYYY");
+            // let date = new Date(post.publishedAt._seconds * 1000);
+            let formattedDate = dayjs(post.publishedAt).format("MMMM D YYYY");
             return (
               <Post
                 formattedDate={formattedDate}

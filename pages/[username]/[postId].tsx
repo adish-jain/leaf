@@ -3,7 +3,7 @@ import { GetStaticProps } from "next";
 import Head from "next/head";
 import FinishedPost from "../../components/FinishedPost";
 import { getAllPosts } from "../../lib/api/publishPost";
-import { getUsernameFromUid } from "../../lib/userUtils";
+import { getUsernameFromUid, getUidFromUsername, getProfileData } from "../../lib/userUtils";
 import { getDraftDataFromPostId } from "../../lib/postUtils";
 import DefaultErrorPage from "next/error";
 import { useRouter } from "next/router";
@@ -31,6 +31,10 @@ export const getStaticProps: GetStaticProps = async (context) => {
   let postId = context.params.postId as string;
   try {
     let postData = await getDraftDataFromPostId(username, postId);
+    let uid = await getUidFromUsername(username);
+    let profileData = await getProfileData(uid);
+    console.log("IN POSTID");
+    console.log(profileData);
     let steps = postData.steps;
     let files = postData.files;
     let title = postData.title;
@@ -66,6 +70,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
         files,
         errored,
         username,
+        profileData,
         publishedAtSeconds: publishedAt._seconds,
       },
     };
@@ -87,6 +92,7 @@ type PostPageProps = {
   errored: boolean;
   files: File[];
   username: string;
+  profileData: any,
   publishedAtSeconds: number;
 };
 
@@ -111,6 +117,7 @@ const Post = (props: PostPageProps) => {
       <main>
         <FinishedPost
           username={props.username}
+          profileData={props.profileData}
           steps={props.steps}
           files={props.files}
           title={props.title}

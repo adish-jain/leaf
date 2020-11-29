@@ -344,7 +344,7 @@ export default function UserPage(props: UserPageProps) {
                 // changeNewWebsite={changeNewWebsite}
                 saveNewProfile={saveNewProfile}
               />
-            </div>
+          </div>
           <div className={"profile-right-pane"}>
              {// @ts-ignore 
             <DisplayPosts posts={props.posts} username={props.profileUsername}/>
