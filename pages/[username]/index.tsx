@@ -189,7 +189,7 @@ export default function UserPage(props: UserPageProps) {
         {authenticated ? (
           <Header profile={false} explore={true} settings={true} logout={true} />
         ) : (
-          <HeaderUnAuthenticated />
+          <HeaderUnAuthenticated signup={true} login={true} explore={true} />
         )}
         <h1 className={"profile-header"}></h1>
         <div className={"profile-content"}>
@@ -312,11 +312,13 @@ function EditableProfileImage(props: {
 }) {
   return (
     <div className={"profile-img"}>
-      {props.profileImage === "" ? 
-        (props.profileUsername !== undefined ? props.profileUsername.substr(0,2) : "")
-        : 
-        (<div className={"profile-img-wrapper"}><img src={props.profileImage}/></div>)
-      }
+      <div className={"profile-img-wrapper"}>
+        {props.profileImage === "" ? 
+          (props.profileUsername !== undefined ? props.profileUsername.substr(0,2) : "")
+          : 
+          (<img src={props.profileImage}/>)
+        }
+      </div>
       <div className={"profile-img-shade"}></div>
       <div className={"profile-img-button"}>
         <label className={"add-image"}>

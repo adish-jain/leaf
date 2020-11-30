@@ -85,6 +85,9 @@
     height: 160px;
     border-radius: 80px;
     overflow: hidden;
+    align-items: center;
+    justify-content: center;
+    display: flex;
   
     img {
       width: 160px;
@@ -185,7 +188,7 @@
 }
 
 .profile-about-icons {
-  display: flex;
+  display: flex !important;
   flex-direction: column;
   left: 12.14%;
 
@@ -314,7 +317,7 @@
 }
 
 .profile-icon-and-input {
-  display: flex;
+  display: flex !important;
   flex-direction: row;
 
   img {
