@@ -10,6 +10,7 @@ import Header, { HeaderUnAuthenticated } from "../../components/Header";
 import ErroredPage from "../404";
 import { Post } from "../../typescript/types/app_types";
 import { useUserInfo } from "../../lib/useUserInfo";
+import { motion, AnimatePresence } from "framer-motion";
 const dayjs = require("dayjs");
 import TextareaAutosize from "react-autosize-textarea";
 
@@ -73,7 +74,7 @@ type UserPageProps = {
   profileData: any;
   errored: boolean;
   uid: string;
-  posts: any;
+  posts: Post[];
 };
 
 async function saveProfileImage(selectedImage: File, changeProfileImage: React.Dispatch<React.SetStateAction<string>>) {
@@ -194,20 +195,69 @@ export default function UserPage(props: UserPageProps) {
         <div className={"profile-content"}>
           <div className={"profile-left-pane"}>
           {canEditBio ? 
-            <EditableProfileImage 
-              profileImage={profileImage}
-              profileUsername={props.profileUsername}
-              uploadFailed={uploadFailed}
-              changeUploadFailed={changeUploadFailed}
-              changeProfileImage={changeProfileImage}
-            />
-            : 
-            <UneditableProfileImage
-              profileImage={profileImage}
-              profileUsername={props.profileUsername}
-            />
+           <AnimatePresence>
+           <motion.div
+             initial={{
+               opacity: 0,
+             }}
+             animate={{
+               opacity: 1,
+             }}
+             exit={{
+               opacity: 0,
+             }}
+             transition={{
+               duration: 0.4,
+             }}
+           >
+              <EditableProfileImage 
+                profileImage={profileImage}
+                profileUsername={props.profileUsername}
+                uploadFailed={uploadFailed}
+                changeUploadFailed={changeUploadFailed}
+                changeProfileImage={changeProfileImage}
+              />
+            </motion.div>
+            </AnimatePresence>
+            :
+            <AnimatePresence>
+            <motion.div
+              initial={{
+                opacity: 0,
+              }}
+              animate={{
+                opacity: 1,
+              }}
+              exit={{
+                opacity: 0,
+              }}
+              transition={{
+                duration: 0.4,
+              }}
+            >
+              <UneditableProfileImage
+                profileImage={profileImage}
+                profileUsername={props.profileUsername}
+              />
+            </motion.div>
+            </AnimatePresence>  
           }
             <div className={"profile-name"}>{props.profileUsername}</div>
+            <AnimatePresence>
+            <motion.div
+              initial={{
+                opacity: 0,
+              }}
+              animate={{
+                opacity: 1,
+              }}
+              exit={{
+                opacity: 0,
+              }}
+              transition={{
+                duration: 0.4,
+              }}
+            >
               <About
                 editingBio={editingBio}
                 canEditBio={canEditBio}
@@ -222,10 +272,29 @@ export default function UserPage(props: UserPageProps) {
                 toggleEditingBio={toggleEditingBio}
                 saveNewProfile={saveNewProfile}
               />
+            </motion.div>
+            </AnimatePresence>  
           </div>
           <div className={"profile-right-pane"}>
              {
-              <DisplayPosts posts={props.posts} username={props.profileUsername}/>
+              <AnimatePresence>
+              <motion.div
+                initial={{
+                  opacity: 0,
+                }}
+                animate={{
+                  opacity: 1,
+                }}
+                exit={{
+                  opacity: 0,
+                }}
+                transition={{
+                  duration: 0.4,
+                }}
+              >
+                <DisplayPosts posts={props.posts} username={props.profileUsername}/>
+              </motion.div>
+              </AnimatePresence>  
              }
           </div>
         </div>
@@ -312,28 +381,99 @@ function About(props: {
           changeAbout={props.changeAbout}
         />
         <div className={"profile-about-icons"}>
-          <TwitterSection 
-            editingBio={props.editingBio}
-            twitter={props.twitter}
-            changeTwitter={props.changeTwitter}
-          />
-          <GithubSection 
-            editingBio={props.editingBio}
-            github={props.github}
-            changeGithub={props.changeGithub}
-          />
-          <WebsiteSection 
-            editingBio={props.editingBio}
-            website={props.website}
-            changeWebsite={props.changeWebsite}
-          />
+          <AnimatePresence>
+            <motion.div
+              initial={{
+                opacity: 0,
+              }}
+              animate={{
+                opacity: 1,
+              }}
+              exit={{
+                opacity: 0,
+              }}
+              transition={{
+                duration: 0.4,
+              }}
+            >
+              <TwitterSection 
+                editingBio={props.editingBio}
+                twitter={props.twitter}
+                changeTwitter={props.changeTwitter}
+              />
+            </motion.div>
+          </AnimatePresence>  
+
+          <AnimatePresence>
+            <motion.div
+              initial={{
+                opacity: 0,
+              }}
+              animate={{
+                opacity: 1,
+              }}
+              exit={{
+                opacity: 0,
+              }}
+              transition={{
+                duration: 0.4,
+              }}
+            >
+              <GithubSection 
+                editingBio={props.editingBio}
+                github={props.github}
+                changeGithub={props.changeGithub}
+              />
+            </motion.div>
+          </AnimatePresence> 
+
+          <AnimatePresence>
+            <motion.div
+              initial={{
+                opacity: 0,
+              }}
+              animate={{
+                opacity: 1,
+              }}
+              exit={{
+                opacity: 0,
+              }}
+              transition={{
+                duration: 0.4,
+              }}
+            >
+              <WebsiteSection 
+                editingBio={props.editingBio}
+                website={props.website}
+                changeWebsite={props.changeWebsite}
+              />
+            </motion.div>
+          </AnimatePresence> 
         </div>
-        <EditProfileButton 
-          editingBio={props.editingBio}
-          canEditBio={props.canEditBio}
-          toggleEditingBio={props.toggleEditingBio}
-          saveNewProfile={props.saveNewProfile}
-        />
+
+        <AnimatePresence>
+          <motion.div
+            initial={{
+              opacity: 0,
+            }}
+            animate={{
+              opacity: 1,
+            }}
+            exit={{
+              opacity: 0,
+            }}
+            transition={{
+              duration: 0.4,
+            }}
+          >
+            <EditProfileButton 
+              editingBio={props.editingBio}
+              canEditBio={props.canEditBio}
+              toggleEditingBio={props.toggleEditingBio}
+              saveNewProfile={props.saveNewProfile}
+            />
+          </motion.div>
+        </AnimatePresence> 
     </div>
   );
 }
@@ -347,21 +487,38 @@ function AboutSection(props: {
     <div className={"profile-about-content"}>
       {props.editingBio ? (
         <div className={"about-icon-and-input"}>
-          <TextareaAutosize
-            placeholder={"About yourself"}
-            value={props.about}
-            onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
-              let myTarget = e.target as HTMLTextAreaElement;
-              let myTargetConstrained = myTarget.value.replace(/[\r\n\v]+/g, '');
-              props.changeAbout(myTargetConstrained);
-            }}
-            style={{
-              fontSize: "15px",
-              color: "D0D0D0",
-            }}
-            maxLength={250}
-            name="title"
-          />
+          <AnimatePresence>
+            <motion.div
+              initial={{
+                opacity: 0,
+              }}
+              animate={{
+                opacity: 1,
+              }}
+              exit={{
+                opacity: 0,
+              }}
+              transition={{
+                duration: 0.4,
+              }}
+            >
+              <TextareaAutosize
+                placeholder={"About yourself"}
+                value={props.about}
+                onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
+                  let myTarget = e.target as HTMLTextAreaElement;
+                  let myTargetConstrained = myTarget.value.replace(/[\r\n\v]+/g, '');
+                  props.changeAbout(myTargetConstrained);
+                }}
+                style={{
+                  fontSize: "15px",
+                  color: "D0D0D0",
+                }}
+                maxLength={250}
+                name="title"
+              />
+            </motion.div>
+          </AnimatePresence> 
         </div>
       ) : (
         props.about
@@ -380,7 +537,8 @@ function TwitterSection(props: {
       <EditingTwitterSection
         twitter={props.twitter}
         changeTwitter={props.changeTwitter}
-      /> : 
+      /> 
+      : 
       <SavedTwitterSection 
         twitter={props.twitter}
       />
@@ -394,19 +552,36 @@ function EditingTwitterSection(props: {
   return (
     <div className={"profile-icon-and-input"}>
       <img src="/images/twittericon.svg" />
-      <TextareaAutosize
-        placeholder={"Twitter Handle"}
-        value={props.twitter}
-        onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
-          let myTarget = e.target as HTMLTextAreaElement;
-          props.changeTwitter(myTarget.value);
-        }}
-        style={{
-          fontSize: "15px",
-          color: "D0D0D0",
-        }}
-        name="twitter"
-      />
+      <AnimatePresence>
+        <motion.div
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          exit={{
+            opacity: 0,
+          }}
+          transition={{
+            duration: 0.4,
+          }}
+        >
+          <TextareaAutosize
+            placeholder={"Twitter Handle"}
+            value={props.twitter}
+            onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
+              let myTarget = e.target as HTMLTextAreaElement;
+              props.changeTwitter(myTarget.value);
+            }}
+            style={{
+              fontSize: "15px",
+              color: "D0D0D0",
+            }}
+            name="twitter"
+          />
+        </motion.div>
+      </AnimatePresence> 
     </div>
   );
 }
@@ -459,20 +634,37 @@ function EditingGithubSection(props: {
 }) {
   return (
     <div className={"profile-icon-and-input"}>
-        <img src="/images/githubicon.svg" />
-        <TextareaAutosize
-        placeholder={"Github Username"}
-        value={props.github}
-        onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
-          let myTarget = e.target as HTMLTextAreaElement;
-          props.changeGithub(myTarget.value);
-        }}
-        style={{
-          fontSize: "15px",
-          color: "D0D0D0",
-        }}
-        name="github"
-      />
+      <img src="/images/githubicon.svg" />
+      <AnimatePresence>
+        <motion.div
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          exit={{
+            opacity: 0,
+          }}
+          transition={{
+            duration: 0.4,
+          }}
+        >
+          <TextareaAutosize
+          placeholder={"Github Username"}
+          value={props.github}
+          onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
+            let myTarget = e.target as HTMLTextAreaElement;
+            props.changeGithub(myTarget.value);
+          }}
+          style={{
+            fontSize: "15px",
+            color: "D0D0D0",
+          }}
+          name="github"
+          />
+        </motion.div>
+      </AnimatePresence> 
     </div>
   );
 }
@@ -525,19 +717,36 @@ function EditingWebsiteSection(props: {
   return (
     <div className={"profile-icon-and-input"}>
       <img src="/images/webicon.svg" />
-      <TextareaAutosize
-        placeholder={"Personal Website"}
-        value={props.website}
-        onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
-          let myTarget = e.target as HTMLTextAreaElement;
-          props.changeWebsite(myTarget.value);
-        }}
-        style={{
-          fontSize: "15px",
-          color: "D0D0D0",
-        }}
-        name="website"
-      />
+      <AnimatePresence>
+        <motion.div
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          exit={{
+            opacity: 0,
+          }}
+          transition={{
+            duration: 0.4,
+          }}
+        >
+          <TextareaAutosize
+            placeholder={"Personal Website"}
+            value={props.website}
+            onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
+              let myTarget = e.target as HTMLTextAreaElement;
+              props.changeWebsite(myTarget.value);
+            }}
+            style={{
+              fontSize: "15px",
+              color: "D0D0D0",
+            }}
+            name="website"
+          />
+        </motion.div>
+      </AnimatePresence> 
     </div>
   );
 }
@@ -574,12 +783,30 @@ function EditProfileButton(props: {
   return (
     props.canEditBio ? 
       (props.editingBio ? 
-        (<div 
-          className={"profile-edit-button"} 
-          onClick={(e) => {props.toggleEditingBio(!props.editingBio); props.saveNewProfile()}}
-        >
-          Save Profile
-        </div>
+        (
+          <AnimatePresence>
+            <motion.div
+              initial={{
+                opacity: 0,
+              }}
+              animate={{
+                opacity: 1,
+              }}
+              exit={{
+                opacity: 0,
+              }}
+              transition={{
+                duration: 0.4,
+              }}
+            >
+              <div 
+                className={"profile-edit-button"} 
+                onClick={(e) => {props.toggleEditingBio(!props.editingBio); props.saveNewProfile()}}
+              >
+                Save Profile
+              </div>
+            </motion.div>
+          </AnimatePresence> 
         )
       :
         (<div 
