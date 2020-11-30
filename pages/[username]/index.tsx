@@ -553,7 +553,7 @@ function EditingTwitterSection(props: {
 }) {
   return (
     <div className={"profile-icon-and-input"}>
-      <img src="/images/twittericon.svg" />
+      <img src="/images/birdyicon.svg" />
       <AnimatePresence>
         <motion.div
           initial={{
@@ -598,7 +598,7 @@ function SavedTwitterSection(props: {
           href={"https://twitter.com/" + props.twitter}
           target="blank"
         >
-          <img src="/images/twittericon.svg" />
+          <img src="/images/birdyicon.svg" />
         </a>
         <a 
           href={"https://twitter.com/" + props.twitter}
