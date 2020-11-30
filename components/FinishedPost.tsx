@@ -8,7 +8,7 @@ import Scrolling from "./Scrolling";
 import { useLoggedIn } from "../lib/UseLoggedIn";
 import PublishedCodeEditor from "./PublishedCodeEditor";
 import "../styles/app.scss";
-import "../styles/draftheader.scss";
+import "../styles/draftheader.module.scss";
 import { FinishedPostProps } from "../typescript/types/app_types";
 import { FinishedPostHeader } from "../components/Headers";
 import checkScrollSpeed from "../lib/utils/scrollUtils";

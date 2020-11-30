@@ -38,9 +38,9 @@ export default async function createDraftHandler(
     folders: [],
     files: [
       {
-        fileName: "untitled",
+        fileName: "untitled.txt",
         language: "text",
-        code: "// Write some code here ...",
+        code: JSON.stringify(slateNode),
         order: 0,
       },
     ],

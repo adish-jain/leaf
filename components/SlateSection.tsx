@@ -1,6 +1,6 @@
 // @refresh reset
 import React, { useEffect, useMemo, useState, useCallback } from "react";
-import "../styles/slate-editor.scss";
+// import "../styles/slate-editor.scss";
 import { Block } from "../typescript/enums/app_enums";
 import { Lines, Step } from "../typescript/types/app_types";
 

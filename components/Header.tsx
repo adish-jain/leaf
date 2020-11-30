@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Link from "next/link";
-import "../styles/header.scss";
+import headerStyles from "../styles/header.module.scss";
 import { goToIndex, goToLanding, logOut } from "../lib/UseLoggedIn";
 
 type HeaderProps = {
@@ -105,7 +105,7 @@ export default class Header extends Component<HeaderProps> {
 
 function Logo(props: { goTo: () => void }) {
   return (
-    <div className={'logo'} onClick={props.goTo}>
+    <div className={"logo"} onClick={props.goTo}>
       <img src="/images/LeafLogo.svg" />
     </div>
   );

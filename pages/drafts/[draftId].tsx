@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useLoggedIn } from "../../lib/UseLoggedIn";
 import { useBackend } from "../../lib/useBackend";
 import { useTags } from "../../lib/useTags";
@@ -17,9 +17,8 @@ import { opacityFade } from "../../styles/framer_animations/opacityFade";
 const fetch = require("node-fetch");
 import { draftMetaData } from "../../typescript/types/frontend/postTypes";
 global.Headers = fetch.Headers;
-import "../../styles/app.scss";
-import "../../styles/draftheader.scss";
-import "../../styles/publishing.scss";
+import appStyles from "../../styles/app.module.scss";
+import "../../styles/draftheader.module.scss";
 import { motion, AnimatePresence } from "framer-motion";
 import { FilesContext } from "../../contexts/files-context";
 
@@ -97,9 +96,6 @@ const DraftView = () => {
     changeSelectedLines,
     saveFileCode,
   } = useFiles(draftId, authenticated);
-  console.log(files);
-  const {} = useSteps(draftId as string, authenticated);
-
   // wrapper function for deleting a file.
   // when a file is deleted, make sure all associated steps remove that file
 
@@ -108,7 +104,7 @@ const DraftView = () => {
   }
 
   return (
-    <div className="container">
+    <div className={appStyles["container"]}>
       <Head>
         <title>{draftTitle}</title>
         <link rel="icon" href="/favicon.ico" />
@@ -136,10 +132,9 @@ const DraftView = () => {
           changeFileLanguage: changeFileLanguage,
           saveFileName: saveFileName,
           selectedFile: selectedFile,
-          currentlySelectedLines: currentlySelectedLines,
-          changeSelectedLines: changeSelectedLines,
           files: files,
           saveFileCode: saveFileCode,
+          selectedFileIndex: selectedFileIndex,
         }}
       >
         <DraftContext.Provider
@@ -155,7 +150,7 @@ const DraftView = () => {
             currentlyEditingBlock: currentlyEditingBlock,
           }}
         >
-          <main className={"AppWrapper"}>
+          <main className={appStyles["AppWrapper"]}>
             <AnimatePresence>
               {showPreview && (
                 <motion.div
@@ -190,6 +185,8 @@ const DraftView = () => {
                 draftTitle={draftTitle}
                 updateShowTags={updateShowTags}
                 draftContent={draftContent}
+                currentlySelectedLines={currentlySelectedLines}
+                changeSelectedLines={changeSelectedLines}
               />
             )}
           </main>

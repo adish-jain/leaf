@@ -1,6 +1,6 @@
 import { ContentBlockType } from "../typescript/enums/backend/postEnums";
 import MarkdownPreviewExample from "./MarkdownSection";
-import "../styles/text-section.scss";
+import textSectionStyles from "../styles/text-section.module.scss";
 
 export default function TextSection(props: {
   slateContent: string;
@@ -9,7 +9,7 @@ export default function TextSection(props: {
 }) {
   const { slateContent, sectionIndex, backendId } = props;
   return (
-    <div className={"text-section"}>
+    <div className={textSectionStyles["text-section"]}>
       <MarkdownPreviewExample
         slateContent={slateContent}
         sectionIndex={sectionIndex}

@@ -49,16 +49,16 @@ function prepareFetching(draftId: string) {
 export function useFiles(draftId: any, authenticated: boolean) {
   const contentFetcher = prepareFetching(draftId);
   const initialFilesData: fileObject[] = [];
-  let { data, mutate } = useSWR<fileObject[]>(
+  let { data: files, mutate } = useSWR<fileObject[]>(
     authenticated ? "getFiles" : null,
     contentFetcher,
     {
       initialData: initialFilesData,
       revalidateOnMount: true,
-      revalidateOnFocus: false,
+      revalidateOnFocus: true,
     }
   );
-  const files = data || [];
+  // const files = fileData || [];
 
   // What lines are currently highlighted?
   const [currentlySelectedLines, changeSelectedLines] = useState<Lines>({
@@ -80,6 +80,7 @@ export function useFiles(draftId: any, authenticated: boolean) {
   } else {
     selectedFile = files[selectedFileIndex];
   }
+
   /*
     Update the code in DynamicCodeEditor in the correct file
     */
@@ -90,9 +91,9 @@ export function useFiles(draftId: any, authenticated: boolean) {
       const modifiedItem: fileObject = mutateState[selectedFileIndex];
       modifiedItem.code = value;
       return [
-        ...mutateState.slice(0, selectedFileIndex - 1),
+        ...mutateState.slice(0, selectedFileIndex),
         modifiedItem,
-        ...mutateState.slice(selectedFileIndex),
+        ...mutateState.slice(selectedFileIndex + 1),
       ];
     }, false);
   }
@@ -166,25 +167,32 @@ export function useFiles(draftId: any, authenticated: boolean) {
   function saveFileName(value: string, external: boolean) {
     value = value.trim();
 
+    let modifiedItem: fileObject = files[selectedFileIndex];
     if (fileNameExistsPartialSearch(value)) {
       alert("This file name already exists. Please try another name.");
-      duplicateFiles[selectedFileIndex].name = getNewFileName();
+      modifiedItem.fileName = getNewFileName();
     } else {
-      duplicateFiles[selectedFileIndex].name = value;
+      modifiedItem.fileName = value;
     }
 
     if (external) {
-      setLangFromName(files[selectedFileIndex].name);
+      setLangFromName(modifiedItem.fileName);
     }
 
-    mutate(async (mutateState: any) => {
-      return { ...mutateState, files };
+    mutate(async (mutateState) => {
+      let modifiedItem: fileObject = mutateState[selectedFileIndex];
+      modifiedItem.fileName = value;
+      return [
+        ...mutateState.slice(0, selectedFileIndex),
+        modifiedItem,
+        ...mutateState.slice(selectedFileIndex + 1),
+      ];
     }, false);
 
-    var data = {
+    let data = {
       requestedAPI: "save_file_name",
       draftId: draftId,
-      fileId: files[selectedFileIndex].id,
+      fileId: files[selectedFileIndex].fileId,
       fileName: value,
     };
 
@@ -194,39 +202,56 @@ export function useFiles(draftId: any, authenticated: boolean) {
       body: JSON.stringify(data),
     }).then(async (res: any) => {});
   }
-
   /** 
     Saves the language selection to Firebase. Triggered from `LanguageBar.tsx`. 
     Also updates the file name to match the new language selection. 
       `language` is the language selection as a string.
       `external` is true when triggered from `LanguageBar.tsx` & false otherwise.
     */
-  function changeFileLanguage(language: supportedLanguages, external: boolean) {
-    let fileId = files[selectedFileIndex].id;
-    let duplicateFiles = [...files];
-    duplicateFiles[selectedFileIndex].language = language;
-    files = duplicateFiles;
-    codeFiles = duplicateFiles;
+  async function changeFileLanguage(language: string, external: boolean) {
+    let fileId = files[selectedFileIndex].fileId;
+    console.log("files are");
+    console.log(files[0].language);
     if (external) {
-      setNameFromLang(language);
+      // setNameFromLang(language);
     }
-
-    mutate(async (mutateState: any) => {
-      return { ...mutateState, files };
-    }, false);
-
-    var data = {
+    let bodyData = {
       requestedAPI: "change_file_language",
       draftId: draftId,
       fileId: fileId,
       language: language,
     };
-
-    fetch("/api/endpoint", {
-      method: "POST",
-      headers: new Headers({ "Content-Type": "application/json" }),
-      body: JSON.stringify(data),
-    }).then(async (res: any) => {});
+    // console.log("current is ", files[selectedFileIndex].language);
+    await mutate(async (mutateState) => {
+      // console.log("need to change to ", language);
+      // console.log("old is ", mutateState[0].language);
+      console.log("mutate is ", mutateState[0].language);
+      let modifiedItem: fileObject = mutateState[selectedFileIndex];
+      modifiedItem.language = language;
+      const newObject: fileObject = {
+        fileName: modifiedItem.fileName.slice(),
+        language: language.slice(),
+        code: modifiedItem.code,
+        order: modifiedItem.order,
+        fileId: modifiedItem.fileId,
+      };
+      // fetch("/api/endpoint", {
+      //   method: "POST",
+      //   headers: new Headers({ "Content-Type": "application/json" }),
+      //   body: JSON.stringify(bodyData),
+      // }).then(async (res: any) => {});
+      // console.log("new array is ");
+      // console.log([
+      //   ...mutateState.slice(0, selectedFileIndex),
+      //   newObject,
+      //   ...mutateState.slice(selectedFileIndex + 1),
+      // ]);
+      return [
+        ...mutateState.slice(0, selectedFileIndex),
+        newObject,
+        ...mutateState.slice(selectedFileIndex + 1),
+      ];
+    }, false);
   }
 
   /** 
@@ -255,7 +280,7 @@ export function useFiles(draftId: any, authenticated: boolean) {
     */
   function setNameFromLang(value: string) {
     let extension = getExtensionFromLanguage(value);
-    let fileName = files[selectedFileIndex].name;
+    let fileName = files[selectedFileIndex].fileName;
     let newName;
     if (!fileName.includes(".")) {
       newName = fileName + "." + extension;
@@ -269,7 +294,7 @@ export function useFiles(draftId: any, authenticated: boolean) {
       }
     }
 
-    saveFileName(newName, false);
+    // saveFileName(newName, false);
   }
 
   /** 
@@ -394,7 +419,7 @@ export function useFiles(draftId: any, authenticated: boolean) {
     let code = files[selectedFileIndex].code;
 
     files[selectedFileIndex].code = code;
-
+    console.log("save file code");
     // mutate(async (mutateState: fileObject[]) => {
     //   return { ...mutateState, files };
     // }, false);

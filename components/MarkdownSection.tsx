@@ -37,13 +37,9 @@ import {
   Point,
 } from "slate";
 import { withHistory, HistoryEditor } from "slate-history";
-import "../styles/slate-editor.scss";
+import slateStyles from "../styles/slate-editor.module.scss";
 import { isCollapsed } from "@udecode/slate-plugins";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  formattingPaneBlockType,
-  backendDraftBlockEnum,
-} from "../typescript/enums/app_enums";
+import { formattingPaneBlockType } from "../typescript/enums/app_enums";
 import { FormattingPaneBlockList, Lines } from "../typescript/types/app_types";
 import {
   handleArrowLeft,
@@ -53,8 +49,8 @@ import {
   handleEnter,
   handleBackSpace,
 } from "../lib/handleKeyUtils";
+import { CodeBlockElement } from "./CodeBlockElement";
 import {
-  CodeBlockElement,
   HeaderOneElement,
   HeaderTwoElement,
   HeaderThreeElement,
@@ -443,7 +439,7 @@ const MarkdownPreviewExample = (props: {
   }
 
   return (
-    <div className={"slate-wrapper"}>
+    <div className={slateStyles["slate-wrapper"]}>
       <Slate editor={editor} value={value} onChange={handleChange}>
         <Editable
           decorate={decorate}
@@ -479,32 +475,52 @@ const Leaf = ({ attributes, children, leaf }: RenderLeafProps) => {
     background?: string;
     fontStyle?: string;
     cursor?: string;
-    fontWeight?: string;
-  } = {
-    fontFamily: "monospace",
-  };
+    fontWeight?:
+      | "bold"
+      | "-moz-initial"
+      | "inherit"
+      | "initial"
+      | "revert"
+      | "unset"
+      | "normal"
+      | (number & {})
+      | "bolder"
+      | "lighter"
+      | undefined;
+  } = {};
   if (leaf.bold) {
     style["fontWeight"] = "bold";
   }
-
   switch (leaf.prismType) {
     case "comment":
     case "prolog":
     case "doctype":
     case "cdata":
-      style["color"] = "#93a1a1";
+      style["color"] = "#7C7C7C";
       break;
     case "punctuation":
-      style["color"] = "#999999";
+      style["color"] = "#c5c8c6";
       break;
     case "property":
+    case "keyword":
     case "tag":
+    case "script":
+      style["color"] = "#96CBFE";
+      break;
+    case "class-name":
+      style["color"] = "#FFFFB6";
+      style["text-decoration"] = "underline";
+      break;
     case "boolean":
-    case "number":
     case "constant":
+      style["color"] = "#99CC99";
+      break;
     case "symbol":
     case "deleted":
-      style["color"] = "#990055";
+      style["color"] = "#f92672";
+      break;
+    case "number":
+      style["color"] = "#FF73FD";
       break;
     case "selector":
     case "attr-name":
@@ -512,44 +528,60 @@ const Leaf = ({ attributes, children, leaf }: RenderLeafProps) => {
     case "char":
     case "builtin":
     case "inserted":
-      style["color"] = "#669900";
+      style["color"] = "#A8FF60";
+      break;
+    case "variable":
+      style["color"] = "#C6C5FE";
       break;
     case "operator":
+      style["color"] = "#EDEDED";
+      break;
     case "entity":
+      style["color"] = "#FFFFB6";
+      style["cursor"] = "help";
+      break;
     case "url":
-    case "string":
-      style["color"] = "#a67f59";
-      // style["background"] = "#ffffff";
+      style["color"] = "#96CBFE";
       break;
     case "atrule":
     case "attr-value":
-    case "keyword":
-      style["color"] = "#0077aa";
+      style["color"] = "#F9EE98";
       break;
     case "function":
-      style["color"] = "#dd4a68";
+      style["color"] = "#DAD085";
       break;
+    // .language-css .token.string,
+    // .style .token.string {
+    //   color: #87C38A;
+    // }
     case "regex":
-    case "important":
-    case "variable":
-      style["color"] = "#ee9900";
+      style["color"] = "#E9C062";
       break;
     case "important":
-    case "bold":
-      style["fontStyle"] = "bold";
-      break;
-    case "italic":
-      style["fontStyle"] = "italic";
-      break;
-    case "entity":
-      style["cursor"] = "help";
+      style["color"] = "#fd971f";
       break;
     case "prismDefault":
-      style["fontFamily"] = "monospace";
+      style["color"] = "#c5c8c6";
+      style["textShadow"] = "0 1px rgba(0, 0, 0, 0.3)";
+      style["fontFamily"] =
+        "Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace";
+      style["direction"] = "ltr";
+      style["textAlign"] = "left";
+      style["whiteSpace"] = "pre";
+      style["wordSpacing"] = "normal";
+      style["wordBreak"] = "normal";
+      style["lineHeight"] = 1.5;
+      style["tabSize"] = 4;
+      style["hyphens"] = "none";
       break;
     default:
       style["fontFamily"] = "Arial, Helvetica, sans-serif";
       break;
+  }
+  if (leaf.monospace as boolean) {
+    style["fontSize"] = "14px";
+    style["fontFamily"] =
+      "Inconsolata, Monaco, Consolas, 'Courier New', Courier, monospace";
   }
 
   return (
@@ -609,7 +641,6 @@ function addMarkDown(tokens: Token[], path: Path) {
 function addSyntaxHighlighting(tokens: Token[], path: Path) {
   const ranges: Range[] = [];
   let start = 0;
-
   for (const token of tokens) {
     let length = getLength(token);
     let end = start + length;
@@ -622,12 +653,14 @@ function addSyntaxHighlighting(tokens: Token[], path: Path) {
         if (typeof currentToken !== "string") {
           ranges.push({
             prismType: currentToken.type,
+            monospace: true,
             anchor: { path, offset: innerStart },
             focus: { path, offset: innerEnd },
           });
         } else {
           ranges.push({
             prismType: "prismDefault",
+            monospace: true,
             anchor: { path, offset: innerStart },
             focus: { path, offset: innerEnd },
           });
@@ -639,6 +672,7 @@ function addSyntaxHighlighting(tokens: Token[], path: Path) {
       ranges.push({
         // type: token.type,
         prismType: token.type,
+        monospace: true,
         anchor: { path, offset: start },
         focus: { path, offset: end },
       });
@@ -646,6 +680,7 @@ function addSyntaxHighlighting(tokens: Token[], path: Path) {
       ranges.push({
         // type: token.type,
         prismType: "prismDefault",
+        monospace: true,
         anchor: { path, offset: start },
         focus: { path, offset: end },
       });

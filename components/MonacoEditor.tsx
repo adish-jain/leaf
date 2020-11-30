@@ -6,6 +6,8 @@ import { editor } from "monaco-editor";
 const MonacoEditor = dynamic(import("react-monaco-editor"), { ssr: false });
 import { motion, AnimatePresence } from "framer-motion";
 import { getMonacoLanguageFromBackend } from "../lib/utils/languageUtils";
+const shortId = require("shortid");
+
 import { DraftContext } from "../contexts/draft-context";
 import { FilesContext } from "../contexts/files-context";
 import {
@@ -170,6 +172,7 @@ export default class MonacoEditorWrapper extends Component<
     editor: editor.IStandaloneCodeEditor,
     monaco: typeof import("monaco-editor")
   ) {
+    console.log("mounting editor");
     (this
       .monacoInstance as React.MutableRefObject<editor.IStandaloneCodeEditor>).current = editor;
     this.monacoTypesWrapper = monaco;
@@ -183,7 +186,7 @@ export default class MonacoEditorWrapper extends Component<
       this.handleCursor(e)
     );
 
-    //disables typescript type checking
+    // //disables typescript type checking
     monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
       noSemanticValidation: true,
       noSyntaxValidation: true,
@@ -205,15 +208,15 @@ export default class MonacoEditorWrapper extends Component<
     } = newSelection;
     // update lines for modal
     if (!(startLineNumber === endLineNumber && startColumn === endColumn)) {
-      this.setState({
-        showModal: true,
-      });
+      // this.setState({
+      //   showModal: true,
+      // });
       changeSelectedLines({
         start: startLineNumber,
         end: endLineNumber,
       });
     } else {
-      this.setState({ showModal: false });
+      // this.setState({ showModal: false });
     }
   }
 
@@ -233,10 +236,11 @@ export default class MonacoEditorWrapper extends Component<
   }
 
   LineModal = () => {
-    const { currentlyEditingStep } = this.props;
+    const { currentlyEditingBlock } = this.props;
+    const { start, end } = this.props.currentlySelectedLines;
     return (
       <AnimatePresence>
-        {this.state.showModal && this.props.editing && (
+        {this.state.showModal && currentlyEditingBlock && (
           <motion.div
             style={{
               position: "absolute",
@@ -287,9 +291,14 @@ export default class MonacoEditorWrapper extends Component<
 
   render() {
     // const { selectedFile } = this.fileContext;
-    const { selectedFile } = this.props;
+    const { selectedFile, changeCode, currentlySelectedLines } = this.props;
     const code = selectedFile?.code;
     const language = selectedFile?.language;
+    if (!selectedFile) {
+      console.log("no selected file");
+      return <div></div>;
+    }
+    // console.log(selectedFile.fileId + language);
     return (
       <div>
         <style jsx>{`
@@ -300,38 +309,85 @@ export default class MonacoEditorWrapper extends Component<
           resize: vertical;
           overflow: hidden;
         `}</style>
-        <this.LineModal />
-        <MonacoEditor
-          // key={selectedFile.id}
-          height={"100%"}
-          language={getMonacoLanguageFromBackend(language || "")}
-          value={code || ""}
-          onChange={(value) => this.props.changeCode(value)}
-          options={{
-            selectOnLineNumbers: true,
-            minimap: {
-              enabled: false,
-            },
-            automaticLayout: true,
-          }}
-          editorDidMount={(editor, monaco) => {
-            this.mountEditor(editor, monaco);
-            //@ts-ignore
-            window.MonacoEnvironment.getWorkerUrl = (moduleId, label) => {
-              if (label === "html") return "/_next/static/html.worker.js";
-              if (label === "xml") return "/_next/static/xml.worker.js";
-              if (label === "css") return "/_next/static/css.worker.js";
-              if (label === "scss") return "/_next/static/css.worker.js";
-              if (label === "json") return "/_next/static/json.worker.js";
-              if (label === "typescript" || label === "javascript")
-                return "/_next/static/ts.worker.js";
-              return "/_next/static/editor.worker.js";
-            };
-          }}
+        {/* <this.LineModal /> */}
+        <EncloseMonaco
+          selectedFile={selectedFile}
+          changeCode={changeCode}
+          mountEditor={this.mountEditor}
+          currentlySelectedLines={currentlySelectedLines}
         />
       </div>
     );
   }
+}
+
+type EncloseMonacoProps = {
+  selectedFile: fileObject;
+  changeCode: (value: string) => void;
+  // mountEditor: (
+  //   editor: editor.IStandaloneCodeEditor,
+  //   monaco: typeof import("monaco-editor")
+  // ) => void;
+  mountEditor: any;
+  currentlySelectedLines: Lines;
+};
+
+class EncloseMonaco extends Component<EncloseMonacoProps> {
+  shouldComponentUpdate(nextProps: EncloseMonacoProps, nextState: any) {
+    console.log("checking if should render");
+    const nextLines = nextProps.currentlySelectedLines;
+    const currLines = this.props.currentlySelectedLines;
+    if (!linesAreEqual(nextLines, currLines)) {
+      console.log("preventing rerender");
+      return false;
+    }
+    return true;
+  }
+
+  render() {
+    const { selectedFile, changeCode, mountEditor } = this.props;
+    const { code, language } = selectedFile;
+    return (
+      <MonacoEditor
+        key={shortId.generate()}
+        height={"100%"}
+        language={getMonacoLanguageFromBackend(language || "")}
+        value={code || ""}
+        onChange={(value) => changeCode(value)}
+        options={{
+          selectOnLineNumbers: true,
+          minimap: {
+            enabled: false,
+          },
+          automaticLayout: true,
+        }}
+        editorWillMount={(monaco) => {
+          console.log("editor will mount");
+        }}
+        editorDidMount={(editor, monaco) => {
+          mountEditor(editor, monaco);
+          //@ts-ignore
+          window.MonacoEnvironment.getWorkerUrl = (moduleId, label) => {
+            if (label === "html") return "/_next/static/html.worker.js";
+            if (label === "xml") return "/_next/static/xml.worker.js";
+            if (label === "css") return "/_next/static/css.worker.js";
+            if (label === "scss") return "/_next/static/css.worker.js";
+            if (label === "json") return "/_next/static/json.worker.js";
+            if (label === "typescript" || label === "javascript")
+              return "/_next/static/ts.worker.js";
+            return "/_next/static/editor.worker.js";
+          };
+        }}
+      />
+    );
+  }
+}
+
+function linesAreEqual(first: Lines, second: Lines) {
+  if (first.start === second.start && first.end === second.end) {
+    return true;
+  }
+  return false;
 }
 
 // onDidBlurEditorText(listener: () => void): IDisposable;

@@ -1,34 +1,32 @@
 import React, { Component, useContext } from "react";
 import { FilesContext } from "../contexts/files-context";
-import "../styles/languagebar.scss";
+import languageBarStyles from "../styles/languagebar.module.scss";
 import {
   languageStrings,
   ProgrammingLanguage,
 } from "../typescript/types/language_types";
 
-type LanguageBarProps = {
-  changeFileLanguage: (language: string, external: boolean) => void;
-};
+type LanguageBarProps = {};
 
 type LanguageBarState = {};
 
 export default function LanguageBar(props: LanguageBarProps) {
   const filesContext = useContext(FilesContext);
-
-  function handleChange(e: React.FormEvent<HTMLSelectElement>) {
-    props.changeFileLanguage(e.currentTarget.value, true);
+  const { changeFileLanguage, files, selectedFileIndex } = filesContext;
+  async function handleChange(e: React.FormEvent<HTMLSelectElement>) {
+    await changeFileLanguage(e.currentTarget.value, true);
   }
-
+  // console.log(files);
   let languageOptions = [];
   Object.entries(languageStrings).forEach((record) => {
     let languageName = record[0];
     languageOptions.push(languageName);
   });
-
-  const { selectedFile } = filesContext;
+  let selectedFile = files[selectedFileIndex];
+  // console.log(selectedFile);
   const selectedLanguage = selectedFile?.language || "plaintext";
   return (
-    <div className={"LanguageBar"}>
+    <div className={languageBarStyles["LanguageBar"]}>
       <label>
         Language:
         <select
@@ -37,7 +35,6 @@ export default function LanguageBar(props: LanguageBarProps) {
             selectedLanguage !== "textile" ? selectedLanguage : "plaintext"
           }
         >
-          {}
           <option value="html">HTML</option>
           <option value="xml">XML</option>
           <option value="css">CSS</option>

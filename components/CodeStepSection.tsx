@@ -1,23 +1,34 @@
 import Publishing from "./Publishing";
 import CodeEditor from "./CodeEditor";
 import MarkdownSection from "./MarkdownSection";
-import "../styles/codestep.scss";
+import codeStepSectionStyles from "../styles/codestep.module.scss";
 import { ContentBlockType } from "../typescript/enums/backend/postEnums";
 import {
   contentBlock,
   fileObject,
+  Lines,
 } from "../typescript/types/frontend/postTypes";
-import { DraftContext } from "../contexts/draft-context";
+import { Dispatch, SetStateAction } from "react";
 
 export default function CodeStepSection(props: {
   codeSteps: contentBlock[];
   sectionIndex: number;
+  currentlySelectedLines: Lines;
+  changeSelectedLines: Dispatch<SetStateAction<Lines>>;
 }) {
-  const { codeSteps, sectionIndex } = props;
+  const {
+    codeSteps,
+    sectionIndex,
+    currentlySelectedLines,
+    changeSelectedLines,
+  } = props;
   return (
-    <div className={"codestep-section"}>
+    <div className={codeStepSectionStyles["codestep-section"]}>
       <Publishing sectionIndex={sectionIndex} codeSteps={codeSteps} />
-      <CodeEditor />
+      <CodeEditor
+        currentlySelectedLines={currentlySelectedLines}
+        changeSelectedLines={changeSelectedLines}
+      />
     </div>
   );
 }

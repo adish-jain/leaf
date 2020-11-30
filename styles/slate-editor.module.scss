@@ -161,15 +161,6 @@ $headerThreeFontSize: 1.17em;
   transition: background-color 0.2s ease-in-out;
 }
 
-// .handle:hover {
-//   color: white;
-
-//   .dots {
-//     background-color: $gray-text;
-
-//   }
-// }
-
 .blockquote-element {
   border-left: 2px $leaf-dark-blue solid;
   padding-left: 4px;
@@ -198,106 +189,6 @@ $headerThreeFontSize: 1.17em;
   position: absolute;
   left: -12px;
   top: 0;
-}
-
-// .codeblock {
-//   font-family: monospace;
-//   background-color: #eee;
-//   padding: 12px;
-//   padding-top: 16px;
-//   padding-bottom: 16px;
-//   padding-left: 120px;
-//   left: -120px;
-//   position: relative;
-//   border: solid 1px black;
-//   z-index: 1;
-
-//   @include header-placeholder;
-//   label {
-//     font-weight: normal;
-//     color:black;
-//     top: 16px;
-//   }
-// }
-
-.codeblock-select {
-  position: absolute;
-  z-index: 5;
-  cursor: pointer;
-  // left: -120px;
-  top: 0;
-  left: -40px;
-}
-
-.codeblock {
-  position: relative;
-  z-index: 1;
-  // padding-left: 30px;
-  // left: -30px;
-  font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, Courier,
-    monospace;
-  padding: 12px;
-  padding-top: 20px;
-  padding-bottom: 20px;
-  margin-top: 16px;
-  background-color: #eee;
-  display: flex;
-  // justify-content: center;
-  align-items: center;
-  // border-style: solid;
-
-  br {
-    display: none !important;
-  }
-
-  .codeblock-content {
-    z-index: 1;
-    white-space: pre-wrap;
-  }
-
-  .codeblock-placeholder {
-    position: absolute;
-    top: 20px;
-    color: gray;
-    pointer-events: none;
-    // z-index: 0;
-
-    -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-    -khtml-user-select: none; /* Konqueror HTML */
-    -moz-user-select: none; /* Old versions of Firefox */
-    -ms-user-select: none; /* Internet Explorer/Edge */
-    user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome, Edge, Opera and Firefox */
-  }
-}
-
-.choose-languages {
-  // position: absolute;
-  // position: relative;
-  // left: -4px;
-  // top: -26px;
-  // top: 0;
-  border-radius: 4px;
-  padding: 2px;
-  transition: background-color 0.2s ease-in-out;
-  // pointer-events: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-family: Arial, Helvetica, sans-serif;
-
-  select {
-    border-style: none;
-    background-color: #eee;
-  }
-}
-
-.choose-languages:hover {
-  background-color: $leaf-light-gray;
-  transition: background-color 0.2s ease-in-out;
 }
 
 .image-element-uploaded {

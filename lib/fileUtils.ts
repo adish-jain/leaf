@@ -26,7 +26,7 @@ export async function getFilesForDraft(
         results.push({
           order: resultsJSON.order,
           fileId: resultsJSON.id,
-          fileName: resultsJSON.name,
+          fileName: resultsJSON.fileName,
           code: resultsJSON.code,
           language: resultsJSON.language,
         });

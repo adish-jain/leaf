@@ -5,7 +5,7 @@ import StoredStep from "./StoredStep";
 const fetch = require("node-fetch");
 global.Headers = fetch.Headers;
 import Router from "next/router";
-import "../styles/publishing.scss";
+import publishingStyles from "../styles/publishing.module.scss";
 import { File, Step, Lines } from "../typescript/types/app_types";
 import { contentBlock } from "../typescript/types/frontend/postTypes";
 import MarkdownSection from "./MarkdownSection";
@@ -27,7 +27,7 @@ type PublishingState = {
 export default function Publishing(props: PublishingProps) {
   const { codeSteps, sectionIndex } = props;
   return (
-    <div className={"publishing"}>
+    <div className={publishingStyles["publishing"]}>
       {codeSteps.map((codeStep, index) => {
         return (
           <MarkdownSection
@@ -35,6 +35,7 @@ export default function Publishing(props: PublishingProps) {
             backendId={codeStep.backendId}
             sectionIndex={index + sectionIndex}
             contentType={ContentBlockType.CodeSteps}
+            key={codeStep.backendId}
           />
         );
       })}

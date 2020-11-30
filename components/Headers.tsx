@@ -1,5 +1,5 @@
-import "../styles/draftheader.scss";
-import "../styles/landingheader.scss";
+import draftHeaderStyles from "../styles/draftheader.module.scss";
+import landingHeaderStyles from "../styles/landingheader.module.scss";
 import { SetStateAction } from "react";
 import Link from "next/link";
 import { goToIndex, goToLanding, logOut } from "../lib/UseLoggedIn";
@@ -15,10 +15,13 @@ type LandingHeaderProps = {
 
 export function LandingHeader(props: LandingHeaderProps) {
   return (
-    <div className={"landing-header"}>
-      <div className={"inner-content"}>
-        <img className={"landing-img"} src="/images/LeafLogo.svg" />
-        <div className={"links"}>
+    <div className={landingHeaderStyles["landing-header"]}>
+      <div className={landingHeaderStyles["inner-content"]}>
+        <img
+          className={landingHeaderStyles["landing-img"]}
+          src="/images/LeafLogo.svg"
+        />
+        <div className={landingHeaderStyles["links"]}>
           <Link href={`/${props.username}`}>
             <a>Profile</a>
           </Link>
@@ -28,7 +31,10 @@ export function LandingHeader(props: LandingHeaderProps) {
           <Link href={`/settings`}>
             <a>Settings</a>
           </Link>
-          <div className={"logout-button"} onClick={logOut}>
+          <div
+            className={landingHeaderStyles["logout-button"]}
+            onClick={logOut}
+          >
             Logout
           </div>
         </div>
@@ -42,7 +48,7 @@ export function DraftHeader(props: DraftHeaderProps) {
     return (
       <DraftContext.Consumer>
         {({ username }) => (
-          <div className={"links"}>
+          <div className={draftHeaderStyles["links"]}>
             <Link href="/landing">
               <a>Home</a>
             </Link>
@@ -83,14 +89,17 @@ export function DraftHeader(props: DraftHeaderProps) {
       window.location.href = `/${username}/${postId}`;
     }
     const publishButton = (
-      <button className={"publish-button"} onClick={props.publishPost}>
+      <button
+        className={draftHeaderStyles["publish-button"]}
+        onClick={props.publishPost}
+      >
         {"Publish Post"}
       </button>
     );
 
     const goToPublishedPostButton = (username: string, postId: string) => (
       <button
-        className={"publish-button"}
+        className={draftHeaderStyles["publish-button"]}
         onClick={(e) => goToPublishedPost(username, postId)}
       >
         {"Go to Published Post"}
@@ -114,7 +123,7 @@ export function DraftHeader(props: DraftHeaderProps) {
     return (
       <button
         onClick={() => props.updateShowTags(true)}
-        className={"publish-button"}
+        className={draftHeaderStyles["publish-button"]}
       >
         Tags
       </button>
@@ -125,10 +134,10 @@ export function DraftHeader(props: DraftHeaderProps) {
     return (
       <DraftContext.Consumer>
         {({ updatePreviewMode, published }) => (
-          <div className={"buttons"}>
+          <div className={draftHeaderStyles["buttons"]}>
             <TagsButton />
             <button
-              className={"preview-button"}
+              className={draftHeaderStyles["preview-button"]}
               onClick={(e) => {
                 updatePreviewMode(true);
               }}
@@ -143,8 +152,8 @@ export function DraftHeader(props: DraftHeaderProps) {
   }
 
   return (
-    <div className={"draft-header"}>
-      <div className={"header-wrapper"}>
+    <div className={draftHeaderStyles["draft-header"]}>
+      <div className={draftHeaderStyles["header-wrapper"]}>
         <Links />
         <Buttons />
       </div>

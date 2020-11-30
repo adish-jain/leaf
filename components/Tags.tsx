@@ -1,5 +1,5 @@
 import React, { Component, SetStateAction } from "react";
-import "../styles/tags.scss";
+import "../styles/tags.module.scss";
 import { TagsHeader } from "../components/Headers";
 
 type TagsProps = {

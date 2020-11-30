@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "../styles/languagebar.scss";
+import "../styles/languagebar.module.scss";
 
 type PublishedLanguageBarProps = {
   language: string;

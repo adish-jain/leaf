@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import { getUserPosts, getUidFromUsername } from "../../lib/userUtils";
 import { useLoggedIn } from "../../lib/UseLoggedIn";
-import "../../styles/profile.scss";
+import profileStyles from "../../styles/profile.module.scss";
 import Header, { HeaderUnAuthenticated } from "../../components/Header";
 import ErroredPage from "../404";
 

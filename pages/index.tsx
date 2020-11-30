@@ -6,8 +6,7 @@ import { useLoggedIn, logOut } from "../lib/UseLoggedIn";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-// let indexStyles = require("../styles/index.scss");
-import "../styles/index.scss";
+let indexStyles = require("../styles/index.scss");
 
 export default function Pages() {
   const router = useRouter();
@@ -24,7 +23,7 @@ export default function Pages() {
   };
 
   return (
-    <div className="container">
+    <div className={indexStyles["container"]}>
       <Head>
         <title>Leaf</title>
         <link rel="icon" href="/favicon.ico" />
@@ -171,7 +170,9 @@ function TitleText() {
     <div className={"Title"}>
       <div className={"Banner"}>
         <div className={"Text"}>
-          <div className={"h1Text"}>Leaf is a platform built from the ground up, for coding tutorials</div>
+          <div className={"h1Text"}>
+            Leaf is a platform built from the ground up, for coding tutorials
+          </div>
           <div className={"h2Text"}>
             Say goodbye to publishing code snippets on Medium
           </div>

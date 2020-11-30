@@ -12,6 +12,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   return getFileHandler(req, res);
 };
 
+console.log("Get files hit");
+
 async function getFileHandler(req: NextApiRequest, res: NextApiResponse) {
   let draftId = req.body.draftId;
   let { uid } = await getUser(req, res);

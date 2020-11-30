@@ -14,7 +14,7 @@ import {
   Ancestor,
 } from "slate";
 import {
-  Slate,
+Slate,
   Editable,
   withReact,
   ReactEditor,
@@ -26,7 +26,7 @@ import {
 import React, { useRef, useEffect, useState, useContext } from "react";
 import { searchBlocks } from "../lib/blockUtils";
 import { HistoryEditor } from "slate-history";
-import "../styles/formattingpane.scss";
+import formattingPaneStyles from "../styles/formattingpane.module.scss";
 import { isAncestor } from "@udecode/slate-plugins";
 import { formattingPaneBlockType } from "../typescript/enums/app_enums";
 import { ContentBlockType } from "../typescript/enums/backend/postEnums";
@@ -125,11 +125,13 @@ export default function FormattingPane(props: {
         >
           <div
             ref={formattingPaneRef}
-            className={"formatting-pane"}
+            className={formattingPaneStyles["formatting-pane"]}
             style={{ height: `${formattingPaneHeight}px` }}
           >
-            <div className={"rich-text"}>
-              <div className={"section-label"}>Rich Text</div>
+            <div className={formattingPaneStyles["rich-text"]}>
+              <div className={formattingPaneStyles["section-label"]}>
+                Rich Text
+              </div>
               {searchedBlocks.map((block, index) => {
                 {
                   return (
@@ -144,8 +146,10 @@ export default function FormattingPane(props: {
                 }
               })}
             </div>
-            <div className={"rich-text"}>
-              <div className={"section-label"}>Interactivity</div>
+            <div className={formattingPaneStyles["rich-text"]}>
+              <div className={formattingPaneStyles["section-label"]}>
+                Interactivity
+              </div>
               {props.contentType === "codestep" && (
                 <InteractiveElement
                   elementName={"Single Column Text"}
@@ -186,7 +190,7 @@ function InteractiveElement(props: {
         await props.addBackendBlock(props.blockToAdd, props.sectionIndex);
         props.updateSlashPosition(null);
       }}
-      className={"interactive-element"}
+      className={formattingPaneStyles["interactive-element"]}
     >
       {props.elementName}
     </div>
@@ -218,7 +222,7 @@ function RichTextElement(props: {
 
   return (
     <div
-      className={"rich-text-element"}
+      className={formattingPaneStyles["rich-text-element"]}
       onClick={(e) => {
         e.stopPropagation();
         e.preventDefault();
@@ -229,8 +233,10 @@ function RichTextElement(props: {
       onMouseEnter={(e) => toggleHovered(true)}
       onMouseLeave={(e) => toggleHovered(false)}
     >
-      <div className={"element-img"}></div>
-      <label className={"rich-text-label"}>{elementName}</label>
+      <div className={formattingPaneStyles["element-img"]}></div>
+      <label className={formattingPaneStyles["rich-text-label"]}>
+        {elementName}
+      </label>
     </div>
   );
 }

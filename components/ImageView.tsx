@@ -1,6 +1,6 @@
 import React, { useState, Component, useContext, createContext } from "react";
 const fetch = require("node-fetch");
-import "../styles/imageview.scss";
+import imageViewStyles from "../styles/imageview.module.scss";
 let selectedImage: any;
 import { File, Step, Lines } from "../typescript/types/app_types";
 import { motion, AnimatePresence } from "framer-motion";
@@ -37,9 +37,9 @@ export default function ImageView(props: ImageViewProps) {
 
   const ImageScreen = () => {
     return (
-      <div className={"img-view"}>
+      <div className={imageViewStyles["img-view"]}>
         <button
-          className={"remove-button"}
+          className={imageViewStyles["remove-button"]}
           onClick={(e) => handleImageDelete()}
         >
           X
@@ -111,7 +111,7 @@ export default function ImageView(props: ImageViewProps) {
   const UploadScreen = () => {
     return (
       <div>
-        <label className={"add-image"}>
+        <label className={imageViewStyles["add-image"]}>
           + Add Image
           <input
             type="file"
@@ -128,7 +128,7 @@ export default function ImageView(props: ImageViewProps) {
   const show = currentlyEditingBlock?.imageUrl ? true : false;
 
   return (
-    <div className={"options-wrapper"}>
+    <div className={imageViewStyles["options-wrapper"]}>
       <AnimatePresence>
         {show && (
           <motion.div
@@ -160,7 +160,7 @@ export default function ImageView(props: ImageViewProps) {
 
 function TitleAndDivider() {
   return (
-    <div className={"title-with-divider"}>
+    <div className={imageViewStyles["title-with-divider"]}>
       <label>Image Options</label>
       <div></div>
     </div>
