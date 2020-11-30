@@ -69,13 +69,6 @@ export default class Scrolling extends Component<
     }
   };
 
-  // incrementLike = () => {
-  //   // let data = {
-  //   //   requestedAPI: "updateTags",
-  //   //   tags: [tag],
-  //   // };
-  // }
-
   ScrollDown = () => {
     let { pageYOffset } = this.props;
     let style = { opacity: 1 };
@@ -104,7 +97,7 @@ export default class Scrolling extends Component<
         <div className={"published-by"}>
           <Link href={`/${username}`}>
             <div className={"author-name-and-img"}>
-              {profileImage !== undefined &&
+              {profileImage !== null &&
                 <div className={"published-post-author-img"}>
                   <img src={profileImage}/>
                 </div>

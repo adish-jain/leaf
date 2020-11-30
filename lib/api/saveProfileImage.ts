@@ -29,12 +29,10 @@ const uploadImage = async(imageName: string) => {
             cacheControl: 'public, max-age=31536000',
         },
     })
-    // console.log(`${filename} uploaded to ${bucketName}.`);
 }
 
 const generateImageURL = async(imageName: string) => {
     let imageURL = `https://storage.googleapis.com/${bucketName}/${imageName}`
-    // console.log(imageURL);
     return imageURL;
 }
 
@@ -59,14 +57,12 @@ export default async function handleSaveProfileImage(req: NextApiRequest, res: N
     let mimeType = image.match(/^data:([^;]+);base64,(.*)$/);
     let imageType = mimeType[1].split("/")[1];
     let imageName = shortId.generate().toString() + "." + imageType;
-    // console.log(imageName);
 
     // create img file locally temporarily
     await fs.writeFile("/tmp/" + imageName, b64, {encoding: 'base64'}, function(err: any) {
         if (err) {
             console.log(err);
         } else {
-            // console.log("file created");
         }
     });
 
@@ -75,9 +71,8 @@ export default async function handleSaveProfileImage(req: NextApiRequest, res: N
 
     // generate public URL for img file to save to firestore
     let imageURL = await generateImageURL(imageName);
-    // console.log(fileURL);
 
-    // save img URL to firestore under relevant step
+    // save img URL to firestore under relevant profile
     await saveImageToProfile(uid, imageURL);
 
     // delete local img 

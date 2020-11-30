@@ -40,7 +40,7 @@ export type Post = {
   postURL: string;
   title: string;
   publishedAt: timeStamp;
-  tags: string[];
+  tags: string[] | string;
   likes: number;
   username: string;
   profileImage: string;

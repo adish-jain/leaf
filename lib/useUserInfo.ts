@@ -18,6 +18,8 @@ const userInfoFetcher = () =>
 
 export function useUserInfo(authenticated: boolean) {
   const initialUserInfo: any = { username: "" };
+
+  /* Settings-Related State */
   const [newUsername, changeNewUsername] = useState("");
   const [newEmail, changeNewEmail] = useState("");
   const [newPassword, changeNewPassword] = useState("");
@@ -32,14 +34,11 @@ export function useUserInfo(authenticated: boolean) {
     updateSendEmailVerificationStatus,
   ] = useState("");
 
+  /* Profile-Related State */
   const [about, changeAbout] = useState("");
   const [twitter, changeTwitter] = useState("");
   const [github, changeGithub] = useState("");
   const [website, changeWebsite] = useState("");
-  // const [newAbout, changeNewAbout] = useState("");
-  // const [newTwitter, changeNewTwitter] = useState("");
-  // const [newGithub, changeNewGithub] = useState("");
-  // const [newWebsite, changeNewWebsite] = useState("");
 
   let { data: userInfo, mutate } = useSWR(
     authenticated ? "getUserInfo" : null,
@@ -49,16 +48,11 @@ export function useUserInfo(authenticated: boolean) {
       revalidateOnMount: true,
     }
   );
+
   const username = userInfo.username;
   const email = userInfo.email;
   const signInMethod = userInfo.method;
   const emailVerified = userInfo.emailVerified;
-
-  /* Profile Page information */
-  // const about = userInfo.about;
-  // const twitter = userInfo.twitter;
-  // const github = userInfo.github;
-  // const website = userInfo.website;
 
   async function saveNewProfile() {
     const changeProfileRequest = {
@@ -70,44 +64,16 @@ export function useUserInfo(authenticated: boolean) {
         twitter: twitter,
         github: github,
         website: website,
-        // about: newAbout,
-        // twitter: newTwitter,
-        // github: newGithub,
-        // website: newWebsite,
       }),
     };
-    // updateChangeUsernameLoading(true);
     await fetch(
       "api/endpoint",
       changeProfileRequest
     ).then((res) => {
-      if (res.status === 200) {
-        // changeAbout(newAbout);
-        // changeTwitter(newTwitter);
-        // changeGithub(newGithub);
-        // changeWebsite(newWebsite);
-        // mutate({ 
-        //   about: newAbout,
-        //   twitter: newTwitter,
-        //   github: newGithub,
-        //   website: newWebsite, 
-        // }, true);
-      }
-      if (res.status === 403) {
-        res.json().then((resJson) => {
-          // updateEmailError(resJson.error);
-        });
-      }
     })
     .catch(function (error: any) {
       console.log(error);
     });
-    // if (!updateUsernameResponse.error) {
-    //   updateUserNameError("");
-    //   mutate({ username: newUsername }, true);
-    // } else {
-    //   updateUserNameError(updateUsernameResponse.error);
-    // }
   }
 
   async function saveNewUsername() {
@@ -244,7 +210,6 @@ export function useUserInfo(authenticated: boolean) {
     username,
     email,
     password,
-    // uid,
     updatePassword,
     saveNewUsername,
     saveNewEmail,
@@ -269,18 +234,10 @@ export function useUserInfo(authenticated: boolean) {
     twitter,
     github,
     website,
-    // newAbout,
-    // newTwitter,
-    // newGithub,
-    // newWebsite,
     changeAbout,
     changeTwitter,
     changeGithub,
     changeWebsite,
-    // changeNewAbout,
-    // changeNewTwitter,
-    // changeNewGithub,
-    // changeNewWebsite,
     saveNewProfile,
   };
 }

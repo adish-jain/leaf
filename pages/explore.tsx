@@ -490,7 +490,6 @@ function DisplayPosts(props: {
                       }
                       <div>{post["username"]}</div>
                     </div>
-                    {/* <div className={"post-author"}>{post["username"]}</div> */}
                   </div>
                 </div>
               );

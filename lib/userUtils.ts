@@ -2,7 +2,7 @@ import { initFirebaseAdmin, initFirebase } from "./initFirebase";
 import fetch from "isomorphic-fetch";
 import { NextApiRequest, NextApiResponse } from "next";
 import { setTokenCookies, removeTokenCookies } from "./cookieUtils";
-import { timeStamp, Post } from "../typescript/types/app_types";
+import { Post } from "../typescript/types/app_types";
 
 const admin = require("firebase-admin");
 initFirebaseAdmin();
@@ -172,7 +172,6 @@ export async function getUserPosts(uid: string) {
           results.push(resultsJSON);
         }
       });
-      // results.reverse();
       results.sort(function(a: Post, b: Post) {
         var keyA = a.publishedAt,
           keyB = b.publishedAt;
@@ -191,8 +190,6 @@ export async function getUserPosts(uid: string) {
 export async function getProfileData(uid: string) {
   let userDataReference = await db.collection("users").doc(uid).get();
   let userData = await userDataReference.data();
-  console.log("PROFILE DATA IS ");
-  console.log(userData);
   return userData;
 }
 

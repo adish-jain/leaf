@@ -1,12 +1,7 @@
 @import "commonui.scss";
 
 .scrolling {
-  // min-width: 400px;
-  // flex-grow: 100;
-  // width: 40%;
   width: 440px;
-  // margin-left: 3%;
-  // margin-right: 3%;
 }
 
 .post-title {
@@ -15,7 +10,6 @@
 }
 
 .scroll-down {
-  // justify-content: center;
   display: flex;
   margin-top: 56px;
   margin-bottom: 56px;
@@ -135,28 +129,6 @@
 }
 
 .published-post-author-img {
-  // width: 28px;
-  // height: 28px;
-  // border-radius: 50px;
-  // // background: rgba(196, 196, 196, 0.46);
-  // align-items: center;
-  // justify-content: center;
-  // display: flex;
-
-  // font-family: Arial;
-  // font-style: normal;
-  // font-weight: normal;
-  // font-size: 71.5918px;
-  // line-height: 143px;
-
-  // color: #000000;
-
-  // object-fit: cover;
-  // width: 28px;
-  // height: 28px;
-  // border-radius: 50px;
-  // overflow: hidden;
-
   img {
     width: 28px;
     height: 28px;

@@ -33,8 +33,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
     let postData = await getDraftDataFromPostId(username, postId);
     let uid = await getUidFromUsername(username);
     let profileData = await getProfileData(uid);
-    console.log("IN POSTID");
-    console.log(profileData);
     let steps = postData.steps;
     let files = postData.files;
     let title = postData.title;
@@ -57,6 +55,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
     }
     if (likes === undefined) {
       likes = null;
+    }
+    if (profileImage === undefined) {
+      profileImage = null;
     }
     if (tags === undefined) {
       tags = null;

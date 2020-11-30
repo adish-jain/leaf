@@ -21,7 +21,6 @@ import handleSetEmailAndPassword from "../../lib/api/setEmailAndPassword";
 
 // handle profile data
 import handleSetProfile from "../../lib/api/setProfile";
-import handleGetProfileData from "../../lib/api/getProfileData";
 import handleSaveProfileImage from "../../lib/api/saveProfileImage";
 import handleDeleteProfileImage from "../../lib/api/deleteProfileImage";
 
@@ -108,8 +107,8 @@ export default sentryHandler(
         return handleLogout(req, res);
       }
 
-      /*
-    ------ Settings & Profile------
+    /*
+    ------ Settings------
     */
 
       case "check_userId": {
@@ -214,10 +213,6 @@ export default sentryHandler(
 
       case "getPosts": {
         return handleGetPosts(req, res);
-      }
-
-      case "getProfileData": {
-        return handleGetProfileData(req, res);
       }
 
       case "deletePost": {
