@@ -460,7 +460,7 @@ function DisplayPosts(props: {
                   </div>
                   <div className={"post-tags-author"}>
                     {post["tags"] !== undefined ? (
-                      post["tags"].map((tag: string) => {
+                      ((post["tags"] as string[])).map((tag: string) => {
                         return (
                           <div
                             className={"post-tag"}
