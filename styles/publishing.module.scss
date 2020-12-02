@@ -1,7 +1,7 @@
 @import "commonui.scss";
 
 /* Extra small devices (phones, 600px and down) */
-  @media only screen and (max-width: 600px) {
+@media only screen and (max-width: 600px) {
 }
 
 /* Small devices (portrait tablets and large phones, 600px and up) */
@@ -57,13 +57,26 @@
   // min-width: 480px;
   // min-width: 300px;
   // width: 40vw;
-  width: 440px;
-  // margin-left: 3vw;
-  margin-right: 48px;
+  // margin-top: 50%;
+  // width: 520px;
+  // min-width: 480px;
+  margin-left: 40px;
+  margin-right: 20px;
+  width: 48%;
   height: 100%;
+  position: relative;
   // margin-right: 48px;
   // border-right: 1px solid $leaf-light-gray;
   // flex-grow: 0.8;
+}
+
+.description {
+  position: absolute;
+  top: 0;
+}
+
+.codesteps {
+  margin-top: 50%;
 }
 
 .publishing-header {

@@ -1,9 +1,9 @@
-import React, { Component, ReactElement, useState } from "react";
+import React, { Component, ReactElement, useContext, useState } from "react";
+import { FilesContext } from "../contexts/files-context";
 import fileStyles from "../styles/filenames.module.scss";
 
 type FileNameProps = {
   selected: boolean;
-  changeSelectedFile: (fileIndex: number) => void;
   saveFileName: (value: string, external: boolean) => void;
   onNameChange: (name: string) => void;
   name: string;
@@ -14,6 +14,8 @@ type FileNameProps = {
 export default function FileName(props: FileNameProps) {
   let [hovered, toggleHover] = useState(false);
   let [editing, dblClick] = useState(false);
+  const filesContext = useContext(FilesContext);
+  const { changeSelectedFileIndex } = filesContext;
   // let style = {
   //   color: "white",
   //   backgroundColor: "#349AE9",
@@ -57,7 +59,7 @@ export default function FileName(props: FileNameProps) {
     >
       <div
         onClick={(e) => {
-          props.changeSelectedFile(props.index);
+          changeSelectedFileIndex(props.index);
         }}
         onDoubleClick={(e) => {
           dblClick(true);

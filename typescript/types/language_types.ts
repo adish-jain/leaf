@@ -114,6 +114,11 @@ export const languageStrings: supportedLanguages = {
     prismName: "dockerfile",
     monacoName: "dockerfile",
   },
+  bash: {
+    fileExtension: "sh",
+    prismName: "bash",
+    monacoName: "bash",
+  },
 };
 
 export type supportedLanguages = {
@@ -140,6 +145,7 @@ export type supportedLanguages = {
   plaintext: ProgrammingLanguage;
   markdown: ProgrammingLanguage;
   dockerfile: ProgrammingLanguage;
+  bash: ProgrammingLanguage;
 };
 
 export type ProgrammingLanguage = {

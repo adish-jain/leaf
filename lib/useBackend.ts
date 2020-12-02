@@ -70,7 +70,6 @@ export function useBackend(authenticated: boolean, draftId: string) {
     lines?: Lines,
     imageUrl?: string
   ) {
-    console.log("saving to backend");
     let data = {
       requestedAPI: "handleSaveDraftContent",
       slateContent: JSON.stringify(value),
@@ -180,11 +179,23 @@ export function useBackend(authenticated: boolean, draftId: string) {
       });
   }
 
+  function changeEditingBlock(backendId: string) {
+    let newIndex = 0;
+    for (let i = 0; i < draftContent.length; i++) {
+      if (draftContent[i].backendId === backendId) {
+        newIndex = i;
+        break;
+      }
+    }
+    changeEditingBlockIndex(newIndex);
+  }
+
   return {
     draftContent,
     updateSlateSectionToBackend,
     addBackendBlock,
     currentlyEditingBlock,
+    changeEditingBlock,
   };
 }
 

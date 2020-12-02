@@ -45,6 +45,8 @@ import "prismjs/components/prism-textile.min";
 import "prismjs/components/prism-markdown.min";
 // dockerfile
 import "prismjs/components/prism-docker.min";
+// bash
+import "prismjs/components/prism-bash.min";
 
 export const CodeBlockElement = (
   props: RenderElementProps & {
@@ -100,12 +102,12 @@ export const CodeBlockElement = (
   );
 };
 
-function CodeBlockLines(props: { numOfLines: number }) {
+export function CodeBlockLines(props: { numOfLines: number }) {
   const toRender = [];
   for (let i = 0; i < props.numOfLines; i++) {
     toRender.push(
       <div key={i} className={codeBlockStyles["codeline"]}>
-        {i}
+        {i + 1}
       </div>
     );
   }
@@ -202,6 +204,7 @@ function LanguageOptions(props: {
         <option value="plaintext">Text</option>
         <option value="markdown">Markdown</option>
         <option value="dockerfile">Dockerfile</option>
+        <option value="bash">Bash</option>
       </select>
     </div>
   );

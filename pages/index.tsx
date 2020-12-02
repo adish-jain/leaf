@@ -6,7 +6,7 @@ import { useLoggedIn, logOut } from "../lib/UseLoggedIn";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-let indexStyles = require("../styles/index.scss");
+let indexStyles = require("../styles/index.module.scss");
 
 export default function Pages() {
   const router = useRouter();
@@ -37,7 +37,7 @@ export default function Pages() {
           }}
         />
       </Head>
-      <main className={"MainWrapper"}>
+      <main className={indexStyles["MainWrapper"]}>
         <Header goToIndex={goToIndex} />
         <HeaderDropDown goToIndex={goToIndex} />
         <Stripe1 />

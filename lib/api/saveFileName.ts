@@ -32,14 +32,15 @@ async function saveFileNameHandler(req: NextApiRequest, res: NextApiResponse) {
   }
 
   // update name for file in firebase
-  await db.collection("users")
-  .doc(uid)
-  .collection("drafts")
-  .doc(draftId)
-  .collection("files")
-  .doc(fileId)
-  .update({ "name": fileName }); 
-  
+  await db
+    .collection("users")
+    .doc(uid)
+    .collection("drafts")
+    .doc(draftId)
+    .collection("files")
+    .doc(fileId)
+    .update({ fileName: fileName });
+
   res.statusCode = 200;
   let results = await getFilesForDraft(uid, draftId);
   res.send(results);

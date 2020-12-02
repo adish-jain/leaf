@@ -8,7 +8,9 @@ import {
   fileObject,
   Lines,
 } from "../typescript/types/frontend/postTypes";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useContext } from "react";
+import { DraftContext } from "../contexts/draft-context";
+import { useInView } from "react-intersection-observer";
 
 export default function CodeStepSection(props: {
   codeSteps: contentBlock[];
@@ -16,6 +18,8 @@ export default function CodeStepSection(props: {
   currentlySelectedLines: Lines;
   changeSelectedLines: Dispatch<SetStateAction<Lines>>;
 }) {
+  const [ref, inView, entry] = useInView({});
+
   const {
     codeSteps,
     sectionIndex,
@@ -23,12 +27,26 @@ export default function CodeStepSection(props: {
     changeSelectedLines,
   } = props;
   return (
-    <div className={codeStepSectionStyles["codestep-section"]}>
-      <Publishing sectionIndex={sectionIndex} codeSteps={codeSteps} />
-      <CodeEditor
-        currentlySelectedLines={currentlySelectedLines}
-        changeSelectedLines={changeSelectedLines}
-      />
+    <div ref={ref} className={codeStepSectionStyles["codestep-section"]}>
+      <CodeStepHeader />
+      <div className={codeStepSectionStyles["codestep-content"]}>
+        <Publishing sectionIndex={sectionIndex} codeSteps={codeSteps} />
+        {inView && (
+          <CodeEditor
+            currentlySelectedLines={currentlySelectedLines}
+            changeSelectedLines={changeSelectedLines}
+          />
+        )}
+      </div>
+    </div>
+  );
+}
+
+function CodeStepHeader() {
+  return (
+    <div className={codeStepSectionStyles["header"]}>
+      <div className={codeStepSectionStyles["divider"]}></div>
+      {/* <h3> Code Step Section</h3> */}
     </div>
   );
 }

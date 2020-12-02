@@ -39,7 +39,10 @@ import {
 import { withHistory, HistoryEditor } from "slate-history";
 import slateStyles from "../styles/slate-editor.module.scss";
 import { isCollapsed } from "@udecode/slate-plugins";
-import { formattingPaneBlockType } from "../typescript/enums/app_enums";
+import {
+  formattingPaneBlockType,
+  saveStatusEnum,
+} from "../typescript/enums/app_enums";
 import { FormattingPaneBlockList, Lines } from "../typescript/types/app_types";
 import {
   handleArrowLeft,
@@ -64,6 +67,9 @@ import { getPrismLanguageFromBackend } from "../lib/utils/languageUtils";
 import { contentBlock } from "../typescript/types/frontend/postTypes";
 import { ContentBlockType } from "../typescript/enums/backend/postEnums";
 import { DraftContext } from "../contexts/draft-context";
+import { highlightPrismDracula } from "../lib/utils/prismUtils";
+import { ToolbarContext } from "../contexts/toolbar-context";
+import { MarkState } from "../lib/useToolbar";
 const toBase64 = (file: any) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -110,12 +116,6 @@ const Blocks: FormattingPaneBlockList = [
   },
 ];
 
-enum saveStatusEnum {
-  saved = "Content saved",
-  notsaved = "Unsaved content",
-  saving = "Saving...",
-}
-
 const WAIT_INTERVAL = 5000;
 const MarkdownPreviewExample = (props: {
   slateContent: string;
@@ -123,15 +123,14 @@ const MarkdownPreviewExample = (props: {
   backendId: string;
   contentType: ContentBlockType;
 }) => {
-  const [saveStatus, updateSaveStatus] = useState<saveStatusEnum>(
-    saveStatusEnum.notsaved
-  );
   const [searchString, updateSearchString] = useState("");
   const [selectedRichTextIndex, updateSelectedRichText] = useState(0);
   let timer: NodeJS.Timeout | null = null;
   const [value, setValue] = useState<Node[]>(JSON.parse(props.slateContent));
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
   const draftContext = useContext(DraftContext);
+  const toolbarContext = useContext(ToolbarContext);
+  const { updateSaving, updateMarkType } = toolbarContext;
   const { updateSlateSectionToBackend } = draftContext;
   const editor = useMemo(
     () =>
@@ -381,21 +380,49 @@ const MarkdownPreviewExample = (props: {
           console.log(err);
         }
       };
-      updateSaveStatus(saveStatusEnum.saving);
+      updateSaving(saveStatusEnum.saving);
 
       fetchProduct().then(() => {
-        updateSaveStatus(saveStatusEnum.saved);
+        updateSaving(saveStatusEnum.saved);
       });
     }, WAIT_INTERVAL);
     return () => {
       clearTimeout(timeOutId);
-      updateSaveStatus(saveStatusEnum.notsaved);
+      updateSaving(saveStatusEnum.notsaved);
     };
   }, [value]);
 
   function handleChange(value: Node[]) {
     setCorrectSlashPosition();
     setValue(value);
+
+    // let currentNodeEntry = Editor.above(editor, {
+    //   match: (node) => {
+    //     return Node.isNode(node);
+    //   },
+    // });
+    const marks = Editor.marks(editor);
+    let markState: MarkState = {
+      italics: false,
+      bold: false,
+      code: false,
+      link: false,
+      default: false,
+    };
+    if (marks !== null) {
+      Object.keys(marks).forEach((key) => {
+        const result = marks[key];
+        if (result) {
+          markState[key] = true;
+        }
+      });
+      updateMarkType(markState);
+    } else {
+      markState.default = true;
+      updateMarkType(markState);
+    }
+
+    // console.log(currentNodeEntry);
   }
 
   function setCorrectSlashPosition() {
@@ -449,7 +476,6 @@ const MarkdownPreviewExample = (props: {
           onClick={handleClick}
         />
       </Slate>
-      {saveStatus}
       <FormattingPane
         editor={editor}
         slashPosition={slashPosition}
@@ -465,126 +491,12 @@ const MarkdownPreviewExample = (props: {
 };
 
 const Leaf = ({ attributes, children, leaf }: RenderLeafProps) => {
-  // switch (leaf.type) {
-  //   case "bold":
-  //     return <div {...attributes}>{children}</div>;
-  // }
-  let style: {
-    color?: string;
-    fontFamily: string;
-    background?: string;
-    fontStyle?: string;
-    cursor?: string;
-    fontWeight?:
-      | "bold"
-      | "-moz-initial"
-      | "inherit"
-      | "initial"
-      | "revert"
-      | "unset"
-      | "normal"
-      | (number & {})
-      | "bolder"
-      | "lighter"
-      | undefined;
-  } = {};
+  let style = highlightPrismDracula(leaf);
   if (leaf.bold) {
     style["fontWeight"] = "bold";
   }
-  switch (leaf.prismType) {
-    case "comment":
-    case "prolog":
-    case "doctype":
-    case "cdata":
-      style["color"] = "#7C7C7C";
-      break;
-    case "punctuation":
-      style["color"] = "#c5c8c6";
-      break;
-    case "property":
-    case "keyword":
-    case "tag":
-    case "script":
-      style["color"] = "#96CBFE";
-      break;
-    case "class-name":
-      style["color"] = "#FFFFB6";
-      style["text-decoration"] = "underline";
-      break;
-    case "boolean":
-    case "constant":
-      style["color"] = "#99CC99";
-      break;
-    case "symbol":
-    case "deleted":
-      style["color"] = "#f92672";
-      break;
-    case "number":
-      style["color"] = "#FF73FD";
-      break;
-    case "selector":
-    case "attr-name":
-    case "string":
-    case "char":
-    case "builtin":
-    case "inserted":
-      style["color"] = "#A8FF60";
-      break;
-    case "variable":
-      style["color"] = "#C6C5FE";
-      break;
-    case "operator":
-      style["color"] = "#EDEDED";
-      break;
-    case "entity":
-      style["color"] = "#FFFFB6";
-      style["cursor"] = "help";
-      break;
-    case "url":
-      style["color"] = "#96CBFE";
-      break;
-    case "atrule":
-    case "attr-value":
-      style["color"] = "#F9EE98";
-      break;
-    case "function":
-      style["color"] = "#DAD085";
-      break;
-    // .language-css .token.string,
-    // .style .token.string {
-    //   color: #87C38A;
-    // }
-    case "regex":
-      style["color"] = "#E9C062";
-      break;
-    case "important":
-      style["color"] = "#fd971f";
-      break;
-    case "prismDefault":
-      style["color"] = "#c5c8c6";
-      style["textShadow"] = "0 1px rgba(0, 0, 0, 0.3)";
-      style["fontFamily"] =
-        "Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace";
-      style["direction"] = "ltr";
-      style["textAlign"] = "left";
-      style["whiteSpace"] = "pre";
-      style["wordSpacing"] = "normal";
-      style["wordBreak"] = "normal";
-      style["lineHeight"] = 1.5;
-      style["tabSize"] = 4;
-      style["hyphens"] = "none";
-      break;
-    default:
-      style["fontFamily"] = "Arial, Helvetica, sans-serif";
-      break;
-  }
-  if (leaf.monospace as boolean) {
-    style["fontSize"] = "14px";
-    style["fontFamily"] =
-      "Inconsolata, Monaco, Consolas, 'Courier New', Courier, monospace";
-  }
-
   return (
+    //@ts-ignore
     <span {...attributes} style={style}>
       {children}
     </span>

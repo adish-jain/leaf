@@ -16,3 +16,16 @@ export enum formattingPaneBlockType {
   CodeBlock = "codeblock",
   Image = "image",
 }
+
+export enum saveStatusEnum {
+  saved = "Content saved",
+  notsaved = "Unsaved content",
+  saving = "Saving...",
+}
+
+export enum slateMarkTypes {
+  bold = "bold",
+  italics = "italics",
+  code = "code",
+  unstyled = "unstyled",
+}

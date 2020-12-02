@@ -60,6 +60,7 @@ const DraftView = () => {
     updateSlateSectionToBackend,
     addBackendBlock,
     currentlyEditingBlock,
+    changeEditingBlock,
   } = useBackend(authenticated, draftId as string);
   const fetcher = prepareFetcher(draftId as string);
   let { data: draftData, mutate } = useSWR<draftMetaData>(
@@ -148,6 +149,7 @@ const DraftView = () => {
             postId: postId,
             draftId: draftId as string,
             currentlyEditingBlock: currentlyEditingBlock,
+            changeEditingBlock: changeEditingBlock,
           }}
         >
           <main className={appStyles["AppWrapper"]}>

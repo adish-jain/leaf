@@ -302,3 +302,17 @@
 .step-wrapper {
   height: 100%;
 }
+
+.codestep {
+  background: #ffffff;
+  border: 1px solid #edece9;
+  box-sizing: border-box;
+  box-shadow: 0px 4px 16px #edece9;
+  border-radius: 8px;
+  margin-bottom: 40px;
+  padding: 24px;
+}
+
+.selected {
+  border-color: blue;
+}

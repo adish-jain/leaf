@@ -2,9 +2,6 @@
 // publicly available on the servers, only to the error reporting
 const withSourceMaps = require("@zeit/next-source-maps")();
 
-const withCSS = require("@zeit/next-css");
-const withSASS = require("@zeit/next-sass");
-const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 // Use the SentryWebpack plugin to upload the source maps during build step
 const SentryWebpackPlugin = require("@sentry/webpack-plugin");
 const {

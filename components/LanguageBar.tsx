@@ -1,4 +1,4 @@
-import React, { Component, useContext } from "react";
+import React, { Component, useContext, useCallback } from "react";
 import { FilesContext } from "../contexts/files-context";
 import languageBarStyles from "../styles/languagebar.module.scss";
 import {
@@ -16,7 +16,14 @@ export default function LanguageBar(props: LanguageBarProps) {
   async function handleChange(e: React.FormEvent<HTMLSelectElement>) {
     await changeFileLanguage(e.currentTarget.value, true);
   }
-  // console.log(files);
+
+  // const memoizedChange = useCallback(
+  //   (e: React.FormEvent<HTMLSelectElement>) => {
+  //     changeFileLanguage(e.currentTarget.value, true);
+  //   },
+  //   []
+  // );
+
   let languageOptions = [];
   Object.entries(languageStrings).forEach((record) => {
     let languageName = record[0];

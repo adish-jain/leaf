@@ -27,7 +27,7 @@ export async function getFilesForDraft(
           order: resultsJSON.order,
           fileId: resultsJSON.id,
           fileName: resultsJSON.fileName,
-          code: resultsJSON.code,
+          code: JSON.parse(resultsJSON.code),
           language: resultsJSON.language,
         });
       });

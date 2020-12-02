@@ -2,6 +2,7 @@ import { FrontendSectionType } from "../../enums/frontend/postEnums";
 import { ContentBlockType } from "../../enums/backend/postEnums";
 import { timeStamp } from "../../types/app_types";
 import { ProgrammingLanguage, supportedLanguages } from "../language_types";
+import { Node } from "slate";
 
 export type contentSection = {
   type: FrontendSectionType;
@@ -56,7 +57,7 @@ export type folderObject = {
 export type fileObject = {
   fileName: string;
   language: string;
-  code: string;
+  code: Node[];
   parentFolderId?: string;
   order: number;
   fileId: string;

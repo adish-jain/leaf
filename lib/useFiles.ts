@@ -11,6 +11,8 @@ import {
   supportedLanguages,
 } from "../typescript/types/language_types";
 import { Lines } from "../typescript/types/app_types";
+import { Node } from "slate";
+import { ReactEditor } from "slate-react";
 var shortId = require("shortid");
 const fetch = require("node-fetch");
 
@@ -49,7 +51,7 @@ function prepareFetching(draftId: string) {
 export function useFiles(draftId: any, authenticated: boolean) {
   const contentFetcher = prepareFetching(draftId);
   const initialFilesData: fileObject[] = [];
-  let { data: files, mutate } = useSWR<fileObject[]>(
+  let { data: fileData, mutate } = useSWR<fileObject[]>(
     authenticated ? "getFiles" : null,
     contentFetcher,
     {
@@ -58,7 +60,7 @@ export function useFiles(draftId: any, authenticated: boolean) {
       revalidateOnFocus: true,
     }
   );
-  // const files = fileData || [];
+  const files = fileData || [];
 
   // What lines are currently highlighted?
   const [currentlySelectedLines, changeSelectedLines] = useState<Lines>({
@@ -84,15 +86,20 @@ export function useFiles(draftId: any, authenticated: boolean) {
   /*
     Update the code in DynamicCodeEditor in the correct file
     */
-  function changeCode(value: string) {
-    // updateFiles(duplicateFiles);
+  function changeCode(value: Node[]) {
+    const newObject = {
+      fileName: selectedFile!.fileName.slice(),
+      language: selectedFile!.language.slice(),
+      code: value,
+      order: selectedFile!.order,
+      fileId: selectedFile!.fileId,
+      testing: shortId.generate(),
+    };
 
     mutate(async (mutateState) => {
-      const modifiedItem: fileObject = mutateState[selectedFileIndex];
-      modifiedItem.code = value;
       return [
         ...mutateState.slice(0, selectedFileIndex),
-        modifiedItem,
+        newObject,
         ...mutateState.slice(selectedFileIndex + 1),
       ];
     }, false);
@@ -151,8 +158,8 @@ export function useFiles(draftId: any, authenticated: boolean) {
     Triggered from `FileName.tsx`.
     */
   function onNameChange(name: string) {
-    let duplicateFiles = [...files];
     duplicateFiles[selectedFileIndex].name = name;
+
     updateFiles(duplicateFiles);
   }
 
@@ -209,43 +216,31 @@ export function useFiles(draftId: any, authenticated: boolean) {
       `external` is true when triggered from `LanguageBar.tsx` & false otherwise.
     */
   async function changeFileLanguage(language: string, external: boolean) {
-    let fileId = files[selectedFileIndex].fileId;
-    console.log("files are");
-    console.log(files[0].language);
+    const selectedFile = files[selectedFileIndex];
     if (external) {
-      // setNameFromLang(language);
+      setNameFromLang(language);
     }
     let bodyData = {
       requestedAPI: "change_file_language",
       draftId: draftId,
-      fileId: fileId,
+      fileId: selectedFile.fileId,
       language: language,
+    };
+    const newObject = {
+      fileName: selectedFile.fileName.slice(),
+      language: language.slice(),
+      code: selectedFile.code,
+      order: selectedFile.order,
+      fileId: selectedFile.fileId,
+      testing: shortId.generate(),
     };
     // console.log("current is ", files[selectedFileIndex].language);
     await mutate(async (mutateState) => {
-      // console.log("need to change to ", language);
-      // console.log("old is ", mutateState[0].language);
-      console.log("mutate is ", mutateState[0].language);
-      let modifiedItem: fileObject = mutateState[selectedFileIndex];
-      modifiedItem.language = language;
-      const newObject: fileObject = {
-        fileName: modifiedItem.fileName.slice(),
-        language: language.slice(),
-        code: modifiedItem.code,
-        order: modifiedItem.order,
-        fileId: modifiedItem.fileId,
-      };
-      // fetch("/api/endpoint", {
-      //   method: "POST",
-      //   headers: new Headers({ "Content-Type": "application/json" }),
-      //   body: JSON.stringify(bodyData),
-      // }).then(async (res: any) => {});
-      // console.log("new array is ");
-      // console.log([
-      //   ...mutateState.slice(0, selectedFileIndex),
-      //   newObject,
-      //   ...mutateState.slice(selectedFileIndex + 1),
-      // ]);
+      fetch("/api/endpoint", {
+        method: "POST",
+        headers: new Headers({ "Content-Type": "application/json" }),
+        body: JSON.stringify(bodyData),
+      }).then(async (res: any) => {});
       return [
         ...mutateState.slice(0, selectedFileIndex),
         newObject,
@@ -294,7 +289,7 @@ export function useFiles(draftId: any, authenticated: boolean) {
       }
     }
 
-    // saveFileName(newName, false);
+    saveFileName(newName, false);
   }
 
   /** 

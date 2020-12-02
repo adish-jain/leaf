@@ -5,7 +5,9 @@
   // border: 1px solid #4c5153;
   // min-height: 20px;
   // height: 3vh;
-  border-top: solid 1px $leaf-light-gray;
+  background-color: #3F4447;
+  // border-top: solid 1px $leaf-light-gray;
+  border-top: solid 1px #4C5153;
   padding: 4px;
   border-radius: 0px 0px 8px 8px;
   display: flex;
@@ -21,7 +23,7 @@
     font-size: 12px;
     margin: 0;
     padding: 0;
-    color: black;
+    color: white;
   }
 
   select {
@@ -29,7 +31,7 @@
     font-size: 12px;
     background: none;
     border-style: none;
-    color: black;
+    color: $leaf-dark-blue;
     text-transform: uppercase;
     border-bottom: solid 2px $leaf-dark-blue;
     // background-color: gray;

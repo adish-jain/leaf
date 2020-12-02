@@ -1,5 +1,26 @@
-.codestep-section {
-  border: 1px solid black;
+@import "commonui.scss";
+
+.codestep-content {
+  // border: 1px solid black;
   display: flex;
-  width: 100vw;
+  margin-bottom: 64px;
+  margin-left: 32px;
+  margin-right: 32px;
+  margin-top: 64px;
+
+}
+
+.codestep-section {
+
+}
+
+.divider {
+  @include line;
+  width: 100%;
+}
+
+.header {
+  // width: 800px;
+  // display: flex;
+  justify-content: center;
 }

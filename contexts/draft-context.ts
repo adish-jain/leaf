@@ -1,6 +1,6 @@
 import { ContentBlockType } from "../typescript/enums/backend/postEnums";
 import { Lines } from "../typescript/types/app_types";
-import { createContext } from "react";
+import { createContext, Dispatch, SetStateAction } from "react";
 import { Node } from "slate";
 import { contentBlock } from "../typescript/types/frontend/postTypes";
 
@@ -21,6 +21,7 @@ type DraftContextType = {
   previewMode: boolean;
   updatePreviewMode: (previewMode: boolean) => void;
   currentlyEditingBlock: contentBlock | undefined;
+  changeEditingBlock: (backendId: string) => void;
   published: boolean;
   username: string;
   postId: string;
