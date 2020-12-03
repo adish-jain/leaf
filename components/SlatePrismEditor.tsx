@@ -28,7 +28,7 @@ import {
   Point,
 } from "slate";
 var shortId = require("shortid");
-import { CodeBlockElement } from "./CodeBlockElement";
+import { CodeBlockElement, CodeBlockLines } from "./CodeBlockElement";
 import { FilesContext } from "../contexts/files-context";
 import { getPrismLanguageFromBackend } from "../lib/utils/languageUtils";
 import {
@@ -50,7 +50,12 @@ const slateNode: Node[] = [
 
 export default function SlatePrismEditor(props: {}) {
   const filesContext = useContext(FilesContext);
-  const { selectedFile, changeCode } = filesContext;
+  const {
+    selectedFile,
+    changeCode,
+    changeSelectedLines,
+    currentlySelectedLines,
+  } = filesContext;
   const renderLeaf = useCallback((props) => <Leaf {...props} />, [
     selectedFile?.language,
   ]);
@@ -73,6 +78,7 @@ export default function SlatePrismEditor(props: {}) {
   );
 
   function handleChange(value: Node[]) {
+    console.log(editor.selection);
     // update in top state
     changeCode(value);
     // update in local state
@@ -96,6 +102,7 @@ export default function SlatePrismEditor(props: {}) {
           //   onClick={handleClick}
         />
       </Slate>
+      <CodeBlockLines numOfLines={value.length} />
     </div>
   );
 }

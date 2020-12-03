@@ -26,6 +26,7 @@ export const FilesContextWrapper: FunctionComponent<FilesContextWrapperProps> = 
     currentlySelectedLines,
     changeSelectedLines,
     saveFileCode,
+    modifyFileName,
   } = useFiles(draftId, authenticated);
   return (
     <FilesContext.Provider
@@ -40,6 +41,9 @@ export const FilesContextWrapper: FunctionComponent<FilesContextWrapperProps> = 
         files: files,
         saveFileCode: saveFileCode,
         selectedFileIndex: selectedFileIndex,
+        currentlySelectedLines,
+        changeSelectedLines,
+        modifyFileName,
       }}
     >
       {children}

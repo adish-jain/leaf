@@ -16,10 +16,12 @@ type FilesContextType = {
   changeSelectedFileIndex: (newFileIndex: number) => void;
   changeFileLanguage: (language: string, external: boolean) => void;
   saveFileName: (value: string, external: boolean) => void;
+  modifyFileName: (newFileName: string, fileIndex: number) => void;
   selectedFile: fileObject | undefined;
-  // currentlySelectedLines: Lines;
-  // changeSelectedLines: Dispatch<SetStateAction<Lines>>;
+  currentlySelectedLines: Lines;
+  changeSelectedLines: Dispatch<SetStateAction<Lines>>;
   files: fileObject[];
   saveFileCode: (fileIndex: number) => void;
+  // updateFile: (updatedFile: fileObject) => void;
   selectedFileIndex: number;
 };

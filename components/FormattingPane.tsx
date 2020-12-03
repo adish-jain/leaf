@@ -75,11 +75,9 @@ export default function FormattingPane(props: {
     searchString = Editor.string(editor, fullRange);
 
     let sel = window.getSelection();
-    console.log(sel);
     if (sel) {
       let myRange = sel.getRangeAt(0);
       let newDimensions = myRange.getBoundingClientRect();
-      console.log(newDimensions);
       // set leftpos at slash position
       if (leftPos === 0) {
         let newLeft = newDimensions.x;
@@ -97,7 +95,6 @@ export default function FormattingPane(props: {
       }
     }
   }
-  console.log(top);
   // let searchedBlocks = searchBlocks(slashPosition, editor, Blocks);
   return (
     <AnimatePresence>

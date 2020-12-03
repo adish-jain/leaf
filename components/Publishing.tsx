@@ -78,7 +78,7 @@ function CodeStep(props: {
     style["color"] = "blue";
   }
   if (last) {
-    style['marginBottom'] = '50%'
+    style["marginBottom"] = "50%";
   }
   return (
     <div
@@ -88,13 +88,21 @@ function CodeStep(props: {
         changeEditingBlock(codeStep.backendId);
       }}
     >
-      <MarkdownSection
-        slateContent={codeStep.slateContent}
-        backendId={codeStep.backendId}
-        sectionIndex={index + sectionIndex}
-        contentType={ContentBlockType.CodeSteps}
-        key={codeStep.backendId}
-      />
+      <div className={stepStyles["codestep-content"]}>
+        <MarkdownSection
+          slateContent={codeStep.slateContent}
+          backendId={codeStep.backendId}
+          sectionIndex={index + sectionIndex}
+          contentType={ContentBlockType.CodeSteps}
+          key={codeStep.backendId}
+        />
+      </div>
+      <div className={stepStyles["line-status"]}>
+        <div className={stepStyles["status-content"]}>
+          {" "}
+          No lines selected | Highlight lines in the code editor.
+        </div>
+      </div>
     </div>
   );
 }

@@ -163,7 +163,7 @@ export function useFiles(draftId: any, authenticated: boolean) {
   function fileNameExistsPartialSearch(name: string): boolean {
     let exists = false;
     files.forEach((file, index) => {
-      if (file.name === name && index != selectedFileIndex) {
+      if (file.fileName === name && index != selectedFileIndex) {
         exists = true;
       }
     });
@@ -199,7 +199,7 @@ export function useFiles(draftId: any, authenticated: boolean) {
     */
   function saveFileName(value: string, external: boolean) {
     value = value.trim();
-
+    console.log("save file name");
     let modifiedItem: fileObject = files[selectedFileIndex];
     if (fileNameExistsPartialSearch(value)) {
       alert("This file name already exists. Please try another name.");
@@ -221,19 +221,7 @@ export function useFiles(draftId: any, authenticated: boolean) {
         ...mutateState.slice(selectedFileIndex + 1),
       ];
     }, false);
-
-    let data = {
-      requestedAPI: "save_file_name",
-      draftId: draftId,
-      fileId: files[selectedFileIndex].fileId,
-      fileName: value,
-    };
-
-    fetch("/api/endpoint", {
-      method: "POST",
-      headers: new Headers({ "Content-Type": "application/json" }),
-      body: JSON.stringify(data),
-    }).then(async (res: any) => {});
+    updateFile(modifiedItem);
   }
   /** 
     Saves the language selection to Firebase. Triggered from `LanguageBar.tsx`. 
@@ -246,12 +234,7 @@ export function useFiles(draftId: any, authenticated: boolean) {
     if (external) {
       setNameFromLang(language);
     }
-    let bodyData = {
-      requestedAPI: "change_file_language",
-      draftId: draftId,
-      fileId: selectedFile.fileId,
-      language: language,
-    };
+
     const newObject = {
       fileName: selectedFile.fileName.slice(),
       language: language.slice(),
@@ -260,13 +243,9 @@ export function useFiles(draftId: any, authenticated: boolean) {
       fileId: selectedFile.fileId,
       testing: shortId.generate(),
     };
+    // updateFile();
     // console.log("current is ", files[selectedFileIndex].language);
     await mutate(async (mutateState) => {
-      fetch("/api/endpoint", {
-        method: "POST",
-        headers: new Headers({ "Content-Type": "application/json" }),
-        body: JSON.stringify(bodyData),
-      }).then(async (res: any) => {});
       return [
         ...mutateState.slice(0, selectedFileIndex),
         newObject,
@@ -335,14 +314,7 @@ export function useFiles(draftId: any, authenticated: boolean) {
     files.push({
       name: newFileName,
       id: newFileId,
-      code: newFileCode,
-      language: newFileLang,
-    });
-
-    codeFiles.push({
-      name: newFileName,
-      id: newFileId,
-      code: newFileCode,
+      code: JSON.stringify(slateNode),
       language: newFileLang,
     });
 
@@ -362,22 +334,24 @@ export function useFiles(draftId: any, authenticated: boolean) {
     fileCode: string,
     fileLang: string
   ) {
-    // save file
+    updateFile();
+  }
+
+  function updateFile(updatedFile: fileObject) {
     var data = {
-      requestedAPI: "save_file",
+      updatedFile,
+      requestedAPI: "updateFile",
       draftId: draftId,
-      fileId: fileId,
-      fileName: fileName,
-      fileCode: fileCode,
-      fileLang: fileLang,
     };
+    console.log("updating file");
+    console.log(updatedFile);
 
     fetch("/api/endpoint", {
       method: "POST",
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify(data),
     }).then(async (res: any) => {
-      let updatedFiles = await res.json();
+      // let updatedFiles = await res.json();
     });
   }
 
@@ -403,8 +377,6 @@ export function useFiles(draftId: any, authenticated: boolean) {
     }
 
     cloneFiles.splice(toDeleteIndex, 1);
-    files = cloneFiles;
-    codeFiles = cloneFiles;
 
     mutate(async (mutateState: any) => {
       return { ...mutateState, files };
@@ -438,19 +410,25 @@ export function useFiles(draftId: any, authenticated: boolean) {
   function saveFileCode(fileIndex: number) {
     let fileId = files[fileIndex].fileId;
     let code = files[fileIndex].code;
+    updateFile();
+  }
 
-    var data = {
-      requestedAPI: "save_file_code",
-      draftId: draftId,
-      fileId: fileId,
-      code: JSON.stringify(code),
+  function modifyFileName(newFileName: string, fileIndex: number) {
+    const modifyFile = files[fileIndex];
+    const newObject: fileObject = {
+      fileName: newFileName,
+      fileId: modifyFile.fileId,
+      language: modifyFile.language,
+      code: modifyFile.code,
+      order: modifyFile.order,
     };
-
-    fetch("/api/endpoint", {
-      method: "POST",
-      headers: new Headers({ "Content-Type": "application/json" }),
-      body: JSON.stringify(data),
-    }).then(async (res: any) => {});
+    mutate(async (mutateState) => {
+      return [
+        ...mutateState.slice(0, selectedFileIndex),
+        newObject,
+        ...mutateState.slice(selectedFileIndex + 1),
+      ];
+    }, false);
   }
 
   return {
@@ -467,5 +445,6 @@ export function useFiles(draftId: any, authenticated: boolean) {
     currentlySelectedLines,
     changeSelectedLines,
     saveFileCode,
+    modifyFileName,
   };
 }

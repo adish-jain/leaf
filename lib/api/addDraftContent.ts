@@ -2,13 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import "firebase";
 import { initFirebaseAdmin } from "../initFirebase";
 import { getDraftContent } from "../postUtils";
-import {
-  backendType,
-  draftBackendRepresentation,
-  timeStamp,
-  folderObject,
-  fileObject,
-} from "../../typescript/types/app_types";
+
 import { Node } from "slate";
 import { ContentBlockType } from "../../typescript/enums/backend/postEnums";
 

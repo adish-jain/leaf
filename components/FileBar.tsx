@@ -77,7 +77,6 @@ export default class FileBar extends Component<FileBarProps> {
                     key={file.fileId}
                     changeSelectedFile={changeSelectedFile}
                     saveFileName={saveFileName}
-                    onNameChange={onNameChange}
                     selected={selectedFile?.fileId === file.fileId}
                     removeFile={removeFile}
                     index={index}
