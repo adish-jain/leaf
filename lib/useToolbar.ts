@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Editor, Element, Text, Transforms } from "slate";
 import { HistoryEditor } from "slate-history";
-import { ReactEditor, useSlate } from "slate-react";
+import { ReactEditor, useEditor, useSlate } from "slate-react";
 import { saveStatusEnum, slateMarkTypes } from "../typescript/enums/app_enums";
 
 export function boldSelection(editor: Editor & ReactEditor & HistoryEditor) {
@@ -30,13 +30,13 @@ export function italicizeSelection(
 ) {
   const [match] = Editor.nodes(editor, {
     match: (n) => {
-      return n.italicize === true;
+      return n.italic === true;
     },
   });
   let shouldItalicize = match === undefined;
   Transforms.setNodes(
     editor,
-    { italicize: shouldItalicize },
+    { italic: shouldItalicize },
     // Apply it to text nodes, and split the text node up if the
     // selection is overlapping only part of it.
     {
@@ -72,7 +72,7 @@ export function codeSelection(editor: Editor & ReactEditor & HistoryEditor) {
 export function useToolbar() {
   const [saveState, updateSaving] = useState(saveStatusEnum.saved);
   const [currentMarkType, updateMarkType] = useState<MarkState>({
-    italics: false,
+    italic: false,
     bold: false,
     code: false,
     link: false,
@@ -82,9 +82,9 @@ export function useToolbar() {
   return { saveState, updateSaving, currentMarkType, updateMarkType };
 }
 
-const toggleMark = (editor: Editor, format: slateMarkTypes) => {
+export const toggleMark = (editor: Editor, format: slateMarkTypes) => {
   const isActive = isMarkActive(editor, format);
-
+  const currentEditor = useEditor();
   if (isActive) {
     Editor.removeMark(editor, format);
   } else {

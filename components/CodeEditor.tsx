@@ -11,10 +11,7 @@ import { DraftContext } from "../contexts/draft-context";
 import { Dispatch, SetStateAction } from "react";
 import SlatePrismEditor from "./SlatePrismEditor";
 
-type CodeEditorProps = {
-  currentlySelectedLines: Lines;
-  changeSelectedLines: Dispatch<SetStateAction<Lines>>;
-};
+type CodeEditorProps = {};
 
 type CodeEditorState = {};
 

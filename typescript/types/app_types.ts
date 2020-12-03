@@ -1,10 +1,9 @@
-import {
-  Block,
-  formattingPaneBlockType,
-} from "../enums/app_enums";
+import { Block, formattingPaneBlockType } from "../enums/app_enums";
 import { ProgrammingLanguage } from "../types/language_types";
 import { Node } from "slate";
 import { SetStateAction } from "react";
+
+export const WAIT_INTERVAL = 5000;
 
 export type File = {
   id: string;

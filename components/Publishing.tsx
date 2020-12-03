@@ -43,6 +43,7 @@ export default function Publishing(props: PublishingProps) {
               key={codeStep.backendId}
               sectionIndex={sectionIndex}
               selected={codeStep.backendId === currentlyEditingBlock?.backendId}
+              last={index === codeSteps.length - 1}
             />
           );
         })}
@@ -67,13 +68,17 @@ function CodeStep(props: {
   index: number;
   sectionIndex: number;
   selected: boolean;
+  last: boolean;
 }) {
   const draftContext = useContext(DraftContext);
   const { changeEditingBlock } = draftContext;
-  const { codeStep, index, sectionIndex, selected } = props;
+  const { codeStep, index, sectionIndex, selected, last } = props;
   let style = {};
   if (selected) {
     style["color"] = "blue";
+  }
+  if (last) {
+    style['marginBottom'] = '50%'
   }
   return (
     <div

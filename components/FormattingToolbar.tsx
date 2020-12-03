@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { ToolbarContext } from "../contexts/toolbar-context";
+import { toggleMark } from "../lib/useToolbar";
 import formattingToolbarStyles from "../styles/formattingtoolbar.module.scss";
 import { saveStatusEnum, slateMarkTypes } from "../typescript/enums/app_enums";
 
@@ -10,7 +11,7 @@ export function FormattingToolbar(props: {}) {
     <div className={formattingToolbarStyles["formatting-toolbar"]}>
       <MarkButton name={"default"} markType={slateMarkTypes.unstyled} />
       <MarkButton name={"bold"} markType={slateMarkTypes.bold} />
-      <MarkButton name={"italics"} markType={slateMarkTypes.italics} />
+      <MarkButton name={"italics"} markType={slateMarkTypes.italic} />
       <MarkButton name={"code"} markType={slateMarkTypes.code} />
       <SaveStatus saveState={saveState} />
     </div>
@@ -26,7 +27,14 @@ function MarkButton(props: { name: string; markType: slateMarkTypes }) {
     style["color"] = "blue";
   }
   return (
-    <div className={formattingToolbarStyles["mark-button"]} style={style}>
+    <div
+      onClick={(e) => {
+        e.preventDefault();
+        toggleMark();
+      }}
+      className={formattingToolbarStyles["mark-button"]}
+      style={style}
+    >
       {props.name}
     </div>
   );

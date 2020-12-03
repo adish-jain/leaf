@@ -15,7 +15,6 @@ export async function getFilesForDraft(
     .doc(draftId)
     .collection("files")
     .orderBy("order");
-
   return await filesRef
     .get()
     .then(function (filesCollection: firebase.firestore.QuerySnapshot) {

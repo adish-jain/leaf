@@ -20,6 +20,6 @@ type FilesContextType = {
   // currentlySelectedLines: Lines;
   // changeSelectedLines: Dispatch<SetStateAction<Lines>>;
   files: fileObject[];
-  saveFileCode: () => void;
+  saveFileCode: (fileIndex: number) => void;
   selectedFileIndex: number;
 };

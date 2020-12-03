@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { fileObject } from "../typescript/types/frontend/postTypes";
 import {
   getLanguageFromExtension,
@@ -10,9 +10,11 @@ import {
   ProgrammingLanguage,
   supportedLanguages,
 } from "../typescript/types/language_types";
-import { Lines } from "../typescript/types/app_types";
+import { Lines, WAIT_INTERVAL } from "../typescript/types/app_types";
 import { Node } from "slate";
 import { ReactEditor } from "slate-react";
+import { ToolbarContext } from "../contexts/toolbar-context";
+import { saveStatusEnum } from "../typescript/enums/app_enums";
 var shortId = require("shortid");
 const fetch = require("node-fetch");
 
@@ -49,7 +51,10 @@ function prepareFetching(draftId: string) {
  * Manages the files within filebar.
  */
 export function useFiles(draftId: any, authenticated: boolean) {
+  let timer: NodeJS.Timeout | null = null;
   const contentFetcher = prepareFetching(draftId);
+  const toolbarContext = useContext(ToolbarContext);
+  const { updateSaving } = toolbarContext;
   const initialFilesData: fileObject[] = [];
   let { data: fileData, mutate } = useSWR<fileObject[]>(
     authenticated ? "getFiles" : null,
@@ -104,6 +109,27 @@ export function useFiles(draftId: any, authenticated: boolean) {
       ];
     }, false);
   }
+
+  useEffect(() => {
+    const timeOutId = setTimeout(() => {
+      const fetchProduct = async () => {
+        try {
+          saveFileCode(selectedFileIndex);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+      updateSaving(saveStatusEnum.saving);
+
+      fetchProduct().then(() => {
+        updateSaving(saveStatusEnum.saved);
+      });
+    }, WAIT_INTERVAL);
+    return () => {
+      clearTimeout(timeOutId);
+      updateSaving(saveStatusEnum.notsaved);
+    };
+  }, [files]);
 
   /*
     Gets a list of currently existing file names.
@@ -409,21 +435,15 @@ export function useFiles(draftId: any, authenticated: boolean) {
   /** 
     Saves file code to Firebase. Triggered from `DynamicCodeEditor.tsx`. 
     */
-  function saveFileCode() {
-    let fileId = files[selectedFileIndex].fileId;
-    let code = files[selectedFileIndex].code;
-
-    files[selectedFileIndex].code = code;
-    console.log("save file code");
-    // mutate(async (mutateState: fileObject[]) => {
-    //   return { ...mutateState, files };
-    // }, false);
+  function saveFileCode(fileIndex: number) {
+    let fileId = files[fileIndex].fileId;
+    let code = files[fileIndex].code;
 
     var data = {
       requestedAPI: "save_file_code",
       draftId: draftId,
       fileId: fileId,
-      code: code,
+      code: JSON.stringify(code),
     };
 
     fetch("/api/endpoint", {

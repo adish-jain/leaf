@@ -25,7 +25,7 @@ export enum saveStatusEnum {
 
 export enum slateMarkTypes {
   bold = "bold",
-  italics = "italics",
+  italic = "italic",
   code = "code",
   unstyled = "unstyled",
 }

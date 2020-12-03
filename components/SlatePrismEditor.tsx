@@ -74,7 +74,8 @@ export default function SlatePrismEditor(props: {}) {
 
   function handleChange(value: Node[]) {
     // update in top state
-    // changeCode(value);
+    changeCode(value);
+    // update in local state
     setValue(value);
     // changeCode(JSON.parse(JSON.stringify(value)));
   }

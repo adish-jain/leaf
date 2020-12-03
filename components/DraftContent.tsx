@@ -18,21 +18,12 @@ import { DraftContext } from "../contexts/draft-context";
 import TextSection from "./TextSection";
 import publishingStyles from "../styles/publishing.module.scss";
 import appStyles from "../styles/app.module.scss";
-import { ToolbarContext } from "../contexts/toolbar-context";
-import {
-  boldSelection,
-  italicizeSelection,
-  useToolbar,
-  codeSelection,
-} from "../lib/useToolbar";
 import { FormattingToolbar } from "./FormattingToolbar";
 type DraftContentProps = {
   draftContent: contentBlock[];
   draftTitle: string;
   onTitleChange: (updatedtitle: string) => Promise<void>;
   updateShowTags: any;
-  currentlySelectedLines: Lines;
-  changeSelectedLines: Dispatch<SetStateAction<Lines>>;
 };
 
 const PublishingHeader = (props: {
@@ -63,14 +54,7 @@ const PublishingHeader = (props: {
 };
 
 export function DraftContent(props: DraftContentProps) {
-  const {
-    draftContent,
-    draftTitle,
-    onTitleChange,
-    updateShowTags,
-    currentlySelectedLines,
-    changeSelectedLines,
-  } = props;
+  const { draftContent, draftTitle, onTitleChange, updateShowTags } = props;
   return (
     <DraftContext.Consumer>
       {({ previewMode }) => (
@@ -87,8 +71,6 @@ export function DraftContent(props: DraftContentProps) {
                 draftTitle={draftTitle}
                 onTitleChange={onTitleChange}
                 updateShowTags={updateShowTags}
-                currentlySelectedLines={currentlySelectedLines}
-                changeSelectedLines={changeSelectedLines}
               />
             </motion.div>
           )}
@@ -99,84 +81,58 @@ export function DraftContent(props: DraftContentProps) {
 }
 
 const DraftComponent = (props: DraftContentProps) => {
-  let {
-    updateShowTags,
-    draftContent,
-    currentlySelectedLines,
-    changeSelectedLines,
-    onTitleChange,
-    draftTitle,
-  } = props;
+  let { updateShowTags, draftContent, onTitleChange, draftTitle } = props;
 
   const arrangedContent = arrangeContentList(draftContent);
-  const {
-    saveState,
-    updateSaving,
-    currentMarkType,
-    updateMarkType,
-  } = useToolbar();
-  return (
-    <ToolbarContext.Provider
-      value={{
-        setBold: boldSelection,
-        setItalic: italicizeSelection,
-        saveState: saveState,
-        updateSaving: updateSaving,
-        setCode: codeSelection,
-        updateMarkType,
-        currentMarkType,
-      }}
-    >
-      <div>
-        <DraftHeader updateShowTags={updateShowTags} />
-        <div className={appStyles["App"]}>
-          <div className={appStyles["center-divs"]}>
-            <PublishingHeader
-              draftTitle={draftTitle}
-              onTitleChange={onTitleChange}
-            />
-            <div className={appStyles["draft-content"]}>
-              {arrangedContent.map((contentElement, index: number) => {
-                switch (contentElement.type) {
-                  case FrontendSectionType.TextSection: {
-                    contentElement.type;
-                    const slateContent = (contentElement as contentSection &
-                      TextSectionType).slateSection.slateContent;
-                    const backendId = (contentElement as contentSection &
-                      TextSectionType).slateSection.backendId;
 
-                    return (
-                      <TextSection
-                        slateContent={slateContent}
-                        key={backendId}
-                        backendId={backendId}
-                        sectionIndex={index}
-                      />
-                    );
-                  }
-                  case FrontendSectionType.CodeSection: {
-                    const codeSteps = (contentElement as contentSection &
-                      CodeSection).codeSteps;
-                    return (
-                      <CodeStepSection
-                        codeSteps={codeSteps}
-                        key={codeSteps[0].backendId}
-                        sectionIndex={index}
-                        currentlySelectedLines={currentlySelectedLines}
-                        changeSelectedLines={changeSelectedLines}
-                      />
-                    );
-                  }
-                  default:
-                    return "test";
+  return (
+    <div>
+      <DraftHeader updateShowTags={updateShowTags} />
+      <div className={appStyles["App"]}>
+        <div className={appStyles["center-divs"]}>
+          <PublishingHeader
+            draftTitle={draftTitle}
+            onTitleChange={onTitleChange}
+          />
+          <div className={appStyles["draft-content"]}>
+            {arrangedContent.map((contentElement, index: number) => {
+              switch (contentElement.type) {
+                case FrontendSectionType.TextSection: {
+                  contentElement.type;
+                  const slateContent = (contentElement as contentSection &
+                    TextSectionType).slateSection.slateContent;
+                  const backendId = (contentElement as contentSection &
+                    TextSectionType).slateSection.backendId;
+
+                  return (
+                    <TextSection
+                      slateContent={slateContent}
+                      key={backendId}
+                      backendId={backendId}
+                      sectionIndex={index}
+                    />
+                  );
                 }
-              })}
-            </div>
+                case FrontendSectionType.CodeSection: {
+                  const codeSteps = (contentElement as contentSection &
+                    CodeSection).codeSteps;
+                  return (
+                    <CodeStepSection
+                      codeSteps={codeSteps}
+                      key={codeSteps[0].backendId}
+                      sectionIndex={index}
+                    />
+                  );
+                }
+                default:
+                  return "test";
+              }
+            })}
           </div>
         </div>
-        <FormattingToolbar />
       </div>
-    </ToolbarContext.Provider>
+      <FormattingToolbar />
+    </div>
   );
 };
 

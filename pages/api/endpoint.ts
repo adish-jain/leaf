@@ -50,12 +50,9 @@ import handleChangeStepOrder from "../../lib/api/changeStepOrder";
 import handleRenameStepFileName from "../../lib/api/renameStepFileName";
 
 // editing drafts files
-import handleSaveFile from "../../lib/api/saveFile";
 import handleDeleteFile from "../../lib/api/deleteFile";
-import handleChangeFileLanguage from "../../lib/api/changeFileLanguage";
 import handleGetFiles from "../../lib/api/getFiles";
-import handleSaveFileCode from "../../lib/api/saveFileCode";
-import handleSaveFileName from "../../lib/api/saveFileName";
+import handleUpdateFile from "../../lib/api/updateFile";
 
 // images
 import handleSaveImage from "../../lib/api/saveImage";
@@ -243,24 +240,12 @@ export default sentryHandler(
         return handleGetFiles(req, res);
       }
 
-      case "save_file": {
-        return handleSaveFile(req, res);
-      }
-
       case "delete_file": {
         return handleDeleteFile(req, res);
       }
 
-      case "change_file_language": {
-        return handleChangeFileLanguage(req, res);
-      }
-
-      case "save_file_code": {
-        return handleSaveFileCode(req, res);
-      }
-
-      case "save_file_name": {
-        return handleSaveFileName(req, res);
+      case "updateFile": {
+        return handleUpdateFile(req, res);
       }
 
       // email

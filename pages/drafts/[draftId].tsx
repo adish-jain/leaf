@@ -21,7 +21,14 @@ import appStyles from "../../styles/app.module.scss";
 import "../../styles/draftheader.module.scss";
 import { motion, AnimatePresence } from "framer-motion";
 import { FilesContext } from "../../contexts/files-context";
-
+import { ToolbarContext } from "../../contexts/toolbar-context";
+import { useToolbar } from "../../lib/useToolbar";
+import {
+  boldSelection,
+  italicizeSelection,
+  codeSelection,
+} from "../../lib/useToolbar";
+import { FilesContextWrapper } from "../../components/FilesContextWrapper";
 const initialMetaData: draftMetaData = {
   title: "",
   errored: false,
@@ -56,6 +63,12 @@ const DraftView = () => {
   const router = useRouter();
   const { draftId } = router.query;
   const {
+    saveState,
+    updateSaving,
+    currentMarkType,
+    updateMarkType,
+  } = useToolbar();
+  const {
     draftContent,
     updateSlateSectionToBackend,
     addBackendBlock,
@@ -82,24 +95,8 @@ const DraftView = () => {
   const { toggleTag, tags } = useTags(draftId as string, authenticated);
   const [showPreview, updateShowPreview] = useState(false);
   const [showTags, updateShowTags] = useState(false);
-  const {
-    selectedFileIndex,
-    files,
-    onNameChange,
-    addFile,
-    changeCode,
-    removeFile,
-    changeSelectedFileIndex,
-    changeFileLanguage,
-    saveFileName,
-    selectedFile,
-    currentlySelectedLines,
-    changeSelectedLines,
-    saveFileCode,
-  } = useFiles(draftId, authenticated);
-  // wrapper function for deleting a file.
+  // wrapper function for deletilng a file.
   // when a file is deleted, make sure all associated steps remove that file
-
   if (errored) {
     return <DefaultErrorPage statusCode={404} />;
   }
@@ -124,33 +121,21 @@ const DraftView = () => {
           }}
         />
       </Head>
-      <FilesContext.Provider
+
+      <ToolbarContext.Provider
         value={{
-          addFile: addFile,
-          changeCode: changeCode,
-          removeFile: removeFile,
-          changeSelectedFileIndex: changeSelectedFileIndex,
-          changeFileLanguage: changeFileLanguage,
-          saveFileName: saveFileName,
-          selectedFile: selectedFile,
-          files: files,
-          saveFileCode: saveFileCode,
-          selectedFileIndex: selectedFileIndex,
+          setBold: boldSelection,
+          setItalic: italicizeSelection,
+          saveState: saveState,
+          updateSaving: updateSaving,
+          setCode: codeSelection,
+          updateMarkType,
+          currentMarkType,
         }}
       >
-        <DraftContext.Provider
-          value={{
-            addBackendBlock: addBackendBlock,
-            updateSlateSectionToBackend: updateSlateSectionToBackend,
-            previewMode: showPreview,
-            updatePreviewMode: updateShowPreview,
-            published: published,
-            username: username,
-            postId: postId,
-            draftId: draftId as string,
-            currentlyEditingBlock: currentlyEditingBlock,
-            changeEditingBlock: changeEditingBlock,
-          }}
+        <FilesContextWrapper
+          authenticated={authenticated}
+          draftId={draftId as string}
         >
           <main className={appStyles["AppWrapper"]}>
             <AnimatePresence>
@@ -182,18 +167,31 @@ const DraftView = () => {
                 toggleTag={toggleTag}
               />
             ) : (
-              <DraftContent
-                onTitleChange={onTitleChange}
-                draftTitle={draftTitle}
-                updateShowTags={updateShowTags}
-                draftContent={draftContent}
-                currentlySelectedLines={currentlySelectedLines}
-                changeSelectedLines={changeSelectedLines}
-              />
+              <DraftContext.Provider
+                value={{
+                  addBackendBlock: addBackendBlock,
+                  updateSlateSectionToBackend: updateSlateSectionToBackend,
+                  previewMode: showPreview,
+                  updatePreviewMode: updateShowPreview,
+                  published: published,
+                  username: username,
+                  postId: postId,
+                  draftId: draftId as string,
+                  currentlyEditingBlock: currentlyEditingBlock,
+                  changeEditingBlock: changeEditingBlock,
+                }}
+              >
+                <DraftContent
+                  onTitleChange={onTitleChange}
+                  draftTitle={draftTitle}
+                  updateShowTags={updateShowTags}
+                  draftContent={draftContent}
+                />
+              </DraftContext.Provider>
             )}
           </main>
-        </DraftContext.Provider>
-      </FilesContext.Provider>
+        </FilesContextWrapper>
+      </ToolbarContext.Provider>
     </div>
   );
 };

@@ -18,3 +18,11 @@ type codeStepObject = {
   lines?: Lines;
   imageUrl?: string;
 };
+
+export type backendFileObject = {
+  fileName?: string;
+  language?: string;
+  code?: string;
+  parentFolderId?: string;
+  order?: number;
+};

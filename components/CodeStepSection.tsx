@@ -15,16 +15,12 @@ import { useInView } from "react-intersection-observer";
 export default function CodeStepSection(props: {
   codeSteps: contentBlock[];
   sectionIndex: number;
-  currentlySelectedLines: Lines;
-  changeSelectedLines: Dispatch<SetStateAction<Lines>>;
 }) {
   const [ref, inView, entry] = useInView({});
 
   const {
     codeSteps,
     sectionIndex,
-    currentlySelectedLines,
-    changeSelectedLines,
   } = props;
   return (
     <div ref={ref} className={codeStepSectionStyles["codestep-section"]}>
@@ -33,8 +29,6 @@ export default function CodeStepSection(props: {
         <Publishing sectionIndex={sectionIndex} codeSteps={codeSteps} />
         {inView && (
           <CodeEditor
-            currentlySelectedLines={currentlySelectedLines}
-            changeSelectedLines={changeSelectedLines}
           />
         )}
       </div>

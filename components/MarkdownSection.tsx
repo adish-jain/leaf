@@ -43,7 +43,11 @@ import {
   formattingPaneBlockType,
   saveStatusEnum,
 } from "../typescript/enums/app_enums";
-import { FormattingPaneBlockList, Lines } from "../typescript/types/app_types";
+import {
+  FormattingPaneBlockList,
+  Lines,
+  WAIT_INTERVAL,
+} from "../typescript/types/app_types";
 import {
   handleArrowLeft,
   handleArrowRight,
@@ -116,7 +120,6 @@ const Blocks: FormattingPaneBlockList = [
   },
 ];
 
-const WAIT_INTERVAL = 5000;
 const MarkdownPreviewExample = (props: {
   slateContent: string;
   sectionIndex: number;
@@ -280,7 +283,7 @@ const MarkdownPreviewExample = (props: {
 
   function handleCommandKey(event: React.KeyboardEvent<HTMLDivElement>) {
     switch (event.key) {
-      case "b":
+      case "b": {
         event.preventDefault();
         const [match] = Editor.nodes(editor, {
           match: (n) => {
@@ -301,6 +304,29 @@ const MarkdownPreviewExample = (props: {
           }
         );
         break;
+      }
+      case "i": {
+        event.preventDefault();
+        const [match] = Editor.nodes(editor, {
+          match: (n) => {
+            return n.italic === true;
+          },
+        });
+        let shouldItalicize = match === undefined;
+        Transforms.setNodes(
+          editor,
+          { italic: shouldItalicize },
+          // Apply it to text nodes, and split the text node up if the
+          // selection is overlapping only part of it.
+          {
+            match: (n) => {
+              return Text.isText(n);
+            },
+            split: true,
+          }
+        );
+        break;
+      }
     }
   }
 
@@ -368,6 +394,7 @@ const MarkdownPreviewExample = (props: {
 
   // save to backend
   useEffect(() => {
+    console.log("value changed");
     const timeOutId = setTimeout(() => {
       const fetchProduct = async () => {
         try {
@@ -447,22 +474,11 @@ const MarkdownPreviewExample = (props: {
   }
 
   function handleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    let selection = editor.selection;
-    if (
-      selection !== null
+    updateSlashPosition(null);
+  }
 
-      // && !Range.isCollapsed(selection)
-    ) {
-      //   refreshPrompt();
-
-      let selectedNode = editor.children[selection.anchor.path[0]];
-      let selectedNodeType = selectedNode.type;
-      if (selectedNodeType == "default") {
-        // ReactEditor.focus(editor);
-        // Transforms.select(editor, selection.anchor.path);
-        // Transforms.deselect(editor);
-      }
-    }
+  function handleBlur(event: React.FocusEvent<HTMLDivElement>) {
+    updateSlashPosition(null);
   }
 
   return (
@@ -474,6 +490,7 @@ const MarkdownPreviewExample = (props: {
           renderElement={renderElement}
           onKeyDown={handleKeyDown}
           onClick={handleClick}
+          onBlur={handleBlur}
         />
       </Slate>
       <FormattingPane
@@ -494,6 +511,12 @@ const Leaf = ({ attributes, children, leaf }: RenderLeafProps) => {
   let style = highlightPrismDracula(leaf);
   if (leaf.bold) {
     style["fontWeight"] = "bold";
+  }
+  if (leaf.italic) {
+    style["fontStyle"] = "italic";
+  }
+  if (leaf.code) {
+    return <code {...attributes}>{children}</code>;
   }
   return (
     //@ts-ignore
