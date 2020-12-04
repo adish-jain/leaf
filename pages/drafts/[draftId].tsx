@@ -29,6 +29,8 @@ import {
   codeSelection,
 } from "../../lib/useToolbar";
 import { FilesContextWrapper } from "../../components/FilesContextWrapper";
+import { LinesContext } from "../../contexts/lines-context";
+import { useLines } from "../../lib/useLines";
 const initialMetaData: draftMetaData = {
   title: "",
   errored: false,
@@ -68,6 +70,12 @@ const DraftView = () => {
     currentMarkType,
     updateMarkType,
   } = useToolbar();
+  const {
+    currentlySelectedLines,
+    changeSelectedLines,
+    stepCoords,
+    updateStepCoordinate,
+  } = useLines();
   const {
     draftContent,
     updateSlateSectionToBackend,
@@ -121,32 +129,40 @@ const DraftView = () => {
           }}
         />
       </Head>
-
-      <ToolbarContext.Provider
+      <LinesContext.Provider
         value={{
-          setBold: boldSelection,
-          setItalic: italicizeSelection,
-          saveState: saveState,
-          updateSaving: updateSaving,
-          setCode: codeSelection,
-          updateMarkType,
-          currentMarkType,
+          currentlySelectedLines,
+          changeSelectedLines,
+          updateStepCoordinate,
+          stepCoordinates: stepCoords,
+          
         }}
       >
-        <FilesContextWrapper
-          authenticated={authenticated}
-          draftId={draftId as string}
+        <ToolbarContext.Provider
+          value={{
+            setBold: boldSelection,
+            setItalic: italicizeSelection,
+            saveState: saveState,
+            updateSaving: updateSaving,
+            setCode: codeSelection,
+            updateMarkType,
+            currentMarkType,
+          }}
         >
-          <main className={appStyles["AppWrapper"]}>
-            <AnimatePresence>
-              {showPreview && (
-                <motion.div
-                  initial={"hidden"}
-                  animate={"visible"}
-                  exit={"hidden"}
-                  variants={opacityFade}
-                >
-                  {/* <FinishedPost
+          <FilesContextWrapper
+            authenticated={authenticated}
+            draftId={draftId as string}
+          >
+            <main className={appStyles["AppWrapper"]}>
+              <AnimatePresence>
+                {showPreview && (
+                  <motion.div
+                    initial={"hidden"}
+                    animate={"visible"}
+                    exit={"hidden"}
+                    variants={opacityFade}
+                  >
+                    {/* <FinishedPost
                   title={draftTitle}
                   // tags={tags}
                   // username={username}
@@ -155,43 +171,44 @@ const DraftView = () => {
                   previewMode={true}
                   publishedAtSeconds={createdAt.publishedAtSeconds}
                 /> */}
-                </motion.div>
-              )}
-            </AnimatePresence>
-            {showTags ? (
-              <Tags
-                showTags={showTags}
-                updateShowTags={updateShowTags}
-                title={draftTitle}
-                selectedTags={tags as string[]}
-                toggleTag={toggleTag}
-              />
-            ) : (
-              <DraftContext.Provider
-                value={{
-                  addBackendBlock: addBackendBlock,
-                  updateSlateSectionToBackend: updateSlateSectionToBackend,
-                  previewMode: showPreview,
-                  updatePreviewMode: updateShowPreview,
-                  published: published,
-                  username: username,
-                  postId: postId,
-                  draftId: draftId as string,
-                  currentlyEditingBlock: currentlyEditingBlock,
-                  changeEditingBlock: changeEditingBlock,
-                }}
-              >
-                <DraftContent
-                  onTitleChange={onTitleChange}
-                  draftTitle={draftTitle}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              {showTags ? (
+                <Tags
+                  showTags={showTags}
                   updateShowTags={updateShowTags}
-                  draftContent={draftContent}
+                  title={draftTitle}
+                  selectedTags={tags as string[]}
+                  toggleTag={toggleTag}
                 />
-              </DraftContext.Provider>
-            )}
-          </main>
-        </FilesContextWrapper>
-      </ToolbarContext.Provider>
+              ) : (
+                <DraftContext.Provider
+                  value={{
+                    addBackendBlock: addBackendBlock,
+                    updateSlateSectionToBackend: updateSlateSectionToBackend,
+                    previewMode: showPreview,
+                    updatePreviewMode: updateShowPreview,
+                    published: published,
+                    username: username,
+                    postId: postId,
+                    draftId: draftId as string,
+                    currentlyEditingBlock: currentlyEditingBlock,
+                    changeEditingBlock: changeEditingBlock,
+                  }}
+                >
+                  <DraftContent
+                    onTitleChange={onTitleChange}
+                    draftTitle={draftTitle}
+                    updateShowTags={updateShowTags}
+                    draftContent={draftContent}
+                  />
+                </DraftContext.Provider>
+              )}
+            </main>
+          </FilesContextWrapper>
+        </ToolbarContext.Provider>
+      </LinesContext.Provider>
     </div>
   );
 };

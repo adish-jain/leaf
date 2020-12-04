@@ -6,14 +6,10 @@ const fetch = require("node-fetch");
 global.Headers = fetch.Headers;
 import Router from "next/router";
 import publishingStyles from "../styles/publishing.module.scss";
-import stepStyles from "../styles/step.module.scss";
 import { File, Step, Lines } from "../typescript/types/app_types";
 import { contentBlock } from "../typescript/types/frontend/postTypes";
-import MarkdownSection from "./MarkdownSection";
-import { ContentBlockType } from "../typescript/enums/backend/postEnums";
 import { DraftContext } from "../contexts/draft-context";
-import { ContentBlock } from "draft-js";
-
+import { CodeStep } from "../components/CodeStep";
 var shortId = require("shortid");
 
 type PublishingProps = {
@@ -59,50 +55,7 @@ function PublishingDescription() {
         This is a code step section. Highlight lines in the code editor to pair
         with a step. Scroll down to begin.
       </p>
-    </div>
-  );
-}
-
-function CodeStep(props: {
-  codeStep: contentBlock;
-  index: number;
-  sectionIndex: number;
-  selected: boolean;
-  last: boolean;
-}) {
-  const draftContext = useContext(DraftContext);
-  const { changeEditingBlock } = draftContext;
-  const { codeStep, index, sectionIndex, selected, last } = props;
-  let style = {};
-  if (selected) {
-    style["color"] = "blue";
-  }
-  if (last) {
-    style["marginBottom"] = "50%";
-  }
-  return (
-    <div
-      className={stepStyles["codestep"]}
-      style={style}
-      onClick={(e) => {
-        changeEditingBlock(codeStep.backendId);
-      }}
-    >
-      <div className={stepStyles["codestep-content"]}>
-        <MarkdownSection
-          slateContent={codeStep.slateContent}
-          backendId={codeStep.backendId}
-          sectionIndex={index + sectionIndex}
-          contentType={ContentBlockType.CodeSteps}
-          key={codeStep.backendId}
-        />
-      </div>
-      <div className={stepStyles["line-status"]}>
-        <div className={stepStyles["status-content"]}>
-          {" "}
-          No lines selected | Highlight lines in the code editor.
-        </div>
-      </div>
+      {/* <button>Delete Code Section</button> */}
     </div>
   );
 }

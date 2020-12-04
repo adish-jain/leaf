@@ -538,7 +538,7 @@ const Leaf = ({ attributes, children, leaf }: RenderLeafProps) => {
     style["fontStyle"] = "italic";
   }
   if (leaf.code) {
-    return <code {...attributes}>{children}</code>;
+    return <code className={slateStyles['code-leaf']} {...attributes}>{children}</code>;
   }
   return (
     //@ts-ignore

@@ -10,17 +10,34 @@ import { fileObject } from "../typescript/types/frontend/postTypes";
 import { DraftContext } from "../contexts/draft-context";
 import { Dispatch, SetStateAction } from "react";
 import SlatePrismEditor from "./SlatePrismEditor";
-
-type CodeEditorProps = {};
+import { AnimatePresence, motion } from "framer-motion";
+import { slateFade } from "../styles/framer_animations/opacityFade";
+type CodeEditorProps = {
+  inView: boolean;
+};
 
 type CodeEditorState = {};
 
 export default function CodeEditor(props: CodeEditorProps) {
+  const { inView } = props;
   return (
     <div className={codeEditorStyles["CodeEditor"]}>
       <ImageView />
       <FileBar />
-      <SlatePrismEditor />
+      <div className={codeEditorStyles["slate-wrapper"]}>
+        <AnimatePresence>
+          {inView && (
+            <motion.div
+              initial={"hidden"}
+              animate={"visible"}
+              exit={"hidden"}
+              variants={slateFade}
+            >
+              <SlatePrismEditor />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
       <LanguageBar />
     </div>
   );

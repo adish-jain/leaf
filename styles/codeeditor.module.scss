@@ -62,8 +62,8 @@
   border-radius: 8px;
   // min-width: 330px;
   border: 1px solid $leaf-light-gray;
-  width: 540px;
-  // width: 51vw;
+  // width: 1080px;
+  width: 51vw;
   // margin-right: 3vw;
   // height: 92vh;
   top: 0px;
@@ -90,4 +90,19 @@
   background: $highlighter-yellow;
   width: 5px !important;
   margin-left: 3px;
+}
+
+.slate-wrapper {
+  overflow-y: scroll;
+  overflow-x: scroll;
+  overscroll-behavior: contain;
+  height: 100%;
+  background-color: $codeeditor-background;
+}
+
+.slate-wrapper::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+  opacity: 0; /* make scrollbar transparent */
+  height: 0px;
 }

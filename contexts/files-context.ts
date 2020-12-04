@@ -18,8 +18,6 @@ type FilesContextType = {
   saveFileName: (value: string, external: boolean) => void;
   modifyFileName: (newFileName: string, fileIndex: number) => void;
   selectedFile: fileObject | undefined;
-  currentlySelectedLines: Lines;
-  changeSelectedLines: Dispatch<SetStateAction<Lines>>;
   files: fileObject[];
   saveFileCode: (fileIndex: number) => void;
   // updateFile: (updatedFile: fileObject) => void;

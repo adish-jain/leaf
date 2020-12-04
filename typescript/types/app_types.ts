@@ -65,3 +65,14 @@ type codeStepFrontend = {
   slateContent: string;
   lines?: Lines;
 };
+
+export const newFileNode: Node[] = [
+  {
+    type: "default",
+    children: [
+      {
+        text: "Start editing here",
+      },
+    ],
+  },
+];

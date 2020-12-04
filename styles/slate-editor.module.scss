@@ -213,3 +213,9 @@ $headerThreeFontSize: 1.17em;
   top: 50%;
   left: -10px;
 }
+
+.code-leaf {
+  font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+  font-size: 14px;
+  background-color: $leaf-light-gray;
+}

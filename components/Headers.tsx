@@ -186,10 +186,10 @@ export function FinishedPostHeader(props: FinishedPostHeaderProps) {
   }
 
   return (
-    <div className={"draft-header"}>
-      <div className={"header-wrapper"}>
+    <div className={draftHeaderStyles["draft-header"]}>
+      <div className={draftHeaderStyles["header-wrapper"]}>
         <Links />
-        <div className={"buttons"}>
+        <div className={draftHeaderStyles["buttons"]}>
           {props.previewMode ? (
             <ExitPreview updateShowPreview={props.updateShowPreview} />
           ) : (
@@ -206,7 +206,7 @@ function ExitPreview(props: {
 }) {
   return (
     <button
-      className={"preview-button"}
+      className={draftHeaderStyles["preview-button"]}
       onClick={(e) => {
         props.updateShowPreview!(false);
       }}
@@ -224,7 +224,7 @@ type TagsHeaderProps = {
 export function TagsHeader(props: TagsHeaderProps) {
   function Links() {
     return (
-      <div className={"links"}>
+      <div className={draftHeaderStyles["links"]}>
         <Link href="/landing">
           <a>Home</a>
         </Link>
@@ -233,10 +233,10 @@ export function TagsHeader(props: TagsHeaderProps) {
   }
 
   return (
-    <div className={"draft-header"}>
-      <div className={"header-wrapper"}>
+    <div className={draftHeaderStyles["draft-header"]}>
+      <div className={draftHeaderStyles["header-wrapper"]}>
         <Links />
-        <div className={"buttons"}>
+        <div className={draftHeaderStyles["buttons"]}>
           {props.showTags ? (
             <ExitTags updateShowTags={props.updateShowTags} />
           ) : (
@@ -253,7 +253,7 @@ function ExitTags(props: {
 }) {
   return (
     <button
-      className={"preview-button"}
+      className={draftHeaderStyles["preview-button"]}
       onClick={(e) => {
         props.updateShowTags!(false);
       }}

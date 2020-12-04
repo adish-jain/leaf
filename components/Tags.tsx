@@ -1,5 +1,5 @@
 import React, { Component, SetStateAction } from "react";
-import "../styles/tags.module.scss";
+import tagStyles from "../styles/tags.module.scss";
 import { TagsHeader } from "../components/Headers";
 
 type TagsProps = {
@@ -51,7 +51,7 @@ export default class TagsView extends Component<TagsProps, TagsState> {
       "Other",
     ];
     return (
-      <div className={"tags"}>
+      <div className={tagStyles["tags"]}>
         {typeof this.props.selectedTags === "undefined" ? (
           <this.NoSelectedTags tagsList={tagsList} />
         ) : (
@@ -61,57 +61,63 @@ export default class TagsView extends Component<TagsProps, TagsState> {
     );
   }
 
-  NoSelectedTags(props: { tagsList: string[] }){
-    return <>{
-      props.tagsList.map((tag: string) => (
-      <button
-        id={tag}
-        className={"tag-button"}
-        onClick={() => this.props.toggleTag(tag)}
-      >
-        {tag}
-      </button>
-    ))}</>;
+  NoSelectedTags(props: { tagsList: string[] }) {
+    return (
+      <>
+        {props.tagsList.map((tag: string) => (
+          <button
+            id={tag}
+            className={tagStyles["tag-button"]}
+            onClick={() => this.props.toggleTag(tag)}
+          >
+            {tag}
+          </button>
+        ))}
+      </>
+    );
   }
 
   SomeSelectedTags(props: { tagsList: string[] }) {
-    return <>{
-      props.tagsList.map((tag: string) =>
-      this.props.selectedTags.includes(tag) ? (
-        <button
-          id={tag}
-          className={"selected-tag-button"}
-          onClick={() => this.props.toggleTag(tag)}
-        >
-          {tag}
-        </button>
-      ) : (
-        <button
-          id={tag}
-          className={"tag-button"}
-          onClick={() => this.props.toggleTag(tag)}
-        >
-          {tag}
-        </button>
-      )
-    )}</>;
+    return (
+      <>
+        {props.tagsList.map((tag: string) =>
+          this.props.selectedTags.includes(tag) ? (
+            <button
+              id={tag}
+              className={tagStyles["selected-tag-button"]}
+              onClick={() => this.props.toggleTag(tag)}
+            >
+              {tag}
+            </button>
+          ) : (
+            <button
+              id={tag}
+              className={tagStyles["tag-button"]}
+              onClick={() => this.props.toggleTag(tag)}
+            >
+              {tag}
+            </button>
+          )
+        )}
+      </>
+    );
   }
 
   render() {
     return (
       <div>
-        <div className={"options-wrapper"}>
+        <div className={tagStyles["options-wrapper"]}>
           <TagsHeader
             updateShowTags={this.props.updateShowTags}
             showTags={this.props.showTags}
           />
         </div>
-        <div className={"tags-header"}>
+        <div className={tagStyles["tags-header"]}>
           <h1>Tags help readers find your content</h1>
           <h2>Select up to 3 tags for '{this.props.title}'</h2>
         </div>
         <this.TagButtons />
-        <div className={"filebar-wrapper"}></div>
+        <div className={tagStyles["filebar-wrapper"]}></div>
       </div>
     );
   }

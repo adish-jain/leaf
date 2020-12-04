@@ -247,7 +247,7 @@ const DefaultElement = (props: RenderElementProps) => {
           {"Press '/' for commands"}
         </label>
       )}
-      <BlockHandle hovered={hovered} />
+      {/* <BlockHandle hovered={hovered} /> */}
     </div>
   );
 };

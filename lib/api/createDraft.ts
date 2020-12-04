@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import "firebase";
 import { initFirebaseAdmin } from "../initFirebase";
-import { timeStamp } from "../../typescript/types/app_types";
+import { newFileNode, timeStamp } from "../../typescript/types/app_types";
 const admin = require("firebase-admin");
 import {
   getUser,
@@ -63,7 +63,7 @@ export default async function createDraftHandler(
     docRef.collection("draftContent").add({
       order: 0,
       type: ContentBlockType.Text,
-      slateContent: JSON.stringify(slateNode),
+      slateContent: JSON.stringify(newFileNode),
     }),
   ]);
 
@@ -75,14 +75,3 @@ export default async function createDraftHandler(
   res.send(drafts);
   return;
 }
-
-const slateNode: Node[] = [
-  {
-    type: "default",
-    children: [
-      {
-        text: "Start editing here",
-      },
-    ],
-  },
-];

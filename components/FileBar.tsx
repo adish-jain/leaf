@@ -5,23 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { fileObject } from "../typescript/types/frontend/postTypes";
 import { FilesContext } from "../contexts/files-context";
 
-type File = {
-  id: string;
-  name: string;
-  //replace with enum
-  language: string;
-  code: string;
-};
-
-type FileBarProps = {
-  files: fileObject[];
-  changeSelectedFile: (fileIndex: number) => void;
-  saveFileName: (value: string, external: boolean) => void;
-  onNameChange: (name: string) => void;
-  addFile: () => void;
-  removeFile: (toDeleteIndex: number) => void;
-  selectedFileIndex: number;
-};
+type FileBarProps = {};
 
 export default class FileBar extends Component<FileBarProps> {
   constructor(props: FileBarProps) {
@@ -53,17 +37,16 @@ export default class FileBar extends Component<FileBarProps> {
       recalculate();
     }
 
-    let {
-      onNameChange,
-      selectedFileIndex,
-      removeFile,
-      changeSelectedFile,
-      addFile,
-    } = this.props;
-
     return (
       <FilesContext.Consumer>
-        {({ files, removeFile, selectedFile, saveFileName }) => {
+        {({
+          files,
+          removeFile,
+          selectedFile,
+          saveFileName,
+          addFile,
+          changeSelectedFileIndex,
+        }) => {
           return (
             <div className={fileBarStyles["filebar"]}>
               <div
@@ -75,10 +58,7 @@ export default class FileBar extends Component<FileBarProps> {
                   <FileName
                     name={file.fileName}
                     key={file.fileId}
-                    changeSelectedFile={changeSelectedFile}
-                    saveFileName={saveFileName}
                     selected={selectedFile?.fileId === file.fileId}
-                    removeFile={removeFile}
                     index={index}
                   />
                 ))}

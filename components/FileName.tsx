@@ -5,7 +5,6 @@ import fileStyles from "../styles/filenames.module.scss";
 type FileNameProps = {
   selected: boolean;
   name: string;
-  removeFile: (toDeleteIndex: number) => void;
   index: number;
 };
 
@@ -17,6 +16,7 @@ export default function FileName(props: FileNameProps) {
     changeSelectedFileIndex,
     modifyFileName,
     saveFileName,
+    removeFile,
   } = filesContext;
   const { index, selected } = props;
   // let style = {

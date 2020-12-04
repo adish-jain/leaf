@@ -10,4 +10,16 @@ const opacityFade = {
   },
 };
 
-export { opacityFade };
+const slateFade = {
+  hidden: {
+    opacity: 0,
+  },
+  visible: {
+    opacity: 1,
+    transition: {
+      duration: 0.1,
+    },
+  },
+};
+
+export { opacityFade, slateFade };

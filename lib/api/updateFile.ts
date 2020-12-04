@@ -22,14 +22,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     res.end();
     return;
   }
-  console.log(updatedFile);
   const backendFile: backendFileObject = {
     fileName: updatedFile.fileName,
     code: JSON.stringify(updatedFile.code),
     language: updatedFile.language,
     order: updatedFile.order,
   };
-  console.log(backendFile);
   // update code for file in firebase
   db.collection("users")
     .doc(uid)

@@ -160,7 +160,7 @@ export default function FormattingPane(props: {
                 />
               )}
               <InteractiveElement
-                elementName={"Code Steps"}
+                elementName={"Code Step"}
                 addBackendBlock={addBackendBlock}
                 sectionIndex={sectionIndex}
                 updateSlashPosition={updateSlashPosition}

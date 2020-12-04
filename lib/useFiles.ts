@@ -10,7 +10,11 @@ import {
   ProgrammingLanguage,
   supportedLanguages,
 } from "../typescript/types/language_types";
-import { Lines, WAIT_INTERVAL } from "../typescript/types/app_types";
+import {
+  Lines,
+  newFileNode,
+  WAIT_INTERVAL,
+} from "../typescript/types/app_types";
 import { Node } from "slate";
 import { ReactEditor } from "slate-react";
 import { ToolbarContext } from "../contexts/toolbar-context";
@@ -67,11 +71,6 @@ export function useFiles(draftId: any, authenticated: boolean) {
   );
   const files = fileData || [];
 
-  // What lines are currently highlighted?
-  const [currentlySelectedLines, changeSelectedLines] = useState<Lines>({
-    start: 0,
-    end: 0,
-  });
   // Need to fix this to be maxNum of files so far to avoid duplicate keys
   let numOfUntitleds = files?.length || 0;
 
@@ -180,16 +179,6 @@ export function useFiles(draftId: any, authenticated: boolean) {
   }
 
   /** 
-    When a files name is changed, we update the name field.
-    Triggered from `FileName.tsx`.
-    */
-  function onNameChange(name: string) {
-    duplicateFiles[selectedFileIndex].name = name;
-
-    updateFiles(duplicateFiles);
-  }
-
-  /** 
     Saves the file name to Firebase. Triggered from `FileName.tsx`. 
     Also updates the language selection for the file to match the new file name.
     If the file name is already taken, use `getNewFileName` to name file & throw alert.
@@ -198,30 +187,36 @@ export function useFiles(draftId: any, authenticated: boolean) {
       `external` is true when triggered from `FileName.tsx` & false otherwise.
     */
   function saveFileName(value: string, external: boolean) {
-    value = value.trim();
-    console.log("save file name");
-    let modifiedItem: fileObject = files[selectedFileIndex];
+    let newValue = value.trim();
+    let selectedFile: fileObject = files[selectedFileIndex];
+    const newObject = {
+      fileName: value,
+      language: selectedFile.language.slice(),
+      code: selectedFile.code,
+      order: selectedFile.order,
+      fileId: selectedFile.fileId,
+      testing: shortId.generate(),
+    };
+
     if (fileNameExistsPartialSearch(value)) {
       alert("This file name already exists. Please try another name.");
-      modifiedItem.fileName = getNewFileName();
-    } else {
-      modifiedItem.fileName = value;
+      newObject.fileName = getNewFileName();
     }
 
     if (external) {
-      setLangFromName(modifiedItem.fileName);
+      newObject.language = setLangFromName(newObject.fileName);
+      // modifiedItem.testing = shortId.generate();
     }
 
     mutate(async (mutateState) => {
-      let modifiedItem: fileObject = mutateState[selectedFileIndex];
-      modifiedItem.fileName = value;
       return [
         ...mutateState.slice(0, selectedFileIndex),
-        modifiedItem,
+        newObject,
         ...mutateState.slice(selectedFileIndex + 1),
       ];
     }, false);
-    updateFile(modifiedItem);
+    console.log(newObject);
+    updateFile(newObject);
   }
   /** 
     Saves the language selection to Firebase. Triggered from `LanguageBar.tsx`. 
@@ -230,6 +225,7 @@ export function useFiles(draftId: any, authenticated: boolean) {
       `external` is true when triggered from `LanguageBar.tsx` & false otherwise.
     */
   async function changeFileLanguage(language: string, external: boolean) {
+    console.log("Changing to ", language);
     const selectedFile = files[selectedFileIndex];
     if (external) {
       setNameFromLang(language);
@@ -271,7 +267,7 @@ export function useFiles(draftId: any, authenticated: boolean) {
     }
     langType = langType.trim();
     let newLanguage = getLanguageFromExtension(langType);
-    changeFileLanguage(newLanguage, false);
+    return newLanguage;
   }
 
   /** 
@@ -306,35 +302,20 @@ export function useFiles(draftId: any, authenticated: boolean) {
   function addFile() {
     // make sure file is untitled2, untitled3, etc.
     numOfUntitleds++;
-    let newFileName = getNewFileName();
-    let newFileCode = "// Write some code here ...";
     let newFileLang = "plaintext";
     let newFileId = shortId.generate();
-
-    files.push({
-      name: newFileName,
-      id: newFileId,
-      code: JSON.stringify(slateNode),
+    const newFile: fileObject = {
+      fileName: getNewFileName(),
+      code: newFileNode,
       language: newFileLang,
-    });
+      order: files.length + 1,
+      fileId: newFileId,
+    };
 
-    mutate(async (mutateState: any) => {
-      return { ...mutateState, files };
+    mutate(async (mutateState) => {
+      return [...mutateState.slice(0), newFile];
     }, false);
-
-    saveFile(newFileId, newFileName, newFileCode, newFileLang);
-  }
-
-  /** 
-    Saves a file to Firebase. 
-    */
-  function saveFile(
-    fileId: string,
-    fileName: string,
-    fileCode: string,
-    fileLang: string
-  ) {
-    updateFile();
+    updateFile(newFile);
   }
 
   function updateFile(updatedFile: fileObject) {
@@ -343,8 +324,6 @@ export function useFiles(draftId: any, authenticated: boolean) {
       requestedAPI: "updateFile",
       draftId: draftId,
     };
-    console.log("updating file");
-    console.log(updatedFile);
 
     fetch("/api/endpoint", {
       method: "POST",
@@ -361,6 +340,7 @@ export function useFiles(draftId: any, authenticated: boolean) {
    */
   function removeFile(toDeleteIndex: number) {
     // can have minimum one file
+    const deleteFileId = selectedFile?.fileId;
     if (files.length === 1) {
       return;
     }
@@ -368,31 +348,23 @@ export function useFiles(draftId: any, authenticated: boolean) {
       return;
     }
 
-    let cloneFiles = [...files];
-    let toDeleteFileId = files[toDeleteIndex].id;
     if (toDeleteIndex <= selectedFileIndex) {
       // shift selected file index back by one, with minimum index of 0
       let newIndex = Math.max(selectedFileIndex - 1, 0);
       changeSelectedFileIndex(newIndex);
     }
 
-    cloneFiles.splice(toDeleteIndex, 1);
-
-    mutate(async (mutateState: any) => {
-      return { ...mutateState, files };
+    mutate(async (mutateState) => {
+      return [
+        ...mutateState.slice(0, toDeleteIndex),
+        ...mutateState.slice(toDeleteIndex + 1),
+      ];
     }, false);
 
-    deleteFile(toDeleteFileId);
-  }
-
-  /** 
-    Removes file from Firebase.
-    */
-  function deleteFile(fileId: string) {
-    var data = {
+    let data = {
       requestedAPI: "delete_file",
       draftId: draftId,
-      fileId: fileId,
+      fileId: deleteFileId,
     };
 
     fetch("/api/endpoint", {
@@ -400,7 +372,7 @@ export function useFiles(draftId: any, authenticated: boolean) {
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify(data),
     }).then(async (res: any) => {
-      let updatedFiles = await res.json();
+      // let updatedFiles = await res.json();
     });
   }
 
@@ -408,9 +380,7 @@ export function useFiles(draftId: any, authenticated: boolean) {
     Saves file code to Firebase. Triggered from `DynamicCodeEditor.tsx`. 
     */
   function saveFileCode(fileIndex: number) {
-    let fileId = files[fileIndex].fileId;
-    let code = files[fileIndex].code;
-    updateFile();
+    updateFile(files[selectedFileIndex]);
   }
 
   function modifyFileName(newFileName: string, fileIndex: number) {
@@ -434,7 +404,6 @@ export function useFiles(draftId: any, authenticated: boolean) {
   return {
     selectedFileIndex,
     files,
-    onNameChange,
     addFile,
     changeCode,
     removeFile,
@@ -442,8 +411,6 @@ export function useFiles(draftId: any, authenticated: boolean) {
     changeFileLanguage,
     saveFileName,
     selectedFile,
-    currentlySelectedLines,
-    changeSelectedLines,
     saveFileCode,
     modifyFileName,
   };

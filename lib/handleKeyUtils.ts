@@ -213,7 +213,7 @@ function handleBackSpace(
       // set to a default element
       Transforms.setNodes(
         editor,
-        { type: "default", order: undefined },
+        { type: "default", order: undefined, imageUrl: undefined },
         {
           match: (n: Node) => {
             return Editor.isBlock(editor, n) && n.type !== "default";

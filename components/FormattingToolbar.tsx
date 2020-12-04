@@ -9,10 +9,12 @@ export function FormattingToolbar(props: {}) {
   const { saveState, currentMarkType } = toolbarContext;
   return (
     <div className={formattingToolbarStyles["formatting-toolbar"]}>
-      <MarkButton name={"default"} markType={slateMarkTypes.unstyled} />
-      <MarkButton name={"bold"} markType={slateMarkTypes.bold} />
-      <MarkButton name={"italics"} markType={slateMarkTypes.italic} />
-      <MarkButton name={"code"} markType={slateMarkTypes.code} />
+      <div className={formattingToolbarStyles["buttons"]}>
+        {/* <MarkButton name={"T"} markType={slateMarkTypes.unstyled} /> */}
+        <MarkButton name={"B"} markType={slateMarkTypes.bold} />
+        <MarkButton name={"I"} markType={slateMarkTypes.italic} />
+        <MarkButton name={"<>"} markType={slateMarkTypes.code} />
+      </div>
       <SaveStatus saveState={saveState} />
     </div>
   );

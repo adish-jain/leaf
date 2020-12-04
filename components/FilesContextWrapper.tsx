@@ -15,7 +15,6 @@ export const FilesContextWrapper: FunctionComponent<FilesContextWrapperProps> = 
   const {
     selectedFileIndex,
     files,
-    onNameChange,
     addFile,
     changeCode,
     removeFile,
@@ -23,8 +22,6 @@ export const FilesContextWrapper: FunctionComponent<FilesContextWrapperProps> = 
     changeFileLanguage,
     saveFileName,
     selectedFile,
-    currentlySelectedLines,
-    changeSelectedLines,
     saveFileCode,
     modifyFileName,
   } = useFiles(draftId, authenticated);
@@ -41,8 +38,6 @@ export const FilesContextWrapper: FunctionComponent<FilesContextWrapperProps> = 
         files: files,
         saveFileCode: saveFileCode,
         selectedFileIndex: selectedFileIndex,
-        currentlySelectedLines,
-        changeSelectedLines,
         modifyFileName,
       }}
     >
