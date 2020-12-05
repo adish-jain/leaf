@@ -10,6 +10,7 @@ import { File, Step, Lines } from "../typescript/types/app_types";
 import { contentBlock } from "../typescript/types/frontend/postTypes";
 import { DraftContext } from "../contexts/draft-context";
 import { CodeStep } from "../components/CodeStep";
+import { AnimateSharedLayout, motion } from "framer-motion";
 var shortId = require("shortid");
 
 type PublishingProps = {
@@ -30,20 +31,25 @@ export default function Publishing(props: PublishingProps) {
   return (
     <div className={publishingStyles["publishing"]}>
       <PublishingDescription />
-      <div className={publishingStyles["codesteps"]}>
-        {codeSteps.map((codeStep, index) => {
-          return (
-            <CodeStep
-              codeStep={codeStep}
-              index={index}
-              key={codeStep.backendId}
-              sectionIndex={sectionIndex}
-              selected={codeStep.backendId === currentlyEditingBlock?.backendId}
-              last={index === codeSteps.length - 1}
-            />
-          );
-        })}
-      </div>
+      <AnimateSharedLayout>
+        <motion.div className={publishingStyles["codesteps"]} layout>
+          {codeSteps.map((codeStep, index) => {
+            return (
+              <CodeStep
+                codeStep={codeStep}
+                index={index}
+                key={codeStep.backendId}
+                sectionIndex={sectionIndex}
+                selected={
+                  codeStep.backendId === currentlyEditingBlock?.backendId
+                }
+                last={index === codeSteps.length - 1}
+                backendId={codeStep.backendId}
+              />
+            );
+          })}
+        </motion.div>
+      </AnimateSharedLayout>
     </div>
   );
 }

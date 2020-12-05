@@ -11,6 +11,7 @@ type DraftContextType = {
     backendDraftBlockEnum: ContentBlockType,
     atIndex: number
   ) => Promise<void>;
+  deleteBlock: (backendId: string) => void;
   updateSlateSectionToBackend: (
     backendId: string,
     order?: number,

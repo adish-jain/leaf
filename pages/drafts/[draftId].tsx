@@ -82,6 +82,7 @@ const DraftView = () => {
     addBackendBlock,
     currentlyEditingBlock,
     changeEditingBlock,
+    deleteBlock,
   } = useBackend(authenticated, draftId as string);
   const fetcher = prepareFetcher(draftId as string);
   let { data: draftData, mutate } = useSWR<draftMetaData>(
@@ -135,7 +136,6 @@ const DraftView = () => {
           changeSelectedLines,
           updateStepCoordinate,
           stepCoordinates: stepCoords,
-          
         }}
       >
         <ToolbarContext.Provider
@@ -195,6 +195,7 @@ const DraftView = () => {
                     draftId: draftId as string,
                     currentlyEditingBlock: currentlyEditingBlock,
                     changeEditingBlock: changeEditingBlock,
+                    deleteBlock,
                   }}
                 >
                   <DraftContent

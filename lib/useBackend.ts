@@ -94,13 +94,7 @@ export function useBackend(authenticated: boolean, draftId: string) {
     atIndex: number
   ) {
     const backendId = shortId.generate();
-    const data = {
-      requestedAPI: "addDraftContent",
-      draftId: draftId,
-      atIndex: atIndex,
-      backendDraftBlockEnum: backendDraftBlockEnum,
-      backendId: backendId,
-    };
+    console.log("adding block");
     await mutate(async (mutateState) => {
       // let's update the todo with ID `1` to be completed,
       // this API returns the updated data
@@ -131,7 +125,13 @@ export function useBackend(authenticated: boolean, draftId: string) {
       }
       return insertItem(mutateState, newItem, atIndex + 1);
     }, false);
-
+    const data = {
+      requestedAPI: "addDraftContent",
+      draftId: draftId,
+      atIndex: atIndex,
+      backendDraftBlockEnum: backendDraftBlockEnum,
+      backendId: backendId,
+    };
     await fetch("/api/endpoint", {
       method: "POST",
       headers: new Headers({ "Content-Type": "application/json" }),
@@ -190,12 +190,43 @@ export function useBackend(authenticated: boolean, draftId: string) {
     changeEditingBlockIndex(newIndex);
   }
 
+  function deleteBlock(backendId: string) {
+    let toDeleteIndex = 0;
+    for (let i = 0; i < draftContent.length; i++) {
+      if (draftContent[i].backendId === backendId) {
+        toDeleteIndex = i;
+        break;
+      }
+    }
+    const data = {
+      requestedAPI: "deleteDraftContent",
+      draftId: draftId,
+      atIndex: toDeleteIndex,
+      backendId: backendId,
+    };
+    fetch("/api/endpoint", {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify(data),
+    }).then(async (res: any) => {
+      //   let resJSON = await res.json();
+    });
+
+    mutate(async (mutateState) => {
+      return [
+        ...mutateState.slice(0, toDeleteIndex),
+        ...mutateState.slice(toDeleteIndex + 1),
+      ];
+    }, false);
+  }
+
   return {
     draftContent,
     updateSlateSectionToBackend,
     addBackendBlock,
     currentlyEditingBlock,
     changeEditingBlock,
+    deleteBlock,
   };
 }
 

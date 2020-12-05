@@ -11,11 +11,9 @@ import {
 var shortId = require("shortid");
 initFirebaseAdmin();
 import { Node } from "slate";
-import {
-  contentBlock,
-  draftBackendRepresentation,
-} from "../../typescript/types/backend/postTypes";
+import { draftFrontendRepresentation } from "../../typescript/types/frontend/postTypes";
 import { ContentBlockType } from "../../typescript/enums/backend/postEnums";
+import { slateFade } from "../../styles/framer_animations/opacityFade";
 let db = admin.firestore();
 
 export default async function createDraftHandler(
@@ -25,14 +23,14 @@ export default async function createDraftHandler(
   let { uid } = await getUser(req, res);
   let username = await getUsernameFromUid(uid);
 
-  let newDraft: draftBackendRepresentation = {
+  let newDraft: draftFrontendRepresentation = {
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
     title: "Untitled",
     draftContent: [
       {
         order: 0,
         type: ContentBlockType.Text,
-        slateContent: JSON.stringify(slateNode),
+        slateContent: JSON.stringify(newFileNode),
       },
     ],
     folders: [],
@@ -40,7 +38,7 @@ export default async function createDraftHandler(
       {
         fileName: "untitled.txt",
         language: "text",
-        code: JSON.stringify(slateNode),
+        code: JSON.stringify(newFileNode),
         order: 0,
       },
     ],
