@@ -58,7 +58,8 @@ export default async function addDraftContentHandler(
       };
   }
 
-  db.collection("users")
+  await db
+    .collection("users")
     .doc(uid)
     .collection("drafts")
     .doc(draftId)
@@ -66,7 +67,8 @@ export default async function addDraftContentHandler(
     .doc(backendId)
     .set(newContent);
 
-  db.collection("users")
+  await db
+    .collection("users")
     .doc(uid)
     .collection("drafts")
     .doc(draftId)

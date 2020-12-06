@@ -28,22 +28,21 @@ export default async function saveDraftContentHandler(
     .doc(draftId)
     .collection("draftContent")
     .doc(backendId);
-
   let updateItem;
   if (slateContent === undefined) {
     updateItem = {
       draftId: draftId,
-      lines: lines || null,
-      order: order || null,
-      imageUrl: imageUrl || null,
+      lines: setDefaultVal(lines, null),
+      order: setDefaultVal(order, null),
+      imageUrl: setDefaultVal(imageUrl, null),
     };
   } else {
     updateItem = {
       slateContent: slateContent,
       draftId: draftId,
-      lines: lines || null,
-      order: order || null,
-      imageUrl: imageUrl || null,
+      lines: setDefaultVal(lines, null),
+      order: setDefaultVal(order, null),
+      imageUrl: setDefaultVal(imageUrl, null),
     };
   }
 
@@ -54,4 +53,8 @@ export default async function saveDraftContentHandler(
   res.statusCode = 200;
   res.end();
   return;
+}
+
+function setDefaultVal(value: any, defaultValue: any) {
+  return value === undefined ? defaultValue : value;
 }

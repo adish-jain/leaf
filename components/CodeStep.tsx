@@ -76,7 +76,7 @@ export function CodeStep(props: {
         />
       </motion.div>
       <AnimatePresence>{selected && <LineStatus />}</AnimatePresence>
-      {/* <SideButtons hovered={hovered} backendId={backendId} /> */}
+      <SideButtons hovered={hovered} backendId={backendId} />
     </motion.div>
   );
 }
