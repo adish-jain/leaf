@@ -26,8 +26,10 @@ export type FinishedPostProps = {
   steps: Step[];
   title: string;
   tags: string[];
+  likes: number;
   files: File[];
   username: string;
+  profileImage: string;
   previewMode: boolean;
   updateShowPreview?: (value: SetStateAction<boolean>) => void;
   publishedAtSeconds: number;
@@ -38,8 +40,10 @@ export type Post = {
   postURL: string;
   title: string;
   publishedAt: timeStamp;
-  tags: string[];
+  tags: string[] | string;
+  likes: number;
   username: string;
+  profileImage: string;
 };
 
 export type timeStamp = {

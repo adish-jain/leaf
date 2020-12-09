@@ -89,13 +89,6 @@ export default function Landing() {
         />
       </Head>
       <main>
-        {/* <Header
-          username={username}
-          profile={true}
-          explore={true}
-          settings={true}
-          logout={true}
-        /> */}
         <LandingHeader username={username} />
         <div className={"landing"}>
           <YourDrafts
@@ -149,8 +142,7 @@ function YourPosts(props: {
       return (
         <div>
           {posts!.map((post: any) => {
-            let date = new Date(post.publishedAt._seconds * 1000);
-            let formattedDate = dayjs(date).format("MMMM D YYYY");
+            let formattedDate = dayjs(post.publishedAt).format("MMMM D YYYY");
             return (
               <Post
                 formattedDate={formattedDate}

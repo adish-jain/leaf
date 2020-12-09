@@ -2,7 +2,7 @@ import { initFirebaseAdmin, initFirebase } from "./initFirebase";
 import fetch from "isomorphic-fetch";
 import { NextApiRequest, NextApiResponse } from "next";
 import { setTokenCookies, removeTokenCookies } from "./cookieUtils";
-import { timeStamp } from "../typescript/types/app_types";
+import { Post } from "../typescript/types/app_types";
 
 const admin = require("firebase-admin");
 initFirebaseAdmin();
@@ -161,23 +161,36 @@ export async function getUserPosts(uid: string) {
   return await draftsRef
     .get()
     .then(function (draftsCollection: any) {
-      let results: any[] = [];
+      let results: Post[] = [];
       draftsCollection.forEach(function (result: any) {
         let resultsJSON = result.data();
 
         //published posts have published set to true, so we include these
         if (resultsJSON.published) {
           resultsJSON.id = result.id;
+          resultsJSON.publishedAt = resultsJSON.publishedAt.toDate();
           results.push(resultsJSON);
         }
       });
-      results.reverse();
+      results.sort(function(a: Post, b: Post) {
+        var keyA = a.publishedAt,
+          keyB = b.publishedAt;
+        if (keyA > keyB) return -1;
+        if (keyA < keyB) return 1;
+        return 0;
+      });
       return results;
     })
     .catch(function (error: any) {
       console.log(error);
       return [];
     });
+}
+
+export async function getProfileData(uid: string) {
+  let userDataReference = await db.collection("users").doc(uid).get();
+  let userData = await userDataReference.data();
+  return userData;
 }
 
 export async function getArticlesFromUid(uid: string) {
@@ -202,6 +215,15 @@ export async function getUsernameFromUid(uid: string) {
     return data.username;
   });
   return username;
+}
+
+export async function getProfileImageFromUid(uid: string) {
+  let userRef = await db.collection("users").doc(uid);
+  let profileImage = await userRef.get().then(function (userSnapshot: any) {
+    let data = userSnapshot.data();
+    return data.profileImage;
+  });
+  return profileImage;
 }
 
 export async function checkUsernameDNE(username: string): Promise<boolean> {

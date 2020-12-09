@@ -60,8 +60,10 @@ const DraftView = () => {
     errored: false,
     published: false,
     postId: "",
+    likes: 0,
     tags: [],
     username: "",
+    profileImage: "",
     createdAt: {
       _nanoseconds: 0,
       _seconds: 0,
@@ -78,8 +80,10 @@ const DraftView = () => {
   let errored = draftData["errored"];
   const draftPublished = draftData["published"];
   const postId = draftData["postId"];
+  const likes = draftData["likes"];
   const tags = draftData["tags"];
   const username = draftData["username"];
+  const profileImage = draftData["profileImage"];
   const createdAt = draftData["createdAt"];
 
   let { onTitleChange, draftTitle } = useDraftTitle(
@@ -191,8 +195,10 @@ const DraftView = () => {
               <FinishedPost
                 steps={realSteps!}
                 title={draftTitle}
+                likes={likes}
                 tags={tags}
                 username={username}
+                profileImage={profileImage}
                 files={draftFiles}
                 updateShowPreview={updateShowPreview}
                 previewMode={true}

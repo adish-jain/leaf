@@ -19,6 +19,11 @@ import handlecheckId from "../../lib/api/checkId";
 import handleSetPassword from "../../lib/api/setPassword";
 import handleSetEmailAndPassword from "../../lib/api/setEmailAndPassword";
 
+// handle profile data
+import handleSetProfile from "../../lib/api/setProfile";
+import handleSaveProfileImage from "../../lib/api/saveProfileImage";
+import handleDeleteProfileImage from "../../lib/api/deleteProfileImage";
+
 // user info
 import handleGetUserInfo from "../../lib/api/getUserInfo";
 
@@ -102,8 +107,8 @@ export default sentryHandler(
         return handleLogout(req, res);
       }
 
-      /*
-    ------ Settings ------
+    /*
+    ------ Settings------
     */
 
       case "check_userId": {
@@ -132,6 +137,20 @@ export default sentryHandler(
 
       case "sendEmailVerification": {
         return handleSendEmailVerification(req, res);
+      }
+
+      /* PROFILE */
+
+      case "set_userProfile": {
+        return handleSetProfile(req, res);
+      }
+
+      case "saveProfileImage": {
+        return handleSaveProfileImage(req, res);
+      }
+
+      case "deleteProfileImage": {
+        return handleDeleteProfileImage(req, res);
       }
 
       /* 

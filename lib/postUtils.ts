@@ -5,7 +5,7 @@ initFirebaseAdmin();
 const admin = require("firebase-admin");
 let db = admin.firestore();
 
-import { getUidFromUsername, getUsernameFromUid } from "./userUtils";
+import { getUidFromUsername, getUsernameFromUid, getProfileImageFromUid } from "./userUtils";
 import { timeStamp, Post } from "../typescript/types/app_types";
 
 export async function adjustStepOrder(
@@ -38,10 +38,12 @@ export async function getDraftDataHandler(uid: string, draftId: string) {
     let published: boolean = draftData.data().published;
     let postId: string = draftData.data().postId;
     let tags = draftData.data().tags;
+    let likes = draftData.data().likes;
     let createdAt: timeStamp = draftData.data().createdAt;
     let publishedAt: timeStamp = draftData.data().publishedAt;
     let files = await getFilesForDraft(uid, draftId);
     let username: string = await getUsernameFromUid(uid);
+    let profileImage: string = await getProfileImageFromUid(uid);
     let results = {
       title: title,
       files: files,
@@ -49,7 +51,9 @@ export async function getDraftDataHandler(uid: string, draftId: string) {
       published,
       postId,
       tags,
+      likes,
       username,
+      profileImage,
       createdAt,
       publishedAt,
     };
@@ -60,10 +64,12 @@ export async function getDraftDataHandler(uid: string, draftId: string) {
       title: "",
       files: [],
       tags: [],
+      likes: 0,
       errored: true,
       published: false,
       postId: "",
       username: "",
+      profileImage: "",
       createdAt: {
         _seconds: 0,
         _nanoseconds: 0,
@@ -170,6 +176,9 @@ export async function getAllPostsHandler() {
     let username = await doc.ref.parent.parent.get().then((docSnapshot: any) => {
       return docSnapshot.data().username;
     });
+    let profileImage = await doc.ref.parent.parent.get().then((docSnapshot: any) => {
+      return docSnapshot.data().profileImage;
+    });
     let resultsJSON = doc.data();
     let postURL = "/" + username + "/" + resultsJSON.postId;
     results.push({
@@ -178,7 +187,9 @@ export async function getAllPostsHandler() {
       title: resultsJSON.title,
       publishedAt: resultsJSON.publishedAt.toDate(),
       tags: resultsJSON.tags,
+      likes: resultsJSON.likes,
       username: username,
+      profileImage: profileImage,
     });
   }
   // sort by published date

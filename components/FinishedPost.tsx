@@ -127,9 +127,11 @@ const FinishedPost = (props: FinishedPostProps) => {
         <Scrolling
           title={props.title}
           tags={props.tags}
+          likes={props.likes}
           currentStepIndex={currentStepIndex}
           steps={props.steps}
           username={props.username}
+          profileImage={props.profileImage}
           scrollingRef={scrollingRef}
           publishedAtSeconds={props.publishedAtSeconds}
           pageYOffset={scrollPosition}

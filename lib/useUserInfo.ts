@@ -18,6 +18,8 @@ const userInfoFetcher = () =>
 
 export function useUserInfo(authenticated: boolean) {
   const initialUserInfo: any = { username: "" };
+
+  /* Settings-Related State */
   const [newUsername, changeNewUsername] = useState("");
   const [newEmail, changeNewEmail] = useState("");
   const [newPassword, changeNewPassword] = useState("");
@@ -32,6 +34,12 @@ export function useUserInfo(authenticated: boolean) {
     updateSendEmailVerificationStatus,
   ] = useState("");
 
+  /* Profile-Related State */
+  const [about, changeAbout] = useState("");
+  const [twitter, changeTwitter] = useState("");
+  const [github, changeGithub] = useState("");
+  const [website, changeWebsite] = useState("");
+
   let { data: userInfo, mutate } = useSWR(
     authenticated ? "getUserInfo" : null,
     userInfoFetcher,
@@ -40,10 +48,33 @@ export function useUserInfo(authenticated: boolean) {
       revalidateOnMount: true,
     }
   );
+
   const username = userInfo.username;
   const email = userInfo.email;
   const signInMethod = userInfo.method;
   const emailVerified = userInfo.emailVerified;
+
+  async function saveNewProfile() {
+    const changeProfileRequest = {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify({
+        requestedAPI: "set_userProfile",
+        about: about,
+        twitter: twitter,
+        github: github,
+        website: website,
+      }),
+    };
+    await fetch(
+      "api/endpoint",
+      changeProfileRequest
+    ).then((res) => {
+    })
+    .catch(function (error: any) {
+      console.log(error);
+    });
+  }
 
   async function saveNewUsername() {
     const changeUsernameRequest = {
@@ -199,5 +230,14 @@ export function useUserInfo(authenticated: boolean) {
     sendEmailVerification,
     sendEmailVerificationStatus,
     signInMethod,
+    about,
+    twitter,
+    github,
+    website,
+    changeAbout,
+    changeTwitter,
+    changeGithub,
+    changeWebsite,
+    saveNewProfile,
   };
 }

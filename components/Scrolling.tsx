@@ -10,9 +10,11 @@ type ScrollingProps = {
   // changeStep: (newStep: number, yPos: number, entered: boolean) => void;
   steps: Step[];
   tags: string[];
+  likes: number;
   currentStepIndex: number;
   title: string;
   username: string;
+  profileImage: string;
   publishedAtSeconds: number;
   scrollingRef: React.RefObject<HTMLDivElement>;
   pageYOffset: number;
@@ -86,20 +88,28 @@ export default class Scrolling extends Component<
   };
 
   TitleSection() {
-    let { username, title, tags, publishedAtSeconds } = this.props;
+    let { username, profileImage, title, tags, publishedAtSeconds } = this.props;
     let date = new Date(publishedAtSeconds * 1000);
     let formattedDate = dayjs(date).format("MMMM D YYYY");
     return (
       <div>
         <h1 className={"post-title"}>{title}</h1>
-        <p className={"published-by"}>
-          Published by
+        <div className={"published-by"}>
           <Link href={`/${username}`}>
-            <a>{username}</a>
+            <div className={"author-name-and-img"}>
+              {profileImage !== null &&
+                <div className={"published-post-author-img"}>
+                  <img src={profileImage}/>
+                </div>
+              }
+              <a>{username}</a>
+            </div>
           </Link>
           on {formattedDate}
-        </p>
+        </div>
         <PostTags tags={tags} />
+        {/* <button onClick={this.incrementLike}>like</button> */}
+        {/* <p>Likes: {this.props.likes === null ? "No likes yet" : this.props.likes}</p> */}
         <this.ScrollDown />
       </div>
     );

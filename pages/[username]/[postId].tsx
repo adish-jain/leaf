@@ -3,7 +3,7 @@ import { GetStaticProps } from "next";
 import Head from "next/head";
 import FinishedPost from "../../components/FinishedPost";
 import { getAllPosts } from "../../lib/api/publishPost";
-import { getUsernameFromUid } from "../../lib/userUtils";
+import { getUsernameFromUid, getUidFromUsername, getProfileData } from "../../lib/userUtils";
 import { getDraftDataFromPostId } from "../../lib/postUtils";
 import DefaultErrorPage from "next/error";
 import { useRouter } from "next/router";
@@ -31,12 +31,16 @@ export const getStaticProps: GetStaticProps = async (context) => {
   let postId = context.params.postId as string;
   try {
     let postData = await getDraftDataFromPostId(username, postId);
+    let uid = await getUidFromUsername(username);
+    let profileData = await getProfileData(uid);
     let steps = postData.steps;
     let files = postData.files;
     let title = postData.title;
     let tags = postData.tags;
+    let likes = postData.likes;
     let publishedAt = postData.publishedAt;
     let errored = postData.errored;
+    let profileImage = profileData.profileImage;
     // replace undefineds with null to prevent nextJS errors
     for (let i = 0; i < steps.length; i++) {
       if (steps[i].lines === undefined || steps[i].lines === null) {
@@ -49,6 +53,12 @@ export const getStaticProps: GetStaticProps = async (context) => {
       }
       steps[i].fileName = null;
     }
+    if (likes === undefined) {
+      likes = null;
+    }
+    if (profileImage === undefined) {
+      profileImage = null;
+    }
     if (tags === undefined) {
       tags = null;
     }
@@ -58,9 +68,11 @@ export const getStaticProps: GetStaticProps = async (context) => {
         steps,
         title,
         tags,
+        likes,
         files,
         errored,
         username,
+        profileImage,
         publishedAtSeconds: publishedAt._seconds,
       },
     };
@@ -78,9 +90,11 @@ type PostPageProps = {
   steps: Step[];
   title: string;
   tags: string[];
+  likes: number;
   errored: boolean;
   files: File[];
   username: string;
+  profileImage: string,
   publishedAtSeconds: number;
 };
 
@@ -105,10 +119,12 @@ const Post = (props: PostPageProps) => {
       <main>
         <FinishedPost
           username={props.username}
+          profileImage={props.profileImage}
           steps={props.steps}
           files={props.files}
           title={props.title}
           tags={props.tags}
+          likes={props.likes}
           previewMode={false}
           publishedAtSeconds={props.publishedAtSeconds}
         />

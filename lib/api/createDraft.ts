@@ -16,6 +16,7 @@ export default async function createDraftHandler(
   let newDraft = {
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
     title: "Untitled",
+    likes: 0,
   };
 
   let newFileId = shortId.generate();
