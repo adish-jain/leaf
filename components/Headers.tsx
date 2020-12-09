@@ -175,9 +175,6 @@ export function FinishedPostHeader(props: FinishedPostHeaderProps) {
         <Link href="/landing">
           <a>Home</a>
         </Link>
-        <Link href={`/${props.username}`}>
-          <a>Profile</a>
-        </Link>
         <Link href="/explore">
           <a>Explore</a>
         </Link>

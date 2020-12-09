@@ -175,7 +175,7 @@ function PersonCard(props: {
           </div>
           <div className={"icons"}>
             <a href={`https://twitter.com/${username}`} target="_blank">
-              <img src="images/twitter.svg" />
+              <img src="images/bluebirdyicon.svg" />
             </a>
           </div>
         </div>

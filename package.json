@@ -51,6 +51,7 @@
     "react": "^16.13.1",
     "react-autosize-textarea": "^7.1.0",
     "react-dom": "^16.13.1",
+    "react-google-login": "^5.1.22",
     "react-intersection-observer": "^8.26.2",
     "read-env": "^2.0.0",
     "shortid": "^2.2.15",

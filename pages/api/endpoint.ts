@@ -5,6 +5,7 @@ import { initFirebase } from "../../lib/initFirebase";
 // authentication
 import handleLogin from "../../lib/api/login";
 import handleSignup from "../../lib/api/signup";
+import handleGoogleAuthentication from "../../lib/api/googleAuthentication";
 import handleLogout from "../../lib/api/logout";
 
 // get drafts for landing page
@@ -16,6 +17,12 @@ import handleDeleteDraft from "../../lib/api/deleteDraft";
 import handleSetId from "../../lib/api/setId";
 import handlecheckId from "../../lib/api/checkId";
 import handleSetPassword from "../../lib/api/setPassword";
+import handleSetEmailAndPassword from "../../lib/api/setEmailAndPassword";
+
+// handle profile data
+import handleSetProfile from "../../lib/api/setProfile";
+import handleSaveProfileImage from "../../lib/api/saveProfileImage";
+import handleDeleteProfileImage from "../../lib/api/deleteProfileImage";
 
 // user info
 import handleGetUserInfo from "../../lib/api/getUserInfo";
@@ -100,12 +107,16 @@ export default sentryHandler(
         return handleSignup(req, res);
       }
 
+      case "googleAuthentication": {
+        return handleGoogleAuthentication(req, res);
+      }
+
       case "logout": {
         return handleLogout(req, res);
       }
 
-      /*
-    ------ Settings ------
+    /*
+    ------ Settings------
     */
 
       case "check_userId": {
@@ -124,12 +135,30 @@ export default sentryHandler(
         return handleSetPassword(req, res);
       }
 
+      case "set_email_and_password": {
+        return handleSetEmailAndPassword(req, res);
+      }
+
       case "get_userInfo": {
         return handleGetUserInfo(req, res);
       }
 
       case "sendEmailVerification": {
         return handleSendEmailVerification(req, res);
+      }
+
+      /* PROFILE */
+
+      case "set_userProfile": {
+        return handleSetProfile(req, res);
+      }
+
+      case "saveProfileImage": {
+        return handleSaveProfileImage(req, res);
+      }
+
+      case "deleteProfileImage": {
+        return handleDeleteProfileImage(req, res);
       }
 
       /* 

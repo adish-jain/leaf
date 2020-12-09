@@ -1,11 +1,10 @@
 import Head from "next/head";
 import React, { useState } from "react";
 import { useLoggedIn } from "../lib/UseLoggedIn";
-import useSWR, { SWRConfig } from "swr";
 import { useUserInfo } from "../lib/useUserInfo";
 import Header from "../components/Header";
+import { motion, AnimatePresence } from "framer-motion";
 import "../styles/Settings.module.scss";
-
 
 export default function SignUp() {
   const initialData: any = {};
@@ -18,6 +17,7 @@ export default function SignUp() {
     saveNewUsername,
     saveNewEmail,
     saveNewPassword,
+    saveNewEmailAndPassword,
     newUsername,
     newEmail,
     newPassword,
@@ -28,9 +28,11 @@ export default function SignUp() {
     userNameError,
     emailError,
     passwordStatus,
+    emailAndPasswordStatus,
     emailVerified,
     sendEmailVerification,
     sendEmailVerificationStatus,
+    signInMethod,
   } = useUserInfo(authenticated);
   return (
     <div className="container">
@@ -60,47 +62,83 @@ export default function SignUp() {
           logout={true}
           username={username}
         />
-        <div className={"settings"}>
-          <h1 className={"settings-title"}>Settings</h1>
-          <hr />
-          <Username
-            changeNewUsername={changeNewUsername}
-            username={username}
-            newUsername={newUsername}
-            saveNewUsername={saveNewUsername}
-            userNameError={userNameError}
-          />
-
-          <Password
-            password={password}
-            updatePassword={updatePassword}
-            newPassword={newPassword}
-            saveNewPassword={saveNewPassword}
-            changeNewPassword={changeNewPassword}
-            passwordStatus={passwordStatus}
-          />
-
-          <Email
-            email={email}
-            newEmail={newEmail}
-            changeNewEmail={changeNewEmail}
-            saveNewEmail={saveNewEmail}
-            emailError={emailError}
-            emailVerified={emailVerified}
-            sendEmailVerification={sendEmailVerification}
-            sendEmailVerificationStatus={sendEmailVerificationStatus}
-          />
-        </div>
+         <AnimatePresence>
+          <motion.div
+            initial={{
+              opacity: 0,
+            }}
+            animate={{
+              opacity: 1,
+            }}
+            exit={{
+              opacity: 0,
+            }}
+            transition={{
+              duration: 0.4,
+            }}
+          >
+            <div className={"settings"}>
+              <h1 className={"settings-title"}>Settings</h1>
+              <hr />
+              <Username
+                changeNewUsername={changeNewUsername}
+                username={username}
+                newUsername={newUsername}
+                saveNewUsername={saveNewUsername}
+                userNameError={userNameError}
+              />
+              {signInMethod != "google" ? (
+                <div>
+                  <Password
+                    password={password}
+                    updatePassword={updatePassword}
+                    newPassword={newPassword}
+                    saveNewPassword={saveNewPassword}
+                    changeNewPassword={changeNewPassword}
+                    passwordStatus={passwordStatus}
+                  />
+                  <Email
+                    email={email}
+                    newEmail={newEmail}
+                    changeNewEmail={changeNewEmail}
+                    saveNewEmail={saveNewEmail}
+                    emailError={emailError}
+                    emailVerified={emailVerified}
+                    sendEmailVerification={sendEmailVerification}
+                    sendEmailVerificationStatus={sendEmailVerificationStatus}
+                  />
+                </div>
+              ) : (
+                <SetEmailAndPassword
+                  email={email}
+                  newEmail={newEmail}
+                  changeNewEmail={changeNewEmail}
+                  saveNewEmail={saveNewEmail}
+                  emailError={emailError}
+                  emailVerified={emailVerified}
+                  sendEmailVerification={sendEmailVerification}
+                  sendEmailVerificationStatus={sendEmailVerificationStatus}
+                  newPassword={newPassword}
+                  saveNewPassword={saveNewPassword}
+                  saveNewEmailAndPassword={saveNewEmailAndPassword}
+                  changeNewPassword={changeNewPassword}
+                  passwordStatus={passwordStatus}
+                  emailAndPasswordStatus={emailAndPasswordStatus}
+                />
+              )}
+            </div>
+          </motion.div>
+        </AnimatePresence>
       </main>
     </div>
   );
 }
 
 function Username(props: {
-  changeNewUsername: any;
+  changeNewUsername: React.Dispatch<React.SetStateAction<string>>;
+  saveNewUsername: () => Promise<void>;
   username: string;
   newUsername: string;
-  saveNewUsername: any;
   userNameError: string;
 }) {
   return (
@@ -126,11 +164,11 @@ function Username(props: {
 }
 
 function Password(props: {
+  updatePassword: React.Dispatch<React.SetStateAction<string>>;
+  saveNewPassword: () => Promise<void>;
+  changeNewPassword: React.Dispatch<React.SetStateAction<string>>;
   password: string;
-  updatePassword: any;
   newPassword: string;
-  saveNewPassword: any;
-  changeNewPassword: any;
   passwordStatus: string;
 }) {
   return (
@@ -162,20 +200,20 @@ function Password(props: {
 }
 
 function Email(props: {
+  changeNewEmail: React.Dispatch<React.SetStateAction<string>>;
+  sendEmailVerification: () => Promise<void>;
+  saveNewEmail: () => Promise<void>;
   email: string;
   newEmail: string;
-  changeNewEmail: any;
-  saveNewEmail: any;
   emailError: string;
-  emailVerified: boolean;
-  sendEmailVerification: any;
   sendEmailVerificationStatus: string;
+  emailVerified: boolean;
 }) {
   return (
     <div>
       <div>
         <h2>Email</h2>
-        <p>Your email is {props.email}</p>
+        <p>Your email is {props.email} & it is {props.emailVerified ? "verified" : "unverified"}</p>
         <input
           className={"default-input"}
           value={props.newEmail}
@@ -188,9 +226,8 @@ function Email(props: {
           Change email
         </button>
         <EmailError emailError={props.emailError} />
-        <p>Your email is {props.emailVerified ? "verified" : "unverified"}</p>
         <button
-          className={"rounded-button"}
+          className={"verification-rounded-button"}
           onClick={(e) => props.sendEmailVerification()}
         >
           Send email verification
@@ -199,6 +236,53 @@ function Email(props: {
           sendEmailVerificationStatus={props.sendEmailVerificationStatus}
         />
       </div>
+    </div>
+  );
+}
+
+function SetEmailAndPassword(props: {
+  changeNewEmail: React.Dispatch<React.SetStateAction<string>>;
+  saveNewEmail: () => Promise<void>;
+  saveNewPassword: () => Promise<void>;
+  saveNewEmailAndPassword: () => Promise<void>;
+  changeNewPassword: React.Dispatch<React.SetStateAction<string>>;
+  sendEmailVerification: () => Promise<void>;
+  email: string;
+  newEmail: string;
+  emailError: string;
+  emailVerified: boolean;
+  sendEmailVerificationStatus: string;
+  newPassword: string;
+  passwordStatus: string;
+  emailAndPasswordStatus: string;
+}) {
+  return (
+    <div className={"email-and-password"}>
+      <div>
+        <h2>Email & Password</h2>
+        <p>Your email is {props.email} & it is {props.emailVerified ? "verified" : "unverified"}</p>
+        <input
+          className={"default-input"}
+          value={props.newEmail}
+          placeholder={"new email"}
+          onChange={(e) => props.changeNewEmail(e.target.value)}
+        ></input>
+      </div>
+      <div>
+        <input
+          className={"default-input"}
+          value={props.newPassword}
+          placeholder={"new password"}
+          onChange={(e) => props.changeNewPassword(e.target.value)}
+        ></input>
+        <button
+          className={"input-button"}
+          onClick={props.saveNewEmailAndPassword}
+        >
+          Change email & set password
+        </button>
+      </div>
+      <EmailAndPasswordStatus emailAndPasswordStatus={props.emailAndPasswordStatus} />
     </div>
   );
 }
@@ -240,6 +324,20 @@ function EmailVerificationStatus(props: {
         <div></div>
       ) : (
         <p>{props.sendEmailVerificationStatus}</p>
+      )}
+    </div>
+  );
+}
+
+function EmailAndPasswordStatus(props: {
+  emailAndPasswordStatus: string;
+}) {
+  return (
+    <div>
+      {props.emailAndPasswordStatus === "" ? (
+        <div></div>
+      ) : (
+        <p>{props.emailAndPasswordStatus}</p>
       )}
     </div>
   );

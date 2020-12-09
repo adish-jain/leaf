@@ -47,7 +47,6 @@ export default async function createDraftHandler(
     username: username,
     errored: false,
   };
-  console.log("create draft");
   // await db.collection("users").doc(uid).collection("drafts").add(newDraft);
   let docRef = await db.collection("users").doc(uid).collection("drafts").add({
     title: newDraft.title,
@@ -56,6 +55,7 @@ export default async function createDraftHandler(
     tags: newDraft.tags,
     username: newDraft.username,
     errored: newDraft.errored,
+    likes: 0,
   });
   await Promise.all([
     docRef.collection("draftContent").add({

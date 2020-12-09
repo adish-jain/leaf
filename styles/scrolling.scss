@@ -1,12 +1,7 @@
 @import "commonui.scss";
 
 .scrolling {
-  // min-width: 400px;
-  // flex-grow: 100;
-  // width: 40%;
   width: 440px;
-  // margin-left: 3%;
-  // margin-right: 3%;
 }
 
 .post-title {
@@ -15,7 +10,6 @@
 }
 
 .scroll-down {
-  // justify-content: center;
   display: flex;
   margin-top: 56px;
   margin-bottom: 56px;
@@ -59,6 +53,9 @@
   margin-top: 16px;
   padding: 0;
   margin-bottom: 0px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   @include link-item;
 }
 
@@ -114,6 +111,33 @@
     // margin-left: auto;
     
     color: #000000;
+  }
+}
+
+.author-name-and-img {
+  display: flex;
+  flex-direction: row;
+  align-items: center;;
+  padding: 2px;
+  margin-right: 3px;
+
+  a:hover {
+    cursor: pointer;
+    color: $leaf-dark-blue;
+    background: none;
+  }
+}
+
+.published-post-author-img {
+  img {
+    width: 28px;
+    height: 28px;
+    border-radius: 50px;
+    margin-right: 8px;
+  }
+
+  img:hover {
+    cursor: pointer;
   }
 }
 

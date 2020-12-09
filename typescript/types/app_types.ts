@@ -37,7 +37,9 @@ export type FinishedPostProps = {
   postContent: contentBlock[];
   tags: string[];
   files: fileObject[];
+  likes: number;
   username: string;
+  profileImage: string;
   previewMode: boolean;
   updatePreviewMode?: (previewMode: boolean) => void;
   publishedAtSeconds: number;
@@ -48,8 +50,10 @@ export type Post = {
   postURL: string;
   title: string;
   publishedAt: timeStamp;
-  tags: string[];
+  tags: string[] | string;
+  likes: number;
   username: string;
+  profileImage: string;
 };
 
 export type timeStamp = {

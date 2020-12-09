@@ -14,7 +14,6 @@ export default async function sendEmailVerification(
 ) {
   let { uid, userRecord } = await getUser(req, res);
   let userToken = req.cookies.userToken;
-  console.log(userToken);
   let customToken = await admin
     .auth()
     .createCustomToken(uid)

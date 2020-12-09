@@ -61,6 +61,7 @@ const prepareFetcher = (draftId: string) => {
   return fetcher;
 };
 
+
 const DraftView = () => {
   const { authenticated, error, loading } = useLoggedIn();
   const router = useRouter();
@@ -98,8 +99,7 @@ const DraftView = () => {
       revalidateOnMount: true,
     }
   );
-  const { onTitleChange, draftTitle } = useDraftTitle(
-    draftId as string,
+  const { onTitleChange, draftTitle } = useDraftTitle(draftId as string,
     authenticated
   );
   const errored = draftData?.errored || false;

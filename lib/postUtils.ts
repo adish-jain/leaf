@@ -3,15 +3,19 @@ import { getFilesForDraft } from "./fileUtils";
 import {
   contentBlock,
   draftFrontendRepresentation,
-  publishedPostFrontendRepresentation,
+  // publishedPostFrontendRepresentation,
 } from "../typescript/types/frontend/postTypes";
 import { draftMetaData } from "../typescript/types/frontend/postTypes";
 
-const admin = require("firebase-admin");
 initFirebaseAdmin();
+const admin = require("firebase-admin");
 let db = admin.firestore();
 
-import { getUidFromUsername, getUsernameFromUid } from "./userUtils";
+import {
+  getUidFromUsername,
+  getUsernameFromUid,
+  getProfileImageFromUid,
+} from "./userUtils";
 import { timeStamp, Post } from "../typescript/types/app_types";
 import ErroredPage from "../pages/404";
 export async function adjustStepOrder(
@@ -42,13 +46,11 @@ export async function getDraftMetadata(
       db.collection("users").doc(uid).collection("drafts").doc(draftId).get(),
       getUsernameFromUid(uid),
     ]);
-    let draftData:
-      | draftFrontendRepresentation
-      | publishedPostFrontendRepresentation = draftRef.data();
+    let draftData: draftFrontendRepresentation = draftRef.data();
     let title = draftData.title as string;
     let published: boolean = draftData.published;
     let createdAt: timeStamp = draftData.createdAt;
-    let postId: string = draftData.postId;
+    // let postId: string = draftData.postId;
     result = {
       title: title,
       published: published,
@@ -88,14 +90,17 @@ export async function getAllDraftDataHandler(
     let published: boolean = draftData.published;
     let tags = draftData.tags as string[];
     let createdAt: timeStamp = draftData.createdAt;
+    // let privatePost = draftData.privatePost as boolean;
+    let likes = draftData.likes;
 
-    const [files, username, draftContent] = await Promise.all([
+    const [files, username, draftContent, profileImage] = await Promise.all([
       getFilesForDraft(uid, draftId),
       getUsernameFromUid(uid),
       getDraftContent(uid, draftId),
+      getProfileImageFromUid(uid),
     ]);
 
-    let result = {
+    let results = {
       title: title,
       draftContent: draftContent,
       folders: [],
@@ -105,8 +110,11 @@ export async function getAllDraftDataHandler(
       tags: tags,
       username: username,
       errored: false,
+      profileImage: profileImage,
+      likes: likes,
+      private: false,
     };
-    return result;
+    return results;
   } catch (error) {
     console.log(error);
     let result = {
@@ -114,14 +122,18 @@ export async function getAllDraftDataHandler(
       draftContent: [],
       folders: [],
       files: [],
+      tags: [],
+      likes: 0,
+      errored: true,
+      published: false,
+      postId: "",
+      username: "",
+      profileImage: "",
       createdAt: {
         _seconds: 0,
         _nanoseconds: 0,
       },
-      published: false,
-      tags: [],
-      username: "",
-      errored: true,
+      private: false,
     };
     return result;
   }
@@ -258,6 +270,11 @@ export async function getAllPostsHandler() {
       .then((docSnapshot: any) => {
         return docSnapshot.data().username;
       });
+    let profileImage = await doc.ref.parent.parent
+      .get()
+      .then((docSnapshot: any) => {
+        return docSnapshot.data().profileImage;
+      });
     let resultsJSON = doc.data();
     let postURL = "/" + username + "/" + resultsJSON.postId;
     results.push({
@@ -266,7 +283,9 @@ export async function getAllPostsHandler() {
       title: resultsJSON.title,
       publishedAt: resultsJSON.publishedAt.toDate(),
       tags: resultsJSON.tags,
+      likes: resultsJSON.likes,
       username: username,
+      profileImage: profileImage,
     });
   }
   // sort by published date

@@ -34,6 +34,7 @@ export default function Pages() {
         publishedAt: "",
         tags: [],
         username: "",
+        profileImage: "",
       },
     ],
   };
@@ -459,7 +460,7 @@ function DisplayPosts(props: {
                   </div>
                   <div className={"post-tags-author"}>
                     {post["tags"] !== undefined ? (
-                      post["tags"].map((tag: string) => {
+                      ((post["tags"] as string[])).map((tag: string) => {
                         return (
                           <div
                             className={"post-tag"}
@@ -475,7 +476,20 @@ function DisplayPosts(props: {
                     ) : (
                       <div></div>
                     )}
-                    <div className={"post-author"}>{post["username"]}</div>
+                     <div 
+                      className={"post-author-name-and-img"}
+                      onClick={function (e) {
+                        router.push(post["username"]);
+                        e.stopPropagation();
+                      }}
+                     >
+                      {post["profileImage"] !== undefined &&
+                        <div className={"published-post-author-img"}>
+                          <img src={post["profileImage"]}/>
+                        </div>
+                      }
+                      <div>{post["username"]}</div>
+                    </div>
                   </div>
                 </div>
               );

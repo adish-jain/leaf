@@ -77,7 +77,7 @@
     font-size: 56px;
     line-height: 67px;
     padding: 0px;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
     margin-top: 0px;
     margin-left: 0px;
   }
@@ -85,6 +85,15 @@
   .FormWrapper {
     display: flex;
     flex-direction: column;
+    margin-top: 20px;
+
+    .Bar {
+      width: 100%; 
+      height: 1px; 
+      visibility: visible; 
+      border-bottom: 2px solid rgba(55, 53, 47, 0.09);
+      margin-bottom: 15px;
+    }
 
     .InputBox {
       margin-bottom: 16px;
@@ -105,8 +114,8 @@
         background: #f7f7f4;
         border: 1px solid #dfdfdc;
         border-radius: 4px;
-        height: 28px;
-        width: 320px;
+        height: 40px;
+        width: 400px;
         line-height: 28px;
         box-sizing: border-box;
       }
@@ -118,17 +127,17 @@
         // border-radius: 4px;
 
         outline: none;
-        box-shadow: 0px 0px 2px #4db6f1;
+        box-shadow: 0px 0px 2px #349ae9;
       }
     }
   }
 }
 
 .LoginButton {
-  background: #4db6f1;
+  background: #349ae9;
   box-shadow: 0px 4px 8px rgba(159, 159, 159, 0.25);
   border-radius: 4px;
-  width: 320px;
+  width: 400px;
   height: 32px;
   border-style: none;
   color: white;
