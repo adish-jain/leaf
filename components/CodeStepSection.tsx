@@ -14,16 +14,16 @@ import { DraftContext } from "../contexts/draft-context";
 import { useInView } from "react-intersection-observer";
 export default function CodeStepSection(props: {
   codeSteps: contentBlock[];
-  sectionIndex: number;
+  startIndex: number;
 }) {
   const [ref, inView, entry] = useInView({});
 
-  const { codeSteps, sectionIndex } = props;
+  const { codeSteps, startIndex } = props;
   return (
     <div ref={ref} className={codeStepSectionStyles["codestep-section"]}>
       <CodeStepHeader />
       <div className={codeStepSectionStyles["codestep-content"]}>
-        <Publishing sectionIndex={sectionIndex} codeSteps={codeSteps} />
+        <Publishing startIndex={startIndex} codeSteps={codeSteps} />
         <CodeEditor inView={inView} />
       </div>
     </div>

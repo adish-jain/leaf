@@ -40,7 +40,7 @@ export default function FormattingPane(props: {
   selectedRichTextIndex: number;
   searchedBlocks: FormattingPaneBlockList;
   addBlock: (blockType: formattingPaneBlockType) => void;
-  sectionIndex: number;
+  startIndex: number;
   contentType: ContentBlockType;
 }) {
   const formattingPaneRef = useRef<HTMLDivElement>(null);
@@ -54,7 +54,7 @@ export default function FormattingPane(props: {
     updateSlashPosition,
     searchedBlocks,
     addBlock,
-    sectionIndex,
+    startIndex,
   } = props;
 
   if (!slashPosition) {
@@ -146,7 +146,7 @@ export default function FormattingPane(props: {
                 }
               })}
             </div>
-            <div className={formattingPaneStyles["rich-text"]}>
+            {/* <div className={formattingPaneStyles["rich-text"]}>
               <div className={formattingPaneStyles["section-label"]}>
                 Interactivity
               </div>
@@ -154,7 +154,7 @@ export default function FormattingPane(props: {
                 <InteractiveElement
                   elementName={"Single Column Text"}
                   addBackendBlock={addBackendBlock}
-                  sectionIndex={sectionIndex}
+                  startIndex={startIndex}
                   updateSlashPosition={updateSlashPosition}
                   blockToAdd={ContentBlockType.Text}
                 />
@@ -162,11 +162,11 @@ export default function FormattingPane(props: {
               <InteractiveElement
                 elementName={"Code Step"}
                 addBackendBlock={addBackendBlock}
-                sectionIndex={sectionIndex}
+                startIndex={startIndex}
                 updateSlashPosition={updateSlashPosition}
                 blockToAdd={ContentBlockType.CodeSteps}
               />
-            </div>
+            </div> */}
           </div>
         </motion.div>
       )}
@@ -180,14 +180,14 @@ function InteractiveElement(props: {
     backendDraftBlockEnum: ContentBlockType,
     atIndex: number
   ) => void;
-  sectionIndex: number;
+  startIndex: number;
   updateSlashPosition: any;
   blockToAdd: ContentBlockType;
 }) {
   return (
     <div
       onClick={async (e) => {
-        await props.addBackendBlock(props.blockToAdd, props.sectionIndex);
+        await props.addBackendBlock(props.blockToAdd, props.startIndex);
         props.updateSlashPosition(null);
       }}
       className={formattingPaneStyles["interactive-element"]}

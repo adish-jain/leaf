@@ -151,7 +151,6 @@ function handleEnter(
   }
 
   if (currentNode.type === "ol") {
-    console.log("inside curr");
     event.preventDefault();
     let newNode: Node = {
       type: "ol",
@@ -222,7 +221,6 @@ function handleBackSpace(
       );
     } else {
       // if is a default element
-      console.log("default element");
     }
   }
   return;

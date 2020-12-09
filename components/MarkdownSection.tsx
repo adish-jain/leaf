@@ -74,6 +74,7 @@ import { DraftContext } from "../contexts/draft-context";
 import { highlightPrismDracula } from "../lib/utils/prismUtils";
 import { ToolbarContext } from "../contexts/toolbar-context";
 import { MarkState } from "../lib/useToolbar";
+import { motion } from "framer-motion";
 const toBase64 = (file: any) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -122,7 +123,7 @@ const Blocks: FormattingPaneBlockList = [
 
 const MarkdownPreviewExample = (props: {
   slateContent: string;
-  sectionIndex: number;
+  startIndex: number;
   backendId: string;
   contentType: ContentBlockType;
 }) => {
@@ -131,10 +132,11 @@ const MarkdownPreviewExample = (props: {
   let timer: NodeJS.Timeout | null = null;
   const [value, setValue] = useState<Node[]>(JSON.parse(props.slateContent));
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
-  const draftContext = useContext(DraftContext);
+  const { updateSlateSectionToBackend, changeEditingBlock } = useContext(
+    DraftContext
+  );
   const toolbarContext = useContext(ToolbarContext);
   const { updateSaving, updateMarkType } = toolbarContext;
-  const { updateSlateSectionToBackend } = draftContext;
   const editor = useMemo(
     () =>
       withImages(
@@ -420,11 +422,7 @@ const MarkdownPreviewExample = (props: {
     const timeOutId = setTimeout(() => {
       const fetchProduct = async () => {
         try {
-          updateSlateSectionToBackend(
-            props.backendId,
-            props.sectionIndex,
-            value
-          );
+          updateSlateSectionToBackend(props.backendId, props.startIndex, value);
         } catch (err) {
           console.log(err);
         }
@@ -504,7 +502,10 @@ const MarkdownPreviewExample = (props: {
   }
 
   return (
-    <div className={slateStyles["slate-wrapper"]}>
+    <motion.div
+      // layout
+      className={slateStyles["slate-wrapper"]}
+    >
       <Slate editor={editor} value={value} onChange={handleChange}>
         <Editable
           decorate={decorate}
@@ -513,6 +514,9 @@ const MarkdownPreviewExample = (props: {
           onKeyDown={handleKeyDown}
           onClick={handleClick}
           onBlur={handleBlur}
+          onFocus={(e) => {
+            changeEditingBlock(props.backendId);
+          }}
         />
       </Slate>
       <FormattingPane
@@ -522,10 +526,10 @@ const MarkdownPreviewExample = (props: {
         selectedRichTextIndex={selectedRichTextIndex}
         searchedBlocks={searchedBlocks}
         addBlock={addBlock}
-        sectionIndex={props.sectionIndex}
+        startIndex={props.startIndex}
         contentType={props.contentType}
       />
-    </div>
+    </motion.div>
   );
 };
 

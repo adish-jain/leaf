@@ -1,4 +1,5 @@
 import React, { Component, ReactElement, useContext, useState } from "react";
+import { DraftContext } from "../contexts/draft-context";
 import { FilesContext } from "../contexts/files-context";
 import fileStyles from "../styles/filenames.module.scss";
 
@@ -11,13 +12,13 @@ type FileNameProps = {
 export default function FileName(props: FileNameProps) {
   let [hovered, toggleHover] = useState(false);
   let [editing, dblClick] = useState(false);
-  const filesContext = useContext(FilesContext);
   const {
     changeSelectedFileIndex,
     modifyFileName,
     saveFileName,
     removeFile,
-  } = filesContext;
+  } = useContext(FilesContext);
+  const { removeFileFromCodeSteps } = useContext(DraftContext);
   const { index, selected } = props;
   // let style = {
   //   color: "white",
@@ -76,13 +77,17 @@ function RenderButton(props: {
   index: number;
 }) {
   const { hovered, selected, index } = props;
-  const filesContext = useContext(FilesContext);
-  const { removeFile } = filesContext;
+  const { removeFile, files } = useContext(FilesContext);
+  const { removeFileFromCodeSteps } = useContext(DraftContext);
+
   if (hovered && selected) {
     return (
       <div
         className={fileStyles["close-button"]}
-        onClick={(e) => removeFile(index)}
+        onClick={(e) => {
+          removeFile(index);
+          removeFileFromCodeSteps(files[index].fileId);
+        }}
       >
         x
       </div>

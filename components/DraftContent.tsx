@@ -7,7 +7,7 @@ import {
   Lines,
   TextSection as TextSectionType,
 } from "../typescript/types/frontend/postTypes";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useContext } from "react";
 import TextareaAutosize from "react-autosize-textarea";
 import { DraftHeader } from "./Headers";
 import MarkdownSection from "./MarkdownSection";
@@ -19,6 +19,8 @@ import TextSection from "./TextSection";
 import publishingStyles from "../styles/publishing.module.scss";
 import appStyles from "../styles/app.module.scss";
 import { FormattingToolbar } from "./FormattingToolbar";
+import FinishedPost from "./FinishedPost";
+import { FilesContext } from "../contexts/files-context";
 type DraftContentProps = {
   draftContent: contentBlock[];
   draftTitle: string;
@@ -54,6 +56,8 @@ const PublishingHeader = (props: {
 };
 
 export function DraftContent(props: DraftContentProps) {
+  const { files } = useContext(FilesContext);
+  const { username, updatePreviewMode } = useContext(DraftContext);
   const { draftContent, draftTitle, onTitleChange, updateShowTags } = props;
   return (
     <DraftContext.Consumer>
@@ -71,6 +75,18 @@ export function DraftContent(props: DraftContentProps) {
                 draftTitle={draftTitle}
                 onTitleChange={onTitleChange}
                 updateShowTags={updateShowTags}
+              />
+            </motion.div>
+          )}
+          {previewMode && (
+            <motion.div>
+              <FinishedPost
+                postContent={draftContent}
+                files={files}
+                previewMode={previewMode}
+                username={username}
+                updatePreviewMode={updatePreviewMode}
+                title={draftTitle}
               />
             </motion.div>
           )}
@@ -103,24 +119,25 @@ const DraftComponent = (props: DraftContentProps) => {
                     TextSectionType).slateSection.slateContent;
                   const backendId = (contentElement as contentSection &
                     TextSectionType).slateSection.backendId;
-
+                  const startIndex = contentElement.startIndex;
                   return (
                     <TextSection
                       slateContent={slateContent}
                       key={backendId}
                       backendId={backendId}
-                      sectionIndex={index}
+                      startIndex={startIndex}
                     />
                   );
                 }
                 case FrontendSectionType.CodeSection: {
                   const codeSteps = (contentElement as contentSection &
                     CodeSection).codeSteps;
+                  const startIndex = contentElement.startIndex;
                   return (
                     <CodeStepSection
                       codeSteps={codeSteps}
                       key={codeSteps[0].backendId}
-                      sectionIndex={index}
+                      startIndex={startIndex}
                     />
                   );
                 }
@@ -145,31 +162,39 @@ function arrangeContentList(draftContent: contentBlock[]): contentSection[] {
   // if not code step type, break sub array
   let finalArray: contentSection[] = [];
   let subArray: contentBlock[] = [];
+  let runningSum = 0;
   for (let i = 0; i < draftContent.length; i++) {
     if (draftContent[i].type === "codestep") {
+      // aggregate codesteps into subArray
       subArray.push(draftContent[i]);
+      // runningSum += 1;
     } else {
       if (subArray.length > 0) {
         finalArray.push({
           type: FrontendSectionType.CodeSection,
           codeSteps: subArray,
+          startIndex: runningSum,
         });
+        runningSum += subArray.length;
       }
       subArray = [];
       finalArray.push({
         type: FrontendSectionType.TextSection,
         slateSection: draftContent[i],
+        startIndex: runningSum,
       });
+      runningSum += 1;
     }
   }
   if (subArray.length > 0) {
     finalArray.push({
       type: FrontendSectionType.CodeSection,
       codeSteps: subArray,
+      startIndex: runningSum,
     });
   }
   // console.log("final array is");
-  // console.log(finalArray);
+  console.log(finalArray);
   return finalArray;
 }
 

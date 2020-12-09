@@ -24,6 +24,7 @@ export const FilesContextWrapper: FunctionComponent<FilesContextWrapperProps> = 
     selectedFile,
     saveFileCode,
     modifyFileName,
+    getFileFromFileId,
   } = useFiles(draftId, authenticated);
   return (
     <FilesContext.Provider
@@ -39,6 +40,7 @@ export const FilesContextWrapper: FunctionComponent<FilesContextWrapperProps> = 
         saveFileCode: saveFileCode,
         selectedFileIndex: selectedFileIndex,
         modifyFileName,
+        getFileFromFileId,
       }}
     >
       {children}

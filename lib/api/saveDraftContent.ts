@@ -20,6 +20,7 @@ export default async function saveDraftContentHandler(
   const lines: Lines | undefined = req.body.lines;
   const imageUrl: string | undefined = req.body.imageUrl;
   const order: number | undefined = req.body.order;
+  const fileId: string | undefined = req.body.fileId;
 
   let draftContentRef: firebase.firestore.DocumentReference = await db
     .collection("users")
@@ -28,22 +29,38 @@ export default async function saveDraftContentHandler(
     .doc(draftId)
     .collection("draftContent")
     .doc(backendId);
-  let updateItem;
+  let updateItem = {
+    slateContent: slateContent,
+    draftId: draftId,
+    lines: lines,
+    order: order,
+    imageUrl: imageUrl,
+    fileId: fileId,
+  };
+  if (imageUrl === undefined) {
+    delete updateItem.imageUrl;
+  }
+  if (order === undefined) {
+    delete updateItem.order;
+  }
+  if (fileId === undefined) {
+    delete updateItem.fileId;
+  }
+
   if (slateContent === undefined) {
-    updateItem = {
-      draftId: draftId,
-      lines: setDefaultVal(lines, null),
-      order: setDefaultVal(order, null),
-      imageUrl: setDefaultVal(imageUrl, null),
-    };
-  } else {
-    updateItem = {
-      slateContent: slateContent,
-      draftId: draftId,
-      lines: setDefaultVal(lines, null),
-      order: setDefaultVal(order, null),
-      imageUrl: setDefaultVal(imageUrl, null),
-    };
+    delete updateItem.slateContent;
+  }
+  if (lines === undefined) {
+    delete updateItem.lines;
+  }
+  if (imageUrl === undefined) {
+    delete updateItem.imageUrl;
+  }
+  if (order === undefined) {
+    delete updateItem.order;
+  }
+  if (fileId === undefined) {
+    delete updateItem.fileId;
   }
 
   draftContentRef.set(updateItem, {
@@ -55,6 +72,6 @@ export default async function saveDraftContentHandler(
   return;
 }
 
-function setDefaultVal(value: any, defaultValue: any) {
-  return value === undefined ? defaultValue : value;
+function setNullIfUndefined(value: any) {
+  return value === undefined ? null : value;
 }

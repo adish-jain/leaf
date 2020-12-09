@@ -401,6 +401,18 @@ export function useFiles(draftId: any, authenticated: boolean) {
     }, false);
   }
 
+  function getFileFromFileId(fileId?: string): fileObject | undefined {
+    if (!fileId) {
+      return undefined;
+    }
+    for (let i = 0; i < files.length; i++) {
+      if (files[i].fileId === fileId) {
+        return files[i];
+      }
+    }
+    return undefined;
+  }
+
   return {
     selectedFileIndex,
     files,
@@ -413,5 +425,6 @@ export function useFiles(draftId: any, authenticated: boolean) {
     selectedFile,
     saveFileCode,
     modifyFileName,
+    getFileFromFileId,
   };
 }

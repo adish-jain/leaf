@@ -1,0 +1,58 @@
+@import "commonui.scss";
+
+.line-color {
+  color: $leaf-dark-blue;
+  margin-left: 4px;
+  margin-right: 4px;
+}
+
+.attach-button {
+  margin-left: 8px;
+  background-color: $leaf-dark-blue;
+  color: white;
+  border-radius: 4px;
+  border: $leaf-light-gray 1px solid;
+  border: none;
+  box-shadow: 0px 4px 8px #edece9;
+  padding: 4px;
+  position: relative;
+  box-sizing: border-box;
+  cursor: pointer;
+
+  top: -2px;
+}
+
+.line-status {
+  width: 100%;
+  border-top: 1px solid $leaf-light-gray;
+  display: flex;
+  align-items: center;
+  position: relative;
+  justify-content: space-between;
+  // padding: 12px;
+  // padding-right: 12px;
+
+  .status-content {
+    width: 100%;
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.file-border {
+  margin: 4px;
+  padding: 4px;
+  border-radius: 16px;
+  background-color: $leaf-dark-blue;
+  color: white;
+  position: relative;
+  font-size: 12px;
+  top: -1px;
+}
+
+.clear-lines {
+  @include red-button;
+  position: relative;
+  top: -2px;
+}

@@ -22,7 +22,6 @@ export default async function getDraftContentHandler(
   let draftId = req.body.draftId;
 
   const draftContent = await getDraftContent(uid, draftId);
-
   res.statusCode = 200;
   res.json(draftContent);
   return;

@@ -2,6 +2,7 @@ import { Block, formattingPaneBlockType } from "../enums/app_enums";
 import { ProgrammingLanguage } from "../types/language_types";
 import { Node } from "slate";
 import { SetStateAction } from "react";
+import { contentBlock, fileObject } from "./frontend/postTypes";
 
 export const WAIT_INTERVAL = 5000;
 
@@ -32,13 +33,13 @@ export type Lines = {
 };
 
 export type FinishedPostProps = {
-  steps: Step[];
   title: string;
+  postContent: contentBlock[];
   tags: string[];
-  files: File[];
+  files: fileObject[];
   username: string;
   previewMode: boolean;
-  updateShowPreview?: (value: SetStateAction<boolean>) => void;
+  updatePreviewMode?: (previewMode: boolean) => void;
   publishedAtSeconds: number;
 };
 

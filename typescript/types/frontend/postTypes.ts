@@ -6,6 +6,7 @@ import { Node } from "slate";
 
 export type contentSection = {
   type: FrontendSectionType;
+  startIndex: number;
 } & (CodeSection | TextSection);
 
 export type CodeSection = {

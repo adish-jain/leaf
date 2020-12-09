@@ -1,17 +1,37 @@
 import React, { Component, useContext } from "react";
 import { DraftContext } from "../contexts/draft-context";
 import { StepContext } from "../contexts/step-context";
-import "../styles/newstep.scss";
+import newStepStyles from "../styles/newstep.module.scss";
+import { ContentBlockType } from "../typescript/enums/backend/postEnums";
 
-type NewStepProps = {};
+type NewStepProps = {
+  lastStepId: string;
+  lastIndex: number;
+};
 
 type NewStepState = {};
 
 export function NewStep(props: NewStepProps) {
-  const { addBackendBlock } = useContext(DraftContext);
+  const { lastStepId, lastIndex } = props;
+  const { addBackendBlock, nextBlockType } = useContext(DraftContext);
   return (
-    <div className={"NewStep"}>
-      <button onClick={this.props.addStep}>+ Add Step</button>
+    <div className={newStepStyles["NewStep"]}>
+      <button
+        onClick={(e) => {
+          addBackendBlock(ContentBlockType.CodeSteps, lastIndex);
+        }}
+      >
+        + Add Code Step
+      </button>
+      {nextBlockType(lastStepId) !== ContentBlockType.Text && (
+        <button
+          onClick={(e) => {
+            addBackendBlock(ContentBlockType.Text, lastIndex);
+          }}
+        >
+          + Add Single Column Text Section
+        </button>
+      )}
     </div>
   );
 }

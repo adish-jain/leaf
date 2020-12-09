@@ -22,4 +22,5 @@ type FilesContextType = {
   saveFileCode: (fileIndex: number) => void;
   // updateFile: (updatedFile: fileObject) => void;
   selectedFileIndex: number;
+  getFileFromFileId: (fileId?: string) => fileObject | undefined;
 };

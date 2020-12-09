@@ -22,6 +22,18 @@ $codeeditor-background: #2f3437;
   cursor: pointer;
 }
 
+@mixin red-button {
+  background: #FDF5F2;
+  border: 1px solid #F7C6C4;
+  box-sizing: border-box;
+  border-radius: 4px;
+  padding: 4px;
+  color: #E9595B;
+  font-size: 12px;
+  cursor: pointer;
+  box-shadow: 0px 4px 16px #edece9;
+}
+
 @mixin draft-button-focused {
   outline: none;
 }

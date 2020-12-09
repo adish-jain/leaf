@@ -1,8 +1,8 @@
 @import "commonui.scss";
 
 .NewStep {
-
   button {
     @include draft-button;
+    margin-right: 8px;
   }
 }

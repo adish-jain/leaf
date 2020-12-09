@@ -12,6 +12,7 @@ import { Dispatch, SetStateAction } from "react";
 import SlatePrismEditor from "./SlatePrismEditor";
 import { AnimatePresence, motion } from "framer-motion";
 import { slateFade } from "../styles/framer_animations/opacityFade";
+import { LineModal } from "./LineModal";
 type CodeEditorProps = {
   inView: boolean;
 };
@@ -32,6 +33,7 @@ export default function CodeEditor(props: CodeEditorProps) {
               animate={"visible"}
               exit={"hidden"}
               variants={slateFade}
+              // style={{ position: "relative" }}
             >
               <SlatePrismEditor />
             </motion.div>
@@ -39,6 +41,7 @@ export default function CodeEditor(props: CodeEditorProps) {
         </AnimatePresence>
       </div>
       <LanguageBar />
+      {/* <LineModal /> */}
     </div>
   );
 }

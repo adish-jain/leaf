@@ -1,5 +1,6 @@
 import { timeStamp } from "../typescript/types/app_types";
 import useSWR, { SWRConfig } from "swr";
+import { useState } from "react";
 
 function prepareFetching(draftId: string) {
   const myRequest = (requestedAPI: string) => {
@@ -22,8 +23,10 @@ function prepareFetching(draftId: string) {
 
 export function useTags(draftId: string, authenticated: boolean) {
   const initialTags: string[] = [];
+  const [showTags, updateShowTags] = useState(false);
+
   const contentFetcher = prepareFetching(draftId);
-  let { data: tags, mutate } = useSWR<string[]>(
+  let { data: tagsData, mutate } = useSWR<string[]>(
     authenticated ? "getTags" : null,
     contentFetcher,
     {
@@ -31,7 +34,7 @@ export function useTags(draftId: string, authenticated: boolean) {
       revalidateOnMount: true,
     }
   );
-
+  const tags = tagsData || [];
   function toggleTag(tag: string) {
     if (typeof tags === "undefined") {
       let data = {
@@ -43,8 +46,8 @@ export function useTags(draftId: string, authenticated: boolean) {
       let selectedTags: string[] = [tag];
 
       // optimistic mutate
-      mutate(async (mutateState: any) => {
-        return { ...mutateState, tags: selectedTags };
+      mutate(async (mutateState: string[]) => {
+        return [...selectedTags];
       }, false);
 
       fetch("/api/endpoint", {
@@ -71,8 +74,8 @@ export function useTags(draftId: string, authenticated: boolean) {
           tags: selectedTags,
         };
 
-        mutate(async (mutateState: any) => {
-          return { ...mutateState, tags: selectedTags };
+        mutate(async (mutateState: string[]) => {
+          return [...selectedTags];
         }, false);
 
         fetch("/api/endpoint", {
@@ -89,5 +92,7 @@ export function useTags(draftId: string, authenticated: boolean) {
   return {
     toggleTag,
     tags,
+    showTags,
+    updateShowTags,
   };
 }

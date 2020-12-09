@@ -1,6 +1,6 @@
 import React, { Component, useContext } from "react";
 import TextareaAutosize from "react-autosize-textarea";
-import NewStep from "./NewStep";
+import { NewStep } from "./NewStep";
 import StoredStep from "./StoredStep";
 const fetch = require("node-fetch");
 global.Headers = fetch.Headers;
@@ -11,11 +11,12 @@ import { contentBlock } from "../typescript/types/frontend/postTypes";
 import { DraftContext } from "../contexts/draft-context";
 import { CodeStep } from "../components/CodeStep";
 import { AnimateSharedLayout, motion } from "framer-motion";
+import { start } from "repl";
 var shortId = require("shortid");
 
 type PublishingProps = {
   codeSteps: contentBlock[];
-  sectionIndex: number;
+  startIndex: number;
   // what step is currently being edited? -1 means no steps being edited
 };
 
@@ -24,32 +25,37 @@ type PublishingState = {
 };
 
 export default function Publishing(props: PublishingProps) {
-  const { codeSteps, sectionIndex } = props;
+  const { codeSteps, startIndex } = props;
   const draftContext = useContext(DraftContext);
   const { currentlyEditingBlock } = draftContext;
 
   return (
     <div className={publishingStyles["publishing"]}>
       <PublishingDescription />
-      <AnimateSharedLayout>
-        <motion.div className={publishingStyles["codesteps"]} layout>
-          {codeSteps.map((codeStep, index) => {
-            return (
-              <CodeStep
-                codeStep={codeStep}
-                index={index}
-                key={codeStep.backendId}
-                sectionIndex={sectionIndex}
-                selected={
-                  codeStep.backendId === currentlyEditingBlock?.backendId
-                }
-                last={index === codeSteps.length - 1}
-                backendId={codeStep.backendId}
-              />
-            );
-          })}
-        </motion.div>
-      </AnimateSharedLayout>
+      {/* <AnimateSharedLayout> */}
+      <motion.div
+        className={publishingStyles["codesteps"]}
+        //  layout
+      >
+        {codeSteps.map((codeStep, index) => {
+          return (
+            <CodeStep
+              codeStep={codeStep}
+              index={index}
+              key={codeStep.backendId}
+              startIndex={startIndex}
+              selected={codeStep.backendId === currentlyEditingBlock?.backendId}
+              last={index === codeSteps.length - 1}
+              backendId={codeStep.backendId}
+            />
+          );
+        })}
+      </motion.div>
+      <NewStep
+        lastStepId={codeSteps[codeSteps.length - 1].backendId}
+        lastIndex={startIndex + codeSteps.length - 1}
+      />
+      {/* </AnimateSharedLayout> */}
     </div>
   );
 }

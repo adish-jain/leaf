@@ -33,7 +33,6 @@ export default async function addDraftContentHandler(
   const backendDraftBlockEnum: string = req.body.backendDraftBlockEnum;
   const atIndex: number = req.body.atIndex;
   const backendId: string = req.body.backendId;
-
   let newContent;
   switch (backendDraftBlockEnum) {
     case ContentBlockType.Text:
@@ -64,15 +63,6 @@ export default async function addDraftContentHandler(
     .collection("drafts")
     .doc(draftId)
     .collection("draftContent")
-    .doc(backendId)
-    .set(newContent);
-
-  await db
-    .collection("users")
-    .doc(uid)
-    .collection("drafts")
-    .doc(draftId)
-    .collection("draftContent")
     .orderBy("order")
     .get()
     .then(function (draftContentCollection) {
@@ -89,6 +79,15 @@ export default async function addDraftContentHandler(
         }
       });
     });
+
+  await db
+    .collection("users")
+    .doc(uid)
+    .collection("drafts")
+    .doc(draftId)
+    .collection("draftContent")
+    .doc(backendId)
+    .set(newContent);
 
   res.statusCode = 200;
   res.end();

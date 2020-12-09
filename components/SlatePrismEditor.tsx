@@ -42,6 +42,11 @@ import {
   highlightPrismDracula,
 } from "../lib/utils/prismUtils";
 import { LinesContext } from "../contexts/lines-context";
+import { Lines } from "../typescript/types/frontend/postTypes";
+import { LineModal } from "./LineModal";
+import { DraftContext } from "../contexts/draft-context";
+import { AnimatePresence, motion } from "framer-motion";
+import { opacityFade } from "../styles/framer_animations/opacityFade";
 
 const slateNode: Node[] = [
   {
@@ -79,6 +84,13 @@ export default function SlatePrismEditor(props: {}) {
     setValue(selectedFile?.code || slateNode);
   }, [selectedFile?.fileId]);
 
+  // clear selected lines on unmount
+  useEffect(() => {
+    return () => {
+      changeSelectedLines(undefined);
+    };
+  }, []);
+
   const decorate = useCallback(
     (currentNodeEntry: NodeEntry) => {
       let [node, path] = currentNodeEntry;
@@ -94,13 +106,20 @@ export default function SlatePrismEditor(props: {}) {
   );
 
   function handleChange(value: Node[]) {
-    console.log(editor.selection);
-    let sel = window.getSelection();
-    if (sel) {
-      let myRange = sel.getRangeAt(0);
-      let newDimensions = myRange.getBoundingClientRect();
-      // updateSelectionCoordinates(newDimensions);
+    if (editor.selection && !Range.isCollapsed(editor.selection)) {
+      const selectionLines = selectionToLines(editor.selection);
+      console.log(editor.selection);
+      let sel = window.getSelection();
+      if (sel) {
+        let myRange = sel.getRangeAt(0);
+        let newDimensions = myRange.getBoundingClientRect();
+        updateSelectionCoordinates(newDimensions);
+      }
+      changeSelectedLines(selectionLines);
+    } else {
+      changeSelectedLines(undefined);
     }
+
     // update in top state
     changeCode(value);
     // update in local state
@@ -114,7 +133,12 @@ export default function SlatePrismEditor(props: {}) {
   return (
     <div className={slateprismStyles["slateprism"]}>
       <div ref={slateRef}>
-        <Slate editor={editor} value={value} onChange={handleChange}>
+        <Slate
+          editor={editor}
+          value={value}
+          onChange={handleChange}
+          // onBlur={changeSelectedLines(undefined)}
+        >
           <Editable
             decorate={decorate}
             renderLeaf={renderLeaf}
@@ -136,6 +160,7 @@ const Leaf = ({ attributes, children, leaf }: RenderLeafProps) => {
   const style = highlightPrismDracula(leaf);
 
   return (
+    //@ts-ignore
     <span {...attributes} style={style}>
       {children}
     </span>
@@ -147,7 +172,9 @@ export function EditorCodeBlockLines(props: {
   height: number;
 }) {
   const { height, numOfLines } = props;
-
+  const { currentlyEditingBlock } = useContext(DraftContext);
+  const { selectedFile } = useContext(FilesContext);
+  const lines = currentlyEditingBlock?.lines;
   const toRender = [];
   for (let i = 0; i < props.numOfLines; i++) {
     toRender.push(
@@ -159,12 +186,41 @@ export function EditorCodeBlockLines(props: {
         className={slateprismStyles["codeline"]}
       >
         {i + 1}
+        <AnimatePresence>
+          {currentlyEditingBlock?.fileId === selectedFile?.fileId &&
+            lines &&
+            i + 1 >= lines?.start &&
+            i + 1 <= lines?.end && (
+              <motion.div
+                initial={{ opacity: 0, width: "0%" }}
+                animate={{ opacity: 0.2, width: "100%" }}
+                exit={{ opacity: 0, width: "0%" }}
+                variants={opacityFade}
+                style={{
+                  height: height / numOfLines,
+                }}
+                className={slateprismStyles["highlight"]}
+              ></motion.div>
+            )}
+        </AnimatePresence>
       </div>
     );
   }
+
   return (
     <div contentEditable={false} className={slateprismStyles["codelines"]}>
       {toRender}
     </div>
   );
+}
+
+function selectionToLines(currentSelection: Range): Lines {
+  const anchorLine = currentSelection.anchor.path[0];
+  const focusLine = currentSelection.focus.path[0];
+  const start = Math.min(anchorLine, focusLine);
+  const end = Math.max(anchorLine, focusLine);
+  return {
+    start: start + 1,
+    end: end + 1,
+  };
 }

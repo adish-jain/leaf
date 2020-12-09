@@ -5,6 +5,7 @@ let selectedImage: any;
 import { File, Step, Lines } from "../typescript/types/app_types";
 import { motion, AnimatePresence } from "framer-motion";
 import { DraftContext } from "../contexts/draft-context";
+import { ContentBlockType } from "../typescript/enums/backend/postEnums";
 
 type ImageViewProps = {};
 
@@ -91,7 +92,7 @@ export default function ImageView(props: ImageViewProps) {
   const ChooseScreen = () => {
     let { upload } = state;
 
-    let imageUrlPresent = currentlyEditingStep?.imageUrl !== undefined;
+    let imageUrlPresent = currentlyEditingBlock?.imageUrl !== undefined;
 
     if (!upload) {
       // Image is in display or the upload option is available
@@ -125,8 +126,8 @@ export default function ImageView(props: ImageViewProps) {
     );
   };
 
-  const show = currentlyEditingBlock?.imageUrl ? true : false;
-
+  // const show = currentlyEditingBlock?.imageUrl ? true : false;
+  const show = currentlyEditingBlock?.type === ContentBlockType.CodeSteps;
   return (
     <div className={imageViewStyles["options-wrapper"]}>
       <AnimatePresence>

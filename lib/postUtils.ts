@@ -148,7 +148,7 @@ export async function getDraftContent(
           type: resultsJSON.type,
           slateContent: resultsJSON.slateContent,
           fileId: resultsJSON.fileId as string,
-          lines: resultsJSON.line,
+          lines: resultsJSON.lines,
           backendId: result.id,
         });
       });

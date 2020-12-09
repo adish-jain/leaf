@@ -67,8 +67,9 @@ export function useBackend(authenticated: boolean, draftId: string) {
     backendId: string,
     order?: number,
     value?: Node[],
-    lines?: Lines,
-    imageUrl?: string
+    lines?: Lines | null,
+    imageUrl?: string | null,
+    fileId?: string | null
   ) {
     let data = {
       requestedAPI: "handleSaveDraftContent",
@@ -77,8 +78,38 @@ export function useBackend(authenticated: boolean, draftId: string) {
       backendId: backendId,
       lines: lines,
       order: order,
+      fileId: fileId,
       imageUrl: imageUrl,
     };
+
+    const atIndex = findBlockById(backendId);
+    const currentBlock = draftContent[atIndex];
+
+    const modifiedItem: contentBlock = {
+      backendId: backendId,
+      slateContent: value ? JSON.stringify(value) : currentBlock.slateContent,
+      type: draftContent[atIndex].type,
+      fileId: fileId ? fileId : currentBlock.fileId,
+      lines: lines ? lines : currentBlock.lines,
+      imageUrl: imageUrl ? imageUrl : currentBlock.imageUrl,
+    };
+    if (lines === null) {
+      modifiedItem.lines = undefined;
+    }
+    if (imageUrl === null) {
+      modifiedItem.imageUrl = undefined;
+    }
+    if (fileId === null) {
+      modifiedItem.fileId = undefined;
+    }
+
+    mutate(async (mutateState) => {
+      return [
+        ...mutateState.slice(0, atIndex),
+        modifiedItem,
+        ...mutateState.slice(atIndex + 1),
+      ];
+    }, false);
 
     await fetch("/api/endpoint", {
       method: "POST",
@@ -94,7 +125,6 @@ export function useBackend(authenticated: boolean, draftId: string) {
     atIndex: number
   ) {
     const backendId = shortId.generate();
-    console.log("adding block");
     await mutate(async (mutateState) => {
       // let's update the todo with ID `1` to be completed,
       // this API returns the updated data
@@ -180,6 +210,11 @@ export function useBackend(authenticated: boolean, draftId: string) {
   }
 
   function changeEditingBlock(backendId: string) {
+    const newIndex = findBlockById(backendId);
+    changeEditingBlockIndex(newIndex);
+  }
+
+  function findBlockById(backendId: string) {
     let newIndex = 0;
     for (let i = 0; i < draftContent.length; i++) {
       if (draftContent[i].backendId === backendId) {
@@ -187,7 +222,7 @@ export function useBackend(authenticated: boolean, draftId: string) {
         break;
       }
     }
-    changeEditingBlockIndex(newIndex);
+    return newIndex;
   }
 
   function deleteBlock(backendId: string) {
@@ -220,6 +255,35 @@ export function useBackend(authenticated: boolean, draftId: string) {
     }, false);
   }
 
+  function nextBlockType(backendId: string): ContentBlockType | undefined {
+    const currentBlockIndex = findBlockById(backendId);
+    if (currentBlockIndex + 1 > draftContent.length - 1) {
+      return undefined;
+    } else {
+      return draftContent[currentBlockIndex + 1].type;
+    }
+  }
+
+  /**
+   * Removes fileId and lines from all codesteps associated with a file being deleted
+   *
+   * @param fileId the file being deleted
+   */
+  function removeFileFromCodeSteps(fileId: string) {
+    for (let i = 0; i < draftContent.length; i++) {
+      if (draftContent[i].fileId === fileId) {
+        updateSlateSectionToBackend(
+          draftContent[i].backendId,
+          undefined,
+          undefined,
+          null,
+          undefined,
+          null
+        );
+      }
+    }
+  }
+
   return {
     draftContent,
     updateSlateSectionToBackend,
@@ -227,6 +291,8 @@ export function useBackend(authenticated: boolean, draftId: string) {
     currentlyEditingBlock,
     changeEditingBlock,
     deleteBlock,
+    nextBlockType,
+    removeFileFromCodeSteps,
   };
 }
 

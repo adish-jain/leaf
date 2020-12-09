@@ -164,14 +164,14 @@ export function DraftHeader(props: DraftHeaderProps) {
 type FinishedPostHeaderProps = {
   previewMode: boolean;
   authenticated: boolean;
-  updateShowPreview?: (value: SetStateAction<boolean>) => void;
+  updatePreviewMode?: (previewMode: boolean) => void;
   username?: string;
 };
 
 export function FinishedPostHeader(props: FinishedPostHeaderProps) {
   function Links() {
     return (
-      <div className={"links"}>
+      <div className={draftHeaderStyles["links"]}>
         <Link href="/landing">
           <a>Home</a>
         </Link>
@@ -191,7 +191,7 @@ export function FinishedPostHeader(props: FinishedPostHeaderProps) {
         <Links />
         <div className={draftHeaderStyles["buttons"]}>
           {props.previewMode ? (
-            <ExitPreview updateShowPreview={props.updateShowPreview} />
+            <ExitPreview updatePreviewMode={props.updatePreviewMode} />
           ) : (
             <div></div>
           )}
@@ -218,7 +218,7 @@ function ExitPreview(props: {
 
 type TagsHeaderProps = {
   showTags: boolean;
-  updateShowTags?: (value: SetStateAction<boolean>) => void;
+  updateShowTags?: (value: boolean) => void;
 };
 
 export function TagsHeader(props: TagsHeaderProps) {

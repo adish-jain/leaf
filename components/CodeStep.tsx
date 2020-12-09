@@ -12,27 +12,29 @@ import stepStyles from "../styles/step.module.scss";
 import { contentBlock } from "../typescript/types/frontend/postTypes";
 import { LinesContext } from "../contexts/lines-context";
 import { AnimatePresence, motion } from "framer-motion";
-
+import { opacityFade } from "../styles/framer_animations/opacityFade";
+import { LineStatus } from "./LineStatus";
+import { FilesContext } from "../contexts/files-context";
 export function CodeStep(props: {
   codeStep: contentBlock;
   index: number;
-  sectionIndex: number;
+  startIndex: number;
   selected: boolean;
   last: boolean;
   backendId: string;
 }) {
-  const { codeStep, index, sectionIndex, selected, last, backendId } = props;
+  const { codeStep, index, startIndex, selected, last, backendId } = props;
   const [hovered, updateHovered] = useState(false);
-  const draftContext = useContext(DraftContext);
+  const { changeEditingBlock } = useContext(DraftContext);
   const { updateStepCoordinate } = useContext(LinesContext);
+  const { changeSelectedFileIndex, files } = useContext(FilesContext);
   const stepRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
+    // window.addEventListener("scroll", handleScroll);
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      // window.removeEventListener("scroll", handleScroll);
     };
   });
-  const { changeEditingBlock } = draftContext;
   let style = {};
 
   function handleScroll() {
@@ -45,82 +47,101 @@ export function CodeStep(props: {
     }
   }
 
-  const selectedClass = selected ? stepStyles.selected : "";
+  function changeFile() {
+    const fileId = codeStep.fileId;
+    if (!fileId) {
+      return;
+    }
+    for (let i = 0; i < files.length; i++) {
+      if (files[i].fileId === fileId) {
+        changeSelectedFileIndex(i);
+        break;
+      }
+    }
+  }
 
+  const selectedClass = selected ? stepStyles.selected : "";
   // if (last) {
   //   style["marginBottom"] = "50%";
   // }
   return (
-    <motion.div
-      layout
-      className={`${stepStyles["codestep"]} ${selectedClass}`}
-      style={style}
-      onClick={(e) => {
-        changeEditingBlock(codeStep.backendId);
-      }}
-      onMouseEnter={(e) => {
-        updateHovered(true);
-      }}
-      onMouseLeave={(e) => {
-        updateHovered(false);
-      }}
-      ref={stepRef}
+    <div
+    // style={{ position: "relative" }}
     >
-      <motion.div className={stepStyles["codestep-content"]} layout>
-        <MarkdownSection
-          slateContent={codeStep.slateContent}
-          backendId={codeStep.backendId}
-          sectionIndex={index + sectionIndex}
-          contentType={ContentBlockType.CodeSteps}
-          key={codeStep.backendId}
+      <SideButtons
+        firstStep={index === 0}
+        hovered={hovered}
+        backendId={backendId}
+        updateHovered={updateHovered}
+      />
+      <motion.div
+        // layout
+        className={`${stepStyles["codestep"]} ${selectedClass}`}
+        style={style}
+        onClick={(e) => {
+          changeEditingBlock(codeStep.backendId);
+          changeFile();
+        }}
+        onMouseEnter={(e) => {
+          updateHovered(true);
+        }}
+        onMouseLeave={(e) => {
+          updateHovered(false);
+        }}
+        ref={stepRef}
+      >
+        <motion.div
+          className={stepStyles["codestep-content"]}
+          // layout
+        >
+          <MarkdownSection
+            slateContent={codeStep.slateContent}
+            backendId={codeStep.backendId}
+            startIndex={index + startIndex}
+            contentType={ContentBlockType.CodeSteps}
+            key={codeStep.backendId}
+          />
+        </motion.div>
+        <LineStatus
+          selected={selected}
+          backendId={backendId}
+          lines={codeStep.lines}
+          fileId={codeStep.fileId}
         />
       </motion.div>
-      <AnimatePresence>{selected && <LineStatus />}</AnimatePresence>
-      <SideButtons hovered={hovered} backendId={backendId} />
-    </motion.div>
+    </div>
   );
 }
 
-function LineStatus(props: {}) {
-  // const { selected } = props;
-  const { currentlySelectedLines } = useContext(LinesContext);
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      // transition={{
-      //   duration: 0.2,
-      // }}
-      layout
-    >
-      <div className={stepStyles["line-status"]}>
-        <div className={stepStyles["status-content"]}>
-          No lines selected | Highlight lines in the code editor.
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-function SideButtons(props: { hovered: boolean; backendId: string }) {
+function SideButtons(props: {
+  hovered: boolean;
+  backendId: string;
+  firstStep: boolean;
+  updateHovered: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const { deleteBlock } = useContext(DraftContext);
-  let { lastStep, firstStep, hovered, backendId } = props;
+  let { lastStep, firstStep, hovered, backendId, updateHovered } = props;
   return (
     <AnimatePresence>
       {hovered && (
         <motion.div
           initial={{
-            opacity: 0,
+            opacity: 1,
             position: "relative",
-            left: "-100px",
-            top: "-60px",
+            left: "-40px",
+            top: "-20px",
+            // left: "0px",
+            // top: "0px",
           }}
-          animate={{ opacity: 1, position: "relative", left: "-128px" }}
+          animate={{ opacity: 1, position: "relative", left: "-64px" }}
           exit={{
             opacity: 0,
+            left: "-40px",
+            top: "-20px",
           }}
           transition={{ duration: 0.25 }}
+          onMouseEnter={(e) => updateHovered(true)}
+          onMouseLeave={(e) => updateHovered(false)}
         >
           <div className={stepStyles["side-buttons-wrapper"]}>
             <div className={stepStyles["side-buttons"]}>
@@ -152,6 +173,7 @@ function SideButtons(props: { hovered: boolean; backendId: string }) {
                   }}
                   className={stepStyles["down"]}
                 >
+                  {" "}
                   <span>↓</span>
                 </button>
               )}
