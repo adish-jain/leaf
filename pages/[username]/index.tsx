@@ -8,6 +8,7 @@ import {
   getProfileData,
 } from "../../lib/userUtils";
 import { useLoggedIn } from "../../lib/UseLoggedIn";
+import appStyles from "../../styles/app.module.scss";
 import profileStyles from "../../styles/profile.module.scss";
 import Header, { HeaderUnAuthenticated } from "../../components/Header";
 import ErroredPage from "../404";
@@ -218,9 +219,9 @@ export default function UserPage(props: UserPageProps) {
         ) : (
           <HeaderUnAuthenticated signup={true} login={true} explore={true} />
         )}
-        <h1 className={"profile-header"}></h1>
-        <div className={"profile-content"}>
-          <div className={"profile-left-pane"}>
+        <h1 className={profileStyles["profile-header"]}></h1>
+        <div className={profileStyles["profile-content"]}>
+          <div className={profileStyles["profile-left-pane"]}>
             {canEditBio ? (
               <AnimatePresence>
                 <motion.div
@@ -269,7 +270,9 @@ export default function UserPage(props: UserPageProps) {
                 </motion.div>
               </AnimatePresence>
             )}
-            <div className={"profile-name"}>{props.profileUsername}</div>
+            <div className={profileStyles["profile-name"]}>
+              {props.profileUsername}
+            </div>
             <AnimatePresence>
               <motion.div
                 initial={{
@@ -302,7 +305,7 @@ export default function UserPage(props: UserPageProps) {
               </motion.div>
             </AnimatePresence>
           </div>
-          <div className={"profile-right-pane"}>
+          <div className={profileStyles["profile-right-pane"]}>
             {
               <AnimatePresence>
                 <motion.div
@@ -341,8 +344,8 @@ function EditableProfileImage(props: {
   changeProfileImage: React.Dispatch<React.SetStateAction<string>>;
 }) {
   return (
-    <div className={"profile-img"}>
-      <div className={"profile-img-wrapper"}>
+    <div className={profileStyles["profile-img"]}>
+      <div className={profileStyles["profile-img-wrapper"]}>
         {props.profileImage === "" ? (
           props.profileUsername !== undefined ? (
             props.profileUsername.substr(0, 2)
@@ -353,8 +356,8 @@ function EditableProfileImage(props: {
           <img src={props.profileImage} />
         )}
       </div>
-      <div className={"profile-img-shade"}></div>
-      <div className={"profile-img-button"}>
+      <div className={profileStyles["profile-img-shade"]}></div>
+      <div className={profileStyles["profile-img-button"]}>
         <label className={"add-image"}>
           {props.uploadFailed ? "Try Image < 5MB" : "Upload Photo"}
           <input
@@ -389,7 +392,7 @@ function UneditableProfileImage(props: {
   profileUsername: string;
 }) {
   return (
-    <div className={"profile-img-uneditable"}>
+    <div className={profileStyles["profile-img-uneditable"]}>
       {props.profileImage === "" ? (
         props.profileUsername !== undefined ? (
           props.profileUsername.substr(0, 2)
@@ -419,13 +422,13 @@ function About(props: {
 }) {
   return (
     <div>
-      <div className={"profile-about-header"}>ABOUT</div>
+      <div className={profileStyles["profile-about-header"]}>ABOUT</div>
       <AboutSection
         editingBio={props.editingBio}
         about={props.about}
         changeAbout={props.changeAbout}
       />
-      <div className={"profile-about-icons"}>
+      <div className={profileStyles["profile-about-icons"]}>
         <AnimatePresence>
           <motion.div
             initial={{
@@ -529,9 +532,9 @@ function AboutSection(props: {
   changeAbout: React.Dispatch<React.SetStateAction<string>>;
 }) {
   return (
-    <div className={"profile-about-content"}>
+    <div className={profileStyles["profile-about-content"]}>
       {props.editingBio ? (
-        <div className={"about-icon-and-input"}>
+        <div className={profileStyles["about-icon-and-input"]}>
           <AnimatePresence>
             <motion.div
               initial={{
@@ -595,7 +598,7 @@ function EditingTwitterSection(props: {
   changeTwitter: React.Dispatch<React.SetStateAction<string>>;
 }) {
   return (
-    <div className={"profile-icon-and-input"}>
+    <div className={profileStyles["profile-icon-and-input"]}>
       <img src="/images/birdyicon.svg" />
       <AnimatePresence>
         <motion.div
@@ -633,7 +636,7 @@ function EditingTwitterSection(props: {
 
 function SavedTwitterSection(props: { twitter: string }) {
   return props.twitter !== "" ? (
-    <div className={"profile-icon-and-link"}>
+    <div className={profileStyles["profile-icon-and-link"]}>
       <a href={"https://twitter.com/" + props.twitter} target="blank">
         <img src="/images/birdyicon.svg" />
       </a>
@@ -666,7 +669,7 @@ function EditingGithubSection(props: {
   changeGithub: React.Dispatch<React.SetStateAction<string>>;
 }) {
   return (
-    <div className={"profile-icon-and-input"}>
+    <div className={profileStyles["profile-icon-and-input"]}>
       <img src="/images/githubicon.svg" />
       <AnimatePresence>
         <motion.div
@@ -704,7 +707,7 @@ function EditingGithubSection(props: {
 
 function SavedGithubSection(props: { github: string }) {
   return props.github !== "" ? (
-    <div className={"profile-icon-and-link"}>
+    <div className={profileStyles["profile-icon-and-link"]}>
       <a href={"https://github.com/" + props.github} target="blank">
         <img src="/images/githubicon.svg" />
       </a>
@@ -737,7 +740,7 @@ function EditingWebsiteSection(props: {
   changeWebsite: React.Dispatch<React.SetStateAction<string>>;
 }) {
   return (
-    <div className={"profile-icon-and-input"}>
+    <div className={profileStyles["profile-icon-and-input"]}>
       <img src="/images/webicon.svg" />
       <AnimatePresence>
         <motion.div
@@ -775,7 +778,7 @@ function EditingWebsiteSection(props: {
 
 function SavedWebsiteSection(props: { website: string }) {
   return props.website !== "" ? (
-    <div className={"profile-icon-and-link"}>
+    <div className={profileStyles["profile-icon-and-link"]}>
       <a href={validateWebsite(props.website)} target="blank">
         <img src="/images/webicon.svg" />
       </a>
@@ -812,7 +815,7 @@ function EditProfileButton(props: {
           }}
         >
           <div
-            className={"profile-edit-button"}
+            className={profileStyles["profile-edit-button"]}
             onClick={(e) => {
               props.toggleEditingBio(!props.editingBio);
               props.saveNewProfile();
@@ -824,7 +827,7 @@ function EditProfileButton(props: {
       </AnimatePresence>
     ) : (
       <div
-        className={"profile-edit-button"}
+        className={profileStyles["profile-edit-button"]}
         onClick={(e) => props.toggleEditingBio(!props.editingBio)}
       >
         Edit Profile
@@ -841,7 +844,7 @@ function DisplayPosts(props: { posts: Post[]; username: string }) {
     return (
       <div>
         {props.posts === undefined || props.posts.length === 0 ? (
-          <div className={"profile-no-posts"}>
+          <div className={profileStyles["profile-no-posts"]}>
             {props.username} hasn't published anything yet
           </div>
         ) : (
@@ -851,17 +854,23 @@ function DisplayPosts(props: { posts: Post[]; username: string }) {
                 post["tags"] === null ? null : String(post["tags"]).split(",");
               return (
                 <div
-                  className={"profile-post"}
+                  className={profileStyles["profile-post"]}
                   onClick={() => router.push(post["postURL"])}
                 >
-                  <div className={"profile-post-title"}>{post["title"]}</div>
-                  <div className={"profile-post-date"}>
+                  <div className={profileStyles["profile-post-title"]}>
+                    {post["title"]}
+                  </div>
+                  <div className={profileStyles["profile-post-date"]}>
                     {post["publishedAt"]}
                   </div>
                   <div className={"profile-post-tags-author"}>
                     {tags !== null ? (
                       tags.map((tag: string) => {
-                        return <div className={"profile-post-tag"}>{tag}</div>;
+                        return (
+                          <div className={profileStyles["profile-post-tag"]}>
+                            {tag}
+                          </div>
+                        );
                       })
                     ) : (
                       <div></div>
