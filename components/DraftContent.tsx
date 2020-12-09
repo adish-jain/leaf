@@ -87,6 +87,7 @@ export function DraftContent(props: DraftContentProps) {
                 username={username}
                 updatePreviewMode={updatePreviewMode}
                 title={draftTitle}
+                tags={tags}
               />
             </motion.div>
           )}

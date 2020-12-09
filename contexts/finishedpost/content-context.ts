@@ -7,4 +7,5 @@ export const ContentContext = createContext(<ContentContextType>{});
 type ContentContextType = {
   postContent: contentBlock[];
   selectedContentIndex: number;
+  updateContentIndex: (newIndex: number) => void;
 };
