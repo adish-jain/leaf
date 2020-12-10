@@ -75,13 +75,9 @@ import { highlightPrismDracula } from "../lib/utils/prismUtils";
 import { ToolbarContext } from "../contexts/toolbar-context";
 import { MarkState } from "../lib/useToolbar";
 import { motion } from "framer-motion";
-const toBase64 = (file: any) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
+import { PreviewContext } from "./preview-context";
+import { toBase64 } from "../lib/imageUtils";
+
 const Blocks: FormattingPaneBlockList = [
   {
     display: "Text",
@@ -135,8 +131,8 @@ const MarkdownPreviewExample = (props: {
   const { updateSlateSectionToBackend, changeEditingBlock } = useContext(
     DraftContext
   );
+  const { previewMode } = useContext(PreviewContext);
   const toolbarContext = useContext(ToolbarContext);
-  const { updateSaving, updateMarkType } = toolbarContext;
   const editor = useMemo(
     () =>
       withImages(
@@ -418,7 +414,11 @@ const MarkdownPreviewExample = (props: {
 
   // save to backend
   useEffect(() => {
-    console.log("value changed");
+    const { updateSaving, updateMarkType } = toolbarContext;
+    if (previewMode) {
+      console.log("returning");
+      return;
+    }
     const timeOutId = setTimeout(() => {
       const fetchProduct = async () => {
         try {
@@ -463,10 +463,10 @@ const MarkdownPreviewExample = (props: {
           markState[key] = true;
         }
       });
-      updateMarkType(markState);
+      // updateMarkType(markState);
     } else {
       markState.default = true;
-      updateMarkType(markState);
+      // updateMarkType(markState);
     }
 
     // console.log(currentNodeEntry);
@@ -517,6 +517,7 @@ const MarkdownPreviewExample = (props: {
           onFocus={(e) => {
             changeEditingBlock(props.backendId);
           }}
+          readOnly={previewMode}
         />
       </Slate>
       <FormattingPane

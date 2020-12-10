@@ -1,6 +1,5 @@
 import React, { Component, useContext } from "react";
 import { DraftContext } from "../contexts/draft-context";
-import { StepContext } from "../contexts/step-context";
 import newStepStyles from "../styles/newstep.module.scss";
 import { ContentBlockType } from "../typescript/enums/backend/postEnums";
 

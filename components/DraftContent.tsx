@@ -21,6 +21,8 @@ import appStyles from "../styles/app.module.scss";
 import { FormattingToolbar } from "./FormattingToolbar";
 import FinishedPost from "./FinishedPost";
 import { FilesContext } from "../contexts/files-context";
+import { TagsContext } from "../contexts/tags-context";
+import { PreviewContext } from "./preview-context";
 type DraftContentProps = {
   draftContent: contentBlock[];
   draftTitle: string;
@@ -57,43 +59,45 @@ const PublishingHeader = (props: {
 
 export function DraftContent(props: DraftContentProps) {
   const { files } = useContext(FilesContext);
-  const { username, updatePreviewMode } = useContext(DraftContext);
-  const { draftContent, draftTitle, onTitleChange, updateShowTags } = props;
+  const { username, profileImage, createdAt } = useContext(DraftContext);
+
+  const { previewMode, updatePreviewMode } = useContext(PreviewContext);
+  const { updateShowTags, selectedTags } = useContext(TagsContext);
+  const { draftContent, draftTitle, onTitleChange } = props;
   return (
-    <DraftContext.Consumer>
-      {({ previewMode }) => (
-        <AnimatePresence>
-          {!previewMode && (
-            <motion.div
-              initial={"hidden"}
-              animate={"visible"}
-              exit={"hidden"}
-              variants={opacityFade}
-            >
-              <DraftComponent
-                draftContent={draftContent}
-                draftTitle={draftTitle}
-                onTitleChange={onTitleChange}
-                updateShowTags={updateShowTags}
-              />
-            </motion.div>
-          )}
-          {previewMode && (
-            <motion.div>
-              <FinishedPost
-                postContent={draftContent}
-                files={files}
-                previewMode={previewMode}
-                username={username}
-                updatePreviewMode={updatePreviewMode}
-                title={draftTitle}
-                tags={tags}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
+    <AnimatePresence>
+      {!previewMode && (
+        <motion.div
+          initial={"hidden"}
+          animate={"visible"}
+          exit={"hidden"}
+          variants={opacityFade}
+        >
+          <DraftComponent
+            draftContent={draftContent}
+            draftTitle={draftTitle}
+            onTitleChange={onTitleChange}
+            updateShowTags={updateShowTags}
+          />
+        </motion.div>
       )}
-    </DraftContext.Consumer>
+      {previewMode && (
+        <motion.div>
+          <FinishedPost
+            postContent={draftContent}
+            files={files}
+            previewMode={previewMode}
+            username={username}
+            updatePreviewMode={updatePreviewMode}
+            title={draftTitle}
+            tags={selectedTags}
+            profileImage={profileImage}
+            likes={0}
+            publishedAtSeconds={createdAt._seconds}
+          />
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 
@@ -149,7 +153,7 @@ const DraftComponent = (props: DraftContentProps) => {
           </div>
         </div>
       </div>
-      <FormattingToolbar />
+      {/* <FormattingToolbar /> */}
     </div>
   );
 };
@@ -194,8 +198,6 @@ function arrangeContentList(draftContent: contentBlock[]): contentSection[] {
       startIndex: runningSum,
     });
   }
-  // console.log("final array is");
-  console.log(finalArray);
   return finalArray;
 }
 

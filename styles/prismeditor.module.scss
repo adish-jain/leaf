@@ -6,7 +6,17 @@
   position: relative;
   overscroll-behavior: contain;
   transition: all 0.2s ease-in-out;
+  background-color: $codeeditor-background;
 }
+
+.prism-editor::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+  opacity: 0; /* make scrollbar transparent */
+  height: 0px;
+}
+
+$highlight-color: #020b24;
 
 .highlighted {
   // position: absolute;
@@ -14,15 +24,18 @@
   // right: 0;
   padding: inherit 0;
   // margin-top: 1em;
-  background: #f7ebc6;
-  box-shadow: inset 5px 0 0 #f7d87c;
+  background: $highlight-color;
+  box-shadow: inset 5px 0 0 $highlight-color;
+  opacity: 1;
+
+  // box-shadow: inset 5px 0 0 #f7d87c;
   z-index: 0;
   pointer-events: none;
   line-height: inherit;
   white-space: pre;
 
   span {
-    background: #f7ebc6 !important;
+    background: $highlight-color !important;
     // transition: background 0.2s ease-in-out;
   }
 }
@@ -40,6 +53,7 @@
 $color-transition-duration: 0.2s;
 .line-wrapper {
   display: flex;
+  flex-direction: row;
   transition: color $color-transition-duration ease-out;
   font-size: 12px;
   span {
@@ -47,22 +61,23 @@ $color-transition-duration: 0.2s;
   }
 }
 
+$dim-text: #7c7c7c;
 .line-dim {
-  color: $leaf-light-gray;
+  color: $dim-text;
 
   span {
-    color: $leaf-light-gray !important;
+    color: $dim-text !important;
     transition: color $color-transition-duration ease-in-out;
   }
   transition: color $color-transition-duration ease-in-out;
 }
 
 .line-dim:hover {
-  // color: black;
-  // span {
-  //   color: black !important;
-  // }
-  // transition: color 0.2s ease-in-out;
+  color: black;
+  span {
+    color: black !important;
+  }
+  transition: color 0.2s ease-in-out;
 }
 
 .dimmer {

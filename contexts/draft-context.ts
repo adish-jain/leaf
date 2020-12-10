@@ -1,5 +1,5 @@
 import { ContentBlockType } from "../typescript/enums/backend/postEnums";
-import { Lines } from "../typescript/types/app_types";
+import { Lines, timeStamp } from "../typescript/types/app_types";
 import { createContext, Dispatch, SetStateAction } from "react";
 import { Node } from "slate";
 import { contentBlock } from "../typescript/types/frontend/postTypes";
@@ -21,8 +21,6 @@ type DraftContextType = {
     imageUrl?: string | null | undefined,
     fileId?: string | null | undefined
   ) => Promise<void>;
-  previewMode: boolean;
-  updatePreviewMode: (previewMode: boolean) => void;
   currentlyEditingBlock: contentBlock | undefined;
   changeEditingBlock: (backendId: string) => void;
   published: boolean;
@@ -31,4 +29,6 @@ type DraftContextType = {
   draftId: string;
   removeFileFromCodeSteps: (fileId: string) => void;
   nextBlockType: (backendId: string) => ContentBlockType | undefined;
+  profileImage: string;
+  createdAt: timeStamp;
 };

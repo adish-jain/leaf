@@ -26,13 +26,14 @@ function MarkButton(props: { name: string; markType: slateMarkTypes }) {
   const selected = currentMarkType[props.markType as string];
   let style = {};
   if (selected) {
+    //@ts-ignore
     style["color"] = "blue";
   }
   return (
     <div
       onClick={(e) => {
         e.preventDefault();
-        toggleMark();
+        // toggleMark();
       }}
       className={formattingToolbarStyles["mark-button"]}
       style={style}

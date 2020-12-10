@@ -8,4 +8,8 @@ type ContentContextType = {
   postContent: contentBlock[];
   selectedContentIndex: number;
   updateContentIndex: (newIndex: number) => void;
+  username: string;
+  profileImage: string;
+  publishedAtSeconds: number;
+  tags: string[];
 };

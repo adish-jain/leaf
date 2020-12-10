@@ -4,6 +4,7 @@ import textSectionStyles from "../styles/text-section.module.scss";
 import { useContext } from "react";
 import { DraftContext } from "../contexts/draft-context";
 import { start } from "repl";
+import { PreviewContext } from "./preview-context";
 
 export default function TextSection(props: {
   slateContent: string;
@@ -11,13 +12,15 @@ export default function TextSection(props: {
   backendId: string;
 }) {
   const { nextBlockType } = useContext(DraftContext);
+  const { previewMode } = useContext(PreviewContext);
   const { slateContent, startIndex, backendId } = props;
   const showAddCodeStep =
     nextBlockType(backendId) !== ContentBlockType.CodeSteps;
-
   return (
     <div className={textSectionStyles["text-section"]}>
-      <TextSectionDescription startIndex={startIndex} backendId={backendId} />
+      {!previewMode && (
+        <TextSectionDescription startIndex={startIndex} backendId={backendId} />
+      )}
       <div className={textSectionStyles["markdown"]}>
         <MarkdownPreviewExample
           slateContent={slateContent}
@@ -26,7 +29,7 @@ export default function TextSection(props: {
           backendId={backendId}
         />
       </div>
-      {showAddCodeStep && (
+      {showAddCodeStep && !previewMode && (
         <AddCodeStep startIndex={startIndex} backendId={backendId} />
       )}
     </div>

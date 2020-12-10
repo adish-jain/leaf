@@ -3,10 +3,7 @@ import "firebase";
 import { initFirebaseAdmin } from "../initFirebase";
 import { getDraftContent } from "../postUtils";
 import {
-  draftBackendRepresentation,
-  timeStamp,
-  folderObject,
-  fileObject,
+
 } from "../../typescript/types/app_types";
 const admin = require("firebase-admin");
 import { getUser, getUsernameFromUid } from "../userUtils";

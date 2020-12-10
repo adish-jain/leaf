@@ -72,4 +72,5 @@ export type draftMetaData = {
   errored: boolean;
   published: boolean;
   postId?: string;
+  profileImage?: string;
 };

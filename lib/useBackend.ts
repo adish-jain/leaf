@@ -170,45 +170,6 @@ export function useBackend(authenticated: boolean, draftId: string) {
       //   let resJSON = await res.json();
     });
   }
-
-  async function addCodeStepImage(selectedImage: any, stepId: string) {
-    let data = {
-      requestedAPI: "saveImage",
-      draftId: draftId,
-      stepId: stepId,
-      imageFile: await toBase64(selectedImage),
-    };
-
-    await fetch("/api/endpoint", {
-      method: "POST",
-      headers: new Headers({
-        "Content-Type": "application/json",
-      }),
-      body: JSON.stringify(data),
-    })
-      .then(async (res: any) => {
-        let resJSON = await res.json();
-        let url = resJSON.url;
-        console.log("new url is ", url);
-        let optimisticSteps = storedSteps!.slice();
-        optimisticSteps[editingStep].imageURL = url;
-        console.log("updated image");
-        mutate(optimisticSteps, false);
-
-        await mutate(async (mutateState) => {
-          // let's update the todo with ID `1` to be completed,
-          // this API returns the updated data
-          let newItem: contentBlock;
-
-          return insertItem(mutateState, newItem, atIndex + 1);
-        }, false);
-      })
-      .catch((error: any) => {
-        console.log(error);
-        console.log("upload failed.");
-      });
-  }
-
   function changeEditingBlock(backendId: string) {
     const newIndex = findBlockById(backendId);
     changeEditingBlockIndex(newIndex);

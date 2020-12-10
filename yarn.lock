@@ -7327,7 +7327,7 @@ promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
-prop-types@15.7.2, prop-types@^15.5.6, prop-types@^15.5.8, prop-types@^15.6.2, prop-types@^15.7.2:
+prop-types@15.7.2, prop-types@^15.5.6, prop-types@^15.5.8, prop-types@^15.6.0, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
@@ -7516,6 +7516,14 @@ react-dom@16.13.1, react-dom@^16.13.1:
     object-assign "^4.1.1"
     prop-types "^15.6.2"
     scheduler "^0.19.1"
+
+react-google-login@^5.1.22:
+  version "5.1.25"
+  resolved "https://registry.yarnpkg.com/react-google-login/-/react-google-login-5.1.25.tgz#6bf5b4c8ce4e9e64a4c80eb14b80c9c6bd07bf9b"
+  integrity sha512-N7SZkjTEX9NsC3hywXs68SPJWAHo6M19Bs1OIFPirG0yomGF7KnbKjSqoiIfxz1V7fKAt8bkfBAzogwnGWYTeQ==
+  dependencies:
+    "@types/react" "*"
+    prop-types "^15.6.0"
 
 react-intersection-observer@^8.26.2:
   version "8.26.2"

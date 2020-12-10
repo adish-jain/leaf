@@ -120,7 +120,7 @@ function SideButtons(props: {
   updateHovered: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const { deleteBlock } = useContext(DraftContext);
-  let { lastStep, firstStep, hovered, backendId, updateHovered } = props;
+  let { firstStep, hovered, backendId, updateHovered } = props;
   return (
     <AnimatePresence>
       {hovered && (
@@ -154,7 +154,7 @@ function SideButtons(props: {
               >
                 <span>X</span>
               </button>
-              {!firstStep && (
+              {/* {!firstStep && (
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -164,8 +164,8 @@ function SideButtons(props: {
                 >
                   <span>↑</span>
                 </button>
-              )}
-              {!lastStep && (
+              )} */}
+              {/* {!lastStep && (
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -176,7 +176,7 @@ function SideButtons(props: {
                   {" "}
                   <span>↓</span>
                 </button>
-              )}
+              )} */}
             </div>
           </div>
         </motion.div>

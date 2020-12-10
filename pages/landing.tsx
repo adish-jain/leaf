@@ -206,7 +206,7 @@ function Post(props: {
       <div className={landingStyles["EditButtons"]}>
         <button
           onClick={(e) => props.deletePost(postUid)}
-          className={headerStyles["Edit"]}
+          className={landingStyles["Edit"]}
         >
           X
         </button>

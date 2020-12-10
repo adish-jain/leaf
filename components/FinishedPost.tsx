@@ -15,19 +15,19 @@ import { DraftContext } from "../contexts/draft-context";
 import finishedPostStyles from "../styles/finishedpost.module.scss";
 import { ContentContext } from "../contexts/finishedpost/content-context";
 import { PublishedFilesContext } from "../contexts/finishedpost/files-context";
-
-type StepDimensions = {
-  topY: number;
-  bottomY: number;
-};
-
-/*
-This array keeps track of the top and bottom position of every step.
-We use this array to determine what step is currently in the middle of
-the screen.
-*/
-
-const STEP_MARGIN = 64;
+import Link from "next/link";
+import dayjs from "dayjs";
+import {
+  contentBlock,
+  contentSection,
+} from "../typescript/types/frontend/postTypes";
+import { FrontendSectionType } from "../typescript/enums/frontend/postEnums";
+import {
+  CodeSection,
+  TextSection as TextSectionType,
+} from "../typescript/types/frontend/postTypes";
+import PublishedCodeStepSection from "./PublishedCodeSection";
+import PublishedTextSection from "./PublishedTextSection";
 
 const FinishedPost = (props: FinishedPostProps) => {
   const {
@@ -37,30 +37,50 @@ const FinishedPost = (props: FinishedPostProps) => {
     title,
     files,
     postContent,
+    profileImage,
+    publishedAtSeconds,
+    tags,
   } = props;
-
   // scrollspeed is used to determine whether we should animate transitions
   // or scrolling to highlighted lines. If a fast scroll speed, we skip
   // animations.
 
   const [selectedFileIndex, updateFileIndex] = useState(0);
   const [selectedContentIndex, updateContentIndex] = useState(0);
+  const [scrollSpeed, updateScrollSpeed] = useState(0);
+  const scrollingRef = React.useRef<HTMLDivElement>(null);
+
+  const handleScroll = useCallback((event) => {
+    // update scroll speed
+    let scrollSpeed = checkScrollSpeed();
+    updateScrollSpeed(scrollSpeed);
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [handleScroll]);
 
   const { authenticated, error, loading } = useLoggedIn();
   return (
     <div className={appStyles["finishedpost-wrapper"]}>
       <FinishedPostHeader
-        updateShowPreview={updatePreviewMode}
+        updatePreviewMode={updatePreviewMode}
         previewMode={previewMode}
         authenticated={authenticated}
         username={username}
       />
-      <PostTitle title={title} />
       <ContentContext.Provider
         value={{
           selectedContentIndex,
           updateContentIndex,
           postContent,
+          username,
+          profileImage,
+          publishedAtSeconds,
+          tags,
         }}
       >
         <PublishedFilesContext.Provider
@@ -70,12 +90,64 @@ const FinishedPost = (props: FinishedPostProps) => {
             selectedFileIndex,
           }}
         >
-          <div className={finishedPostStyles["content"]}></div>
+          <div className={finishedPostStyles["introduction"]}>
+            <PostTitle title={title} />
+            <PostIntro />
+            <PostTags />
+          </div>
+          <PostContent scrollSpeed={scrollSpeed} />
         </PublishedFilesContext.Provider>
       </ContentContext.Provider>
     </div>
   );
 };
+
+function PostContent(props: { scrollSpeed: number }) {
+  const { scrollSpeed } = props;
+  const { postContent } = useContext(ContentContext);
+  const arrangedPostContent = arrangeContentList(postContent);
+
+  return (
+    <div>
+      {arrangedPostContent.map((contentElement, index: number) => {
+        switch (contentElement.type) {
+          case FrontendSectionType.TextSection: {
+            contentElement.type;
+            const slateContent = (contentElement as contentSection &
+              TextSectionType).slateSection.slateContent;
+            const backendId = (contentElement as contentSection &
+              TextSectionType).slateSection.backendId;
+            const startIndex = contentElement.startIndex;
+            return (
+              <PublishedTextSection
+                slateContent={slateContent}
+                key={backendId}
+                backendId={backendId}
+                startIndex={startIndex}
+              />
+            );
+          }
+          case FrontendSectionType.CodeSection: {
+            const codeSteps = (contentElement as contentSection & CodeSection)
+              .codeSteps;
+            const startIndex = contentElement.startIndex;
+            return (
+              <PublishedCodeStepSection
+                scrollSpeed={scrollSpeed}
+                codeSteps={codeSteps}
+                key={codeSteps[0].backendId}
+                startIndex={startIndex}
+              />
+            );
+          }
+
+          default:
+            return "test";
+        }
+      })}
+    </div>
+  );
+}
 
 export default FinishedPost;
 
@@ -92,4 +164,86 @@ function PostTitle(props: { title: string }) {
   );
 }
 
-function PostContent() {}
+function PostIntro() {
+  const { username, profileImage, publishedAtSeconds } = useContext(
+    ContentContext
+  );
+  let date = new Date(publishedAtSeconds * 1000);
+  let formattedDate = dayjs(date).format("MMMM D YYYY");
+  return (
+    <div className={finishedPostStyles["published-by"]}>
+      <span> {"Published by "}</span>
+      <Link href={`/${username}`}>
+        <div className={finishedPostStyles["author-name-and-img"]}>
+          {profileImage !== "" && (
+            <div className={finishedPostStyles["published-post-author-img"]}>
+              <img src={profileImage} />
+            </div>
+          )}
+          <a>{username}</a>
+        </div>
+      </Link>
+      <span>on {formattedDate}</span>
+    </div>
+  );
+}
+
+function PostTags(props: {}) {
+  const { tags } = useContext(ContentContext);
+  return (
+    <div className={finishedPostStyles["post-tags"]}>
+      {tags === null || tags === undefined ? (
+        <div></div>
+      ) : (
+        tags.map((tag: string) => (
+          <div key={tag} className={finishedPostStyles["post-tag"]}>
+            {tag}
+          </div>
+        ))
+      )}
+    </div>
+  );
+}
+
+function arrangeContentList(draftContent: contentBlock[]): contentSection[] {
+  // iterate through array
+
+  // if code step type
+  // add to sub array
+
+  // if not code step type, break sub array
+  let finalArray: contentSection[] = [];
+  let subArray: contentBlock[] = [];
+  let runningSum = 0;
+  for (let i = 0; i < draftContent.length; i++) {
+    if (draftContent[i].type === "codestep") {
+      // aggregate codesteps into subArray
+      subArray.push(draftContent[i]);
+      // runningSum += 1;
+    } else {
+      if (subArray.length > 0) {
+        finalArray.push({
+          type: FrontendSectionType.CodeSection,
+          codeSteps: subArray,
+          startIndex: runningSum,
+        });
+        runningSum += subArray.length;
+      }
+      subArray = [];
+      finalArray.push({
+        type: FrontendSectionType.TextSection,
+        slateSection: draftContent[i],
+        startIndex: runningSum,
+      });
+      runningSum += 1;
+    }
+  }
+  if (subArray.length > 0) {
+    finalArray.push({
+      type: FrontendSectionType.CodeSection,
+      codeSteps: subArray,
+      startIndex: runningSum,
+    });
+  }
+  return finalArray;
+}

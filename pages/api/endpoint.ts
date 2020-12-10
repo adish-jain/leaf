@@ -115,7 +115,7 @@ export default sentryHandler(
         return handleLogout(req, res);
       }
 
-    /*
+      /*
     ------ Settings------
     */
 
@@ -180,9 +180,6 @@ export default sentryHandler(
         return handleDeleteDraftContent(req, res);
       }
 
-      case "reorderDraftContent": {
-        return reOrderDraftContent(req, res);
-      }
       /* 
     ------ Drafts ------
     */

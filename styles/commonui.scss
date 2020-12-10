@@ -23,12 +23,12 @@ $codeeditor-background: #2f3437;
 }
 
 @mixin red-button {
-  background: #FDF5F2;
-  border: 1px solid #F7C6C4;
+  background: #fdf5f2;
+  border: 1px solid #f7c6c4;
   box-sizing: border-box;
   border-radius: 4px;
   padding: 4px;
-  color: #E9595B;
+  color: #e9595b;
   font-size: 12px;
   cursor: pointer;
   box-shadow: 0px 4px 16px #edece9;
@@ -57,11 +57,13 @@ $codeeditor-background: #2f3437;
     text-decoration: none;
     transition: all ease-in-out 0.2s;
     padding: 4px;
+    cursor: pointer;
   }
 
   a:visited {
     color: #000000;
     transition: all ease-in-out 0.2s;
+    cursor: pointer;
   }
 
   a:hover {
@@ -71,5 +73,6 @@ $codeeditor-background: #2f3437;
     background-color: #349ae9;
     color: white;
     transition: all ease-in-out 0.2s;
+    cursor: pointer;
   }
 }

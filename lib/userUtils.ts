@@ -240,13 +240,16 @@ export async function getUsernameFromUid(uid: string): Promise<string> {
   return username;
 }
 
-export async function getProfileImageFromUid(uid: string) {
+export async function getProfileImageFromUid(uid: string): Promise<string> {
   let userRef = await db.collection("users").doc(uid);
-  let profileImage = await userRef.get().then(function (userSnapshot: any) {
-    let data = userSnapshot.data();
-    return data.profileImage;
-  });
-  return profileImage;
+  let profileImage: string | undefined = await userRef
+    .get()
+    .then(function (userSnapshot: any) {
+      let data = userSnapshot.data();
+      return data.profileImage;
+    });
+
+  return profileImage || "";
 }
 
 export async function checkUsernameDNE(username: string): Promise<boolean> {

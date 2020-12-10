@@ -1,11 +1,11 @@
 import React, { useState, Component, useContext, createContext } from "react";
 const fetch = require("node-fetch");
 import imageViewStyles from "../styles/imageview.module.scss";
-let selectedImage: any;
 import { File, Step, Lines } from "../typescript/types/app_types";
 import { motion, AnimatePresence } from "framer-motion";
 import { DraftContext } from "../contexts/draft-context";
 import { ContentBlockType } from "../typescript/enums/backend/postEnums";
+import { toBase64 } from "../lib/imageUtils";
 
 type ImageViewProps = {};
 
@@ -14,9 +14,11 @@ type ImageViewState = {
   uploadFailed: boolean;
   imageName: string;
 };
-
+let selectedImage: any;
 export default function ImageView(props: ImageViewProps) {
-  const { currentlyEditingBlock } = useContext(DraftContext);
+  const { currentlyEditingBlock, updateSlateSectionToBackend } = useContext(
+    DraftContext
+  );
   const [state, setState] = useState({
     upload: false,
     uploadFailed: false,
@@ -45,26 +47,75 @@ export default function ImageView(props: ImageViewProps) {
         >
           X
         </button>
-        <img src={currentlyEditingStep.imageURL}></img>
+        {currentlyEditingBlock && (
+          <img src={currentlyEditingBlock?.imageUrl}></img>
+        )}
       </div>
     );
   };
 
   async function handleImageDelete() {
-    deleteStepImage();
+    const backendId = currentlyEditingBlock?.backendId;
+    if (!backendId) {
+      return;
+    }
     setState({ ...state, upload: false });
+    updateSlateSectionToBackend(
+      backendId,
+      undefined,
+      undefined,
+      undefined,
+      null
+    );
   }
 
   async function handleImageSubmit() {
+    const backendId = currentlyEditingBlock?.backendId;
+    if (!backendId) {
+      return;
+    }
     // 5 MB max on image uploads
     if (selectedImage.size > 5000000) {
       setState({ ...state, uploadFailed: true });
     } else {
       // optimistic mutate
-      let url = URL.createObjectURL(selectedImage);
+      let optimisticUrl = URL.createObjectURL(selectedImage);
+      updateSlateSectionToBackend(
+        backendId,
+        undefined,
+        undefined,
+        undefined,
+        optimisticUrl
+      );
       setState({ ...state, upload: false });
-      await addStepImage(selectedImage, currentlyEditingStep.stepId);
-      // this.setState({ upload: false });
+
+      let data = {
+        requestedAPI: "saveImage",
+        imageFile: await toBase64(selectedImage),
+      };
+
+      await fetch("/api/endpoint", {
+        method: "POST",
+        headers: new Headers({
+          "Content-Type": "application/json",
+        }),
+        body: JSON.stringify(data),
+      })
+        .then(async (res: any) => {
+          let resJSON = await res.json();
+          let newUrl = resJSON.url;
+          updateSlateSectionToBackend(
+            backendId,
+            undefined,
+            undefined,
+            undefined,
+            newUrl
+          );
+        })
+        .catch((error: any) => {
+          console.log(error);
+          console.log("upload failed.");
+        });
     }
   }
 
@@ -128,6 +179,7 @@ export default function ImageView(props: ImageViewProps) {
 
   // const show = currentlyEditingBlock?.imageUrl ? true : false;
   const show = currentlyEditingBlock?.type === ContentBlockType.CodeSteps;
+  console.log(currentlyEditingBlock?.imageUrl);
   return (
     <div className={imageViewStyles["options-wrapper"]}>
       <AnimatePresence>

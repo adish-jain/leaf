@@ -8,8 +8,8 @@ import { HeaderUnAuthenticated } from "../components/Header";
 // import { GoogleLogin } from "react-google-login";
 const GoogleLogin = dynamic(import("react-google-login"), { ssr: false });
 import { motion, AnimatePresence } from "framer-motion";
-import "../styles/header.scss";
-import "../styles/login.scss";
+import headerStyles from "../styles/header.module.scss";
+import loginStyles from "../styles/login.module.scss";
 
 let NEXT_PUBLIC_OAUTH_CLIENT_ID = process.env.NEXT_PUBLIC_OAUTH_CLIENT_ID;
 
@@ -30,7 +30,12 @@ export default function SignUp() {
     if (e.target.value !== "") {
       changeNormalSignup(true);
     }
-    if (e.target.value === "" && username === "" && password ==  "" && verifyPassword == "") {
+    if (
+      e.target.value === "" &&
+      username === "" &&
+      password == "" &&
+      verifyPassword == ""
+    ) {
       changeNormalSignup(false);
     }
     changeEmail(e.target.value);
@@ -38,7 +43,12 @@ export default function SignUp() {
 
   const handleChangeUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateErrored(false);
-    if (e.target.value === "" && email === "" && password ==  "" && verifyPassword == "") {
+    if (
+      e.target.value === "" &&
+      email === "" &&
+      password == "" &&
+      verifyPassword == ""
+    ) {
       changeNormalSignup(false);
     }
     changeUsername(e.target.value);
@@ -46,7 +56,12 @@ export default function SignUp() {
 
   const handleChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateErrored(false);
-    if (e.target.value === "" && username === "" && email ==  "" && verifyPassword == "") {
+    if (
+      e.target.value === "" &&
+      username === "" &&
+      email == "" &&
+      verifyPassword == ""
+    ) {
       changeNormalSignup(false);
     }
     changePassword(e.target.value);
@@ -56,7 +71,12 @@ export default function SignUp() {
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     updateErrored(false);
-    if (e.target.value === "" && username === "" && password ==  "" && email == "") {
+    if (
+      e.target.value === "" &&
+      username === "" &&
+      password == "" &&
+      email == ""
+    ) {
       changeNormalSignup(false);
     }
     changeVerifyPassword(e.target.value);
@@ -80,7 +100,7 @@ export default function SignUp() {
       requestedAPI: "signup",
       email: email,
       username: username,
-      password: password
+      password: password,
     };
     fetch("/api/endpoint", {
       method: "POST",
@@ -110,14 +130,16 @@ export default function SignUp() {
   const responseGoogle = (response: any) => {
     if (response.error) {
       if (response.error === "idpiframe_initialization_failed") {
-        updateErrorMsg("Please enable 3rd party cookies to sign up with Google");
+        updateErrorMsg(
+          "Please enable 3rd party cookies to sign up with Google"
+        );
         updateErrored(true);
-      } 
+      }
       return;
     }
     let data = {
       requestedAPI: "googleAuthentication",
-      tokenId: response.tokenId
+      tokenId: response.tokenId,
     };
     fetch("/api/endpoint", {
       method: "POST",
@@ -126,23 +148,23 @@ export default function SignUp() {
       credentials: "same-origin",
       body: JSON.stringify(data),
     })
-    .then((res) => {
-      if (res.status === 200) {
-        updateErrored(false);
-        router.push("/landing");
-      }
-      if (res.status === 403) {
-        res.json().then((resJson) => {
-          updateErrored(true);
-          updateErrorMsg(resJson.errorMsg);
-          changeSigningUp(false);
-        });
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }  
+      .then((res) => {
+        if (res.status === 200) {
+          updateErrored(false);
+          router.push("/landing");
+        }
+        if (res.status === 403) {
+          res.json().then((resJson) => {
+            updateErrored(true);
+            updateErrorMsg(resJson.errorMsg);
+            changeSigningUp(false);
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return (
     <div className="container">
@@ -159,7 +181,7 @@ export default function SignUp() {
           }}
         />
       </Head>
-      <main className={"LoginMain"}>
+      <main className={loginStyles["LoginMain"]}>
         <HeaderUnAuthenticated
           explore={true}
           login={true}
@@ -186,8 +208,8 @@ export default function SignUp() {
               duration: 0.4,
             }}
           >
-            <div className={"Login"}>
-              <div className={"LoginBox"}>
+            <div className={loginStyles["Login"]}>
+              <div className={loginStyles["LoginBox"]}>
                 <h1>Sign Up</h1>
                 <GoogleLogin
                   // @ts-ignore
@@ -195,29 +217,36 @@ export default function SignUp() {
                   buttonText="Continue with Google"
                   onSuccess={responseGoogle}
                   onFailure={responseGoogle}
-                  cookiePolicy={'single_host_origin'}
+                  cookiePolicy={"single_host_origin"}
                   theme="light"
                 />
-                <div className={"FormWrapper"}>
-                  <div className={"Bar"}></div>
-                  <div className={"InputBox"}>
+                <div className={loginStyles["FormWrapper"]}>
+                  <div className={loginStyles["Bar"]}></div>
+                  <div className={loginStyles["InputBox"]}>
                     <label>Email</label>
-                    <input id="email" value={email} onChange={handleChangeEmail} />
+                    <input
+                      id="email"
+                      value={email}
+                      onChange={handleChangeEmail}
+                    />
                   </div>
-                  {normalSignup && 
-                    <NormalSignup 
+                  {normalSignup && (
+                    <NormalSignup
                       username={username}
                       handleChangeUsername={handleChangeUsername}
                       handleChangePassword={handleChangePassword}
                       handleChangeVerifyPassword={handleChangeVerifyPassword}
                     />
-                  }
+                  )}
                   {!errored ? (
                     <div></div>
                   ) : (
-                    <p className={"ErrorMessage"}>{errorMsg}</p>
+                    <p className={loginStyles["ErrorMessage"]}>{errorMsg}</p>
                   )}
-                  <button className={"LoginButton"} onClick={handleClick}>  
+                  <button
+                    className={loginStyles["LoginButton"]}
+                    onClick={handleClick}
+                  >
                     {signingUp ? "Signing Up..." : "Signup"}
                   </button>
                 </div>
@@ -225,13 +254,12 @@ export default function SignUp() {
             </div>
           </motion.div>
         </AnimatePresence>
-        </main>
-      </div>
-
+      </main>
+    </div>
   );
 }
 
-function NormalSignup (props: {
+function NormalSignup(props: {
   username: string;
   handleChangeUsername: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleChangePassword: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -254,7 +282,7 @@ function NormalSignup (props: {
         }}
       >
         <div>
-          <div className={"InputBox"}>
+          <div className={loginStyles["InputBox"]}>
             <label>Username</label>
             <input
               id="username"
@@ -262,7 +290,7 @@ function NormalSignup (props: {
               onChange={props.handleChangeUsername}
             />
           </div>
-          <div className={"InputBox"}>
+          <div className={loginStyles["InputBox"]}>
             <label>Password</label>
             <input
               onChange={props.handleChangePassword}
@@ -270,7 +298,7 @@ function NormalSignup (props: {
               id="password"
             ></input>
           </div>
-          <div className={"InputBox"}>
+          <div className={loginStyles["InputBox"]}>
             <label>Confirm Password</label>
             <input
               onChange={props.handleChangeVerifyPassword}

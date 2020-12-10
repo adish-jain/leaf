@@ -12,12 +12,13 @@ import {
 import { Dispatch, SetStateAction, useContext } from "react";
 import { DraftContext } from "../contexts/draft-context";
 import { useInView } from "react-intersection-observer";
+import { PreviewContext } from "./preview-context";
 export default function CodeStepSection(props: {
   codeSteps: contentBlock[];
   startIndex: number;
 }) {
   const [ref, inView, entry] = useInView({});
-
+  const { previewMode } = useContext(PreviewContext);
   const { codeSteps, startIndex } = props;
   return (
     <div ref={ref} className={codeStepSectionStyles["codestep-section"]}>

@@ -1,4 +1,4 @@
-@import 'commonui.scss';
+@import "commonui.scss";
 
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
@@ -19,8 +19,8 @@
 /* Extra large devices (large laptops and desktops, 1200px and up) */
 @media only screen and (min-width: 1200px) {
   .editor-wrapper {
-    min-width: 520px;
-    max-width: 520px;
+    // min-width: 520px;
+    // max-width: 520px;
   }
 }
 
@@ -38,6 +38,7 @@
   position: sticky;
   top: 4vh;
   display: flex;
+  width: 52%;
   flex-direction: column;
   border: 1px solid $leaf-light-gray;
 }

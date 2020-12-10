@@ -96,7 +96,8 @@
 /* Tag Filter Dropdown */
 .filter {
   overflow: hidden;
-  font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 
 .filter a {
@@ -253,7 +254,8 @@
   padding: 5px;
   word-wrap: normal;
 
-  font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   font-style: normal;
   font-weight: bold;
   font-size: 25px;
@@ -270,7 +272,8 @@
   margin-left: 10px;
   padding: 5px;
 
-  font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   font-style: italic;
   font-weight: normal;
   font-size: 15px;
@@ -298,7 +301,8 @@
     border-radius: 3.195876121520996px;
     margin-right: 10px;
 
-    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
     font-style: normal;
     font-weight: normal;
     font-size: 12px;
@@ -329,5 +333,18 @@
 
   .post-author-name-and-img:hover {
     color: $leaf-dark-blue;
+  }
+}
+
+.published-post-author-img {
+  img {
+    width: 28px;
+    height: 28px;
+    border-radius: 50px;
+    margin-right: 8px;
+  }
+
+  img:hover {
+    cursor: pointer;
   }
 }

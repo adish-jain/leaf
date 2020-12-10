@@ -3,7 +3,7 @@ import { useLoggedIn } from "../lib/UseLoggedIn";
 import { HeaderUnAuthenticated } from "../components/Header";
 import Header from "../components/Header";
 import { useRouter } from "next/router";
-import "../styles/explore.scss";
+import exploreStyles from "../styles/explore.module.scss";
 import useSWR from "swr";
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -70,12 +70,12 @@ export default function Pages() {
   }, [postsData]);
 
   return (
-    <div className="container">
+    <div className={exploreStyles["container"]}>
       <Head>
         <title>Explore</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={"explore-main-wrapper"}>
+      <main className={exploreStyles["explore-main-wrapper"]}>
         {authenticated ? (
           <Header
             username={username}
@@ -87,7 +87,7 @@ export default function Pages() {
           <HeaderUnAuthenticated login={true} signup={true} about={true} />
         )}
         <TitleText />
-        <div className={"search-and-filter"}>
+        <div className={exploreStyles["search-and-filter"]}>
           <AnimatePresence>
             <motion.div
               initial={{
@@ -106,7 +106,7 @@ export default function Pages() {
               <SearchBar updateSearchFilter={updateSearchFilter} />
             </motion.div>
           </AnimatePresence>
-          <div className={"selections"}>
+          <div className={exploreStyles["selections"]}>
             <AnimatePresence>
               <motion.div
                 initial={{
@@ -158,10 +158,7 @@ export default function Pages() {
             </AnimatePresence>
           </div>
         </div>
-        <DisplayPosts
-          posts={filteredPosts}
-          updateTagFilter={updateTagFilter}
-        />
+        <DisplayPosts posts={filteredPosts} updateTagFilter={updateTagFilter} />
       </main>
     </div>
   );
@@ -169,8 +166,10 @@ export default function Pages() {
 
 function TitleText() {
   return (
-    <div className={"explore-title"}>
-      <div className={"explore-title-text"}>Discover Library</div>
+    <div className={exploreStyles["explore-title"]}>
+      <div className={exploreStyles["explore-title-text"]}>
+        Discover Library
+      </div>
     </div>
   );
 }
@@ -190,7 +189,9 @@ function searchAndFilterPosts(
     newPosts = Array.from(newPosts).filter(
       (post: Post) => typeof post["tags"] !== "undefined"
     );
-    newPosts = newPosts.filter((post: Post) => post["tags"].includes(tagFilter));
+    newPosts = newPosts.filter((post: Post) =>
+      post["tags"].includes(tagFilter)
+    );
   }
   switch (sortFilter) {
     case "Date": {
@@ -238,11 +239,13 @@ function searchAndFilterPosts(
 }
 
 // TODO want to implement google-search like suggestions for tags
-function SearchBar(props: { updateSearchFilter: Dispatch<SetStateAction<string>> }) {
+function SearchBar(props: {
+  updateSearchFilter: Dispatch<SetStateAction<string>>;
+}) {
   return (
-    <div className={"search"}>
+    <div className={exploreStyles["search"]}>
       <input
-        className={"search-bar"}
+        className={exploreStyles["search-bar"]}
         placeholder="Search for a title"
         onChange={(e) => props.updateSearchFilter(e.target.value)}
       />
@@ -282,10 +285,10 @@ function TagSelect(props: {
   const allTags = [backend, data, lang, mobile, webdev, other];
   const order = ["Backend", "Data", "Languages", "Mobile", "Web", "Other"];
   return (
-    <div className={"filter"}>
-      <div className={"filter-dropdown"}>
+    <div className={exploreStyles["filter"]}>
+      <div className={exploreStyles["filter-dropdown"]}>
         <button
-          className={"filter-dropbtn"}
+          className={exploreStyles["filter-dropbtn"]}
           onClick={function () {
             props.toggleTagSelectOpen(!props.tagSelectOpened);
             props.toggleSortSelectOpen(false);
@@ -334,15 +337,15 @@ function TagSelectDropDown(props: {
   updateTagFilter: Dispatch<SetStateAction<string>>;
 }) {
   return (
-    <div className={"filter-dropdown-content"}>
-      <div className={"filter-row"}>
+    <div className={exploreStyles["filter-dropdown-content"]}>
+      <div className={exploreStyles["filter-row"]}>
         {props.allTags.map((tagsArr: Array<string>, index: number) => (
-          <div className={"filter-column"}>
+          <div className={exploreStyles["filter-column"]}>
             <h3>{props.order[index]}</h3>
             {tagsArr.map((tag: string) =>
               tag === props.tagFilter ? (
                 <a
-                  className={"filter-selected-option"}
+                  className={exploreStyles["filter-selected-option"]}
                   onClick={(e) => props.updateTagFilter(tag)}
                 >
                   {tag}
@@ -368,9 +371,9 @@ function SortSelect(props: {
   const sortOptions = ["Date", "Recent", "Title", "Author"];
   return (
     <div>
-      <div className={"sort-dropdown"}>
+      <div className={exploreStyles["sort-dropdown"]}>
         <button
-          className={"sort-dropbtn"}
+          className={exploreStyles["sort-dropbtn"]}
           onClick={function () {
             props.toggleSortSelectOpen(!props.sortSelectOpened);
             props.toggleTagSelectOpen(false);
@@ -417,12 +420,12 @@ function SortSelectDropDown(props: {
   updateSortFilter: Dispatch<SetStateAction<string>>;
 }) {
   return (
-    <div className={"sort-dropdown-content"}>
+    <div className={exploreStyles["sort-dropdown-content"]}>
       <div>
         {props.sortOptions.map((option: string) =>
           option === props.sortFilter ? (
             <a
-              className={"sort-selected-option"}
+              className={exploreStyles["sort-selected-option"]}
               onClick={(e) => props.updateSortFilter(option)}
             >
               {option}
@@ -451,19 +454,21 @@ function DisplayPosts(props: {
             {Array.from(props.posts).map((post: Post) => {
               return (
                 <div
-                  className={"post-explore"}
+                  className={exploreStyles["post-explore"]}
                   onClick={() => router.push(post["postURL"])}
                 >
-                  <div className={"post-title-explore"}>{post["title"]}</div>
-                  <div className={"post-date"}>
+                  <div className={exploreStyles["post-title-explore"]}>
+                    {post["title"]}
+                  </div>
+                  <div className={exploreStyles["post-date"]}>
                     {dayjs(post["publishedAt"]).format("MMMM D YYYY")}
                   </div>
-                  <div className={"post-tags-author"}>
+                  <div className={exploreStyles["post-tags-author"]}>
                     {post["tags"] !== undefined ? (
-                      ((post["tags"] as string[])).map((tag: string) => {
+                      (post["tags"] as string[]).map((tag: string) => {
                         return (
                           <div
-                            className={"post-tag"}
+                            className={exploreStyles["post-tag"]}
                             onClick={function (e) {
                               props.updateTagFilter(tag);
                               e.stopPropagation();
@@ -476,18 +481,20 @@ function DisplayPosts(props: {
                     ) : (
                       <div></div>
                     )}
-                     <div 
-                      className={"post-author-name-and-img"}
+                    <div
+                      className={exploreStyles["post-author-name-and-img"]}
                       onClick={function (e) {
                         router.push(post["username"]);
                         e.stopPropagation();
                       }}
-                     >
-                      {post["profileImage"] !== undefined &&
-                        <div className={"published-post-author-img"}>
-                          <img src={post["profileImage"]}/>
+                    >
+                      {post["profileImage"] !== undefined && (
+                        <div
+                          className={exploreStyles["published-post-author-img"]}
+                        >
+                          <img src={post["profileImage"]} />
                         </div>
-                      }
+                      )}
                       <div>{post["username"]}</div>
                     </div>
                   </div>
@@ -500,6 +507,10 @@ function DisplayPosts(props: {
     );
   } catch {
     console.log("error fetching posts");
-    return <div><h3>Error Fetching Posts</h3></div>;
+    return (
+      <div>
+        <h3>Error Fetching Posts</h3>
+      </div>
+    );
   }
 }

@@ -42,21 +42,24 @@ export async function getDraftMetadata(
 ): Promise<draftMetaData> {
   let result: draftMetaData;
   try {
-    const [draftRef, username] = await Promise.all([
+    const [draftRef, username, profileImage] = await Promise.all([
       db.collection("users").doc(uid).collection("drafts").doc(draftId).get(),
       getUsernameFromUid(uid),
+      getProfileImageFromUid(uid),
     ]);
     let draftData: draftFrontendRepresentation = draftRef.data();
     let title = draftData.title as string;
     let published: boolean = draftData.published;
     let createdAt: timeStamp = draftData.createdAt;
-    // let postId: string = draftData.postId;
+    let postId: string = draftData.postId || "";
     result = {
       title: title,
       published: published,
       createdAt: createdAt,
       username: username,
       errored: false,
+      profileImage: profileImage,
+      postId: postId,
     };
   } catch {
     result = {
@@ -68,6 +71,7 @@ export async function getDraftMetadata(
       },
       username: "username",
       errored: true,
+      profileImage: "",
     };
   }
 
@@ -162,6 +166,7 @@ export async function getDraftContent(
           fileId: resultsJSON.fileId as string,
           lines: resultsJSON.lines,
           backendId: result.id,
+          imageUrl: resultsJSON.imageUrl,
         });
       });
       return results;
@@ -218,11 +223,10 @@ export async function getDraftDataFromPostId(username: string, postId: string) {
       return myPostRef.id;
     });
 
-  let steps = await getUserStepsForDraft(uid, draftId);
   let otherDraftData = await getAllDraftDataHandler(uid, draftId);
 
   // merge steps with main draft data
-  return { ...otherDraftData, steps };
+  return { ...otherDraftData };
 }
 
 export async function getDraftImages(uid: string, draftId: string) {

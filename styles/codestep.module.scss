@@ -24,3 +24,21 @@
   // display: flex;
   justify-content: center;
 }
+
+.published-steps {
+  width: 48%;
+}
+
+.published {
+
+  border-radius: 8px;
+
+  padding: 24px;
+  margin-bottom: 40px;
+  color: $gray-text;
+  border: 1px solid white;
+  transition: all 0.2s ease-in-out;
+}
+
+.selected {
+}

@@ -23,7 +23,7 @@ export default async function createDraftHandler(
   let { uid } = await getUser(req, res);
   let username = await getUsernameFromUid(uid);
 
-  let newDraft: draftFrontendRepresentation = {
+  let newDraft = {
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
     title: "Untitled",
     draftContent: [

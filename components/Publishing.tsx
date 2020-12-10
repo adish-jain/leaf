@@ -1,17 +1,19 @@
 import React, { Component, useContext } from "react";
 import TextareaAutosize from "react-autosize-textarea";
 import { NewStep } from "./NewStep";
-import StoredStep from "./StoredStep";
 const fetch = require("node-fetch");
 global.Headers = fetch.Headers;
 import Router from "next/router";
 import publishingStyles from "../styles/publishing.module.scss";
 import { File, Step, Lines } from "../typescript/types/app_types";
 import { contentBlock } from "../typescript/types/frontend/postTypes";
-import { DraftContext } from "../contexts/draft-context";
 import { CodeStep } from "../components/CodeStep";
 import { AnimateSharedLayout, motion } from "framer-motion";
 import { start } from "repl";
+import { DraftContent } from "./DraftContent";
+import { DraftContext } from "../contexts/draft-context";
+import Preview from "./Preview";
+import { PreviewContext } from "./preview-context";
 var shortId = require("shortid");
 
 type PublishingProps = {
@@ -28,10 +30,10 @@ export default function Publishing(props: PublishingProps) {
   const { codeSteps, startIndex } = props;
   const draftContext = useContext(DraftContext);
   const { currentlyEditingBlock } = draftContext;
-
+  const { previewMode } = useContext(PreviewContext);
   return (
     <div className={publishingStyles["publishing"]}>
-      <PublishingDescription />
+      {!previewMode && <PublishingDescription />}
       {/* <AnimateSharedLayout> */}
       <motion.div
         className={publishingStyles["codesteps"]}
@@ -51,10 +53,12 @@ export default function Publishing(props: PublishingProps) {
           );
         })}
       </motion.div>
-      <NewStep
-        lastStepId={codeSteps[codeSteps.length - 1].backendId}
-        lastIndex={startIndex + codeSteps.length - 1}
-      />
+      {!previewMode && (
+        <NewStep
+          lastStepId={codeSteps[codeSteps.length - 1].backendId}
+          lastIndex={startIndex + codeSteps.length - 1}
+        />
+      )}
       {/* </AnimateSharedLayout> */}
     </div>
   );

@@ -7,8 +7,8 @@ import { useRouter } from "next/router";
 // import { GoogleLogin } from "react-google-login";
 import { motion, AnimatePresence } from "framer-motion";
 const GoogleLogin = dynamic(import("react-google-login"), { ssr: false });
-import "../styles/header.scss";
-import "../styles/login.scss";
+import headerStyles from "../styles/header.module.scss";
+import loginStyles from "../styles/login.module.scss";
 
 let NEXT_PUBLIC_OAUTH_CLIENT_ID = process.env.NEXT_PUBLIC_OAUTH_CLIENT_ID;
 
@@ -146,56 +146,56 @@ export default function Login() {
           }}
         />
       </Head>
-        <main className={"LoginMain"}>
-          <HeaderUnAuthenticated
-            signup={true}
-            about={true}
-            explore={true}
-            login={false}
-          />
-          <AnimatePresence>
-            <motion.div
-              initial={{
-                opacity: 0,
-              }}
-              animate={{
-                opacity: 1,
-              }}
-              exit={{
-                opacity: 0,
-              }}
-              transition={{
-                duration: 0.4,
-              }}
-            >
-              <div className={"Login"}>
-                {forgotPassword ? (
-                  <ForgotPassword
-                    handleChangeEmail={handleChangeEmail}
-                    errored={errored}
-                    errorMessage={errorMessage}
-                    handleResetClick={handleResetClick}
-                    resetting={resetting}
-                    handleBackToLogin={handleBackToLogin}
-                  />
-                ) : (
-                  <LoginScreen
-                    handleChangeEmail={handleChangeEmail}
-                    errored={errored}
-                    loggingIn={loggingIn}
-                    errorMessage={errorMessage}
-                    handleLoginClick={handleLoginClick}
-                    handleChangePassword={handleChangePassword}
-                    handleForgotPassword={handleForgotPassword}
-                    updateErrorMessage={updateErrorMessage}
-                    updateErrored={updateErrored}
-                    router={router}
-                    normalLogin={normalLogin}
-                  />
-                )}
-              </div>
-            </motion.div>
-          </AnimatePresence>
+      <main className={loginStyles["LoginMain"]}>
+        <HeaderUnAuthenticated
+          signup={true}
+          about={true}
+          explore={true}
+          login={false}
+        />
+        <AnimatePresence>
+          <motion.div
+            initial={{
+              opacity: 0,
+            }}
+            animate={{
+              opacity: 1,
+            }}
+            exit={{
+              opacity: 0,
+            }}
+            transition={{
+              duration: 0.4,
+            }}
+          >
+            <div className={loginStyles["Login"]}>
+              {forgotPassword ? (
+                <ForgotPassword
+                  handleChangeEmail={handleChangeEmail}
+                  errored={errored}
+                  errorMessage={errorMessage}
+                  handleResetClick={handleResetClick}
+                  resetting={resetting}
+                  handleBackToLogin={handleBackToLogin}
+                />
+              ) : (
+                <LoginScreen
+                  handleChangeEmail={handleChangeEmail}
+                  errored={errored}
+                  loggingIn={loggingIn}
+                  errorMessage={errorMessage}
+                  handleLoginClick={handleLoginClick}
+                  handleChangePassword={handleChangePassword}
+                  handleForgotPassword={handleForgotPassword}
+                  updateErrorMessage={updateErrorMessage}
+                  updateErrored={updateErrored}
+                  router={router}
+                  normalLogin={normalLogin}
+                />
+              )}
+            </div>
+          </motion.div>
+        </AnimatePresence>
       </main>
     </div>
   );
@@ -210,22 +210,28 @@ function ForgotPassword(props: {
   resetting: boolean;
 }) {
   return (
-    <div className={"LoginBox"}>
+    <div className={loginStyles["LoginBox"]}>
       <h1>Password Reset</h1>
-      <div className={"FormWrapper"}>
-        <div className={"InputBox"}>
+      <div className={loginStyles["FormWrapper"]}>
+        <div className={loginStyles["InputBox"]}>
           <label>Email</label>
           <input onChange={props.handleChangeEmail}></input>
         </div>
         {!props.errored ? (
           <div></div>
         ) : (
-          <p className={"ErrorMessage"}>{props.errorMessage}</p>
+          <p className={loginStyles["ErrorMessage"]}>{props.errorMessage}</p>
         )}
-        <button className={"LoginButton"} onClick={props.handleResetClick}>
+        <button
+          className={loginStyles["LoginButton"]}
+          onClick={props.handleResetClick}
+        >
           {props.resetting ? "Reset Email Sent" : "Reset Password"}
         </button>
-        <div className={"ForgotPassword"} onClick={props.handleBackToLogin}>
+        <div
+          className={loginStyles["ForgotPassword"]}
+          onClick={props.handleBackToLogin}
+        >
           <br></br>Back to Login
         </div>
       </div>
@@ -249,14 +255,16 @@ function LoginScreen(props: {
   const responseGoogle = (response: any) => {
     if (response.error) {
       if (response.error === "idpiframe_initialization_failed") {
-        props.updateErrorMessage("Please enable 3rd party cookies to login with Google");
+        props.updateErrorMessage(
+          "Please enable 3rd party cookies to login with Google"
+        );
         props.updateErrored(true);
-      } 
+      }
       return;
     }
     let data = {
       requestedAPI: "googleAuthentication",
-      tokenId: response.tokenId
+      tokenId: response.tokenId,
     };
     fetch("/api/endpoint", {
       method: "POST",
@@ -265,21 +273,20 @@ function LoginScreen(props: {
       credentials: "same-origin",
       body: JSON.stringify(data),
     })
-    .then((res) => {
-      if (res.status === 200) {
-        props.router.push("/landing");
-      }
-      if (res.status === 403) {
-        res.json().then((resJson) => {
-        });
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }  
+      .then((res) => {
+        if (res.status === 200) {
+          props.router.push("/landing");
+        }
+        if (res.status === 403) {
+          res.json().then((resJson) => {});
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   return (
-    <div className={"LoginBox"}>
+    <div className={loginStyles["LoginBox"]}>
       <h1>Login</h1>
       <GoogleLogin
         // @ts-ignore
@@ -287,36 +294,42 @@ function LoginScreen(props: {
         buttonText="Continue with Google"
         onSuccess={responseGoogle}
         onFailure={responseGoogle}
-        cookiePolicy={'single_host_origin'}
+        cookiePolicy={"single_host_origin"}
         theme="light"
       />
-      <div className={"FormWrapper"}>
-        <div className={"Bar"}></div>
-        <div className={"InputBox"}>
+      <div className={loginStyles["FormWrapper"]}>
+        <div className={loginStyles["Bar"]}></div>
+        <div className={loginStyles["InputBox"]}>
           <label>Email</label>
-          <input 
-            autoComplete={"username email"} 
-            name={"email"} 
-            type={"text"} 
+          <input
+            autoComplete={"username email"}
+            name={"email"}
+            type={"text"}
             onChange={props.handleChangeEmail}
           ></input>
         </div>
-        {props.normalLogin && 
-          <NormalLogin 
+        {props.normalLogin && (
+          <NormalLogin
             handleChangePassword={props.handleChangePassword}
             errored={props.errored}
             errorMessage={props.errorMessage}
           />
-        }
+        )}
         {!props.errored ? (
           <div></div>
         ) : (
-          <p className={"ErrorMessage"}>{props.errorMessage}</p>
+          <p className={loginStyles["ErrorMessage"]}>{props.errorMessage}</p>
         )}
-        <button className={"LoginButton"} onClick={props.handleLoginClick}>
+        <button
+          className={loginStyles["LoginButton"]}
+          onClick={props.handleLoginClick}
+        >
           {props.loggingIn ? "Logging In..." : "Login"}
         </button>
-        <div className={"ForgotPassword"} onClick={props.handleForgotPassword}>
+        <div
+          className={loginStyles["ForgotPassword"]}
+          onClick={props.handleForgotPassword}
+        >
           <br></br>Forgot Password?
         </div>
       </div>
@@ -324,7 +337,7 @@ function LoginScreen(props: {
   );
 }
 
-function NormalLogin (props: {
+function NormalLogin(props: {
   handleChangePassword: (e: React.ChangeEvent<HTMLInputElement>) => void;
   errored: boolean;
   errorMessage: string;
@@ -346,12 +359,12 @@ function NormalLogin (props: {
         }}
       >
         <div>
-          <div className={"InputBox"}>
+          <div className={loginStyles["InputBox"]}>
             <label>Password</label>
-            <input 
+            <input
               name={"password"}
-              autoComplete={"new-password"} 
-              type="password" 
+              autoComplete={"new-password"}
+              type="password"
               onChange={props.handleChangePassword}
             ></input>
           </div>
@@ -360,4 +373,3 @@ function NormalLogin (props: {
     </AnimatePresence>
   );
 }
-

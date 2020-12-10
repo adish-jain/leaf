@@ -10,6 +10,7 @@ import {
 import { useLoggedIn } from "../../lib/UseLoggedIn";
 import appStyles from "../../styles/app.module.scss";
 import profileStyles from "../../styles/profile.module.scss";
+import imageStyles from "../../styles/imageview.module.scss";
 import Header, { HeaderUnAuthenticated } from "../../components/Header";
 import ErroredPage from "../404";
 import { Post } from "../../typescript/types/app_types";
@@ -358,7 +359,7 @@ function EditableProfileImage(props: {
       </div>
       <div className={profileStyles["profile-img-shade"]}></div>
       <div className={profileStyles["profile-img-button"]}>
-        <label className={"add-image"}>
+        <label className={imageStyles["add-image"]}>
           {props.uploadFailed ? "Try Image < 5MB" : "Upload Photo"}
           <input
             type="file"
@@ -376,7 +377,7 @@ function EditableProfileImage(props: {
         </label>
         {props.profileImage !== "" && (
           <label
-            className={"add-image"}
+            className={imageStyles["add-image"]}
             onClick={(e) => handleProfileImageDelete(props.changeProfileImage)}
           >
             Delete Photo
@@ -863,7 +864,7 @@ function DisplayPosts(props: { posts: Post[]; username: string }) {
                   <div className={profileStyles["profile-post-date"]}>
                     {post["publishedAt"]}
                   </div>
-                  <div className={"profile-post-tags-author"}>
+                  <div className={profileStyles["profile-post-tags-author"]}>
                     {tags !== null ? (
                       tags.map((tag: string) => {
                         return (

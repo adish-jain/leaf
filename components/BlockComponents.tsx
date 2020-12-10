@@ -10,12 +10,13 @@ import {
 } from "slate-react";
 import { getPrismLanguageFromBackend } from "../lib/utils/languageUtils";
 import { motion, AnimatePresence } from "framer-motion";
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent, useContext } from "react";
 import Image from "next/image";
 import slateEditorStyles from "../styles/slate-editor.module.scss";
+import { PreviewContext } from "./preview-context";
 const ImageElement = (
   props: RenderElementProps & {
-    handleImageUpload: (
+    handleImageUpload?: (
       e: React.ChangeEvent<HTMLInputElement>,
       domNode: globalThis.Node
     ) => void;
@@ -29,9 +30,6 @@ const ImageElement = (
     | string
     | undefined;
 
-  // console.log("inside imageelement ", imageUrl);
-
-  // console.log(props.element);
   let selectedStyle = {};
   if (selected && focused) {
     selectedStyle = {
@@ -79,7 +77,9 @@ const ImageElement = (
           name="filename"
           accept="image/*"
           onChange={(e) => {
-            props.handleImageUpload(e, nodeRef);
+            if (props.handleImageUpload) {
+              props.handleImageUpload(e, nodeRef);
+            }
           }}
         />
       </label>
@@ -100,26 +100,34 @@ function LeftImageHandle() {
 
 // Define a React component renderer for h1 blocks.
 const HeaderOneElement = (props: RenderElementProps) => {
+  const { previewMode } = useContext(PreviewContext);
   let currentNode = props.element.children[0];
   let empty = currentNode.text === "";
   return (
     <div className={slateEditorStyles["headerOne"]}>
       <h1 {...props.attributes}>{props.children}</h1>
-      {empty && <HeadingPlaceHolder>Heading 1</HeadingPlaceHolder>}
+      {empty && !previewMode && (
+        <HeadingPlaceHolder>Heading 1</HeadingPlaceHolder>
+      )}
     </div>
   );
 };
 
 function HeadingPlaceHolder(props: any) {
   return (
-    <label contentEditable={false} onClick={(e) => e.preventDefault()}>
-      {props.children}
-    </label>
+    <>
+      {true && (
+        <label contentEditable={false} onClick={(e) => e.preventDefault()}>
+          {props.children}
+        </label>
+      )}
+    </>
   );
 }
 
 // Define a React component renderer for h2 blocks.
 const HeaderTwoElement = (props: any) => {
+  const { previewMode } = useContext(PreviewContext);
   let currentNode = props.element.children[0];
   let empty = currentNode.text === "";
   return (
@@ -134,11 +142,13 @@ const HeaderTwoElement = (props: any) => {
 const HeaderThreeElement = (props: RenderElementProps) => {
   let currentNode = props.element.children[0];
   let empty = currentNode.text === "";
-
+  const { previewMode } = useContext(PreviewContext);
   return (
     <div className={slateEditorStyles["headerThree"]}>
       <h3 {...props.attributes}>{props.children}</h3>
-      {empty && <HeadingPlaceHolder>Heading 3</HeadingPlaceHolder>}
+      {empty && !previewMode && (
+        <HeadingPlaceHolder>Heading 3</HeadingPlaceHolder>
+      )}
     </div>
   );
 };

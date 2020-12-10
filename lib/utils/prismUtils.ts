@@ -62,6 +62,10 @@ const getLength = (token: Token): number => {
   }
 };
 
+/**
+ *
+ * @param leaf Prism Atom Dark theme
+ */
 export function highlightPrismDracula(leaf: any) {
   let style: {
     color?: string;

@@ -1,9 +1,11 @@
 import draftHeaderStyles from "../styles/draftheader.module.scss";
 import landingHeaderStyles from "../styles/landingheader.module.scss";
-import { SetStateAction } from "react";
+import { SetStateAction, useContext } from "react";
 import Link from "next/link";
 import { goToIndex, goToLanding, logOut } from "../lib/UseLoggedIn";
 import { DraftContext } from "../contexts/draft-context";
+import { PreviewContext } from "./preview-context";
+import { Router, useRouter } from "next/router";
 
 type DraftHeaderProps = {
   updateShowTags: (value: SetStateAction<boolean>) => void;
@@ -62,8 +64,10 @@ export function DraftHeader(props: DraftHeaderProps) {
   }
 
   function PublishButtonChoice() {
+    const router = useRouter();
+    const { draftId, postId, published, username } = useContext(DraftContext);
+
     function publishPost() {
-      let { draftId } = props;
       fetch("/api/endpoint", {
         method: "POST",
         redirect: "follow",
@@ -76,7 +80,7 @@ export function DraftHeader(props: DraftHeaderProps) {
           if (newUrl === "unverified") {
             alert("Please verify your email before publishing.");
           } else {
-            Router.push(newUrl);
+            router.push(newUrl);
           }
           // Router.push(newUrl);
         })
@@ -85,22 +89,22 @@ export function DraftHeader(props: DraftHeaderProps) {
         });
     }
 
-    function goToPublishedPost(username: string, postId: string) {
+    function goToPublishedPost() {
       window.location.href = `/${username}/${postId}`;
     }
     const publishButton = (
       <button
         className={draftHeaderStyles["publish-button"]}
-        onClick={props.publishPost}
+        onClick={publishPost}
       >
         {"Publish Post"}
       </button>
     );
 
-    const goToPublishedPostButton = (username: string, postId: string) => (
+    const goToPublishedPostButton = () => (
       <button
         className={draftHeaderStyles["publish-button"]}
-        onClick={(e) => goToPublishedPost(username, postId)}
+        onClick={(e) => goToPublishedPost()}
       >
         {"Go to Published Post"}
       </button>
@@ -108,9 +112,9 @@ export function DraftHeader(props: DraftHeaderProps) {
 
     return (
       <DraftContext.Consumer>
-        {({ published, username, postId }) => {
+        {({ published, username }) => {
           if (published) {
-            return goToPublishedPostButton(username, postId);
+            return goToPublishedPostButton;
           } else {
             return publishButton;
           }
@@ -131,9 +135,10 @@ export function DraftHeader(props: DraftHeaderProps) {
   }
 
   function Buttons() {
+    const { updatePreviewMode } = useContext(PreviewContext);
     return (
       <DraftContext.Consumer>
-        {({ updatePreviewMode, published }) => (
+        {({ published }) => (
           <div className={draftHeaderStyles["buttons"]}>
             <TagsButton />
             <button
@@ -164,7 +169,7 @@ export function DraftHeader(props: DraftHeaderProps) {
 type FinishedPostHeaderProps = {
   previewMode: boolean;
   authenticated: boolean;
-  updatePreviewMode?: (previewMode: boolean) => void;
+  updatePreviewMode: ((previewMode: boolean) => void) | undefined;
   username?: string;
 };
 
@@ -181,14 +186,13 @@ export function FinishedPostHeader(props: FinishedPostHeaderProps) {
       </div>
     );
   }
-
   return (
     <div className={draftHeaderStyles["draft-header"]}>
       <div className={draftHeaderStyles["header-wrapper"]}>
         <Links />
         <div className={draftHeaderStyles["buttons"]}>
           {props.previewMode ? (
-            <ExitPreview updatePreviewMode={props.updatePreviewMode} />
+            <ExitPreview updatePreviewMode={props.updatePreviewMode!} />
           ) : (
             <div></div>
           )}
@@ -199,13 +203,13 @@ export function FinishedPostHeader(props: FinishedPostHeaderProps) {
 }
 
 function ExitPreview(props: {
-  updateShowPreview?: (value: SetStateAction<boolean>) => void;
+  updatePreviewMode: (previewMode: boolean) => void;
 }) {
   return (
     <button
       className={draftHeaderStyles["preview-button"]}
       onClick={(e) => {
-        props.updateShowPreview!(false);
+        props.updatePreviewMode(false);
       }}
     >
       Exit Preview
@@ -245,9 +249,7 @@ export function TagsHeader(props: TagsHeaderProps) {
   );
 }
 
-function ExitTags(props: {
-  updateShowTags?: (value: SetStateAction<boolean>) => void;
-}) {
+function ExitTags(props: { updateShowTags?: (value: boolean) => void }) {
   return (
     <button
       className={draftHeaderStyles["preview-button"]}
