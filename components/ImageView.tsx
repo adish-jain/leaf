@@ -179,7 +179,6 @@ export default function ImageView(props: ImageViewProps) {
 
   // const show = currentlyEditingBlock?.imageUrl ? true : false;
   const show = currentlyEditingBlock?.type === ContentBlockType.CodeSteps;
-  console.log(currentlyEditingBlock?.imageUrl);
   return (
     <div className={imageViewStyles["options-wrapper"]}>
       <AnimatePresence>
