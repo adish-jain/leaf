@@ -4,7 +4,7 @@ import { useLoggedIn } from "../lib/UseLoggedIn";
 import { useUserInfo } from "../lib/useUserInfo";
 import Header from "../components/Header";
 import { motion, AnimatePresence } from "framer-motion";
-import "../styles/Settings.module.scss";
+import settingStyles from "../styles/Settings.module.scss";
 
 export default function SignUp() {
   const initialData: any = {};
@@ -77,8 +77,8 @@ export default function SignUp() {
               duration: 0.4,
             }}
           >
-            <div className={"settings"}>
-              <h1 className={"settings-title"}>Settings</h1>
+            <div className={settingStyles["settings"]}>
+              <div className={settingStyles["settings-title"]}>Settings</div>
               <hr />
               <Username
                 changeNewUsername={changeNewUsername}
@@ -142,17 +142,17 @@ function Username(props: {
   userNameError: string;
 }) {
   return (
-    <div className={"username-section"}>
+    <div className={settingStyles["username-section"]}>
       <div>
         <h2>Username</h2>
         <p>Your username is {props.username}</p>
         <input
-          className={"default-input"}
+          className={settingStyles["default-input"]}
           value={props.newUsername}
           onChange={(e) => props.changeNewUsername(e.target.value)}
         ></input>
         <button
-          className={"input-button"}
+          className={settingStyles["input-button"]}
           onClick={props.saveNewUsername}
         >
           Change username
@@ -176,19 +176,19 @@ function Password(props: {
       <div>
         <h2>Password</h2>
         <input
-          className={"round-input"}
+          className={settingStyles["round-input"]}
           value={props.password}
           placeholder={"current password"}
           onChange={(e) => props.updatePassword(e.target.value)}
         ></input>
         <input
-          className={"default-input"}
+          className={settingStyles["default-input"]}
           value={props.newPassword}
           placeholder={"new password"}
           onChange={(e) => props.changeNewPassword(e.target.value)}
         ></input>
         <button
-          className={"input-button"}
+          className={settingStyles["input-button"]}
           onClick={props.saveNewPassword}
         >
           Change password
@@ -215,19 +215,19 @@ function Email(props: {
         <h2>Email</h2>
         <p>Your email is {props.email} & it is {props.emailVerified ? "verified" : "unverified"}</p>
         <input
-          className={"default-input"}
+          className={settingStyles["default-input"]}
           value={props.newEmail}
           onChange={(e) => props.changeNewEmail(e.target.value)}
         ></input>
         <button
-          className={"input-button"}
+          className={settingStyles["input-button"]}
           onClick={props.saveNewEmail}
         >
           Change email
         </button>
         <EmailError emailError={props.emailError} />
         <button
-          className={"verification-rounded-button"}
+          className={settingStyles["verification-rounded-button"]}
           onClick={(e) => props.sendEmailVerification()}
         >
           Send email verification
@@ -257,12 +257,12 @@ function SetEmailAndPassword(props: {
   emailAndPasswordStatus: string;
 }) {
   return (
-    <div className={"email-and-password"}>
+    <div className={settingStyles["email-and-password"]}>
       <div>
         <h2>Email & Password</h2>
         <p>Your email is {props.email} & it is {props.emailVerified ? "verified" : "unverified"}</p>
         <input
-          className={"default-input"}
+          className={settingStyles["default-input"]}
           value={props.newEmail}
           placeholder={"new email"}
           onChange={(e) => props.changeNewEmail(e.target.value)}
@@ -270,13 +270,13 @@ function SetEmailAndPassword(props: {
       </div>
       <div>
         <input
-          className={"default-input"}
+          className={settingStyles["default-input"]}
           value={props.newPassword}
           placeholder={"new password"}
           onChange={(e) => props.changeNewPassword(e.target.value)}
         ></input>
         <button
-          className={"input-button"}
+          className={settingStyles["input-button"]}
           onClick={props.saveNewEmailAndPassword}
         >
           Change email & set password
