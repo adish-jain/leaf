@@ -1,15 +1,24 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebase, initFirebaseAdmin } from "../initFirebase";
-import { handleLoginCookies, checkUsernameDNE, getUsernameFromUid, checkEmailAuthDNE } from "../userUtils";
+import {
+  handleLoginCookies,
+  checkUsernameDNE,
+  getUsernameFromUid,
+  checkEmailAuthDNE,
+} from "../userUtils";
 
 const admin = require("firebase-admin");
 const firebase = require("firebase/app");
 initFirebase();
 initFirebaseAdmin();
-let db = admin.firestore();
+import { firestore } from "firebase";
+
+let db: firestore.Firestore = admin.firestore();
 
 const shortid = require("shortid");
-shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_.');
+shortid.characters(
+  "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_."
+);
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   let requestBody = req.body;
@@ -39,8 +48,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       username = await getUsernameFromUid(signedin_user.uid);
     } catch (e) {
       console.log("Username does not exist.");
+      return;
     }
-    
+
     if (!(await validate(username))) {
       let indexOfAt = currentUser.email.indexOf("@");
       let emailId = currentUser.email.substring(0, indexOfAt);
@@ -67,11 +77,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         username = "User-" + generatedId;
       }
     }
-  
+
     db.collection("users").doc(signedin_user.uid).set({
       email: signedin_user.email,
       username: username,
-      method: "google"
+      method: "google",
     });
   }
 
@@ -81,17 +91,17 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   res.status(200).end();
 
   await firebase
-  .auth()
-  .signOut()
-  .then(
-    function () {
-      // Sign-out successful.
-      console.log("signed out success");
-    },
-    function (error: any) {
-      // An error happened.
-    }
-  );
+    .auth()
+    .signOut()
+    .then(
+      function () {
+        // Sign-out successful.
+        console.log("signed out success");
+      },
+      function (error: any) {
+        // An error happened.
+      }
+    );
 };
 
 /*
@@ -102,10 +112,13 @@ Check if the username is valid. To be a valid username:
 */
 async function validate(username: string) {
   try {
-    var desired = username.replace(/[\s~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g, '');
+    var desired = username.replace(
+      /[\s~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g,
+      ""
+    );
     desired = desired.substring(0, 24);
     let usernameDNE = await checkUsernameDNE(desired);
-    if (desired.length < 6 || !usernameDNE) { 
+    if (desired.length < 6 || !usernameDNE) {
       return false;
     }
     return desired;

@@ -19,7 +19,10 @@ function handleError(res: NextApiResponse, error: any) {
   return;
 }
 
-async function changeFileLanguageHandler(req: NextApiRequest, res: NextApiResponse) {
+async function changeFileLanguageHandler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   let draftId = req.body.draftId;
   let fileId = req.body.fileId;
   let language = req.body.language;
@@ -30,16 +33,15 @@ async function changeFileLanguageHandler(req: NextApiRequest, res: NextApiRespon
     res.end();
     return;
   }
-
   // update language for file in firebase
   db.collection("users")
-  .doc(uid)
-  .collection("drafts")
-  .doc(draftId)
-  .collection("files")
-  .doc(fileId)
-  .update({ "language": language }); 
-  
+    .doc(uid)
+    .collection("drafts")
+    .doc(draftId)
+    .collection("files")
+    .doc(fileId)
+    .update({ language: language });
+
   res.statusCode = 200;
   let results = await getFilesForDraft(uid, draftId);
   res.send(results);

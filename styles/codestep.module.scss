@@ -1,0 +1,44 @@
+@import "commonui.scss";
+
+.codestep-content {
+  // border: 1px solid black;
+  display: flex;
+  margin-bottom: 64px;
+  margin-left: 32px;
+  margin-right: 32px;
+  margin-top: 64px;
+}
+
+.codestep-section {
+  border-bottom: 1px solid $leaf-light-gray;
+  padding-bottom: 80px;
+}
+
+.divider {
+  @include line;
+  width: 100%;
+}
+
+.header {
+  // width: 800px;
+  // display: flex;
+  justify-content: center;
+}
+
+.published-steps {
+  width: 48%;
+}
+
+.published {
+
+  border-radius: 8px;
+
+  padding: 24px;
+  margin-bottom: 40px;
+  color: $gray-text;
+  border: 1px solid white;
+  transition: all 0.2s ease-in-out;
+}
+
+.selected {
+}

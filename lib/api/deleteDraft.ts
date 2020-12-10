@@ -4,7 +4,7 @@ import { initFirebaseAdmin, initFirebase } from "../initFirebase";
 const admin = require("firebase-admin");
 const firebase = require("firebase/app");
 import fetch from "isomorphic-fetch";
-import { getUserDrafts, getUser } from "../userUtils";
+import { getUser, getUserDraftsForLanding } from "../userUtils";
 
 let db = admin.firestore();
 
@@ -30,7 +30,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     console.log(error);
   }
 
-  let drafts = await getUserDrafts(uid);
+  let drafts = await getUserDraftsForLanding(uid);
 
   res.statusCode = 200;
   res.send(drafts);

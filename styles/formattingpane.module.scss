@@ -1,0 +1,73 @@
+@import "commonui.scss";
+
+.formatting-pane {
+  background-color: white;
+  display: flex;
+  background: #ffffff;
+  border: 1px solid #edece9;
+  box-sizing: border-box;
+  box-shadow: 0px 4px 16px #edece9;
+  border-radius: 4px;
+  // padding: 16px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  overflow-y: scroll;
+}
+
+.section-label {
+  font-weight: bold;
+  color: $gray-text;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  margin-left: 16px;
+  font-size: 12px;
+}
+
+.rich-text {
+  // border-right: 1px solid $leaf-light-gray;
+  // padding-right: 16px;
+  // margin-right: 16px;
+  // margin-left: 16px;
+}
+
+.rich-text-element {
+  display: flex;
+  align-items: center;
+  padding-bottom: 6px;
+  padding-top: 6px;
+  // width: 100%;
+  padding-left: 16px;
+  padding-right: 16px;
+  cursor: pointer;
+}
+
+.rich-text-label {
+  margin-left: 12px;
+  font-size: 16px;
+}
+
+.element-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  border: 1px solid $gray-text;
+  background: white;
+}
+
+.formatting-pane::-webkit-scrollbar {
+  // width: 0px;
+  // background: transparent;
+  // opacity: 0; /* make scrollbar transparent */
+  // height: 0px;
+}
+
+.interactive-element {
+  display: flex;
+  align-items: center;
+  padding-bottom: 6px;
+  padding-top: 6px;
+  // width: 100%;
+  padding-left: 16px;
+  padding-right: 16px;
+  cursor: pointer;
+}

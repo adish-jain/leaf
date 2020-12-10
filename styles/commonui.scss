@@ -4,7 +4,7 @@ $light-blue: #d8e7f8;
 $leaf-dark-blue: #349ae9;
 $highlighter-yellow: #f7d87c;
 $leaf-background: #fffefc;
-
+$codeeditor-background: #2f3437;
 
 @mixin line {
   // must specify width
@@ -20,6 +20,18 @@ $leaf-background: #fffefc;
   padding: 4px;
   font-size: 14px;
   cursor: pointer;
+}
+
+@mixin red-button {
+  background: #fdf5f2;
+  border: 1px solid #f7c6c4;
+  box-sizing: border-box;
+  border-radius: 4px;
+  padding: 4px;
+  color: #e9595b;
+  font-size: 12px;
+  cursor: pointer;
+  box-shadow: 0px 4px 16px #edece9;
 }
 
 @mixin draft-button-focused {
@@ -45,11 +57,13 @@ $leaf-background: #fffefc;
     text-decoration: none;
     transition: all ease-in-out 0.2s;
     padding: 4px;
+    cursor: pointer;
   }
 
   a:visited {
     color: #000000;
     transition: all ease-in-out 0.2s;
+    cursor: pointer;
   }
 
   a:hover {
@@ -59,5 +73,6 @@ $leaf-background: #fffefc;
     background-color: #349ae9;
     color: white;
     transition: all ease-in-out 0.2s;
+    cursor: pointer;
   }
 }

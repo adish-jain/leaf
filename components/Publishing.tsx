@@ -1,160 +1,77 @@
-import React, { Component } from "react";
+import React, { Component, useContext } from "react";
 import TextareaAutosize from "react-autosize-textarea";
-import NewStep from "./NewStep";
-import StoredStep from "./StoredStep";
+import { NewStep } from "./NewStep";
 const fetch = require("node-fetch");
 global.Headers = fetch.Headers;
 import Router from "next/router";
-import "../styles/publishing.scss";
+import publishingStyles from "../styles/publishing.module.scss";
 import { File, Step, Lines } from "../typescript/types/app_types";
-
+import { contentBlock } from "../typescript/types/frontend/postTypes";
+import { CodeStep } from "../components/CodeStep";
+import { AnimateSharedLayout, motion } from "framer-motion";
+import { start } from "repl";
+import { DraftContent } from "./DraftContent";
+import { DraftContext } from "../contexts/draft-context";
+import Preview from "./Preview";
+import { PreviewContext } from "./preview-context";
 var shortId = require("shortid");
 
 type PublishingProps = {
-  draftId: string;
-  title: string;
-  storedSteps: Step[];
+  codeSteps: contentBlock[];
+  startIndex: number;
   // what step is currently being edited? -1 means no steps being edited
-  editingStep: number;
-  changeEditingStep: (editingStep: number) => void;
-  saveStep: (stepId: string, text: string) => void;
-  mutateStoredStep: (stepId: string, text: string) => void;
-  saveStepToBackend: (stepId: string, text: string) => void;
-  deleteStoredStep: (stepId: any) => void;
-  moveStepUp: (stepId: any) => void;
-  moveStepDown: (stepId: any) => void;
-  onTitleChange: (title: string) => void;
-  selectedFileIndex: number;
-  lines: Lines;
-  saveLines: (fileName: string, remove: boolean) => void;
-  files: File[];
-  published: boolean;
-  goToPublishedPost: () => void;
 };
 
 type PublishingState = {
   previewLoading: boolean;
 };
 
-type PublishingComponent = {
-  publishingComponentType: PublishingComponentType;
-};
-
-enum PublishingComponentType {
-  step = "step",
-}
-
-export default class Publishing extends Component<
-  PublishingProps,
-  PublishingState
-> {
-  constructor(props: PublishingProps) {
-    super(props);
-
-    this.addStep = this.addStep.bind(this);
-    this.closeStep = this.closeStep.bind(this);
-
-    this.state = {
-      previewLoading: false,
-    };
-  }
-
-  closeStep(stepId: string) {
-    this.props.deleteStoredStep(stepId);
-  }
-
-  addStep(e: React.MouseEvent<HTMLButtonElement>) {
-    let stepId = shortId.generate();
-
-    let emptyJSON = {
-      blocks: [
-        {
-          key: stepId,
-          text: "Enter content here",
-          type: "unstyled",
-          depth: 0,
-          inlineStyleRanges: [],
-          entityRanges: [],
-          data: {},
-        },
-      ],
-      entityMap: {},
-    };
-
-    this.props.saveStep(stepId, JSON.stringify(emptyJSON));
-  }
-
-  TitleLabel() {
-    return <label className={"title-label"}>Title</label>;
-  }
-
-  PublishingHeader = () => {
-    return (
-      <div className={"publishing-header"}>
-        <this.TitleLabel />
-        <TextareaAutosize
-          placeholder={this.props.title}
-          value={this.props.title}
-          onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
-            let myTarget = e.target as HTMLTextAreaElement;
-            this.props.onTitleChange(myTarget.value);
-          }}
-          style={{
-            fontWeight: "bold",
-            fontSize: "40px",
-            color: "D0D0D0",
-          }}
-          name="title"
-        />
-      </div>
-    );
-  };
-
-  render() {
-    let {
-      storedSteps,
-      editingStep,
-      selectedFileIndex,
-      files,
-      onTitleChange,
-      changeEditingStep,
-      saveLines,
-      mutateStoredStep,
-      saveStepToBackend,
-      deleteStoredStep,
-    } = this.props;
-
-    return (
-      <div className={"publishing"}>
-        {/* <this.PublishingButtons /> */}
-        <this.PublishingHeader />
-        {storedSteps.map((storedStep, index) => {
+export default function Publishing(props: PublishingProps) {
+  const { codeSteps, startIndex } = props;
+  const draftContext = useContext(DraftContext);
+  const { currentlyEditingBlock } = draftContext;
+  const { previewMode } = useContext(PreviewContext);
+  return (
+    <div className={publishingStyles["publishing"]}>
+      {!previewMode && <PublishingDescription />}
+      {/* <AnimateSharedLayout> */}
+      <motion.div
+        className={publishingStyles["codesteps"]}
+        //  layout
+      >
+        {codeSteps.map((codeStep, index) => {
           return (
-            <StoredStep
-              id={storedStep.id}
+            <CodeStep
+              codeStep={codeStep}
               index={index}
-              draftId={this.props.draftId}
-              text={JSON.parse(storedStep.text)}
-              lines={storedStep.lines}
-              deleteStoredStep={deleteStoredStep}
-              mutateStoredStep={mutateStoredStep}
-              saveStepToBackend={saveStepToBackend}
-              moveStepUp={this.props.moveStepUp}
-              moveStepDown={this.props.moveStepDown}
-              key={storedStep.id}
-              editing={editingStep === index}
-              changeEditingStep={changeEditingStep}
-              selectedFileIndex={selectedFileIndex}
-              files={files}
-              saveLines={saveLines}
-              attachedFileId={storedStep.fileId!}
-              lastStep={index === storedSteps.length - 1}
-              firstStep={index === 0}
+              key={codeStep.backendId}
+              startIndex={startIndex}
+              selected={codeStep.backendId === currentlyEditingBlock?.backendId}
+              last={index === codeSteps.length - 1}
+              backendId={codeStep.backendId}
             />
           );
         })}
-        {editingStep === -1 ? <NewStep addStep={this.addStep} /> : <div></div>}
-      </div>
-    );
-  }
+      </motion.div>
+      {!previewMode && (
+        <NewStep
+          lastStepId={codeSteps[codeSteps.length - 1].backendId}
+          lastIndex={startIndex + codeSteps.length - 1}
+        />
+      )}
+      {/* </AnimateSharedLayout> */}
+    </div>
+  );
+}
+
+function PublishingDescription() {
+  return (
+    <div className={publishingStyles["description"]}>
+      <p>
+        This is a code step section. Highlight lines in the code editor to pair
+        with a step. Scroll down to begin.
+      </p>
+      {/* <button>Delete Code Section</button> */}
+    </div>
+  );
 }

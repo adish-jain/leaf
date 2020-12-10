@@ -1,0 +1,75 @@
+@import "commonui.scss";
+
+.LanguageBar {
+  // background-color: $leaf-dark-blue;
+  // border: 1px solid #4c5153;
+  // min-height: 20px;
+  // height: 3vh;
+  background-color: #3F4447;
+  // border-top: solid 1px $leaf-light-gray;
+  border-top: solid 1px #4C5153;
+  padding: 4px;
+  border-radius: 0px 0px 8px 8px;
+  display: flex;
+  align-items: center;
+  flex-direction: row-reverse;
+  //   justify-content: right;
+
+  label {
+    text-transform: uppercase;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    margin: 0;
+    padding: 0;
+    color: white;
+  }
+
+  select {
+    margin-left: 4px;
+    font-size: 12px;
+    background: none;
+    border-style: none;
+    color: $leaf-dark-blue;
+    text-transform: uppercase;
+    border-bottom: solid 2px $leaf-dark-blue;
+    // background-color: gray;
+
+    /* for Firefox */
+    -moz-appearance: none;
+    /* for Chrome */
+    -webkit-appearance: none;
+    // margin-right: 4px;
+  }
+}
+
+.published-language-bar {
+  // background-color: #3f4447;
+  // border: 1px solid #4c5153;
+  // min-height: 20px;
+  // border-radius: 0px 0px 8px 8px;
+  display: flex;
+
+  align-items: center;
+  flex-direction: row-reverse;
+  padding: 8px;
+  border-top: solid 1px $leaf-light-gray;
+
+
+  label {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: auto;
+    text-transform: uppercase;
+    margin: 0;
+    // padding: 8px;
+    color: black;
+
+    span {
+      border-bottom: solid 2px $leaf-dark-blue;
+    }
+  }
+}

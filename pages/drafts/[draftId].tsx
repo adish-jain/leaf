@@ -1,41 +1,48 @@
 import { useRouter } from "next/router";
-import {
-  useState,
-  Component,
-  Dispatch,
-  SetStateAction,
-} from "react";
+import { useState, useMemo } from "react";
 import { useLoggedIn } from "../../lib/UseLoggedIn";
-import { useFiles } from "../../lib/useFiles";
-import { useSteps } from "../../lib/useSteps";
+import { useBackend } from "../../lib/useBackend";
 import { useTags } from "../../lib/useTags";
 import { useDraftTitle } from "../../lib/useDraftTitle";
 import useSWR from "swr";
-import Publishing from "../../components/Publishing";
-import CodeEditor from "../../components/CodeEditor";
+import { DraftContext } from "../../contexts/draft-context";
 import Tags from "../../components/Tags";
 import DefaultErrorPage from "next/error";
 import Head from "next/head";
-import FinishedPost from "../../components/FinishedPost";
+import { DraftContent } from "../../components/DraftContent";
 const fetch = require("node-fetch");
-import { File, Step, Lines } from "../../typescript/types/app_types";
+import { draftMetaData } from "../../typescript/types/frontend/postTypes";
 global.Headers = fetch.Headers;
-import Router from "next/router";
-import "../../styles/app.scss";
-import "../../styles/draftheader.scss";
-import { DraftHeader } from "../../components/Headers";
-import { motion, AnimatePresence } from "framer-motion";
+import appStyles from "../../styles/app.module.scss";
+import "../../styles/draftheader.module.scss";
+import { ToolbarContext } from "../../contexts/toolbar-context";
+import { useToolbar } from "../../lib/useToolbar";
+import {
+  boldSelection,
+  italicizeSelection,
+  codeSelection,
+} from "../../lib/useToolbar";
+import { FilesContextWrapper } from "../../components/FilesContextWrapper";
+import { LinesContext } from "../../contexts/lines-context";
+import { useLines } from "../../lib/useLines";
+import { TagsContext } from "../../contexts/tags-context";
+import { PreviewContext } from "../../components/preview-context";
+const initialMetaData: draftMetaData = {
+  title: "",
+  errored: false,
+  published: false,
+  username: "",
+  createdAt: {
+    _nanoseconds: 0,
+    _seconds: 0,
+  },
+  profileImage: undefined,
+  postId: "",
+};
 
-const DraftView = () => {
-  const { authenticated, error, loading } = useLoggedIn();
-  const router = useRouter();
-  // Draft ID
-  const { draftId } = router.query;
-  // highlighting lines for steps
-
-  // if there are any steps in this draft, they will be fetched & repopulated
+const prepareFetcher = (draftId: string) => {
   const rawData = {
-    requestedAPI: "get_draft_data",
+    requestedAPI: "getDraftMetadata",
     draftId: draftId,
   };
 
@@ -45,120 +52,74 @@ const DraftView = () => {
     body: JSON.stringify(rawData),
   };
 
-  const fetcher = (url: string) =>
+  const fetcher = () =>
     fetch("/api/endpoint", myRequest).then((res: any) => res.json());
 
-  const initialData: any = {
-    files: [
-      {
-        id: "",
-        name: "",
-        code: "",
-        language: "",
-      },
-    ],
-    errored: false,
-    published: false,
-    postId: "",
-    likes: 0,
-    tags: [],
-    username: "",
-    profileImage: "",
-    createdAt: {
-      _nanoseconds: 0,
-      _seconds: 0,
-    },
-  };
+  return fetcher;
+};
 
-  let { data: draftData, mutate } = useSWR(
-    authenticated ? "getDraftData" : null,
+const DraftView = () => {
+  const { authenticated, error, loading } = useLoggedIn();
+  const router = useRouter();
+  const { draftId } = router.query;
+  const {
+    saveState,
+    updateSaving,
+    currentMarkType,
+    updateMarkType,
+  } = useToolbar();
+  const {
+    currentlySelectedLines,
+    changeSelectedLines,
+    stepCoordinates,
+    updateStepCoordinate,
+    selectionCoordinates,
+    updateSelectionCoordinates,
+  } = useLines();
+  const {
+    draftContent,
+    updateSlateSectionToBackend,
+    addBackendBlock,
+    currentlyEditingBlock,
+    changeEditingBlock,
+    deleteBlock,
+    nextBlockType,
+    removeFileFromCodeSteps,
+  } = useBackend(authenticated, draftId as string);
+  const fetcher = prepareFetcher(draftId as string);
+  let { data: draftData, mutate } = useSWR<draftMetaData>(
+    authenticated ? "getDraftMetadata" : null,
     fetcher,
-    { initialData, revalidateOnMount: true }
+    {
+      initialData: initialMetaData,
+      revalidateOnMount: true,
+    }
   );
-
-  let draftFiles = draftData["files"];
-  let errored = draftData["errored"];
-  const draftPublished = draftData["published"];
-  const postId = draftData["postId"];
-  const likes = draftData["likes"];
-  const tags = draftData["tags"];
-  const username = draftData["username"];
-  const profileImage = draftData["profileImage"];
-  const createdAt = draftData["createdAt"];
-
-  let { onTitleChange, draftTitle } = useDraftTitle(
+  const { onTitleChange, draftTitle } = useDraftTitle(
     draftId as string,
     authenticated
   );
-
-  let {
-    saveStep,
-    mutateStoredStep,
-    saveStepToBackend,
-    deleteStoredStep,
-    moveStepUp,
-    moveStepDown,
-    realSteps,
-    editingStep,
-    changeEditingStep,
-    lines,
-    changeLines,
-    saveLines,
-    removeLines,
-    addStepImage,
-    deleteStepImage,
-  } = useSteps(draftId as string, authenticated);
-
-  let {
-    selectedFileIndex,
-    codeFiles,
-    addFile,
-    removeFile,
-    changeCode,
-    changeSelectedFileIndex,
-    changeFileLanguage,
-    saveFileName,
-    onNameChange,
-    saveFileCode,
-  } = useFiles(draftId, draftFiles, mutate);
-
-  let { toggleTag } = useTags(
-    tags, 
-    draftId as string, 
-    draftFiles, 
-    errored, 
-    draftPublished, 
-    postId, 
-    username, 
-    createdAt,
-    mutate
+  const errored = draftData?.errored || false;
+  const published = draftData?.published || false;
+  const username = draftData?.username || "";
+  const profileImage = draftData?.profileImage || "";
+  const postId = draftData?.postId || "";
+  const createdAt = draftData?.createdAt || { _nanoseconds: 0, _seconds: 0 };
+  const { toggleTag, tags, showTags, updateShowTags } = useTags(
+    draftId as string,
+    authenticated
   );
-
-  // const [shouldShowBlock, updateShowBlock] = useState(false);
   const [showPreview, updateShowPreview] = useState(false);
-  const [showTags, updateShowTags] = useState(false);
-
-  // wrapper function for deleting a file.
+  // wrapper function for deletilng a file.
   // when a file is deleted, make sure all associated steps remove that file
-  function deleteStepAndFile(toDeleteIndex: number) {
-    let fileId: string = draftFiles[toDeleteIndex].id;
-    for (let i = 0; i < realSteps!.length; i++) {
-      if (realSteps![i].fileId === fileId) {
-        removeLines(i);
-      }
-    }
-    removeFile(toDeleteIndex);
-  }
-
   if (errored) {
     return <DefaultErrorPage statusCode={404} />;
   }
 
   return (
-    <div className="container">
+    <div className={appStyles["container"]}>
       <Head>
         <title>{draftTitle}</title>
-        {/* <script src="https://unpkg.com/intersection-observer-debugger"></script> */}
         <link rel="icon" href="/favicon.ico" />
         <script
           dangerouslySetInnerHTML={{
@@ -175,323 +136,82 @@ const DraftView = () => {
           }}
         />
       </Head>
-      <main className={"AppWrapper"}>
-        <AnimatePresence>
-          {showPreview && (
-            <motion.div
-              initial={{
-                opacity: 0,
-              }}
-              animate={{
-                opacity: 1,
-              }}
-              exit={{
-                opacity: 0,
-              }}
-              transition={{
-                duration: 0.4,
-              }}
+      <PreviewContext.Provider
+        value={{
+          previewMode: showPreview,
+          updatePreviewMode: updateShowPreview,
+        }}
+      >
+        <LinesContext.Provider
+          value={{
+            currentlySelectedLines,
+            changeSelectedLines,
+            updateStepCoordinate,
+            stepCoordinates,
+            updateSelectionCoordinates,
+            selectionCoordinates,
+          }}
+        >
+          <ToolbarContext.Provider
+            value={{
+              setBold: boldSelection,
+              setItalic: italicizeSelection,
+              saveState: saveState,
+              updateSaving: updateSaving,
+              setCode: codeSelection,
+              updateMarkType,
+              currentMarkType,
+            }}
+          >
+            <FilesContextWrapper
+              authenticated={authenticated}
+              draftId={draftId as string}
             >
-              <FinishedPost
-                steps={realSteps!}
-                title={draftTitle}
-                likes={likes}
-                tags={tags}
-                username={username}
-                profileImage={profileImage}
-                files={draftFiles}
-                updateShowPreview={updateShowPreview}
-                previewMode={true}
-                publishedAtSeconds={createdAt._seconds}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
-        {showTags ? 
-          (<Tags 
-            showTags={showTags}
-            updateShowTags={updateShowTags}
-            title={draftTitle}
-            selectedTags={tags}
-            toggleTag={toggleTag}
-          />) : 
-          (<DraftContent
-            showPreview={showPreview}
-            showTags={showTags}
-            username={username}
-            postId={postId}
-            codeFiles={codeFiles}
-            selectedFileIndex={selectedFileIndex}
-            draftFiles={draftFiles}
-            realSteps={realSteps}
-            editingStep={editingStep}
-            lines={lines}
-            tags={tags}
-            changeEditingStep={changeEditingStep}
-            mutateStoredStep={mutateStoredStep}
-            changeLines={changeLines}
-            saveStepToBackend={saveStepToBackend}
-            deleteStoredStep={deleteStoredStep}
-            moveStepDown={moveStepDown}
-            onTitleChange={onTitleChange}
-            deleteStepAndFile={deleteStepAndFile}
-            draftPublished={draftPublished}
-            draftTitle={draftTitle}
-            saveFileCode={saveFileCode}
-            onNameChange={onNameChange}
-            saveFileName={saveFileName}
-            changeFileLanguage={changeFileLanguage}
-            changeSelectedFileIndex={changeSelectedFileIndex}
-            changeCode={changeCode}
-            removeFile={removeFile}
-            addFile={addFile}
-            draftId={draftId as string}
-            saveStep={saveStep}
-            moveStepUp={moveStepUp}
-            saveLines={saveLines}
-            removeLines={removeLines}
-            addStepImage={addStepImage}
-            deleteStepImage={deleteStepImage}
-            updateShowPreview={updateShowPreview}
-            updateShowTags={updateShowTags}
-            mutate={mutate}
-        />)}
-      </main>
+              <TagsContext.Provider
+                value={{
+                  showTags,
+                  updateShowTags,
+                  selectedTags: tags,
+                  toggleTag,
+                }}
+              >
+                <main className={appStyles["AppWrapper"]}>
+                  {showTags ? (
+                    <Tags title={draftTitle} />
+                  ) : (
+                    <DraftContext.Provider
+                      value={{
+                        addBackendBlock: addBackendBlock,
+                        updateSlateSectionToBackend: updateSlateSectionToBackend,
+                        published: published,
+                        username: username,
+                        postId: postId,
+                        draftId: draftId as string,
+                        currentlyEditingBlock: currentlyEditingBlock,
+                        changeEditingBlock: changeEditingBlock,
+                        deleteBlock,
+                        nextBlockType,
+                        removeFileFromCodeSteps,
+                        profileImage,
+                        createdAt,
+                      }}
+                    >
+                      <DraftContent
+                        onTitleChange={onTitleChange}
+                        draftTitle={draftTitle}
+                        updateShowTags={updateShowTags}
+                        draftContent={draftContent}
+                      />
+                    </DraftContext.Provider>
+                  )}
+                </main>
+              </TagsContext.Provider>
+            </FilesContextWrapper>
+          </ToolbarContext.Provider>
+        </LinesContext.Provider>
+      </PreviewContext.Provider>
     </div>
   );
 };
-
-type DraftContentProps = {
-  showPreview: boolean;
-  showTags: boolean;
-  username: string;
-  postId: string;
-  draftId: string;
-  saveStep: (stepId: string, text: string) => void;
-  mutateStoredStep: (stepId: any, text: any) => void;
-  saveStepToBackend: (stepId: string, text: string) => Promise<void>;
-  deleteStoredStep: (stepId: any) => void;
-  moveStepUp: (stepId: any) => void;
-  moveStepDown: (stepId: any) => void;
-  realSteps: Step[] | undefined;
-  editingStep: number;
-  changeEditingStep: Dispatch<SetStateAction<number>>;
-  lines: Lines;
-  tags: any;
-  changeLines: Dispatch<SetStateAction<Lines>>;
-  saveLines: (fileId: string, remove: boolean) => void;
-  removeLines: (stepIndex: number) => void;
-  addStepImage: (selectedImage: any, stepId: string) => Promise<void>;
-  deleteStepImage: (stepId: string) => Promise<void>;
-  selectedFileIndex: number;
-  codeFiles: File[];
-  addFile: () => void;
-  removeFile: (toDeleteIndex: number) => void;
-  changeCode: (value: string) => void;
-  changeSelectedFileIndex: Dispatch<SetStateAction<number>>;
-  changeFileLanguage: (language: string, external: boolean) => void;
-  saveFileName: (value: string, external: boolean) => void;
-  onNameChange: (name: string) => void;
-  saveFileCode: () => void;
-  draftTitle: string;
-  draftPublished: boolean;
-  deleteStepAndFile: (toDeleteIndex: number) => void;
-  draftFiles: File[];
-  onTitleChange: (updatedtitle: string) => Promise<void>;
-  updateShowPreview: Dispatch<SetStateAction<boolean>>;
-  updateShowTags: Dispatch<SetStateAction<boolean>>;
-  mutate: any;
-};
-
-type DraftContentState = {
-  showPreview: boolean;
-};
-
-class DraftContent extends Component<DraftContentProps, DraftContentState> {
-  constructor(props: DraftContentProps) {
-    super(props);
-
-    this.state = {
-      showPreview: false,
-    };
-
-    this.goToPublishedPost = this.goToPublishedPost.bind(this);
-    this.publishDraft = this.publishDraft.bind(this);
-    this.DraftComponent = this.DraftComponent.bind(this);
-  }
-
-  publishDraft() {
-    let { draftId } = this.props;
-    fetch("/api/endpoint", {
-      method: "POST",
-      redirect: "follow",
-      headers: new Headers({ "Content-Type": "application/json" }),
-      body: JSON.stringify({ requestedAPI: "publishPost", draftId: draftId }),
-    })
-      .then(async (res: any) => {
-        let resJson = await res.json();
-        let newUrl = resJson.newURL;
-        if (newUrl === "unverified") {
-          alert("Please verify your email before publishing.");
-        } else {
-          Router.push(newUrl);
-        }
-        // Router.push(newUrl);
-      })
-      .catch(function (err: any) {
-        console.log(err);
-      });
-  }
-
-  async goToPublishedPost() {
-    let { username, postId } = this.props;
-    window.location.href = `/${username}/${postId}`;
-  }
-
-  changeEditingStepWrapper = (stepIndex: number) => {
-    let {
-      changeEditingStep,
-      changeSelectedFileIndex,
-      codeFiles,
-      realSteps,
-    } = this.props;
-    changeEditingStep(stepIndex);
-    let newFileIndex = 0;
-    if (stepIndex < 0) {
-      return;
-    }
-    for (let i = 0; i < codeFiles.length; i++) {
-      if (codeFiles[i].id === realSteps![stepIndex].fileId) {
-        newFileIndex = i;
-        break;
-      }
-    }
-    changeSelectedFileIndex(newFileIndex);
-  };
-
-  DraftComponent() {
-    let {
-      username,
-      draftPublished,
-      draftId,
-      draftTitle,
-      realSteps,
-      saveStep,
-      mutateStoredStep,
-      saveStepToBackend,
-      deleteStoredStep,
-      moveStepUp,
-      onTitleChange,
-      editingStep,
-      changeEditingStep,
-      selectedFileIndex,
-      lines,
-      draftFiles,
-      saveLines,
-      addStepImage,
-      deleteStepImage,
-      saveFileCode,
-      codeFiles,
-      addFile,
-      deleteStepAndFile,
-      changeCode,
-      changeSelectedFileIndex,
-      changeFileLanguage,
-      saveFileName,
-      onNameChange,
-      changeLines,
-      moveStepDown,
-      updateShowPreview,
-      updateShowTags,
-    } = this.props;
-    return (
-      <div>
-        <DraftHeader
-          username={username}
-          updateShowPreview={updateShowPreview}
-          updateShowTags={updateShowTags}
-          goToPublishedPost={this.goToPublishedPost}
-          published={draftPublished}
-          publishPost={this.publishDraft}
-        />
-        <div className={"App"}>
-          <div className={"center-divs"}>
-            <Publishing
-              draftId={draftId as string}
-              title={draftTitle}
-              storedSteps={realSteps!}
-              saveStep={saveStep}
-              mutateStoredStep={mutateStoredStep}
-              saveStepToBackend={saveStepToBackend}
-              deleteStoredStep={deleteStoredStep}
-              moveStepUp={moveStepUp}
-              moveStepDown={moveStepDown}
-              onTitleChange={onTitleChange}
-              editingStep={editingStep}
-              changeEditingStep={this.changeEditingStepWrapper}
-              selectedFileIndex={selectedFileIndex}
-              lines={lines}
-              files={draftFiles}
-              saveLines={saveLines}
-              published={draftPublished}
-              goToPublishedPost={this.goToPublishedPost}
-            />
-            <div className={"RightPane"}>
-              <CodeEditor
-                addStepImage={addStepImage}
-                deleteStepImage={deleteStepImage}
-                draftId={draftId as string}
-                editingStep={editingStep}
-                saveFileCode={saveFileCode}
-                draftCode={codeFiles[selectedFileIndex].code}
-                files={draftFiles}
-                addFile={addFile}
-                removeFile={deleteStepAndFile}
-                selectedFileIndex={selectedFileIndex}
-                changeCode={changeCode}
-                changeSelectedFile={changeSelectedFileIndex}
-                changeFileLanguage={changeFileLanguage}
-                saveFileName={saveFileName}
-                onNameChange={onNameChange}
-                language={draftFiles[selectedFileIndex].language}
-                changeLines={changeLines}
-                saveLines={saveLines}
-                lines={lines}
-                currentlyEditingStep={realSteps![editingStep]}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  render() {
-    let { showPreview } = this.props;
-
-    return (
-      <AnimatePresence>
-        {!showPreview && (
-          <motion.div
-            initial={{
-              opacity: 0,
-            }}
-            animate={{
-              opacity: 1,
-            }}
-            exit={{
-              opacity: 0,
-            }}
-            transition={{
-              duration: 0.4,
-            }}
-          >
-            <this.DraftComponent />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    );
-  }
-}
 
 export default DraftView;

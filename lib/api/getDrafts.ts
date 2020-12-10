@@ -4,7 +4,7 @@ import { initFirebaseAdmin, initFirebase } from "../initFirebase";
 const admin = require("firebase-admin");
 const firebase = require("firebase/app");
 import fetch from "isomorphic-fetch";
-import { getUserDrafts, getUser } from "../userUtils";
+import { getUserDraftsForLanding, getUser } from "../userUtils";
 
 let db = admin.firestore();
 
@@ -37,7 +37,7 @@ async function getDraftsHandler(req: NextApiRequest, res: NextApiResponse) {
     return;
   }
 
-  let results = await getUserDrafts(uid);
+  let results = await getUserDraftsForLanding(uid);
   res.statusCode = 200;
   res.send(results);
   return;

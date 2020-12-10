@@ -9,24 +9,6 @@
   position: relative;
 }
 
-.side-buttons {
-  position: relative;
-  top: 12px;
-  display: flex;
-  flex-direction: row-reverse;
-}
-
-.side-buttons-wrapper {
-  // border: 1px solid black;
-  position: absolute;
-  // left: -100px;
-  // top: -8px;
-  width: 100px;
-  padding-left: 20px;
-  height: 70px;
-  // padding: 20px;
-}
-
 .divider {
   @include line;
   margin-top: 8px;
@@ -41,42 +23,4 @@
 .main-content {
   margin-bottom: 8px;
   cursor: text;
-}
-
-.close {
-  @extend .side-button;
-  color: red !important;
-  span {
-    position: relative;
-    // left: -1px;
-    top: 1px !important;
-    font-size: 13px !important;
-  }
-}
-
-.up {
-  @extend .side-button;
-}
-
-.down {
-  @extend .side-button;
-}
-
-.side-button {
-  border-radius: 50%;
-  background: #ffffff;
-  border: 1px solid #edece9;
-  color: #07263a;
-  width: 24px;
-  height: 24px;
-  line-height: 16px;
-  text-align: center;
-  margin-right: 8px;
-  font-size: 16px;
-  cursor: pointer;
-
-  span {
-    position: relative;
-    top: -1px;
-  }
 }

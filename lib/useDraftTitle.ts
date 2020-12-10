@@ -59,7 +59,7 @@ export function useDraftTitle(draftId: string, authenticated: boolean) {
   Saves the title of the draft in Firestore. 
   Triggered from `Publishing.tsx`.
   */
-  function saveTitle(newTitle: string) {
+  async function saveTitle(newTitle: string) {
     // mutate("getDraftTitle", { draftTitle: newTitle }, false);
     var data = {
       requestedAPI: "save_title",

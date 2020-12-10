@@ -1,0 +1,350 @@
+@import "commonui.scss";
+
+.container {
+  width: 100%;
+  height: 100%;
+}
+
+.explore-main-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 80px;
+}
+
+.Header {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 70px;
+  left: 0px;
+  top: 0px;
+  background: #ffffff;
+  justify-content: center;
+  align-items: center;
+}
+
+.explore-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+
+  .explore-title-text {
+    margin-left: 0px;
+    width: 100%;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 55px;
+    display: flex;
+    align-items: center;
+    color: #000000;
+  }
+}
+
+/* Search Bar & Dropdowns */
+.search-and-filter {
+  display: flex;
+  flex-direction: row;
+  margin-right: 30px;
+  align-items: stretch;
+}
+
+.search {
+  display: flex;
+  flex-direction: row;
+  background-color: #ffffff;
+  position: relative;
+
+  img {
+    position: absolute;
+    margin: 6px;
+  }
+
+  .search-bar {
+    padding-left: 40px;
+    left: 0%;
+    right: 0%;
+    top: 0%;
+    bottom: 0%;
+
+    background: #ffffff;
+    box-shadow: 0px 4px 16px #edece9;
+    height: 40px;
+    width: 569px;
+    left: 0px;
+    top: 0px;
+    border-radius: 20px;
+    border: none;
+    margin-bottom: 20px;
+    margin-left: 1px;
+    font-size: 18px;
+    outline-width: 0;
+  }
+}
+
+/* Dropdowns */
+.selections {
+  display: flex;
+  flex-direction: row;
+  margin-left: 10px;
+}
+
+/* Tag Filter Dropdown */
+.filter {
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+.filter a {
+  float: left;
+  font-size: 16px;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+.filter-dropdown {
+  float: left;
+  overflow: hidden;
+}
+
+.filter-dropdown .filter-dropbtn {
+  font-size: 16px;
+  border: none;
+  outline: none;
+  color: black;
+  padding: 14px 16px;
+  background-color: inherit;
+  font: inherit;
+  margin: 0;
+
+  img {
+    max-width: 15px;
+    height: auto;
+  }
+}
+
+.filter-dropdown-content {
+  display: block;
+  position: absolute;
+  background-color: #fffefc;
+
+  width: 70%;
+  height: 100%;
+  left: 18%;
+  z-index: 1;
+}
+
+.filter-column {
+  float: left;
+  width: 14%;
+  padding: 10px;
+  height: 420px;
+
+  .filter-selected-option {
+    background-color: #349ae9 !important;
+    color: white !important;
+  }
+}
+
+.filter-column h3 {
+  padding: 10px;
+}
+
+.filter-column a {
+  float: none;
+  color: black;
+  padding: 10px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+
+.filter-column a:hover {
+  background-color: #349ae9;
+  color: white;
+  transition: all ease-in-out 0.2s;
+}
+
+.filter-row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Sort Dropdown */
+.sort-dropdown {
+  position: absolute;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.sort-dropdown .sort-dropbtn {
+  z-index: 2;
+  font-size: 16px;
+  border: none;
+  outline: none;
+  color: black;
+  padding: 14px 16px;
+  background-color: inherit;
+  font-family: inherit;
+  margin: 0;
+
+  img {
+    max-width: 15px;
+    height: auto;
+  }
+}
+
+.sort-dropdown-content {
+  // display: none;
+  background-color: #fffefc;
+  border-radius: 8px;
+  min-width: 95px;
+  z-index: 2;
+  display: block;
+  right: 1%;
+  z-index: 2;
+
+  .sort-selected-option {
+    background-color: #349ae9 !important;
+    color: white !important;
+  }
+}
+
+.sort-dropdown-content a {
+  display: flex;
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  text-align: left;
+  z-index: 2;
+}
+
+.sort-dropdown-content a:hover {
+  background-color: #349ae9;
+  color: white;
+  transition: all ease-in-out 0.2s;
+}
+
+/* Posts */
+.post-explore {
+  width: 811px;
+  height: auto;
+  left: 315px;
+  top: 306px;
+  margin: 10px;
+  background: #ffffff;
+  box-shadow: 0px 4px 16px #edece9;
+  border-radius: 8px;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.post-title-explore {
+  width: 98%;
+  height: auto;
+  margin-left: 10px;
+  padding: 5px;
+  word-wrap: normal;
+
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 25px;
+  align-items: center;
+
+  color: #000000;
+}
+
+.post-date {
+  width: 150px;
+  height: 17px;
+  left: 331px;
+  top: 400px;
+  margin-left: 10px;
+  padding: 5px;
+
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-style: italic;
+  font-weight: normal;
+  font-size: 15px;
+  line-height: 17px;
+  display: flex;
+  align-items: center;
+
+  color: #c4c4c4;
+}
+
+.post-tags-author {
+  display: flex;
+  flex-direction: row;
+  margin-left: 10px;
+  margin-top: 6px;
+
+  padding: 5px;
+
+  .post-tag {
+    background: #f5f5f5;
+    height: 28.12371063232422px;
+    width: 70px;
+    left: 331px;
+    top: 408px;
+    border-radius: 3.195876121520996px;
+    margin-right: 10px;
+
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 11px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    color: #000000;
+  }
+
+  .post-tag:hover {
+    background-color: #349ae9;
+    color: white;
+    transition: all ease-in-out 0.2s;
+  }
+
+  .post-author-name-and-img {
+    color: black;
+    text-align: right;
+    margin-left: auto;
+    margin-right: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .post-author-name-and-img:hover {
+    color: $leaf-dark-blue;
+  }
+}
+
+.published-post-author-img {
+  img {
+    width: 28px;
+    height: 28px;
+    border-radius: 50px;
+    margin-right: 8px;
+  }
+
+  img:hover {
+    cursor: pointer;
+  }
+}

@@ -6,8 +6,7 @@ import { useLoggedIn, logOut } from "../lib/UseLoggedIn";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-// let indexStyles = require("../styles/index.scss");
-import "../styles/index.scss";
+let indexStyles = require("../styles/index.module.scss");
 
 export default function Pages() {
   const router = useRouter();
@@ -24,7 +23,7 @@ export default function Pages() {
   };
 
   return (
-    <div className="container">
+    <div className={indexStyles["container"]}>
       <Head>
         <title>Leaf</title>
         <link rel="icon" href="/favicon.ico" />
@@ -38,7 +37,7 @@ export default function Pages() {
           }}
         />
       </Head>
-      <main className={"MainWrapper"}>
+      <main className={indexStyles["MainWrapper"]}>
         <Header goToIndex={goToIndex} />
         <HeaderDropDown goToIndex={goToIndex} />
         <Stripe1 />
@@ -58,7 +57,7 @@ Header Components
 */
 function Header(props: { goToIndex: any }) {
   return (
-    <div className={"IndexHeader"}>
+    <div className={indexStyles["IndexHeader"]}>
       <NavBar goToIndex={props.goToIndex} />
     </div>
   );
@@ -66,7 +65,7 @@ function Header(props: { goToIndex: any }) {
 
 function NavBar(props: { goToIndex: any }) {
   return (
-    <div className={"IndexNavBar"}>
+    <div className={indexStyles["IndexNavBar"]}>
       <Logo goToIndex={props.goToIndex} />
       <Signup />
       <Login />
@@ -78,7 +77,7 @@ function NavBar(props: { goToIndex: any }) {
 
 function HeaderDropDown(props: { goToIndex: any }) {
   return (
-    <div className={"HeaderDropDown"}>
+    <div className={indexStyles["HeaderDropDown"]}>
       <NavBarDropDown goToIndex={props.goToIndex} />
     </div>
   );
@@ -87,13 +86,13 @@ function HeaderDropDown(props: { goToIndex: any }) {
 function NavBarDropDown(props: { goToIndex: any }) {
   const [opened, toggleOpen] = useState(false);
   return (
-    <div className={"NavBarDropDown"}>
+    <div className={indexStyles["NavBarDropDown"]}>
       <Logo goToIndex={props.goToIndex} />
-      <div className={"dropdown"}>
+      <div className={indexStyles["dropdown"]}>
         <button onClick={(e) => toggleOpen(!opened)} className={"dropbtn"}>
           ☰
         </button>
-        <div className={"dropdownContent"}>
+        <div className={indexStyles["dropdownContent"]}>
           {opened ? (
             <div>
               <Signup />
@@ -112,7 +111,7 @@ function NavBarDropDown(props: { goToIndex: any }) {
 
 function Logo(props: { goToIndex: any }) {
   return (
-    <div className={"Logo"} onClick={props.goToIndex}>
+    <div className={indexStyles["Logo"]} onClick={props.goToIndex}>
       <img src="/images/logo.svg" />
     </div>
   );
@@ -120,7 +119,7 @@ function Logo(props: { goToIndex: any }) {
 
 function Login() {
   return (
-    <div className={"Login"}>
+    <div className={indexStyles["Login"]}>
       <Link href="/login">
         <a>Login</a>
       </Link>
@@ -130,7 +129,7 @@ function Login() {
 
 function Signup() {
   return (
-    <div className={"Login"}>
+    <div className={indexStyles["Login"]}>
       <Link href="/signup">
         <a>Signup</a>
       </Link>
@@ -140,7 +139,7 @@ function Signup() {
 
 function Explore() {
   return (
-    <div className={"Login"}>
+    <div className={indexStyles["Login"]}>
       <Link href="/explore">
         <a>Explore</a>
       </Link>
@@ -150,7 +149,7 @@ function Explore() {
 
 function About() {
   return (
-    <div className={"Login"}>
+    <div className={indexStyles["Login"]}>
       <Link href="/about">
         <a>About</a>
       </Link>
@@ -160,7 +159,7 @@ function About() {
 
 function Title() {
   return (
-    <div className={"Title"}>
+    <div className={indexStyles["Title"]}>
       <TitleText />
     </div>
   );
@@ -168,25 +167,27 @@ function Title() {
 
 function TitleText() {
   return (
-    <div className={"Title"}>
-      <div className={"Banner"}>
-        <div className={"Text"}>
-          <div className={"h1Text"}>Leaf is a platform built from the ground up, for coding tutorials</div>
-          <div className={"h2Text"}>
+    <div className={indexStyles["Title"]}>
+      <div className={indexStyles["Banner"]}>
+        <div className={indexStyles["Text"]}>
+          <div className={indexStyles["h1Text"]}>
+            Leaf is a platform built from the ground up, for coding tutorials
+          </div>
+          <div className={indexStyles["h2Text"]}>
             Say goodbye to publishing code snippets on Medium
           </div>
-          <div className={"TitleButtons"}>
+          <div className={indexStyles["TitleButtons"]}>
             <Link href="/signup">
-              <div className={"GetStarted"}>
-                <div className={"button"}>
+              <div className={indexStyles["GetStarted"]}>
+                <div className={indexStyles["button"]}>
                   Get Started
                   <img src="/images/warrow.svg" />
                 </div>
               </div>
             </Link>
             <Link href="/explore">
-              <div className={"Explore"}>
-                <div className={"button"}>
+              <div className={indexStyles["Explore"]}>
+                <div className={indexStyles["button"]}>
                   Learn More
                   <img src="/images/arrow.svg" />
                 </div>
@@ -194,10 +195,10 @@ function TitleText() {
             </Link>
           </div>
         </div>
-        <div className={"computer"}>
+        <div className={indexStyles["computer"]}>
           <img src="/images/laptop3.svg" />
-          <div className={"screen"}>
-            <video className={"demo"} autoPlay muted loop>
+          <div className={indexStyles["screen"]}>
+            <video className={indexStyles["demo"]} autoPlay muted loop>
               <source src={"/videos/frontpage.mp4"} />
             </video>
           </div>
@@ -210,8 +211,8 @@ function TitleText() {
 function GetStarted2() {
   return (
     <Link href="/signup">
-      <div className={"GetStarted2"}>
-        <div className={"button"}>Sign Up</div>
+      <div className={indexStyles["GetStarted2"]}>
+        <div className={indexStyles["button"]}>Sign Up</div>
       </div>
     </Link>
   );
@@ -219,12 +220,12 @@ function GetStarted2() {
 
 function Row1() {
   return (
-    <div className={"Row1"}>
-      <div className={"RowHeader"}>
+    <div className={indexStyles["Row1"]}>
+      <div className={indexStyles["RowHeader"]}>
         <img src="/images/steps.svg" />
       </div>
-      <div className={"Screen"}>
-        <video className={"Demo"} autoPlay muted loop>
+      <div className={indexStyles["Screen"]}>
+        <video className={indexStyles["Demo"]} autoPlay muted loop>
           <source src={"/videos/steps.mp4"} />
         </video>
       </div>
@@ -234,13 +235,13 @@ function Row1() {
 
 function Row2() {
   return (
-    <div className={"Row2"}>
+    <div className={indexStyles["Row2"]}>
       <Stripe2 />
-      <div className={"Row2Header"}>
+      <div className={indexStyles["Row2Header"]}>
         <img src="/images/code.svg" />
       </div>
-      <div className={"Screen"}>
-        <video className={"Demo"} autoPlay muted loop>
+      <div className={indexStyles["Screen"]}>
+        <video className={indexStyles["Demo"]} autoPlay muted loop>
           <source src={"/videos/code.mp4"} />
         </video>
       </div>
@@ -250,12 +251,12 @@ function Row2() {
 
 function Row3() {
   return (
-    <div className={"Row3"}>
-      <div className={"RowHeader"}>
+    <div className={indexStyles["Row3"]}>
+      <div className={indexStyles["RowHeader"]}>
         <img src="/images/publish.svg" />
       </div>
-      <div className={"Screen"}>
-        <video className={"Demo"} autoPlay muted loop>
+      <div className={indexStyles["Screen"]}>
+        <video className={indexStyles["Demo"]} autoPlay muted loop>
           <source src={"/videos/scroll.mp4"} />
         </video>
       </div>
@@ -265,9 +266,9 @@ function Row3() {
 
 function Row4() {
   return (
-    <div className={"Row4"}>
+    <div className={indexStyles["Row4"]}>
       <Stripe3 />
-      <div className={"Row4Text"}>
+      <div className={indexStyles["Row4Text"]}>
         Start making beautiful tutorials with Leaf
       </div>
       <GetStarted2 />
@@ -277,8 +278,8 @@ function Row4() {
 
 function Footer(props: { goToIndex: any }) {
   return (
-    <div className={"IndexFooter"}>
-      <div className={"FooterNavBar"}>
+    <div className={indexStyles["IndexFooter"]}>
+      <div className={indexStyles["FooterNavBar"]}>
         <Logo goToIndex={props.goToIndex} />
         <Signup />
         <Login />
@@ -290,13 +291,13 @@ function Footer(props: { goToIndex: any }) {
 }
 
 function Stripe1() {
-  return <div className={"Stripe1"}></div>;
+  return <div className={indexStyles["Stripe1"]}></div>;
 }
 
 function Stripe2() {
-  return <div className={"Stripe2"}></div>;
+  return <div className={indexStyles["Stripe2"]}></div>;
 }
 
 function Stripe3() {
-  return <div className={"Stripe3"}></div>;
+  return <div className={indexStyles["Stripe3"]}></div>;
 }

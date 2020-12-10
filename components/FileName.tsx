@@ -1,20 +1,25 @@
-import React, { Component, ReactElement, useState } from "react";
-import "../styles/filenames.scss";
+import React, { Component, ReactElement, useContext, useState } from "react";
+import { DraftContext } from "../contexts/draft-context";
+import { FilesContext } from "../contexts/files-context";
+import fileStyles from "../styles/filenames.module.scss";
 
 type FileNameProps = {
   selected: boolean;
-  changeSelectedFile: (fileIndex: number) => void;
-  saveFileName: (value: string, external: boolean) => void;
-  onNameChange: (name: string) => void;
   name: string;
-  removeFile: (toDeleteIndex: number) => void;
   index: number;
 };
 
 export default function FileName(props: FileNameProps) {
   let [hovered, toggleHover] = useState(false);
   let [editing, dblClick] = useState(false);
-
+  const {
+    changeSelectedFileIndex,
+    modifyFileName,
+    saveFileName,
+    removeFile,
+  } = useContext(FilesContext);
+  const { removeFileFromCodeSteps } = useContext(DraftContext);
+  const { index, selected } = props;
   // let style = {
   //   color: "white",
   //   backgroundColor: "#349AE9",
@@ -24,41 +29,25 @@ export default function FileName(props: FileNameProps) {
   //   style.backgroundColor = "white";
   // }
 
-  function renderButton() {
-    if (hovered && props.selected) {
-      return (
-        <div
-          className={"close-button"}
-          onClick={(e) => props.removeFile(props.index)}
-        >
-          x
-        </div>
-      );
-    } else {
-      return <div></div>;
-    }
-  }
-
-  function saveFileName() {
-    props.saveFileName(props.name, true);
+  function saveFileNameWrapper() {
+    saveFileName(props.name, true);
     dblClick(false);
   }
 
-  let wrapperClass;
-  props.selected
-    ? (wrapperClass = "filename-wrapper-selected")
-    : (wrapperClass = "filename-wrapper");
+  let wrapperClass = selected
+    ? "filename-wrapper-selected"
+    : "filename-wrapper";
 
   return (
     <div
       onMouseEnter={(e) => toggleHover(true)}
       onMouseLeave={(e) => toggleHover(false)}
       // style={style}
-      className={wrapperClass}
+      className={fileStyles[wrapperClass]}
     >
       <div
         onClick={(e) => {
-          props.changeSelectedFile(props.index);
+          changeSelectedFileIndex(props.index);
         }}
         onDoubleClick={(e) => {
           dblClick(true);
@@ -66,10 +55,10 @@ export default function FileName(props: FileNameProps) {
       >
         {editing ? (
           <input
-            className={"filenames"}
+            className={fileStyles["filenames"]}
             defaultValue={props.name}
-            onChange={(e) => props.onNameChange(e.target.value)}
-            onBlur={saveFileName}
+            onChange={(e) => modifyFileName(e.target.value, index)}
+            onBlur={saveFileNameWrapper}
             name="fileName"
             autoFocus={true}
           />
@@ -77,7 +66,33 @@ export default function FileName(props: FileNameProps) {
           <label>{props.name}</label>
         )}
       </div>
-      {renderButton()}
+      <RenderButton index={index} hovered={hovered} selected={selected} />
     </div>
   );
+}
+
+function RenderButton(props: {
+  hovered: boolean;
+  selected: boolean;
+  index: number;
+}) {
+  const { hovered, selected, index } = props;
+  const { removeFile, files } = useContext(FilesContext);
+  const { removeFileFromCodeSteps } = useContext(DraftContext);
+
+  if (hovered && selected) {
+    return (
+      <div
+        className={fileStyles["close-button"]}
+        onClick={(e) => {
+          removeFile(index);
+          removeFileFromCodeSteps(files[index].fileId);
+        }}
+      >
+        x
+      </div>
+    );
+  } else {
+    return <div></div>;
+  }
 }

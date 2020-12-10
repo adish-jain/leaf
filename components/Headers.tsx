@@ -1,16 +1,14 @@
-import "../styles/draftheader.scss";
-import "../styles/landingheader.scss";
-import { SetStateAction } from "react";
+import draftHeaderStyles from "../styles/draftheader.module.scss";
+import landingHeaderStyles from "../styles/landingheader.module.scss";
+import { SetStateAction, useContext } from "react";
 import Link from "next/link";
 import { goToIndex, goToLanding, logOut } from "../lib/UseLoggedIn";
+import { DraftContext } from "../contexts/draft-context";
+import { PreviewContext } from "./preview-context";
+import { Router, useRouter } from "next/router";
 
 type DraftHeaderProps = {
-  username: string;
-  updateShowPreview: (shouldShowPreview: boolean) => void;
   updateShowTags: (value: SetStateAction<boolean>) => void;
-  goToPublishedPost: () => void;
-  publishPost: () => void;
-  published: boolean;
 };
 
 type LandingHeaderProps = {
@@ -19,10 +17,13 @@ type LandingHeaderProps = {
 
 export function LandingHeader(props: LandingHeaderProps) {
   return (
-    <div className={"landing-header"}>
-      <div className={"inner-content"}>
-        <img className={"landing-img"} src="/images/LeafLogo.svg" />
-        <div className={"links"}>
+    <div className={landingHeaderStyles["landing-header"]}>
+      <div className={landingHeaderStyles["inner-content"]}>
+        <img
+          className={landingHeaderStyles["landing-img"]}
+          src="/images/LeafLogo.svg"
+        />
+        <div className={landingHeaderStyles["links"]}>
           <Link href={`/${props.username}`}>
             <a>Profile</a>
           </Link>
@@ -32,7 +33,10 @@ export function LandingHeader(props: LandingHeaderProps) {
           <Link href={`/settings`}>
             <a>Settings</a>
           </Link>
-          <div className={"logout-button"} onClick={logOut}>
+          <div
+            className={landingHeaderStyles["logout-button"]}
+            onClick={logOut}
+          >
             Logout
           </div>
         </div>
@@ -44,61 +48,117 @@ export function LandingHeader(props: LandingHeaderProps) {
 export function DraftHeader(props: DraftHeaderProps) {
   function Links() {
     return (
-      <div className={"links"}>
-        <Link href="/landing">
-          <a>Home</a>
-        </Link>
-        <Link href={`/${props.username}`}>
-          <a>Profile</a>
-        </Link>
-      </div>
+      <DraftContext.Consumer>
+        {({ username }) => (
+          <div className={draftHeaderStyles["links"]}>
+            <Link href="/landing">
+              <a>Home</a>
+            </Link>
+            <Link href={`/${username}`}>
+              <a>Profile</a>
+            </Link>
+          </div>
+        )}
+      </DraftContext.Consumer>
     );
   }
 
   function PublishButtonChoice() {
-    if (props.published) {
-      return (
-        <button className={"publish-button"} onClick={props.goToPublishedPost}>
-          Go To Published Post
-        </button>
-      );
-    } else {
-      return (
-        <button className={"publish-button"} onClick={props.publishPost}>
-          Publish Post
-        </button>
-      );
+    const router = useRouter();
+    const { draftId, postId, published, username } = useContext(DraftContext);
+
+    function publishPost() {
+      fetch("/api/endpoint", {
+        method: "POST",
+        redirect: "follow",
+        headers: new Headers({ "Content-Type": "application/json" }),
+        body: JSON.stringify({ requestedAPI: "publishPost", draftId: draftId }),
+      })
+        .then(async (res: any) => {
+          let resJson = await res.json();
+          let newUrl = resJson.newURL;
+          if (newUrl === "unverified") {
+            alert("Please verify your email before publishing.");
+          } else {
+            router.push(newUrl);
+          }
+          // Router.push(newUrl);
+        })
+        .catch(function (err: any) {
+          console.log(err);
+        });
     }
+
+    function goToPublishedPost() {
+      window.location.href = `/${username}/${postId}`;
+    }
+    const publishButton = (
+      <button
+        className={draftHeaderStyles["publish-button"]}
+        onClick={publishPost}
+      >
+        {"Publish Post"}
+      </button>
+    );
+
+    const goToPublishedPostButton = () => (
+      <button
+        className={draftHeaderStyles["publish-button"]}
+        onClick={(e) => goToPublishedPost()}
+      >
+        {"Go to Published Post"}
+      </button>
+    );
+
+    return (
+      <DraftContext.Consumer>
+        {({ published, username }) => {
+          if (published) {
+            return goToPublishedPostButton;
+          } else {
+            return publishButton;
+          }
+        }}
+      </DraftContext.Consumer>
+    );
   }
 
   function TagsButton() {
     return (
-      <button onClick={() => props.updateShowTags(true)} className={"publish-button"}>
+      <button
+        onClick={() => props.updateShowTags(true)}
+        className={draftHeaderStyles["publish-button"]}
+      >
         Tags
       </button>
     );
   }
 
   function Buttons() {
+    const { updatePreviewMode } = useContext(PreviewContext);
     return (
-      <div className={"buttons"}>
-         <TagsButton />
-        <button
-          className={"preview-button"}
-          onClick={(e) => {
-            props.updateShowPreview(true);
-          }}
-        >
-          Preview Post
-        </button>
-        <PublishButtonChoice />
-      </div>
+      <DraftContext.Consumer>
+        {({ published }) => (
+          <div className={draftHeaderStyles["buttons"]}>
+            <TagsButton />
+            <button
+              className={draftHeaderStyles["preview-button"]}
+              onClick={(e) => {
+                updatePreviewMode(true);
+              }}
+            >
+              Preview Post
+            </button>
+            <PublishButtonChoice />
+          </div>
+        )}
+      </DraftContext.Consumer>
     );
   }
 
   return (
-    <div className={"draft-header"}>
-      <div className={"header-wrapper"}>
+    <div className={draftHeaderStyles["draft-header"]}>
+      <div className={draftHeaderStyles["header-wrapper"]}>
         <Links />
         <Buttons />
       </div>
@@ -109,14 +169,14 @@ export function DraftHeader(props: DraftHeaderProps) {
 type FinishedPostHeaderProps = {
   previewMode: boolean;
   authenticated: boolean;
-  updateShowPreview?: (value: SetStateAction<boolean>) => void;
+  updatePreviewMode: ((previewMode: boolean) => void) | undefined;
   username?: string;
 };
 
 export function FinishedPostHeader(props: FinishedPostHeaderProps) {
   function Links() {
     return (
-      <div className={"links"}>
+      <div className={draftHeaderStyles["links"]}>
         <Link href="/landing">
           <a>Home</a>
         </Link>
@@ -126,14 +186,13 @@ export function FinishedPostHeader(props: FinishedPostHeaderProps) {
       </div>
     );
   }
-
   return (
-    <div className={"draft-header"}>
-      <div className={"header-wrapper"}>
+    <div className={draftHeaderStyles["draft-header"]}>
+      <div className={draftHeaderStyles["header-wrapper"]}>
         <Links />
-        <div className={"buttons"}>
+        <div className={draftHeaderStyles["buttons"]}>
           {props.previewMode ? (
-            <ExitPreview updateShowPreview={props.updateShowPreview} />
+            <ExitPreview updatePreviewMode={props.updatePreviewMode!} />
           ) : (
             <div></div>
           )}
@@ -144,13 +203,13 @@ export function FinishedPostHeader(props: FinishedPostHeaderProps) {
 }
 
 function ExitPreview(props: {
-  updateShowPreview?: (value: SetStateAction<boolean>) => void;
+  updatePreviewMode: (previewMode: boolean) => void;
 }) {
   return (
     <button
-      className={"preview-button"}
+      className={draftHeaderStyles["preview-button"]}
       onClick={(e) => {
-        props.updateShowPreview!(false);
+        props.updatePreviewMode(false);
       }}
     >
       Exit Preview
@@ -160,13 +219,13 @@ function ExitPreview(props: {
 
 type TagsHeaderProps = {
   showTags: boolean;
-  updateShowTags?: (value: SetStateAction<boolean>) => void;
+  updateShowTags?: (value: boolean) => void;
 };
 
 export function TagsHeader(props: TagsHeaderProps) {
   function Links() {
     return (
-      <div className={"links"}>
+      <div className={draftHeaderStyles["links"]}>
         <Link href="/landing">
           <a>Home</a>
         </Link>
@@ -175,10 +234,10 @@ export function TagsHeader(props: TagsHeaderProps) {
   }
 
   return (
-    <div className={"draft-header"}>
-      <div className={"header-wrapper"}>
+    <div className={draftHeaderStyles["draft-header"]}>
+      <div className={draftHeaderStyles["header-wrapper"]}>
         <Links />
-        <div className={"buttons"}>
+        <div className={draftHeaderStyles["buttons"]}>
           {props.showTags ? (
             <ExitTags updateShowTags={props.updateShowTags} />
           ) : (
@@ -190,12 +249,10 @@ export function TagsHeader(props: TagsHeaderProps) {
   );
 }
 
-function ExitTags(props: {
-  updateShowTags?: (value: SetStateAction<boolean>) => void;
-}) {
+function ExitTags(props: { updateShowTags?: (value: boolean) => void }) {
   return (
     <button
-      className={"preview-button"}
+      className={draftHeaderStyles["preview-button"]}
       onClick={(e) => {
         props.updateShowTags!(false);
       }}

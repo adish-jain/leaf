@@ -1,6 +1,7 @@
-import React, { Component } from "react";
-import "../styles/filebar.scss";
-import "../styles/filenames.scss";
+import React, { Component, useContext } from "react";
+import { PublishedFilesContext } from "../contexts/finishedpost/files-context";
+import fileBarStyles from "../styles/filebar.module.scss";
+import fileNameStyles from "../styles/filenames.module.scss";
 
 type File = {
   id: string;
@@ -9,23 +10,19 @@ type File = {
   name: string;
 };
 
-type PublishedFileBarProps = {
-  files: File[];
-  updateFile: (fileIndex: number) => void;
-  currentFile: File;
-};
+type PublishedFileBarProps = {};
 
 export default function PublishedFileBar(props: PublishedFileBarProps) {
+  const { files, selectedFileIndex } = useContext(PublishedFilesContext);
   return (
-    <div className={"published-filebar"}>
-      <div className={"files"}>
-        {props.files.map((file, index) => (
+    <div className={fileBarStyles["published-filebar"]}>
+      <div className={fileBarStyles["files"]}>
+        {files.map((file, index) => (
           <File
-            key={file.id}
+            key={file.fileId}
             index={index}
-            name={file.name}
-            updateFile={props.updateFile}
-            selected={file.name === props.currentFile.name}
+            name={file.fileName}
+            selected={index === selectedFileIndex}
           />
         ))}
       </div>
@@ -33,21 +30,16 @@ export default function PublishedFileBar(props: PublishedFileBarProps) {
   );
 }
 
-function File(props: {
-  name: string;
-  index: number;
-  selected: boolean;
-  updateFile: (fileIndex: number) => void;
-}) {
+function File(props: { name: string; index: number; selected: boolean }) {
   let wrapperClass;
   props.selected
     ? (wrapperClass = "filename-wrapper-selected")
     : (wrapperClass = "filename-wrapper");
-
+  const { updateFileIndex } = useContext(PublishedFilesContext);
   return (
     <div
-      onClick={(e) => props.updateFile(props.index)}
-      className={wrapperClass}
+      onClick={(e) => updateFileIndex(props.index)}
+      className={fileNameStyles[wrapperClass]}
     >
       {props.name}
     </div>

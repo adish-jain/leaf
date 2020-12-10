@@ -1,0 +1,108 @@
+@import "commonui.scss";
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+  .CodeEditor {
+    // min-width: 664px;
+    // max-width: 640px;
+  }
+}
+
+.line-modal {
+  // position: absolute;
+  // right: 50%;
+  // bottom: 40px;
+  // top: 0;
+  // left: 50%;
+  transition: bottom 0.2s ease-in-out;
+  border-style: solid;
+  border-width: 1px;
+  border-color: $leaf-light-gray;
+  border-radius: 4px;
+  box-shadow: 0px 4px 16px #edece9;
+  padding: 16px;
+  background-color: white;
+
+  p {
+    font-size: 14px;
+  }
+
+  button {
+    @include draft-button;
+    margin-left: 4px;
+  }
+
+  .adjusted {
+    // position: relative;
+    z-index: 3;
+    background: white;
+    // padding: 16px;
+    // right: -50%;
+  }
+}
+
+.CodeEditor {
+  // box-shadow: 0px 4px 16px #edece9;
+  border-radius: 8px;
+  // min-width: 330px;
+  border: 1px solid $leaf-light-gray;
+  // width: 1080px;
+  width: 51vw;
+  // margin-right: 3vw;
+  // height: 92vh;
+  top: 0px;
+  position: sticky;
+  // flex-grow: 100;
+
+  display: flex;
+  flex-direction: column;
+  flex-grow: 100;
+  height: 90vh;
+  // margin-top: 2vh;
+}
+
+.myInlineDecoration {
+  color: red !important;
+  background-color: red !important;
+  cursor: pointer;
+  text-decoration: underline;
+  font-weight: bold;
+  font-style: oblique;
+}
+
+.myLineDecoration {
+  background: $highlighter-yellow;
+  width: 5px !important;
+  margin-left: 3px;
+}
+
+.slate-wrapper {
+  overflow-y: scroll;
+  overflow-x: scroll;
+  overscroll-behavior: contain;
+  height: 100%;
+  background-color: $codeeditor-background;
+}
+
+.slate-wrapper::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+  opacity: 0; /* make scrollbar transparent */
+  height: 0px;
+}

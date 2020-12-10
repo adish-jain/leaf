@@ -2,27 +2,31 @@ import { initFirebaseAdmin } from "./initFirebase";
 const admin = require("firebase-admin");
 initFirebaseAdmin();
 let db = admin.firestore();
+import { fileObject } from "../typescript/types/frontend/postTypes";
 
-export async function getFilesForDraft(uid: string, draftId: string) {
-    let filesRef = db
+export async function getFilesForDraft(
+  uid: string,
+  draftId: string
+): Promise<fileObject[]> {
+  let filesRef = db
     .collection("users")
     .doc(uid)
     .collection("drafts")
     .doc(draftId)
     .collection("files")
-    .orderBy("createdAt");
-
+    .orderBy("order");
   return await filesRef
     .get()
-    .then(function (filesCollection: any) {
-      let results: any[] = [];
-      filesCollection.forEach(function (result: any) {
+    .then(function (filesCollection: firebase.firestore.QuerySnapshot) {
+      let results: fileObject[] = [];
+      filesCollection.forEach(function (result) {
         let resultsJSON = result.data();
         resultsJSON.id = result.id;
         results.push({
-          id: resultsJSON.id,
-          name: resultsJSON.name,
-          code: resultsJSON.code,
+          order: resultsJSON.order,
+          fileId: resultsJSON.id,
+          fileName: resultsJSON.fileName,
+          code: JSON.parse(resultsJSON.code),
           language: resultsJSON.language,
         });
       });

@@ -1,26 +1,11 @@
 import React, { Component, useEffect, useRef, useState } from "react";
 import FileName from "./FileName";
-import "../styles/filebar.scss";
+import fileBarStyles from "../styles/filebar.module.scss";
 import { AnimatePresence, motion } from "framer-motion";
+import { fileObject } from "../typescript/types/frontend/postTypes";
+import { FilesContext } from "../contexts/files-context";
 
-type File = {
-  id: string;
-  name: string;
-  //replace with enum
-  language: string;
-  code: string;
-};
-
-type FileBarProps = {
-  draftId: string;
-  files: File[];
-  changeSelectedFile: (fileIndex: number) => void;
-  saveFileName: (value: string, external: boolean) => void;
-  onNameChange: (name: string) => void;
-  addFile: () => void;
-  removeFile: (toDeleteIndex: number) => void;
-  selectedFileIndex: number;
-};
+type FileBarProps = {};
 
 export default class FileBar extends Component<FileBarProps> {
   constructor(props: FileBarProps) {
@@ -52,55 +37,55 @@ export default class FileBar extends Component<FileBarProps> {
       recalculate();
     }
 
-    let {
-      files,
-      saveFileName,
-      onNameChange,
-      selectedFileIndex,
-      removeFile,
-      changeSelectedFile,
-      addFile,
-    } = this.props;
-
     return (
-      <div className={"filebar"}>
-        <div ref={FileBarRef} onScroll={handleScroll} className={"files"}>
-          {files.map((file, index) => (
-            <FileName
-              name={file.name}
-              key={file.id}
-              changeSelectedFile={changeSelectedFile}
-              saveFileName={saveFileName}
-              onNameChange={onNameChange}
-              selected={selectedFileIndex === index}
-              removeFile={removeFile}
-              index={index}
-            />
-          ))}
-        </div>
-        <Scrollbar scrollPos={scrollOffset} scrollBarWidth={scrollBarWidth} />
-        <button className={"new-file"} onClick={(e) => addFile()}>
-          +
-        </button>
-      </div>
+      <FilesContext.Consumer>
+        {({
+          files,
+          removeFile,
+          selectedFile,
+          saveFileName,
+          addFile,
+          changeSelectedFileIndex,
+        }) => {
+          return (
+            <div className={fileBarStyles["filebar"]}>
+              <div
+                ref={FileBarRef}
+                onScroll={handleScroll}
+                className={fileBarStyles["files"]}
+              >
+                {files.map((file, index) => (
+                  <FileName
+                    name={file.fileName}
+                    key={file.fileId}
+                    selected={selectedFile?.fileId === file.fileId}
+                    index={index}
+                  />
+                ))}
+              </div>
+              <Scrollbar
+                scrollPos={scrollOffset}
+                scrollBarWidth={scrollBarWidth}
+              />
+              <button
+                className={fileBarStyles["new-file"]}
+                onClick={(e) => addFile()}
+              >
+                +
+              </button>
+            </div>
+          );
+        }}
+      </FilesContext.Consumer>
     );
   };
 
   render() {
-    let {
-      draftId,
-      files,
-      changeSelectedFile,
-      saveFileName,
-      onNameChange,
-      addFile,
-      removeFile,
-      selectedFileIndex,
-    } = this.props;
+    let {} = this.props;
 
     return (
-      <div className={"filebar-wrapper"}>
-        <div className={"title-with-divider"}>
+      <div className={fileBarStyles["filebar-wrapper"]}>
+        <div className={fileBarStyles["title-with-divider"]}>
           <label>files</label>
           <div></div>
         </div>
@@ -116,5 +101,11 @@ function Scrollbar(props: { scrollPos: number; scrollBarWidth: number }) {
     width: props.scrollBarWidth + "px",
     left: props.scrollPos + "px",
   };
-  return <div style={style} ref={scrollBarRef} className={"scrollbar"}></div>;
+  return (
+    <div
+      style={style}
+      ref={scrollBarRef}
+      className={fileBarStyles["scrollbar"]}
+    ></div>
+  );
 }

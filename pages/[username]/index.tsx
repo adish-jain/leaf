@@ -2,10 +2,15 @@ import React, { useState, useEffect } from "react";
 import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import { getUserPosts, getUidFromUsername, getProfileData } from "../../lib/userUtils";
+import {
+  getUserPosts,
+  getUidFromUsername,
+  getProfileData,
+} from "../../lib/userUtils";
 import { useLoggedIn } from "../../lib/UseLoggedIn";
-import "../../styles/profile.scss";
-import "../../styles/imageview.scss";
+import appStyles from "../../styles/app.module.scss";
+import profileStyles from "../../styles/profile.module.scss";
+import imageStyles from "../../styles/imageview.module.scss";
 import Header, { HeaderUnAuthenticated } from "../../components/Header";
 import ErroredPage from "../404";
 import { Post } from "../../typescript/types/app_types";
@@ -46,7 +51,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
         postId: currentPost.postId,
         postURL: "/" + username + "/" + currentPost.postId,
         publishedAt: dayjs(currentPost.publishedAt).format("MMMM D YYYY"),
-        tags: currentPost.tags !== undefined ? currentPost.tags.join(",") : null,
+        tags:
+          currentPost.tags !== undefined ? currentPost.tags.join(",") : null,
       });
     }
     return {
@@ -64,7 +70,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
       props: {
         errored: true,
       },
-      revalidate: 1
+      revalidate: 1,
     };
   }
 };
@@ -77,42 +83,46 @@ type UserPageProps = {
   posts: Post[];
 };
 
-async function saveProfileImage(selectedImage: File, changeProfileImage: React.Dispatch<React.SetStateAction<string>>) {
+async function saveProfileImage(
+  selectedImage: File,
+  changeProfileImage: React.Dispatch<React.SetStateAction<string>>
+) {
   const toBase64 = (file: File) =>
-      new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = (error) => reject(error);
-      });
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
 
-    let data = {
-      requestedAPI: "saveProfileImage",
-      imageFile: await toBase64(selectedImage),
-    };
+  let data = {
+    requestedAPI: "saveProfileImage",
+    imageFile: await toBase64(selectedImage),
+  };
 
-    await fetch("/api/endpoint", {
-      method: "POST",
-      headers: new Headers({
-        "Content-Type": "application/json",
-      }),
-      body: JSON.stringify(data),
+  await fetch("/api/endpoint", {
+    method: "POST",
+    headers: new Headers({
+      "Content-Type": "application/json",
+    }),
+    body: JSON.stringify(data),
+  })
+    .then(async (res: any) => {
+      let resJSON = await res.json();
+      let url = resJSON.url;
+      changeProfileImage(url);
     })
-      .then(async (res: any) => {
-        let resJSON = await res.json();
-        let url = resJSON.url;
-        changeProfileImage(url);
-      })
-      .catch((error: any) => {
-        console.log(error);
-        console.log("upload failed.");
-      });
+    .catch((error: any) => {
+      console.log(error);
+      console.log("upload failed.");
+    });
 }
 
 function handleProfileImageUpload(
-  e: React.ChangeEvent<HTMLInputElement>, 
-  changeUploadFailed: React.Dispatch<React.SetStateAction<boolean>>, 
-  changeProfileImage: React.Dispatch<React.SetStateAction<string>>) {
+  e: React.ChangeEvent<HTMLInputElement>,
+  changeUploadFailed: React.Dispatch<React.SetStateAction<boolean>>,
+  changeProfileImage: React.Dispatch<React.SetStateAction<string>>
+) {
   let selectedImage = e.target.files![0];
   if (selectedImage.size > 5000000) {
     changeUploadFailed(true);
@@ -122,9 +132,11 @@ function handleProfileImageUpload(
   }
 }
 
-async function handleProfileImageDelete(changeProfileImage: React.Dispatch<React.SetStateAction<string>>) {
+async function handleProfileImageDelete(
+  changeProfileImage: React.Dispatch<React.SetStateAction<string>>
+) {
   let data = {
-    requestedAPI: "deleteProfileImage"
+    requestedAPI: "deleteProfileImage",
   };
 
   //optimistic mutate
@@ -138,7 +150,9 @@ async function handleProfileImageDelete(changeProfileImage: React.Dispatch<React
 }
 
 function validateWebsite(websiteURL: string): string {
-  var match = websiteURL.match(/^(http|https|ftp)?(?:[\:\/]*)([a-z0-9\.-]*)(?:\:([0-9]+))?(\/[^?#]*)?(?:\?([^#]*))?(?:#(.*))?$/i);
+  var match = websiteURL.match(
+    /^(http|https|ftp)?(?:[\:\/]*)([a-z0-9\.-]*)(?:\:([0-9]+))?(\/[^?#]*)?(?:\?([^#]*))?(?:#(.*))?$/i
+  );
   let protocol = match![1];
   if (protocol === undefined) {
     websiteURL = "http://" + websiteURL;
@@ -171,11 +185,21 @@ export default function UserPage(props: UserPageProps) {
 
   useEffect(() => {
     if (props.profileData !== undefined) {
-      props.profileData.about !== undefined ? changeAbout(props.profileData.about) : changeAbout(props.profileUsername + " hasn't written a bio");
-      props.profileData.twitter !== undefined ? changeTwitter(props.profileData.twitter) : null;
-      props.profileData.github !== undefined ? changeGithub(props.profileData.github) : null;
-      props.profileData.website !== undefined ? changeWebsite(props.profileData.website) : null;
-      props.profileData.profileImage !== undefined ? changeProfileImage(props.profileData.profileImage) : "";
+      props.profileData.about !== undefined
+        ? changeAbout(props.profileData.about)
+        : changeAbout(props.profileUsername + " hasn't written a bio");
+      props.profileData.twitter !== undefined
+        ? changeTwitter(props.profileData.twitter)
+        : null;
+      props.profileData.github !== undefined
+        ? changeGithub(props.profileData.github)
+        : null;
+      props.profileData.website !== undefined
+        ? changeWebsite(props.profileData.website)
+        : null;
+      props.profileData.profileImage !== undefined
+        ? changeProfileImage(props.profileData.profileImage)
+        : "";
     }
   }, [props.profileData]);
 
@@ -187,97 +211,70 @@ export default function UserPage(props: UserPageProps) {
       </Head>
       <main>
         {authenticated ? (
-          <Header profile={false} explore={true} settings={true} logout={true} />
+          <Header
+            profile={false}
+            explore={true}
+            settings={true}
+            logout={true}
+          />
         ) : (
           <HeaderUnAuthenticated signup={true} login={true} explore={true} />
         )}
-        <h1 className={"profile-header"}></h1>
-        <div className={"profile-content"}>
-          <div className={"profile-left-pane"}>
-          {canEditBio ? 
-           <AnimatePresence>
-           <motion.div
-             initial={{
-               opacity: 0,
-             }}
-             animate={{
-               opacity: 1,
-             }}
-             exit={{
-               opacity: 0,
-             }}
-             transition={{
-               duration: 0.4,
-             }}
-           >
-              <EditableProfileImage 
-                profileImage={profileImage}
-                profileUsername={props.profileUsername}
-                uploadFailed={uploadFailed}
-                changeUploadFailed={changeUploadFailed}
-                changeProfileImage={changeProfileImage}
-              />
-            </motion.div>
-            </AnimatePresence>
-            :
-            <AnimatePresence>
-            <motion.div
-              initial={{
-                opacity: 0,
-              }}
-              animate={{
-                opacity: 1,
-              }}
-              exit={{
-                opacity: 0,
-              }}
-              transition={{
-                duration: 0.4,
-              }}
-            >
-              <UneditableProfileImage
-                profileImage={profileImage}
-                profileUsername={props.profileUsername}
-              />
-            </motion.div>
-            </AnimatePresence>  
-          }
-            <div className={"profile-name"}>{props.profileUsername}</div>
-            <AnimatePresence>
-            <motion.div
-              initial={{
-                opacity: 0,
-              }}
-              animate={{
-                opacity: 1,
-              }}
-              exit={{
-                opacity: 0,
-              }}
-              transition={{
-                duration: 0.4,
-              }}
-            >
-              <About
-                editingBio={editingBio}
-                canEditBio={canEditBio}
-                about={about}
-                twitter={twitter}
-                github={github}
-                website={website}
-                changeAbout={changeAbout}
-                changeTwitter={changeTwitter}
-                changeGithub={changeGithub}
-                changeWebsite={changeWebsite}
-                toggleEditingBio={toggleEditingBio}
-                saveNewProfile={saveNewProfile}
-              />
-            </motion.div>
-            </AnimatePresence>  
-          </div>
-          <div className={"profile-right-pane"}>
-             {
+        <h1 className={profileStyles["profile-header"]}></h1>
+        <div className={profileStyles["profile-content"]}>
+          <div className={profileStyles["profile-left-pane"]}>
+            {canEditBio ? (
               <AnimatePresence>
+                <motion.div
+                  initial={{
+                    opacity: 0,
+                  }}
+                  animate={{
+                    opacity: 1,
+                  }}
+                  exit={{
+                    opacity: 0,
+                  }}
+                  transition={{
+                    duration: 0.4,
+                  }}
+                >
+                  <EditableProfileImage
+                    profileImage={profileImage}
+                    profileUsername={props.profileUsername}
+                    uploadFailed={uploadFailed}
+                    changeUploadFailed={changeUploadFailed}
+                    changeProfileImage={changeProfileImage}
+                  />
+                </motion.div>
+              </AnimatePresence>
+            ) : (
+              <AnimatePresence>
+                <motion.div
+                  initial={{
+                    opacity: 0,
+                  }}
+                  animate={{
+                    opacity: 1,
+                  }}
+                  exit={{
+                    opacity: 0,
+                  }}
+                  transition={{
+                    duration: 0.4,
+                  }}
+                >
+                  <UneditableProfileImage
+                    profileImage={profileImage}
+                    profileUsername={props.profileUsername}
+                  />
+                </motion.div>
+              </AnimatePresence>
+            )}
+            <div className={profileStyles["profile-name"]}>
+              {props.profileUsername}
+            </div>
+            <AnimatePresence>
               <motion.div
                 initial={{
                   opacity: 0,
@@ -292,15 +289,52 @@ export default function UserPage(props: UserPageProps) {
                   duration: 0.4,
                 }}
               >
-                <DisplayPosts posts={props.posts} username={props.profileUsername}/>
+                <About
+                  editingBio={editingBio}
+                  canEditBio={canEditBio}
+                  about={about}
+                  twitter={twitter}
+                  github={github}
+                  website={website}
+                  changeAbout={changeAbout}
+                  changeTwitter={changeTwitter}
+                  changeGithub={changeGithub}
+                  changeWebsite={changeWebsite}
+                  toggleEditingBio={toggleEditingBio}
+                  saveNewProfile={saveNewProfile}
+                />
               </motion.div>
-              </AnimatePresence>  
-             }
+            </AnimatePresence>
+          </div>
+          <div className={profileStyles["profile-right-pane"]}>
+            {
+              <AnimatePresence>
+                <motion.div
+                  initial={{
+                    opacity: 0,
+                  }}
+                  animate={{
+                    opacity: 1,
+                  }}
+                  exit={{
+                    opacity: 0,
+                  }}
+                  transition={{
+                    duration: 0.4,
+                  }}
+                >
+                  <DisplayPosts
+                    posts={props.posts}
+                    username={props.profileUsername}
+                  />
+                </motion.div>
+              </AnimatePresence>
+            }
           </div>
         </div>
       </main>
     </div>
-  )
+  );
 }
 
 function EditableProfileImage(props: {
@@ -311,35 +345,44 @@ function EditableProfileImage(props: {
   changeProfileImage: React.Dispatch<React.SetStateAction<string>>;
 }) {
   return (
-    <div className={"profile-img"}>
-      <div className={"profile-img-wrapper"}>
-        {props.profileImage === "" ? 
-          (props.profileUsername !== undefined ? props.profileUsername.substr(0,2) : "")
-          : 
-          (<img src={props.profileImage}/>)
-        }
+    <div className={profileStyles["profile-img"]}>
+      <div className={profileStyles["profile-img-wrapper"]}>
+        {props.profileImage === "" ? (
+          props.profileUsername !== undefined ? (
+            props.profileUsername.substr(0, 2)
+          ) : (
+            ""
+          )
+        ) : (
+          <img src={props.profileImage} />
+        )}
       </div>
-      <div className={"profile-img-shade"}></div>
-      <div className={"profile-img-button"}>
-        <label className={"add-image"}>
-          {props.uploadFailed ? 
-            "Try Image < 5MB" 
-            :
-            "Upload Photo"
-          }
+      <div className={profileStyles["profile-img-shade"]}></div>
+      <div className={profileStyles["profile-img-button"]}>
+        <label className={imageStyles["add-image"]}>
+          {props.uploadFailed ? "Try Image < 5MB" : "Upload Photo"}
           <input
             type="file"
             id="myFile"
             name="filename"
             accept="image/*"
-            onChange={(e) => handleProfileImageUpload(e, props.changeUploadFailed, props.changeProfileImage)}
+            onChange={(e) =>
+              handleProfileImageUpload(
+                e,
+                props.changeUploadFailed,
+                props.changeProfileImage
+              )
+            }
           />
         </label>
-        {props.profileImage !== "" && 
-        <label className={"add-image"} onClick={(e) => handleProfileImageDelete(props.changeProfileImage)}>
-          Delete Photo
-        </label>
-        }
+        {props.profileImage !== "" && (
+          <label
+            className={imageStyles["add-image"]}
+            onClick={(e) => handleProfileImageDelete(props.changeProfileImage)}
+          >
+            Delete Photo
+          </label>
+        )}
       </div>
     </div>
   );
@@ -350,108 +393,65 @@ function UneditableProfileImage(props: {
   profileUsername: string;
 }) {
   return (
-    <div className={"profile-img-uneditable"}>
-      {props.profileImage === "" ? 
-        (props.profileUsername !== undefined ? props.profileUsername.substr(0,2) : "")
-        : 
-        (<img src={props.profileImage}/>)
-      }
+    <div className={profileStyles["profile-img-uneditable"]}>
+      {props.profileImage === "" ? (
+        props.profileUsername !== undefined ? (
+          props.profileUsername.substr(0, 2)
+        ) : (
+          ""
+        )
+      ) : (
+        <img src={props.profileImage} />
+      )}
     </div>
   );
 }
 
 function About(props: {
-  editingBio: boolean,
-  canEditBio: boolean,
-  about: string,
-  twitter: string,
-  github: string,
-  website: string,
-  changeAbout: React.Dispatch<React.SetStateAction<string>>,
-  changeTwitter: React.Dispatch<React.SetStateAction<string>>,
-  changeGithub: React.Dispatch<React.SetStateAction<string>>,
-  changeWebsite: React.Dispatch<React.SetStateAction<string>>,
-  toggleEditingBio: React.Dispatch<React.SetStateAction<boolean>>,
-  saveNewProfile: () => Promise<void>,
+  editingBio: boolean;
+  canEditBio: boolean;
+  about: string;
+  twitter: string;
+  github: string;
+  website: string;
+  changeAbout: React.Dispatch<React.SetStateAction<string>>;
+  changeTwitter: React.Dispatch<React.SetStateAction<string>>;
+  changeGithub: React.Dispatch<React.SetStateAction<string>>;
+  changeWebsite: React.Dispatch<React.SetStateAction<string>>;
+  toggleEditingBio: React.Dispatch<React.SetStateAction<boolean>>;
+  saveNewProfile: () => Promise<void>;
 }) {
   return (
     <div>
-      <div className={"profile-about-header"}>ABOUT</div>
-        <AboutSection 
-          editingBio={props.editingBio}
-          about={props.about}
-          changeAbout={props.changeAbout}
-        />
-        <div className={"profile-about-icons"}>
-          <AnimatePresence>
-            <motion.div
-              initial={{
-                opacity: 0,
-              }}
-              animate={{
-                opacity: 1,
-              }}
-              exit={{
-                opacity: 0,
-              }}
-              transition={{
-                duration: 0.4,
-              }}
-            >
-              <TwitterSection 
-                editingBio={props.editingBio}
-                twitter={props.twitter}
-                changeTwitter={props.changeTwitter}
-              />
-            </motion.div>
-          </AnimatePresence>  
-
-          <AnimatePresence>
-            <motion.div
-              initial={{
-                opacity: 0,
-              }}
-              animate={{
-                opacity: 1,
-              }}
-              exit={{
-                opacity: 0,
-              }}
-              transition={{
-                duration: 0.4,
-              }}
-            >
-              <GithubSection 
-                editingBio={props.editingBio}
-                github={props.github}
-                changeGithub={props.changeGithub}
-              />
-            </motion.div>
-          </AnimatePresence> 
-
-          <AnimatePresence>
-            <motion.div
-              initial={{
-                opacity: 0,
-              }}
-              animate={{
-                opacity: 1,
-              }}
-              exit={{
-                opacity: 0,
-              }}
-              transition={{
-                duration: 0.4,
-              }}
-            >
-              <WebsiteSection 
-                editingBio={props.editingBio}
-                website={props.website}
-                changeWebsite={props.changeWebsite}
-              />
-            </motion.div>
-          </AnimatePresence> 
-        </div>
+      <div className={profileStyles["profile-about-header"]}>ABOUT</div>
+      <AboutSection
+        editingBio={props.editingBio}
+        about={props.about}
+        changeAbout={props.changeAbout}
+      />
+      <div className={profileStyles["profile-about-icons"]}>
+        <AnimatePresence>
+          <motion.div
+            initial={{
+              opacity: 0,
+            }}
+            animate={{
+              opacity: 1,
+            }}
+            exit={{
+              opacity: 0,
+            }}
+            transition={{
+              duration: 0.4,
+            }}
+          >
+            <TwitterSection
+              editingBio={props.editingBio}
+              twitter={props.twitter}
+              changeTwitter={props.changeTwitter}
+            />
+          </motion.div>
+        </AnimatePresence>
 
         <AnimatePresence>
           <motion.div
@@ -468,27 +468,74 @@ function About(props: {
               duration: 0.4,
             }}
           >
-            <EditProfileButton 
+            <GithubSection
               editingBio={props.editingBio}
-              canEditBio={props.canEditBio}
-              toggleEditingBio={props.toggleEditingBio}
-              saveNewProfile={props.saveNewProfile}
+              github={props.github}
+              changeGithub={props.changeGithub}
             />
           </motion.div>
-        </AnimatePresence> 
+        </AnimatePresence>
+
+        <AnimatePresence>
+          <motion.div
+            initial={{
+              opacity: 0,
+            }}
+            animate={{
+              opacity: 1,
+            }}
+            exit={{
+              opacity: 0,
+            }}
+            transition={{
+              duration: 0.4,
+            }}
+          >
+            <WebsiteSection
+              editingBio={props.editingBio}
+              website={props.website}
+              changeWebsite={props.changeWebsite}
+            />
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      <AnimatePresence>
+        <motion.div
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          exit={{
+            opacity: 0,
+          }}
+          transition={{
+            duration: 0.4,
+          }}
+        >
+          <EditProfileButton
+            editingBio={props.editingBio}
+            canEditBio={props.canEditBio}
+            toggleEditingBio={props.toggleEditingBio}
+            saveNewProfile={props.saveNewProfile}
+          />
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 }
 
 function AboutSection(props: {
-  editingBio: boolean,
-  about: string,
-  changeAbout: React.Dispatch<React.SetStateAction<string>>,
+  editingBio: boolean;
+  about: string;
+  changeAbout: React.Dispatch<React.SetStateAction<string>>;
 }) {
   return (
-    <div className={"profile-about-content"}>
+    <div className={profileStyles["profile-about-content"]}>
       {props.editingBio ? (
-        <div className={"about-icon-and-input"}>
+        <div className={profileStyles["about-icon-and-input"]}>
           <AnimatePresence>
             <motion.div
               initial={{
@@ -509,7 +556,10 @@ function AboutSection(props: {
                 value={props.about}
                 onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
                   let myTarget = e.target as HTMLTextAreaElement;
-                  let myTargetConstrained = myTarget.value.replace(/[\r\n\v]+/g, '');
+                  let myTargetConstrained = myTarget.value.replace(
+                    /[\r\n\v]+/g,
+                    ""
+                  );
                   props.changeAbout(myTargetConstrained);
                 }}
                 style={{
@@ -520,7 +570,7 @@ function AboutSection(props: {
                 name="title"
               />
             </motion.div>
-          </AnimatePresence> 
+          </AnimatePresence>
         </div>
       ) : (
         props.about
@@ -530,29 +580,26 @@ function AboutSection(props: {
 }
 
 function TwitterSection(props: {
-  editingBio: boolean,
-  twitter: string,
-  changeTwitter: React.Dispatch<React.SetStateAction<string>>,
+  editingBio: boolean;
+  twitter: string;
+  changeTwitter: React.Dispatch<React.SetStateAction<string>>;
 }) {
-  return (
-    props.editingBio ? 
-      <EditingTwitterSection
-        twitter={props.twitter}
-        changeTwitter={props.changeTwitter}
-      /> 
-      : 
-      <SavedTwitterSection 
-        twitter={props.twitter}
-      />
+  return props.editingBio ? (
+    <EditingTwitterSection
+      twitter={props.twitter}
+      changeTwitter={props.changeTwitter}
+    />
+  ) : (
+    <SavedTwitterSection twitter={props.twitter} />
   );
 }
 
 function EditingTwitterSection(props: {
-  twitter: string,
-  changeTwitter: React.Dispatch<React.SetStateAction<string>>,
+  twitter: string;
+  changeTwitter: React.Dispatch<React.SetStateAction<string>>;
 }) {
   return (
-    <div className={"profile-icon-and-input"}>
+    <div className={profileStyles["profile-icon-and-input"]}>
       <img src="/images/birdyicon.svg" />
       <AnimatePresence>
         <motion.div
@@ -583,59 +630,47 @@ function EditingTwitterSection(props: {
             name="twitter"
           />
         </motion.div>
-      </AnimatePresence> 
+      </AnimatePresence>
     </div>
   );
 }
 
-function SavedTwitterSection(props: {
-  twitter: string,
-}) {
-  return (
-    props.twitter !== "" ? (
-      <div className={"profile-icon-and-link"}>
-        <a 
-          href={"https://twitter.com/" + props.twitter}
-          target="blank"
-        >
-          <img src="/images/birdyicon.svg" />
-        </a>
-        <a 
-          href={"https://twitter.com/" + props.twitter}
-          target="blank"
-        >
-          <p>{props.twitter}</p>
-        </a>
-      </div>
-    ) : (
-      <div></div>
-    )
+function SavedTwitterSection(props: { twitter: string }) {
+  return props.twitter !== "" ? (
+    <div className={profileStyles["profile-icon-and-link"]}>
+      <a href={"https://twitter.com/" + props.twitter} target="blank">
+        <img src="/images/birdyicon.svg" />
+      </a>
+      <a href={"https://twitter.com/" + props.twitter} target="blank">
+        <p>{props.twitter}</p>
+      </a>
+    </div>
+  ) : (
+    <div></div>
   );
 }
 
 function GithubSection(props: {
-  editingBio: boolean,
-  github: string,
-  changeGithub: React.Dispatch<React.SetStateAction<string>>,
+  editingBio: boolean;
+  github: string;
+  changeGithub: React.Dispatch<React.SetStateAction<string>>;
 }) {
-  return (
-    props.editingBio ? 
-      <EditingGithubSection
-        github={props.github}
-        changeGithub={props.changeGithub}
-      /> : 
-      <SavedGithubSection 
-        github={props.github}
-      />
+  return props.editingBio ? (
+    <EditingGithubSection
+      github={props.github}
+      changeGithub={props.changeGithub}
+    />
+  ) : (
+    <SavedGithubSection github={props.github} />
   );
 }
 
 function EditingGithubSection(props: {
-  github: string,
-  changeGithub: React.Dispatch<React.SetStateAction<string>>,
+  github: string;
+  changeGithub: React.Dispatch<React.SetStateAction<string>>;
 }) {
   return (
-    <div className={"profile-icon-and-input"}>
+    <div className={profileStyles["profile-icon-and-input"]}>
       <img src="/images/githubicon.svg" />
       <AnimatePresence>
         <motion.div
@@ -653,71 +688,60 @@ function EditingGithubSection(props: {
           }}
         >
           <TextareaAutosize
-          placeholder={"Github Username"}
-          value={props.github}
-          onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
-            let myTarget = e.target as HTMLTextAreaElement;
-            props.changeGithub(myTarget.value);
-          }}
-          style={{
-            fontSize: "15px",
-            color: "D0D0D0",
-          }}
-          name="github"
+            placeholder={"Github Username"}
+            value={props.github}
+            onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
+              let myTarget = e.target as HTMLTextAreaElement;
+              props.changeGithub(myTarget.value);
+            }}
+            style={{
+              fontSize: "15px",
+              color: "D0D0D0",
+            }}
+            name="github"
           />
         </motion.div>
-      </AnimatePresence> 
+      </AnimatePresence>
     </div>
   );
 }
 
-function SavedGithubSection(props: {
-  github: string,
-}) {
-  return (
-    props.github !== "" ? (
-      <div className={"profile-icon-and-link"}>
-        <a 
-          href={"https://github.com/" + props.github}
-          target="blank"
-        >
-          <img src="/images/githubicon.svg" />
-        </a>
-        <a 
-          href={"https://github.com/" + props.github}
-          target="blank"
-        ><p>{props.github}</p></a>
-        
-      </div>
-    ) : (
-      <div></div>
-    )
+function SavedGithubSection(props: { github: string }) {
+  return props.github !== "" ? (
+    <div className={profileStyles["profile-icon-and-link"]}>
+      <a href={"https://github.com/" + props.github} target="blank">
+        <img src="/images/githubicon.svg" />
+      </a>
+      <a href={"https://github.com/" + props.github} target="blank">
+        <p>{props.github}</p>
+      </a>
+    </div>
+  ) : (
+    <div></div>
   );
 }
 
 function WebsiteSection(props: {
-  editingBio: boolean,
-  website: string,
-  changeWebsite: React.Dispatch<React.SetStateAction<string>>,
+  editingBio: boolean;
+  website: string;
+  changeWebsite: React.Dispatch<React.SetStateAction<string>>;
 }) {
-  return (
-    props.editingBio ? 
-      <EditingWebsiteSection
-        website={props.website}
-        changeWebsite={props.changeWebsite}
-      /> : 
-      <SavedWebsiteSection 
-        website={props.website}
-      />
+  return props.editingBio ? (
+    <EditingWebsiteSection
+      website={props.website}
+      changeWebsite={props.changeWebsite}
+    />
+  ) : (
+    <SavedWebsiteSection website={props.website} />
   );
 }
 
 function EditingWebsiteSection(props: {
-  website: string,
-  changeWebsite: React.Dispatch<React.SetStateAction<string>>,
+  website: string;
+  changeWebsite: React.Dispatch<React.SetStateAction<string>>;
 }) {
   return (
-    <div className={"profile-icon-and-input"}>
+    <div className={profileStyles["profile-icon-and-input"]}>
       <img src="/images/webicon.svg" />
       <AnimatePresence>
         <motion.div
@@ -748,109 +772,103 @@ function EditingWebsiteSection(props: {
             name="website"
           />
         </motion.div>
-      </AnimatePresence> 
+      </AnimatePresence>
     </div>
   );
 }
 
-function SavedWebsiteSection(props: {
-  website: string,
-}) {
-  return (
-    props.website !== "" ? (
-      <div className={"profile-icon-and-link"}>
-        <a 
-          href={validateWebsite(props.website)}
-          target="blank"
-        >
-          <img src="/images/webicon.svg" />
-        </a>
-        <a 
-          href={validateWebsite(props.website)}
-          target="blank"
-        ><p>{props.website}</p></a>
-      </div>
-    ) : (
-      <div></div>
-    )
+function SavedWebsiteSection(props: { website: string }) {
+  return props.website !== "" ? (
+    <div className={profileStyles["profile-icon-and-link"]}>
+      <a href={validateWebsite(props.website)} target="blank">
+        <img src="/images/webicon.svg" />
+      </a>
+      <a href={validateWebsite(props.website)} target="blank">
+        <p>{props.website}</p>
+      </a>
+    </div>
+  ) : (
+    <div></div>
   );
 }
 
 function EditProfileButton(props: {
-  editingBio: boolean,
-  canEditBio: boolean,
-  toggleEditingBio: React.Dispatch<React.SetStateAction<boolean>>,
-  saveNewProfile: () => Promise<void>,
+  editingBio: boolean;
+  canEditBio: boolean;
+  toggleEditingBio: React.Dispatch<React.SetStateAction<boolean>>;
+  saveNewProfile: () => Promise<void>;
 }) {
-  return (
-    props.canEditBio ? 
-      (props.editingBio ? 
-        (
-          <AnimatePresence>
-            <motion.div
-              initial={{
-                opacity: 0,
-              }}
-              animate={{
-                opacity: 1,
-              }}
-              exit={{
-                opacity: 0,
-              }}
-              transition={{
-                duration: 0.4,
-              }}
-            >
-              <div 
-                className={"profile-edit-button"} 
-                onClick={(e) => {props.toggleEditingBio(!props.editingBio); props.saveNewProfile()}}
-              >
-                Save Profile
-              </div>
-            </motion.div>
-          </AnimatePresence> 
-        )
-      :
-        (<div 
-          className={"profile-edit-button"} 
-          onClick={(e) => props.toggleEditingBio(!props.editingBio)}
+  return props.canEditBio ? (
+    props.editingBio ? (
+      <AnimatePresence>
+        <motion.div
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          exit={{
+            opacity: 0,
+          }}
+          transition={{
+            duration: 0.4,
+          }}
         >
-          Edit Profile
-        </div>
-      )) : (<div></div>)
-    );
+          <div
+            className={profileStyles["profile-edit-button"]}
+            onClick={(e) => {
+              props.toggleEditingBio(!props.editingBio);
+              props.saveNewProfile();
+            }}
+          >
+            Save Profile
+          </div>
+        </motion.div>
+      </AnimatePresence>
+    ) : (
+      <div
+        className={profileStyles["profile-edit-button"]}
+        onClick={(e) => props.toggleEditingBio(!props.editingBio)}
+      >
+        Edit Profile
+      </div>
+    )
+  ) : (
+    <div></div>
+  );
 }
 
-function DisplayPosts(props: {
-  posts: Post[];
-  username: string;
-}) {
+function DisplayPosts(props: { posts: Post[]; username: string }) {
   try {
     const router = useRouter();
     return (
       <div>
         {props.posts === undefined || props.posts.length === 0 ? (
-          <div className={"profile-no-posts"}>{props.username} hasn't published anything yet</div>
+          <div className={profileStyles["profile-no-posts"]}>
+            {props.username} hasn't published anything yet
+          </div>
         ) : (
           <div>
             {Array.from(props.posts).map((post: Post) => {
-              const tags = post["tags"] === null ? null : (String) (post["tags"]).split(",");
+              const tags =
+                post["tags"] === null ? null : String(post["tags"]).split(",");
               return (
                 <div
-                  className={"profile-post"}
+                  className={profileStyles["profile-post"]}
                   onClick={() => router.push(post["postURL"])}
                 >
-                  <div className={"profile-post-title"}>{post["title"]}</div>
-                  <div className={"profile-post-date"}>
+                  <div className={profileStyles["profile-post-title"]}>
+                    {post["title"]}
+                  </div>
+                  <div className={profileStyles["profile-post-date"]}>
                     {post["publishedAt"]}
                   </div>
-                  <div className={"profile-post-tags-author"}>
+                  <div className={profileStyles["profile-post-tags-author"]}>
                     {tags !== null ? (
                       tags.map((tag: string) => {
                         return (
-                          <div
-                            className={"profile-post-tag"}
-                          >
+                          <div className={profileStyles["profile-post-tag"]}>
                             {tag}
                           </div>
                         );
@@ -868,6 +886,10 @@ function DisplayPosts(props: {
     );
   } catch {
     console.log("error fetching posts");
-    return <div><h3>Error Fetching Posts</h3></div>;
+    return (
+      <div>
+        <h3>Error Fetching Posts</h3>
+      </div>
+    );
   }
 }

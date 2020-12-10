@@ -1,25 +1,16 @@
-import React, { Component } from "react";
-import "../styles/languagebar.scss";
+import React, { Component, useContext } from "react";
+import { ContentContext } from "../contexts/finishedpost/content-context";
+import { PublishedFilesContext } from "../contexts/finishedpost/files-context";
+import languageBarStyles from "../styles/languagebar.module.scss";
 
-type PublishedLanguageBarProps = {
-  language: string;
-};
-
-type CodeMirrorState = {
-  value: string;
-};
-
-type File = {
-  id: string;
-  language: string;
-  code: string;
-  name: string;
-};
-
-export default function PublishedLanguageBar(props: PublishedLanguageBarProps) {
+export default function PublishedLanguageBar(props: {}) {
+  const { files, selectedFileIndex } = useContext(PublishedFilesContext);
+  const currentFile = files[selectedFileIndex];
   return (
-    <div className={"published-language-bar"}>
-      <label>Language:<span> {props.language}</span></label>
+    <div className={languageBarStyles["published-language-bar"]}>
+      <label>
+        Language:<span> {currentFile.language}</span>
+      </label>
     </div>
   );
 }

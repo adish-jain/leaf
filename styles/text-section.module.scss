@@ -1,0 +1,32 @@
+@import "commonui.scss";
+
+.text-section {
+  width: 800px;
+  margin: auto;
+}
+
+.markdown {
+  margin-bottom: 60px;
+}
+
+.addcode {
+  @include draft-button;
+  margin-bottom: 80px;
+}
+
+.description {
+  margin-top: 8px;
+  display: flex;
+
+  p {
+    pointer-events: none;
+    color: $gray-text;
+    margin: 0;
+    margin-left: 4px;
+  }
+}
+
+.delete {
+  @include draft-button;
+  margin-left: 8px;
+}

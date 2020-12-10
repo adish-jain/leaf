@@ -2,6 +2,7 @@ import { initFirebaseAdmin, initFirebase } from "./initFirebase";
 import fetch from "isomorphic-fetch";
 import { NextApiRequest, NextApiResponse } from "next";
 import { setTokenCookies, removeTokenCookies } from "./cookieUtils";
+import { timeStamp } from "../typescript/types/app_types";
 import { Post } from "../typescript/types/app_types";
 
 const admin = require("firebase-admin");
@@ -104,7 +105,15 @@ export async function refreshJWT(refreshToken: string) {
   }
 }
 
-export async function getUserDrafts(uid: string) {
+type landingDraft = {
+  createdAt: timeStamp;
+  title: string;
+  id: string;
+};
+
+export async function getUserDraftsForLanding(
+  uid: string
+): Promise<landingDraft[]> {
   let draftsRef = db
     .collection("users")
     .doc(uid)
@@ -114,14 +123,18 @@ export async function getUserDrafts(uid: string) {
   return await draftsRef
     .get()
     .then(function (draftsCollection: any) {
-      let results: any[] = [];
+      let results: landingDraft[] = [];
       draftsCollection.forEach(function (result: any) {
         let resultsJSON = result.data();
 
         //published posts have published set to true, so we ignore these
         if (!resultsJSON.published) {
           resultsJSON.id = result.id;
-          results.push(resultsJSON);
+          results.push({
+            createdAt: resultsJSON.createdAt,
+            title: resultsJSON.title,
+            id: resultsJSON.id,
+          });
         }
       });
       results.reverse();
@@ -133,7 +146,7 @@ export async function getUserDrafts(uid: string) {
     });
 }
 
-export async function getUidFromUsername(username: string) {
+export async function getUidFromUsername(username: string): Promise<string> {
   let userRef = db.collection("users").where("username", "==", username);
   let uid = await userRef.get().then(function (userSnapshot: any) {
     let user = userSnapshot.docs[0];
@@ -142,7 +155,7 @@ export async function getUidFromUsername(username: string) {
   return uid;
 }
 
-export async function getUidFromEmail(email: string) {
+export async function getUidFromEmail(email: string): Promise<string> {
   let userRef = db.collection("users").where("email", "==", email);
   let uid = await userRef.get().then(function (userSnapshot: any) {
     let user = userSnapshot.docs[0];
@@ -151,7 +164,17 @@ export async function getUidFromEmail(email: string) {
   return uid;
 }
 
-export async function getUserPosts(uid: string) {
+type landingPagePosts = {
+  published: boolean;
+  created: timeStamp;
+  title: string;
+  postId: string;
+  publishedAt: timeStamp;
+  id: string;
+  tags: string[];
+};
+
+export async function getUserPosts(uid: string): Promise<landingPagePosts[]> {
   let draftsRef = db
     .collection("users")
     .doc(uid)
@@ -161,7 +184,7 @@ export async function getUserPosts(uid: string) {
   return await draftsRef
     .get()
     .then(function (draftsCollection: any) {
-      let results: Post[] = [];
+      let results: landingPagePosts[] = [];
       draftsCollection.forEach(function (result: any) {
         let resultsJSON = result.data();
 
@@ -172,7 +195,7 @@ export async function getUserPosts(uid: string) {
           results.push(resultsJSON);
         }
       });
-      results.sort(function(a: Post, b: Post) {
+      results.sort(function (a: landingPagePosts, b: landingPagePosts) {
         var keyA = a.publishedAt,
           keyB = b.publishedAt;
         if (keyA > keyB) return -1;
@@ -208,7 +231,7 @@ export async function getArticlesFromUid(uid: string) {
   return results;
 }
 
-export async function getUsernameFromUid(uid: string) {
+export async function getUsernameFromUid(uid: string): Promise<string> {
   let userRef = await db.collection("users").doc(uid);
   let username = await userRef.get().then(function (userSnapshot: any) {
     let data = userSnapshot.data();
@@ -217,13 +240,16 @@ export async function getUsernameFromUid(uid: string) {
   return username;
 }
 
-export async function getProfileImageFromUid(uid: string) {
+export async function getProfileImageFromUid(uid: string): Promise<string> {
   let userRef = await db.collection("users").doc(uid);
-  let profileImage = await userRef.get().then(function (userSnapshot: any) {
-    let data = userSnapshot.data();
-    return data.profileImage;
-  });
-  return profileImage;
+  let profileImage: string | undefined = await userRef
+    .get()
+    .then(function (userSnapshot: any) {
+      let data = userSnapshot.data();
+      return data.profileImage;
+    });
+
+  return profileImage || "";
 }
 
 export async function checkUsernameDNE(username: string): Promise<boolean> {
@@ -284,14 +310,14 @@ export async function checkEmailAuthDNE(email: string) {
               flag = false;
             } else if (notNewAccount(user.metadata.creationTime)) {
               flag = false;
-            } 
+            }
           }
         });
-      })
+      });
       return flag;
     })
     .catch((error: any) => {
-      console.log(error)
+      console.log(error);
     });
   return emailDNE;
 }
@@ -308,7 +334,7 @@ function notNewAccount(creationTime: string) {
   let currTime = new Date();
   let oldTime = new Date(creationTime);
   let THIRTY_SECONDS = 1 * 30 * 1000;
-  return (currTime.valueOf() - oldTime.valueOf()) > THIRTY_SECONDS;
+  return currTime.valueOf() - oldTime.valueOf() > THIRTY_SECONDS;
 }
 
 export async function getDraftTitle(uid: string, draftId: string) {

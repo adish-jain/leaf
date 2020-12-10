@@ -1,5 +1,10 @@
-import { Block } from "../enums/app_enums";
+import { Block, formattingPaneBlockType } from "../enums/app_enums";
+import { ProgrammingLanguage } from "../types/language_types";
+import { Node } from "slate";
 import { SetStateAction } from "react";
+import { contentBlock, fileObject } from "./frontend/postTypes";
+
+export const WAIT_INTERVAL = 5000;
 
 export type File = {
   id: string;
@@ -7,6 +12,11 @@ export type File = {
   code: string;
   name: string;
 };
+
+export type FormattingPaneBlockList = {
+  display: string;
+  blockType: formattingPaneBlockType;
+}[];
 
 export type Step = {
   text: string;
@@ -23,15 +33,15 @@ export type Lines = {
 };
 
 export type FinishedPostProps = {
-  steps: Step[];
   title: string;
+  postContent: contentBlock[];
   tags: string[];
+  files: fileObject[];
   likes: number;
-  files: File[];
   username: string;
   profileImage: string;
   previewMode: boolean;
-  updateShowPreview?: (value: SetStateAction<boolean>) => void;
+  updatePreviewMode?: (previewMode: boolean) => void;
   publishedAtSeconds: number;
 };
 
@@ -50,3 +60,24 @@ export type timeStamp = {
   _nanoseconds: number;
   _seconds: number;
 };
+
+type CodeSection = {
+  codeSteps: codeStepFrontend[];
+};
+
+type codeStepFrontend = {
+  fileId?: string;
+  slateContent: string;
+  lines?: Lines;
+};
+
+export const newFileNode: Node[] = [
+  {
+    type: "default",
+    children: [
+      {
+        text: "Start editing here",
+      },
+    ],
+  },
+];

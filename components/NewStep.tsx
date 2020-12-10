@@ -1,23 +1,36 @@
-import React, { Component } from "react";
-import "../styles/newstep.scss";
+import React, { Component, useContext } from "react";
+import { DraftContext } from "../contexts/draft-context";
+import newStepStyles from "../styles/newstep.module.scss";
+import { ContentBlockType } from "../typescript/enums/backend/postEnums";
 
 type NewStepProps = {
-  addStep: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  lastStepId: string;
+  lastIndex: number;
 };
 
 type NewStepState = {};
 
-export default class NewStep extends Component<NewStepProps, NewStepState> {
-  constructor(props: NewStepProps) {
-    super(props);
-    this.state = {};
-  }
-
-  render() {
-    return (
-      <div className={"NewStep"}>
-        <button onClick={this.props.addStep}>+ Add Step</button>
-      </div>
-    );
-  }
+export function NewStep(props: NewStepProps) {
+  const { lastStepId, lastIndex } = props;
+  const { addBackendBlock, nextBlockType } = useContext(DraftContext);
+  return (
+    <div className={newStepStyles["NewStep"]}>
+      <button
+        onClick={(e) => {
+          addBackendBlock(ContentBlockType.CodeSteps, lastIndex);
+        }}
+      >
+        + Add Code Step
+      </button>
+      {nextBlockType(lastStepId) !== ContentBlockType.Text && (
+        <button
+          onClick={(e) => {
+            addBackendBlock(ContentBlockType.Text, lastIndex);
+          }}
+        >
+          + Add Single Column Text Section
+        </button>
+      )}
+    </div>
+  );
 }
