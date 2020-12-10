@@ -94,6 +94,7 @@ export async function getAllDraftDataHandler(
     let published: boolean = draftData.published;
     let tags = draftData.tags as string[];
     let createdAt: timeStamp = draftData.createdAt;
+    let publishedAt: timeStamp | undefined = draftData.publishedAt;
     // let privatePost = draftData.privatePost as boolean;
     let likes = draftData.likes;
 
@@ -117,6 +118,7 @@ export async function getAllDraftDataHandler(
       profileImage: profileImage,
       likes: likes,
       private: false,
+      publishedAt: publishedAt,
     };
     return results;
   } catch (error) {

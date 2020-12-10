@@ -170,12 +170,13 @@ function PostIntro() {
   );
   let date = new Date(publishedAtSeconds * 1000);
   let formattedDate = dayjs(date).format("MMMM D YYYY");
+  console.log(profileImage);
   return (
     <div className={finishedPostStyles["published-by"]}>
       <span> {"Published by "}</span>
       <Link href={`/${username}`}>
         <div className={finishedPostStyles["author-name-and-img"]}>
-          {profileImage !== "" && (
+          {profileImage !== "" && profileImage !== null && (
             <div className={finishedPostStyles["published-post-author-img"]}>
               <img src={profileImage} />
             </div>
