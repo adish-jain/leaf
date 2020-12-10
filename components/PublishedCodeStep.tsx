@@ -35,7 +35,6 @@ export default function PublishedCodeStep(props: {
       // switch to correct file
       for (let i = 0; i < files.length; i++) {
         if (currentContent.fileId === files[i].fileId) {
-          console.log("switching to ", i);
           updateFileIndex(i);
         }
       }
