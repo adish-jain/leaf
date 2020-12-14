@@ -70,7 +70,7 @@ function BufferDiv(props: {}) {
   return (
     <div
       style={{
-        height: "100px",
+        height: "200px",
       }}
     ></div>
   );
