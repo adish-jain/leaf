@@ -47,15 +47,8 @@ import handleAddDraftContent from "../../lib/api/addDraftContent";
 import handleDeleteDraftContent from "../../lib/api/deleteDraftContent";
 
 // editing drafts steps
-import handleGetSteps from "../../lib/api/getDraftSteps";
 import handleGetAllDraftData from "../../lib/api/getAllDraftData";
 import handleGetDraftMetadata from "../../lib/api/getDraftMetadata";
-import handleSaveStep from "../../lib/api/saveStep";
-import handleDeleteStep from "../../lib/api/deleteStep";
-import handleUpdateStep from "../../lib/api/updateStep";
-import handleUpdateStepLines from "../../lib/api/updateStepLines";
-import handleChangeStepOrder from "../../lib/api/changeStepOrder";
-import handleRenameStepFileName from "../../lib/api/renameStepFileName";
 
 // editing drafts files
 import handleDeleteFile from "../../lib/api/deleteFile";
@@ -210,32 +203,8 @@ export default sentryHandler(
         return handleGetDraftMetadata(req, res);
       }
 
-      case "getDraftSteps": {
-        return handleGetSteps(req, res);
-      }
-
       case "getDraftContent": {
         return handleGetDraftContent(req, res);
-      }
-
-      case "save_step": {
-        return handleSaveStep(req, res);
-      }
-
-      case "delete_step": {
-        return handleDeleteStep(req, res);
-      }
-
-      case "update_step": {
-        return handleUpdateStep(req, res);
-      }
-
-      case "updateStepLines": {
-        return handleUpdateStepLines(req, res);
-      }
-
-      case "renameStepFileName": {
-        return handleRenameStepFileName(req, res);
       }
 
       /* 
@@ -252,10 +221,6 @@ export default sentryHandler(
 
       case "deletePost": {
         return handleDeletePost(req, res);
-      }
-
-      case "change_step_order": {
-        return handleChangeStepOrder(req, res);
       }
 
       case "save_title": {

@@ -35,7 +35,9 @@
 
   .codeblock-content {
     z-index: 1;
-    white-space: pre-wrap;
+    // white-space: pre-wrap;
+    width: 100%;
+    overflow-wrap: break-word;
   }
 
   .codeblock-placeholder {

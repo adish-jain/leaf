@@ -100,15 +100,14 @@ function LeftImageHandle() {
 
 // Define a React component renderer for h1 blocks.
 const HeaderOneElement = (props: RenderElementProps) => {
-  const { previewMode } = useContext(PreviewContext);
+  const { publishedView } = useContext(PreviewContext);
+  let className = publishedView ? "headerOne" : "headerOne-draft";
   let currentNode = props.element.children[0];
   let empty = currentNode.text === "";
   return (
-    <div className={slateEditorStyles["headerOne"]}>
+    <div className={slateEditorStyles[className]}>
       <h1 {...props.attributes}>{props.children}</h1>
-      {empty && !previewMode && (
-        <HeadingPlaceHolder>Heading 1</HeadingPlaceHolder>
-      )}
+      {empty && <HeadingPlaceHolder>Heading 1</HeadingPlaceHolder>}
     </div>
   );
 };
@@ -127,11 +126,12 @@ function HeadingPlaceHolder(props: any) {
 
 // Define a React component renderer for h2 blocks.
 const HeaderTwoElement = (props: any) => {
-  const { previewMode } = useContext(PreviewContext);
+  const { publishedView } = useContext(PreviewContext);
+  let className = publishedView ? "headerTwo" : "headerTwo-draft";
   let currentNode = props.element.children[0];
   let empty = currentNode.text === "";
   return (
-    <div className={slateEditorStyles["headerTwo"]}>
+    <div className={slateEditorStyles[className]}>
       <h2 {...props.attributes}>{props.children}</h2>
       {empty && <HeadingPlaceHolder>Heading 2</HeadingPlaceHolder>}
     </div>
@@ -142,13 +142,12 @@ const HeaderTwoElement = (props: any) => {
 const HeaderThreeElement = (props: RenderElementProps) => {
   let currentNode = props.element.children[0];
   let empty = currentNode.text === "";
-  const { previewMode } = useContext(PreviewContext);
+  const { publishedView } = useContext(PreviewContext);
+  let className = publishedView ? "headerThree" : "headerThree-draft";
   return (
-    <div className={slateEditorStyles["headerThree"]}>
+    <div className={slateEditorStyles[className]}>
       <h3 {...props.attributes}>{props.children}</h3>
-      {empty && !previewMode && (
-        <HeadingPlaceHolder>Heading 3</HeadingPlaceHolder>
-      )}
+      {empty && <HeadingPlaceHolder>Heading 3</HeadingPlaceHolder>}
     </div>
   );
 };

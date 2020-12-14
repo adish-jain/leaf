@@ -31,7 +31,6 @@ export default function PublishedCodeStep(props: {
       const correctIndex = startIndex + index;
       updateContentIndex(correctIndex);
       let currentContent = postContent[correctIndex];
-      console.log(correctIndex);
       // switch to correct file
       for (let i = 0; i < files.length; i++) {
         if (currentContent.fileId === files[i].fileId) {
@@ -56,7 +55,8 @@ export default function PublishedCodeStep(props: {
     style = {
       boxShadow: "0px 4px 16px #edece9",
       border: "1px solid #edece9",
-      color: "black",
+      color: "rgba(41, 41, 41, 0.87)",
+      backgroundColor: 'white'
     };
   }
   return (

@@ -9,6 +9,7 @@ import {
   SetStateAction,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import { DraftContext } from "../contexts/draft-context";
@@ -17,7 +18,7 @@ import { PreviewContext } from "./preview-context";
 import PublishedCodeEditor from "./PublishedCodeEditor";
 import { ContentBlock } from "draft-js";
 import PublishedCodeStep from "./PublishedCodeStep";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import scrollingStyles from "../styles/scrolling.module.scss";
 export default function PublishedCodeStepSection(props: {
   codeSteps: contentBlock[];
@@ -36,9 +37,11 @@ export default function PublishedCodeStepSection(props: {
 }
 
 function CodeSteps(props: { codeSteps: contentBlock[]; startIndex: number }) {
+  const stepWrapper = useRef<HTMLDivElement>(null);
   const { codeSteps, startIndex } = props;
+
   return (
-    <div className={codeStepSectionStyles["published-steps"]}>
+    <div ref={stepWrapper} className={codeStepSectionStyles["published-steps"]}>
       <ScrollDown />
       {codeSteps.map((codeStep, index) => {
         return (
@@ -67,26 +70,19 @@ function BufferDiv(props: {}) {
   return (
     <div
       style={{
-        height: height / 2,
+        height: "100px",
       }}
     ></div>
   );
 }
 
 function ScrollDown() {
-  //   let { pageYOffset } = this.props;
   let style = { opacity: 1 };
-  //   if (pageYOffset > 10) {
-  //     style = {
-  //       opacity: 0,
-  //     };
-  //   }
+
   return (
-    <AnimatePresence>
-      <div style={style} className={scrollingStyles["scroll-down"]}>
-        <p> Continue scrolling</p>
-        <span>↓</span>
-      </div>
-    </AnimatePresence>
+    <div style={style} className={scrollingStyles["scroll-down"]}>
+      <p> Continue scrolling</p>
+      <span>↓</span>
+    </div>
   );
 }

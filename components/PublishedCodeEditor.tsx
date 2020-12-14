@@ -39,7 +39,7 @@ export default function PublishedCodeEditor(props: { scrollSpeed: number }) {
       <PublishedFileBar />
       <PrismEditor prismWrapper={prismWrapper} animateLines={animateLines} />
 
-      <PublishedLanguageBar />
+      {/* <PublishedLanguageBar /> */}
     </div>
   );
 }

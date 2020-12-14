@@ -13,13 +13,15 @@
 }
 
 .published-by {
-  margin-top: 8px;
+  margin-top: 4px;
   //   padding: 4px;
   height: 20px;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
   display: flex;
   flex-direction: row;
   align-items: center;
+  color: #757575;
+  font-weight: 200;
   @include link-item;
 }
 

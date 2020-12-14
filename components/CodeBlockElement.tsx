@@ -1,5 +1,5 @@
 import { RenderElementProps, useFocused, useSelected } from "slate-react";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useContext, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import codeBlockStyles from "../styles/codeblock.module.scss";
 //html, xml
@@ -47,6 +47,7 @@ import "prismjs/components/prism-markdown.min";
 import "prismjs/components/prism-docker.min";
 // bash
 import "prismjs/components/prism-bash.min";
+import { PreviewContext } from "./preview-context";
 
 export const CodeBlockElement = (
   props: RenderElementProps & {
@@ -56,6 +57,7 @@ export const CodeBlockElement = (
     ) => void;
   }
 ) => {
+  const { published } = useContext(PreviewContext);
   const selected = useSelected();
   const focused = useFocused();
   const nodeText = props.element.children[0].text;
@@ -73,12 +75,12 @@ export const CodeBlockElement = (
       onMouseLeave={(e) => toggleHover(false)}
       onMouseEnter={(e) => toggleHover(true)}
     >
-      <span
+      <div
         className={codeBlockStyles["codeblock-content"]}
         {...props.attributes}
       >
         {props.children}
-      </span>
+      </div>
       {focused && selected && emptyText && (
         <label
           contentEditable={false}

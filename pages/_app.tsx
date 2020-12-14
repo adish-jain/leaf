@@ -5,8 +5,6 @@ import "../styles/prism-atom-dark.css";
 
 import { AppProps } from "next/app";
 
-// import "draft-js/dist/Draft.css";
-
 import * as Sentry from "@sentry/node";
 
 if (process.env.NEXT_PUBLIC_SENTRY_DSN) {

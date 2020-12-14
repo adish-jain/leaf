@@ -140,6 +140,8 @@ const DraftView = () => {
         value={{
           previewMode: showPreview,
           updatePreviewMode: updateShowPreview,
+          published: published,
+          publishedView: false,
         }}
       >
         <LinesContext.Provider
@@ -183,7 +185,6 @@ const DraftView = () => {
                       value={{
                         addBackendBlock: addBackendBlock,
                         updateSlateSectionToBackend: updateSlateSectionToBackend,
-                        published: published,
                         username: username,
                         postId: postId,
                         draftId: draftId as string,

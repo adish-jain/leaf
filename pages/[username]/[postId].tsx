@@ -142,6 +142,8 @@ const Post = (props: PostPageProps) => {
           likes={props.likes}
           previewMode={false}
           publishedAtSeconds={props.publishedAtSeconds}
+          published={true}
+          publishedView={true}
         />
       </main>
     </div>
