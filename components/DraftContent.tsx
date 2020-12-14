@@ -61,7 +61,9 @@ export function DraftContent(props: DraftContentProps) {
   const { files } = useContext(FilesContext);
   const { username, profileImage, createdAt } = useContext(DraftContext);
 
-  const { previewMode, updatePreviewMode } = useContext(PreviewContext);
+  const { previewMode, updatePreviewMode, published } = useContext(
+    PreviewContext
+  );
   const { updateShowTags, selectedTags } = useContext(TagsContext);
   const { draftContent, draftTitle, onTitleChange } = props;
   return (
@@ -94,6 +96,8 @@ export function DraftContent(props: DraftContentProps) {
             profileImage={profileImage}
             likes={0}
             publishedAtSeconds={createdAt._seconds}
+            publishedView={false}
+            published={published}
           />
         </motion.div>
       )}

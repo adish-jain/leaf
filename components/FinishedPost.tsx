@@ -28,6 +28,7 @@ import {
 } from "../typescript/types/frontend/postTypes";
 import PublishedCodeStepSection from "./PublishedCodeSection";
 import PublishedTextSection from "./PublishedTextSection";
+import { PreviewContext } from "./preview-context";
 
 const FinishedPost = (props: FinishedPostProps) => {
   const {
@@ -40,6 +41,8 @@ const FinishedPost = (props: FinishedPostProps) => {
     profileImage,
     publishedAtSeconds,
     tags,
+    published,
+    publishedView,
   } = props;
   // scrollspeed is used to determine whether we should animate transitions
   // or scrolling to highlighted lines. If a fast scroll speed, we skip
@@ -65,40 +68,49 @@ const FinishedPost = (props: FinishedPostProps) => {
 
   const { authenticated, error, loading } = useLoggedIn();
   return (
-    <div className={appStyles["finishedpost-wrapper"]}>
-      <FinishedPostHeader
-        updatePreviewMode={updatePreviewMode}
-        previewMode={previewMode}
-        authenticated={authenticated}
-        username={username}
-      />
-      <ContentContext.Provider
-        value={{
-          selectedContentIndex,
-          updateContentIndex,
-          postContent,
-          username,
-          profileImage,
-          publishedAtSeconds,
-          tags,
-        }}
-      >
-        <PublishedFilesContext.Provider
+    <PreviewContext.Provider
+      value={{
+        previewMode,
+        updatePreviewMode: updatePreviewMode,
+        published,
+        publishedView,
+      }}
+    >
+      <div className={appStyles["finishedpost-wrapper"]}>
+        <FinishedPostHeader
+          updatePreviewMode={updatePreviewMode}
+          previewMode={previewMode}
+          authenticated={authenticated}
+          username={username}
+        />
+        <ContentContext.Provider
           value={{
-            updateFileIndex,
-            files,
-            selectedFileIndex,
+            selectedContentIndex,
+            updateContentIndex,
+            postContent,
+            username,
+            profileImage,
+            publishedAtSeconds,
+            tags,
           }}
         >
-          <div className={finishedPostStyles["introduction"]}>
-            <PostTitle title={title} />
-            <PostIntro />
-            <PostTags />
-          </div>
-          <PostContent scrollSpeed={scrollSpeed} />
-        </PublishedFilesContext.Provider>
-      </ContentContext.Provider>
-    </div>
+          <PublishedFilesContext.Provider
+            value={{
+              updateFileIndex,
+              files,
+              selectedFileIndex,
+            }}
+          >
+            <div className={finishedPostStyles["introduction"]}>
+              <PostTitle title={title} />
+              <PostIntro />
+              <PostTags />
+            </div>
+            <PostContent scrollSpeed={scrollSpeed} />
+          </PublishedFilesContext.Provider>
+        </ContentContext.Provider>
+      </div>
+    </PreviewContext.Provider>
   );
 };
 
@@ -170,7 +182,6 @@ function PostIntro() {
   );
   let date = new Date(publishedAtSeconds * 1000);
   let formattedDate = dayjs(date).format("MMMM D YYYY");
-  console.log(profileImage);
   return (
     <div className={finishedPostStyles["published-by"]}>
       <span> {"Published by "}</span>

@@ -178,8 +178,8 @@ export function highlightPrismDracula(leaf: any) {
         "Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace";
       style["direction"] = "ltr";
       style["textAlign"] = "left";
-      style["whiteSpace"] = "pre";
-      style["wordSpacing"] = "normal";
+      // style["whiteSpace"] = "pre";
+      // style["wordSpacing"] = "normal";
       style["wordBreak"] = "normal";
       style["lineHeight"] = 1.5;
       style["tabSize"] = 4;

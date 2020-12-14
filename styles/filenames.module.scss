@@ -1,3 +1,5 @@
+@import "commonui.scss";
+
 .filenames {
   // padding-top: 16px;
   // margin-left: 8px;
@@ -19,12 +21,14 @@
 
 .filename-wrapper {
   padding: 4px;
-  background: #ffffff;
-  border: 1px solid #edece9;
+  // background: #ffffff;
+  // border: 1px solid #edece9;
   box-sizing: border-box;
   border-radius: 24px;
-  color: black;
+  // color: black;
   font-size: 12px;
+  color: $gray-text;
+  font-weight: 500;
   margin-right: 8px;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
@@ -44,8 +48,8 @@
 .filename-wrapper:hover {
   transition: all 0.2s ease-in-out;
   // background: #349ae9;
-  background: black;
-  color: white;
+  // background: $leaf-light-gray;
+  color: $leaf-dark-blue;
 }
 
 .filename-wrapper-selected {

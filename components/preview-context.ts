@@ -9,5 +9,7 @@ export const PreviewContext = createContext(<PreviewContexType>{});
 
 type PreviewContexType = {
   previewMode: boolean;
-  updatePreviewMode: (previewMode: boolean) => void;
+  updatePreviewMode?: (previewMode: boolean) => void;
+  published: boolean;
+  publishedView: boolean;
 };

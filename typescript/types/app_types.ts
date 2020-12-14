@@ -41,8 +41,10 @@ export type FinishedPostProps = {
   username: string;
   profileImage: string;
   previewMode: boolean;
+  published: boolean;
   updatePreviewMode?: (previewMode: boolean) => void;
   publishedAtSeconds: number;
+  publishedView: boolean;
 };
 
 export type Post = {

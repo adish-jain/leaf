@@ -9,6 +9,7 @@ import {
   SetStateAction,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import { DraftContext } from "../contexts/draft-context";
@@ -17,7 +18,7 @@ import { PreviewContext } from "./preview-context";
 import PublishedCodeEditor from "./PublishedCodeEditor";
 import { ContentBlock } from "draft-js";
 import PublishedCodeStep from "./PublishedCodeStep";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import scrollingStyles from "../styles/scrolling.module.scss";
 export default function PublishedCodeStepSection(props: {
   codeSteps: contentBlock[];
@@ -67,26 +68,64 @@ function BufferDiv(props: {}) {
   return (
     <div
       style={{
-        height: height / 2,
+        height: "100px",
       }}
     ></div>
   );
 }
 
 function ScrollDown() {
-  //   let { pageYOffset } = this.props;
+  const componentWrapper = useRef<HTMLDivElement>(null);
   let style = { opacity: 1 };
-  //   if (pageYOffset > 10) {
-  //     style = {
-  //       opacity: 0,
-  //     };
-  //   }
+  const [state, updateState] = useState({
+    yPos: 0,
+    scrollPosition: 0,
+  });
+
+  function handleScroll() {
+    if (process.browser) {
+      console.log("page y offset is ");
+      console.log(window.pageYOffset);
+      updateState({ ...state, scrollPosition: window.pageYOffset });
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener("scroll", handleScroll);
+    return () => {
+      document.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    const dimensions = componentWrapper.current?.getBoundingClientRect();
+    if (dimensions) {
+      console.log("dimensions are ");
+      console.log(dimensions);
+      if (dimensions.top === 0) {
+        console.log("updating to 0");
+      }
+      updateState({
+        ...state,
+        yPos: dimensions.top,
+      });
+      console.log("updating to ", dimensions?.top);
+    }
+  }, []);
+  // console.log("scrollpos is ", state.scrollPosition);
+  console.log("ypos is ", state.yPos);
+  const fadeOut = state.scrollPosition - state.yPos > 10;
+  console.log(fadeOut);
   return (
     <AnimatePresence>
-      <div style={style} className={scrollingStyles["scroll-down"]}>
+      <motion.div
+        ref={componentWrapper}
+        style={style}
+        className={scrollingStyles["scroll-down"]}
+      >
         <p> Continue scrolling</p>
         <span>↓</span>
-      </div>
+      </motion.div>
     </AnimatePresence>
   );
 }

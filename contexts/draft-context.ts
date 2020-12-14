@@ -23,7 +23,6 @@ type DraftContextType = {
   ) => Promise<void>;
   currentlyEditingBlock: contentBlock | undefined;
   changeEditingBlock: (backendId: string) => void;
-  published: boolean;
   username: string;
   postId: string;
   draftId: string;

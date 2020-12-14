@@ -3,15 +3,17 @@
 .codestep-content {
   // border: 1px solid black;
   display: flex;
-  margin-bottom: 64px;
-  margin-left: 32px;
-  margin-right: 32px;
+  // margin-bottom: 64px;
+  margin-left: 80px;
+  // margin-right: 80px;
   margin-top: 64px;
 }
 
 .codestep-section {
   border-bottom: 1px solid $leaf-light-gray;
   padding-bottom: 80px;
+  background-color: $leaf-background;
+  // background-color: #fafafa;
 }
 
 .divider {
@@ -26,17 +28,17 @@
 }
 
 .published-steps {
-  width: 48%;
+  width: 36%;
+  position: relative;
 }
 
 .published {
-
   border-radius: 8px;
 
   padding: 24px;
   margin-bottom: 40px;
   color: $gray-text;
-  border: 1px solid white;
+  border: 1px solid $leaf-light-gray;
   transition: all 0.2s ease-in-out;
 }
 

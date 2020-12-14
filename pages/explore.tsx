@@ -25,7 +25,7 @@ export default function Pages() {
   const fetcher = (url: string) =>
     fetch("/api/endpoint", myRequest).then((res: any) => res.json());
 
-  const initialData: any = {
+  const initialData = {
     posts: [
       {
         postId: "",

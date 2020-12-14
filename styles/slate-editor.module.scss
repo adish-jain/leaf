@@ -21,13 +21,21 @@
 }
 
 .headerOne {
-  -webkit-touch-callout: none; /* iOS Safari */
-  // -webkit-user-select: none; /* Safari */
-  -khtml-user-select: none; /* Konqueror HTML */
-  -moz-user-select: none; /* Old versions of Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none; /* Non-prefixed version, currently
-                                supported by Chrome, Edge, Opera and Firefox */
+  // -webkit-touch-callout: none; /* iOS Safari */
+  // // -webkit-user-select: none; /* Safari */
+  // -khtml-user-select: none; /* Konqueror HTML */
+  // -moz-user-select: none; /* Old versions of Firefox */
+  // -ms-user-select: none; /* Internet Explorer/Edge */
+  // user-select: none; /* Non-prefixed version, currently
+  //                               supported by Chrome, Edge, Opera and Firefox */
+
+  label {
+    font-size: 2em;
+  }
+}
+
+.headerOne-draft {
+  @extend .headerOne;
   @include header-placeholder;
 
   label {
@@ -57,7 +65,29 @@ $headerThreeFontSize: 1.17em;
   left: -40px;
 }
 
-.headerThree::before {
+.headerTwo {
+  label {
+    font-size: 1.5em;
+  }
+}
+
+.headerTwo-draft {
+  @extend .headerTwo;
+  @include header-placeholder;
+}
+
+.headerThree {
+  label {
+    font-size: 1.17em;
+  }
+}
+
+.headerThree-draft {
+  @include header-placeholder;
+  @extend .headerThree;
+}
+
+.headerThree-draft::before {
   content: "h3";
   position: absolute;
   font-size: $headerThreeFontSize;
@@ -66,23 +96,13 @@ $headerThreeFontSize: 1.17em;
   left: -40px;
 }
 
-.headerTwo {
-  @include header-placeholder;
-  label {
-    font-size: 1.5em;
-  }
-}
-
-.headerThree {
-  @include header-placeholder;
-  label {
-    font-size: 1.17em;
-  }
-}
-
 .slate-wrapper {
   width: 100%;
   margin: auto;
+  // color: rgba(41, 41, 41, 0.87);
+  // font-weight: 100;
+  font-family: sans-serif;
+  line-height: 1.6em;
   // border: 1px solid black;
 }
 
