@@ -113,7 +113,6 @@ function PublishButtonChoice() {
       {"Go to Published Post"}
     </button>
   );
-  console.log("published is ", published);
   return (
     <div>{published ? <GoToPublishedPostButton /> : <PublishButton />}</div>
   );
