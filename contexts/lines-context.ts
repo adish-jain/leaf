@@ -6,8 +6,4 @@ export const LinesContext = createContext(<LinesContextType>{});
 type LinesContextType = {
   currentlySelectedLines?: Lines;
   changeSelectedLines: Dispatch<SetStateAction<Lines | undefined>>;
-  stepCoordinates: DOMRect | undefined;
-  updateStepCoordinate: (dimensions: DOMRect) => void;
-  selectionCoordinates: DOMRect | undefined;
-  updateSelectionCoordinates: (dimensions: DOMRect) => void;
 };

@@ -15,4 +15,6 @@ type ToolbarContextType = {
   updateSaving: (saveState: saveStatusEnum) => void;
   currentMarkType: MarkState;
   updateMarkType: Dispatch<SetStateAction<MarkState>>;
+  selectionCoordinates: DOMRect | undefined;
+  updateSelectionCoordinates: (dimensions: DOMRect | undefined) => void;
 };

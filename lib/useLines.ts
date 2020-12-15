@@ -6,20 +6,9 @@ export function useLines() {
   const [currentlySelectedLines, changeSelectedLines] = useState<
     Lines | undefined
   >(undefined);
-  const [stepCoordinates, updateStepCoordinate] = useState<DOMRect | undefined>(
-    undefined
-  );
-
-  const [selectionCoordinates, updateSelectionCoordinates] = useState<
-    DOMRect | undefined
-  >(undefined);
 
   return {
     currentlySelectedLines,
     changeSelectedLines,
-    stepCoordinates,
-    updateStepCoordinate,
-    selectionCoordinates,
-    updateSelectionCoordinates,
   };
 }

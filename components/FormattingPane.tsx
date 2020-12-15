@@ -23,6 +23,7 @@ import {
   useFocused,
   RenderLeafProps,
 } from "slate-react";
+
 import React, { useRef, useEffect, useState, useContext } from "react";
 import { searchBlocks } from "../lib/blockUtils";
 import { HistoryEditor } from "slate-history";

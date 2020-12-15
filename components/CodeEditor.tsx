@@ -34,7 +34,7 @@ export default function CodeEditor(props: CodeEditorProps) {
               variants={slateFade}
               // style={{ position: "relative" }}
             >
-              <SlatePrismEditor />
+              <SlatePrismEditor inView={inView} />
             </motion.div>
           )}
         </AnimatePresence>

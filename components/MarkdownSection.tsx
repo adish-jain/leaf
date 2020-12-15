@@ -77,6 +77,7 @@ import { MarkState } from "../lib/useToolbar";
 import { motion } from "framer-motion";
 import { PreviewContext } from "./preview-context";
 import { toBase64 } from "../lib/imageUtils";
+import { FormattingToolbar } from "./FormattingToolbar";
 
 const Blocks: FormattingPaneBlockList = [
   {
@@ -131,8 +132,10 @@ const MarkdownPreviewExample = (props: {
   const { updateSlateSectionToBackend, changeEditingBlock } = useContext(
     DraftContext
   );
+  const { updateSaving, updateSelectionCoordinates } = useContext(
+    ToolbarContext
+  );
   const { previewMode } = useContext(PreviewContext);
-  const toolbarContext = useContext(ToolbarContext);
   const editor = useMemo(
     () =>
       withImages(
@@ -414,9 +417,7 @@ const MarkdownPreviewExample = (props: {
 
   // save to backend
   useEffect(() => {
-    const { updateSaving, updateMarkType } = toolbarContext;
     if (previewMode) {
-      console.log("returning");
       return;
     }
     const timeOutId = setTimeout(() => {
@@ -440,6 +441,17 @@ const MarkdownPreviewExample = (props: {
   }, [value]);
 
   function handleChange(value: Node[]) {
+    if (editor.selection && !Range.isCollapsed(editor.selection)) {
+      let sel = window.getSelection();
+      if (sel) {
+        let myRange = sel.getRangeAt(0);
+        let newDimensions = myRange.getBoundingClientRect();
+        updateSelectionCoordinates(newDimensions);
+      }
+    } else {
+      console.log("setting to null");
+      updateSelectionCoordinates(undefined);
+    }
     setCorrectSlashPosition();
     setValue(value);
 
@@ -506,6 +518,7 @@ const MarkdownPreviewExample = (props: {
       // layout
       className={slateStyles["slate-wrapper"]}
     >
+      <FormattingToolbar currentEditor={editor} />
       <Slate editor={editor} value={value} onChange={handleChange}>
         <Editable
           decorate={decorate}
@@ -516,6 +529,10 @@ const MarkdownPreviewExample = (props: {
           onBlur={handleBlur}
           onFocus={(e) => {
             changeEditingBlock(props.backendId);
+          }}
+          onDOMBeforeInput={(event: Event) => {
+            // event.preventDefault()
+            console.log(event);
           }}
           readOnly={previewMode}
         />

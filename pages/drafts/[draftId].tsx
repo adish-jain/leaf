@@ -67,15 +67,10 @@ const DraftView = () => {
     updateSaving,
     currentMarkType,
     updateMarkType,
-  } = useToolbar();
-  const {
-    currentlySelectedLines,
-    changeSelectedLines,
-    stepCoordinates,
-    updateStepCoordinate,
-    selectionCoordinates,
     updateSelectionCoordinates,
-  } = useLines();
+    selectionCoordinates,
+  } = useToolbar();
+  const { currentlySelectedLines, changeSelectedLines } = useLines();
   const {
     draftContent,
     updateSlateSectionToBackend,
@@ -148,10 +143,6 @@ const DraftView = () => {
           value={{
             currentlySelectedLines,
             changeSelectedLines,
-            updateStepCoordinate,
-            stepCoordinates,
-            updateSelectionCoordinates,
-            selectionCoordinates,
           }}
         >
           <ToolbarContext.Provider
@@ -163,6 +154,8 @@ const DraftView = () => {
               setCode: codeSelection,
               updateMarkType,
               currentMarkType,
+              selectionCoordinates,
+              updateSelectionCoordinates,
             }}
           >
             <FilesContextWrapper

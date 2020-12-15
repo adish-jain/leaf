@@ -1,22 +1,79 @@
+import { AnimatePresence, motion } from "framer-motion";
 import { useContext } from "react";
 import { ToolbarContext } from "../contexts/toolbar-context";
 import { toggleMark } from "../lib/useToolbar";
 import formattingToolbarStyles from "../styles/formattingtoolbar.module.scss";
 import { saveStatusEnum, slateMarkTypes } from "../typescript/enums/app_enums";
+import {
+  boldSelection,
+  italicizeSelection,
+  codeSelection,
+} from "../lib/useToolbar";
+import { ReactEditor, useEditor } from "slate-react";
+import { Range } from "slate";
 
-export function FormattingToolbar(props: {}) {
+export function FormattingToolbar(props: { currentEditor: ReactEditor }) {
+  const { currentEditor } = props;
   const toolbarContext = useContext(ToolbarContext);
   const { saveState, currentMarkType } = toolbarContext;
+  let style = {};
+  if (currentEditor.selection && !Range.isCollapsed(currentEditor.selection)) {
+    let sel = window.getSelection();
+    if (sel) {
+      let myRange = sel.getRangeAt(0);
+      let newDimensions = myRange.getBoundingClientRect();
+      style = {
+        position: "absolute",
+        top: window.pageYOffset + newDimensions.y - 34,
+        left: newDimensions.x,
+      };
+    }
+  }
+
   return (
-    <div className={formattingToolbarStyles["formatting-toolbar"]}>
-      <div className={formattingToolbarStyles["buttons"]}>
-        {/* <MarkButton name={"T"} markType={slateMarkTypes.unstyled} /> */}
-        <MarkButton name={"B"} markType={slateMarkTypes.bold} />
-        <MarkButton name={"I"} markType={slateMarkTypes.italic} />
-        <MarkButton name={"<>"} markType={slateMarkTypes.code} />
-      </div>
-      <SaveStatus saveState={saveState} />
-    </div>
+    // <div className={formattingToolbarStyles["formatting-toolbar"]}>
+    //   <div className={formattingToolbarStyles["buttons"]}>
+    //     {/* <MarkButton name={"T"} markType={slateMarkTypes.unstyled} /> */}
+    //     <MarkButton name={"B"} markType={slateMarkTypes.bold} />
+    //     <MarkButton name={"I"} markType={slateMarkTypes.italic} />
+    //     <MarkButton name={"<>"} markType={slateMarkTypes.code} />
+    //   </div>
+    //   <SaveStatus saveState={saveState} />
+    // </div>
+    <AnimatePresence>
+      {currentEditor.selection && !Range.isCollapsed(currentEditor.selection) && (
+        <motion.div
+          style={style}
+          className={formattingToolbarStyles["hovered-toolbar"]}
+          initial={{ opacity: 0, transform: "scale(0.9)" }}
+          animate={{ opacity: 1, transform: "scale(1)" }}
+          exit={{ opacity: 0, transform: "scale(0.9)" }}
+          transition={{
+            duration: 0.15,
+          }}
+          onClick={(e) => {
+            e.preventDefault();
+            console.log("wrapper fired");
+          }}
+        >
+          <div
+            className={formattingToolbarStyles["bold-button"]}
+            onClick={(e) => {
+              e.preventDefault();
+              console.log("default fired");
+              boldSelection(currentEditor);
+            }}
+          >
+            Bold
+          </div>
+          <div className={formattingToolbarStyles["italic-button"]}>
+            Italics
+          </div>
+          <div className={formattingToolbarStyles["code-button"]}>Code</div>
+          <div className={formattingToolbarStyles["link-button"]}>Link</div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 
