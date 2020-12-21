@@ -69,6 +69,8 @@ const DraftView = () => {
     updateMarkType,
     updateSelectionCoordinates,
     selectionCoordinates,
+    linkSelection,
+    updateLinkSelection,
   } = useToolbar();
   const { currentlySelectedLines, changeSelectedLines } = useLines();
   const {
@@ -156,6 +158,8 @@ const DraftView = () => {
               currentMarkType,
               selectionCoordinates,
               updateSelectionCoordinates,
+              updateLinkSelection,
+              linkSelection,
             }}
           >
             <FilesContextWrapper

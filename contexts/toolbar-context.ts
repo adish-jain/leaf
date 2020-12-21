@@ -1,5 +1,5 @@
 import { createContext, Dispatch, SetStateAction } from "react";
-import { Editor } from "slate";
+import { Editor, Range } from "slate";
 import { HistoryEditor } from "slate-history";
 import { ReactEditor } from "slate-react";
 import { MarkState } from "../lib/useToolbar";
@@ -17,4 +17,6 @@ type ToolbarContextType = {
   updateMarkType: Dispatch<SetStateAction<MarkState>>;
   selectionCoordinates: DOMRect | undefined;
   updateSelectionCoordinates: (dimensions: DOMRect | undefined) => void;
+  linkSelection: Range | undefined;
+  updateLinkSelection: (newRange: Range | undefined) => void;
 };

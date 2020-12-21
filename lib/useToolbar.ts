@@ -1,6 +1,7 @@
 import { Dimensions } from "framer-motion/types/render/dom/types";
+import { link } from "fs";
 import { useState } from "react";
-import { Editor, Element, Text, Transforms } from "slate";
+import { Editor, Element, Range, Text, Transforms } from "slate";
 import { ReactEditor, useEditor, useSlate } from "slate-react";
 import { saveStatusEnum, slateMarkTypes } from "../typescript/enums/app_enums";
 
@@ -10,6 +11,7 @@ export function boldSelection(editor: ReactEditor) {
       return n.bold === true;
     },
   });
+  console.log(editor.selection);
   let shouldBold = match === undefined;
   Transforms.setNodes(
     editor,
@@ -46,6 +48,38 @@ export function italicizeSelection(editor: ReactEditor) {
   );
 }
 
+export function linkWrapSelection(
+  editor: ReactEditor,
+  url: string,
+  linkRange: Range
+) {
+  ReactEditor.focus(editor);
+  console.log("fired with");
+  console.log(linkRange);
+  // const [match] = Editor.nodes(editor, {
+  //   match: (n) => {
+  //     return n.link === true;
+  //   },
+  // });
+  // let shouldLink = match === undefined;
+  Transforms.setNodes(
+    editor as Editor,
+    {
+      bold: true,
+      // link: true, url: url
+    },
+    // Apply it to text nodes, and split the text node up if the
+    // selection is overlapping only part of it.
+    {
+      match: (n) => {
+        return Text.isText(n);
+      },
+      at: linkRange,
+      split: true,
+    }
+  );
+}
+
 export function codeSelection(editor: ReactEditor) {
   const [match] = Editor.nodes(editor, {
     match: (n) => {
@@ -72,6 +106,10 @@ export function useToolbar() {
   const [selectionCoordinates, updateSelectionCoordinates] = useState<
     DOMRect | undefined
   >(undefined);
+  const [linkSelection, updateLinkSelection] = useState<Range | undefined>(
+    undefined
+  );
+
   const [currentMarkType, updateMarkType] = useState<MarkState>({
     italic: false,
     bold: false,
@@ -87,6 +125,8 @@ export function useToolbar() {
     updateMarkType,
     selectionCoordinates,
     updateSelectionCoordinates,
+    linkSelection,
+    updateLinkSelection,
   };
 }
 

@@ -328,28 +328,28 @@ const MarkdownPreviewExample = (props: {
         );
         break;
       }
-      case "c": {
-        event.preventDefault();
-        const [match] = Editor.nodes(editor, {
-          match: (n) => {
-            return n.code === true;
-          },
-        });
-        let shouldCode = match === undefined;
-        Transforms.setNodes(
-          editor,
-          { code: shouldCode },
-          // Apply it to text nodes, and split the text node up if the
-          // selection is overlapping only part of it.
-          {
-            match: (n) => {
-              return Text.isText(n);
-            },
-            split: true,
-          }
-        );
-        break;
-      }
+      // case "c": {
+      //   event.preventDefault();
+      //   const [match] = Editor.nodes(editor, {
+      //     match: (n) => {
+      //       return n.code === true;
+      //     },
+      //   });
+      //   let shouldCode = match === undefined;
+      //   Transforms.setNodes(
+      //     editor,
+      //     { code: shouldCode },
+      //     // Apply it to text nodes, and split the text node up if the
+      //     // selection is overlapping only part of it.
+      //     {
+      //       match: (n) => {
+      //         return Text.isText(n);
+      //       },
+      //       split: true,
+      //     }
+      //   );
+      //   break;
+      // }
     }
   }
 
@@ -441,17 +441,19 @@ const MarkdownPreviewExample = (props: {
   }, [value]);
 
   function handleChange(value: Node[]) {
-    if (editor.selection && !Range.isCollapsed(editor.selection)) {
-      let sel = window.getSelection();
-      if (sel) {
-        let myRange = sel.getRangeAt(0);
-        let newDimensions = myRange.getBoundingClientRect();
-        updateSelectionCoordinates(newDimensions);
+    if (editor.selection) {
+      if (!Range.isCollapsed(editor.selection)) {
+        let sel = window.getSelection();
+        if (sel) {
+          let myRange = sel.getRangeAt(0);
+          let newDimensions = myRange.getBoundingClientRect();
+          updateSelectionCoordinates(newDimensions);
+        }
+      } else {
+        updateSelectionCoordinates(undefined);
       }
-    } else {
-      console.log("setting to null");
-      updateSelectionCoordinates(undefined);
     }
+
     setCorrectSlashPosition();
     setValue(value);
 
@@ -510,7 +512,22 @@ const MarkdownPreviewExample = (props: {
   }
 
   function handleBlur(event: React.FocusEvent<HTMLDivElement>) {
+    console.log("blurring");
+    // console.log(event.relatedTarget);
+    if (event.relatedTarget) {
+      console.log("preventing default");
+      // event.preventDefault();
+      let targetId = (event.relatedTarget as HTMLDivElement).id;
+      if (targetId !== "bar") {
+        updateSelectionCoordinates(undefined);
+      }
+    }
     updateSlashPosition(null);
+    // let sel = window.getSelection();
+    // let myRange = sel.getRangeAt(0);
+    // let newDimensions = myRange.getBoundingClientRect();
+    // console.log(newDimensions);
+    // console.log(editor.selection);
   }
 
   return (
@@ -518,7 +535,6 @@ const MarkdownPreviewExample = (props: {
       // layout
       className={slateStyles["slate-wrapper"]}
     >
-      <FormattingToolbar currentEditor={editor} />
       <Slate editor={editor} value={value} onChange={handleChange}>
         <Editable
           decorate={decorate}
@@ -536,6 +552,7 @@ const MarkdownPreviewExample = (props: {
           }}
           readOnly={previewMode}
         />
+        <FormattingToolbar />
       </Slate>
       <FormattingPane
         editor={editor}
@@ -564,6 +581,13 @@ const Leaf = ({ attributes, children, leaf }: RenderLeafProps) => {
       <code className={slateStyles["code-leaf"]} {...attributes}>
         {children}
       </code>
+    );
+  }
+  if (leaf.link) {
+    return (
+      <a {...attributes} href={leaf.url as string}>
+        {children}
+      </a>
     );
   }
   return (

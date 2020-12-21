@@ -2,16 +2,19 @@
 
 .hovered-toolbar {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   background-color: $codeeditor-background;
   padding: 4px;
   border-radius: 4px;
-  z-index: 5;
+  z-index: 100;
   color: white;
 
   border: 1px solid #edece9;
   box-sizing: border-box;
   // box-shadow: 0px 4px 16px #edece9;
+}
+
+.formatting-buttons {
 }
 
 .formatting-toolbar {
@@ -29,6 +32,22 @@
   .buttons {
     display: flex;
   }
+}
+
+.fake-selection {
+  background-color: $leaf-dark-blue;
+}
+
+.link-input {
+  position: absolute;
+  padding: 8px;
+  box-shadow: 0px 4px 16px #edece9;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #edece9;
+  border-radius: 4px;
+  z-index: 100;
+  // top: 20px;
 }
 
 .formatting-button {
