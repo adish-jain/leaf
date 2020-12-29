@@ -87,7 +87,13 @@ async function transferFileContent(
 ) {
   const gatherPromise = [];
   for (let i = 0; i < files.length; i++) {
-    let newFile: backendFileObject = {};
+    const currentFile = files[i];
+    let newFile: backendFileObject = {
+      fileName: currentFile.fileName,
+      language: currentFile.language,
+      code: JSON.stringify(currentFile.code),
+      order: currentFile.order,
+    };
     let newPromise = docRef.collection("files").add(newFile);
     gatherPromise.push(newPromise);
   }
