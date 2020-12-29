@@ -105,9 +105,9 @@ export function useBackend(authenticated: boolean, draftId: string) {
 
     mutate(async (mutateState) => {
       return [
-        ...mutateState.slice(0, atIndex),
+        ...mutateState!.slice(0, atIndex),
         modifiedItem,
-        ...mutateState.slice(atIndex + 1),
+        ...mutateState!.slice(atIndex + 1),
       ];
     }, false);
 
@@ -153,7 +153,7 @@ export function useBackend(authenticated: boolean, draftId: string) {
             backendId: backendId,
           };
       }
-      return insertItem(mutateState, newItem, atIndex + 1);
+      return insertItem(mutateState!, newItem, atIndex + 1);
     }, false);
     const data = {
       requestedAPI: "addDraftContent",
@@ -210,8 +210,8 @@ export function useBackend(authenticated: boolean, draftId: string) {
 
     mutate(async (mutateState) => {
       return [
-        ...mutateState.slice(0, toDeleteIndex),
-        ...mutateState.slice(toDeleteIndex + 1),
+        ...mutateState!.slice(0, toDeleteIndex),
+        ...mutateState!.slice(toDeleteIndex + 1),
       ];
     }, false);
   }

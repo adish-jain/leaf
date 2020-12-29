@@ -49,7 +49,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     let draftContent = postData.draftContent;
     let publishedAt = postData.publishedAt;
     let errored = postData.errored;
-    let profileImage = profileData.profileImage;
+    let profileImage = profileData!.profileImage;
     // console.log(postData);
     // replace undefineds with null to prevent nextJS errors
     for (let i = 0; i < draftContent.length; i++) {

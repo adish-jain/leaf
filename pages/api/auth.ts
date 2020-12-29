@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import useSWR from "swr";
 import { initFirebaseAdmin, initFirebase } from "../../lib/initFirebase";
 const admin = require("firebase-admin");
 const firebase = require("firebase/app");
