@@ -102,9 +102,9 @@ export function useFiles(draftId: any, authenticated: boolean) {
 
     mutate(async (mutateState) => {
       return [
-        ...mutateState.slice(0, selectedFileIndex),
+        ...mutateState!.slice(0, selectedFileIndex),
         newObject,
-        ...mutateState.slice(selectedFileIndex + 1),
+        ...mutateState!.slice(selectedFileIndex + 1),
       ];
     }, false);
   }
@@ -148,7 +148,7 @@ export function useFiles(draftId: any, authenticated: boolean) {
   function fileNameExistsFullSearch(fileName: string): boolean {
     let exists = false;
     files.forEach((file) => {
-      if (file.fileName == name) {
+      if (file.fileName == fileName) {
         exists = true;
       }
     });
@@ -210,9 +210,9 @@ export function useFiles(draftId: any, authenticated: boolean) {
 
     mutate(async (mutateState) => {
       return [
-        ...mutateState.slice(0, selectedFileIndex),
+        ...mutateState!.slice(0, selectedFileIndex),
         newObject,
-        ...mutateState.slice(selectedFileIndex + 1),
+        ...mutateState!.slice(selectedFileIndex + 1),
       ];
     }, false);
     console.log(newObject);
@@ -243,9 +243,9 @@ export function useFiles(draftId: any, authenticated: boolean) {
     // console.log("current is ", files[selectedFileIndex].language);
     await mutate(async (mutateState) => {
       return [
-        ...mutateState.slice(0, selectedFileIndex),
+        ...mutateState!.slice(0, selectedFileIndex),
         newObject,
-        ...mutateState.slice(selectedFileIndex + 1),
+        ...mutateState!.slice(selectedFileIndex + 1),
       ];
     }, false);
   }
@@ -313,7 +313,7 @@ export function useFiles(draftId: any, authenticated: boolean) {
     };
 
     mutate(async (mutateState) => {
-      return [...mutateState.slice(0), newFile];
+      return [...mutateState!.slice(0), newFile];
     }, false);
     updateFile(newFile);
   }
@@ -356,8 +356,8 @@ export function useFiles(draftId: any, authenticated: boolean) {
 
     mutate(async (mutateState) => {
       return [
-        ...mutateState.slice(0, toDeleteIndex),
-        ...mutateState.slice(toDeleteIndex + 1),
+        ...mutateState!.slice(0, toDeleteIndex),
+        ...mutateState!.slice(toDeleteIndex + 1),
       ];
     }, false);
 
@@ -394,9 +394,9 @@ export function useFiles(draftId: any, authenticated: boolean) {
     };
     mutate(async (mutateState) => {
       return [
-        ...mutateState.slice(0, selectedFileIndex),
+        ...mutateState!.slice(0, selectedFileIndex),
         newObject,
-        ...mutateState.slice(selectedFileIndex + 1),
+        ...mutateState!.slice(selectedFileIndex + 1),
       ];
     }, false);
   }

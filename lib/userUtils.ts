@@ -4,10 +4,11 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { setTokenCookies, removeTokenCookies } from "./cookieUtils";
 import { timeStamp } from "../typescript/types/app_types";
 import { Post } from "../typescript/types/app_types";
+import { firestore } from "firebase";
 
 const admin = require("firebase-admin");
 initFirebaseAdmin();
-let db = admin.firestore();
+let db: firestore.Firestore = admin.firestore();
 
 type GetUserType = {
   uid: string;
@@ -148,10 +149,15 @@ export async function getUserDraftsForLanding(
 
 export async function getUidFromUsername(username: string): Promise<string> {
   let userRef = db.collection("users").where("username", "==", username);
-  let uid = await userRef.get().then(function (userSnapshot: any) {
-    let user = userSnapshot.docs[0];
-    return user.id;
-  });
+  let uid = await userRef
+    .get()
+    .then(function (userSnapshot: any) {
+      let user = userSnapshot.docs[0];
+      return user.id;
+    })
+    .catch(function (error) {
+      return "";
+    });
   return uid;
 }
 
@@ -364,4 +370,40 @@ export async function userNameErrorMessage(username: string) {
   } else {
     return "";
   }
+}
+
+export async function authenticateAdmin(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  let { uid, userRecord } = await getUser(req, res);
+  let allowedUsers = await db.collection("users").where("admin", "==", true);
+  allowedUsers.get().then(function (userCollection) {
+    userCollection.forEach(function (checkUser) {
+      console.log(checkUser.id);
+    });
+  });
+}
+
+export async function isAdmin(req: NextApiRequest, res: NextApiResponse) {
+  let cookies = req.cookies;
+  let userToken = cookies.userToken;
+  // If user is logged out
+  if (userToken === undefined) {
+    return false;
+  }
+  let { uid, userRecord } = await getUser(req, res);
+  if (uid === "") {
+    return false;
+  }
+  let allowedUsers = await db.collection("users").where("admin", "==", true);
+  let isAdmin = false;
+  await allowedUsers.get().then(function (userCollection) {
+    userCollection.forEach(function (checkUser) {
+      if (checkUser.id === uid) {
+        isAdmin = true;
+      }
+    });
+  });
+  return isAdmin;
 }

@@ -71,6 +71,10 @@ import handlePasswordReset from "../../lib/api/passwordReset";
 // slate
 import handleUpdateDraftText from "../../lib/api/updateDraftText";
 
+// admin page
+import handleTransferPost from "../../lib/api/transferPost";
+import handleAuthenticateAdmin from "../../lib/api/authenticateAdmin";
+
 import sentryHandler from "../../lib/sentryHandler";
 
 const firebase = require("firebase/app");
@@ -277,6 +281,15 @@ export default sentryHandler(
 
       case "getAllPostsData": {
         return handleGetAllPostsData(req, res);
+      }
+
+      // admin page
+      case "authenticateAdmin": {
+        return handleAuthenticateAdmin(req, res);
+      }
+
+      case "transferPost": {
+        return handleTransferPost(req, res);
       }
 
       default:

@@ -1,0 +1,23 @@
+.admin {
+  display: flex;
+  justify-content: center;
+}
+
+.transfer {
+  // display: flex;
+  // justify-content: center;
+}
+.input-row {
+  input {
+    margin-left: 4px;
+  }
+  margin-bottom: 12px;
+}
+
+.errored {
+  color: red;
+}
+
+.success {
+  color: green;
+}
