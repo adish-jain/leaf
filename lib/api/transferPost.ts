@@ -94,7 +94,10 @@ async function transferFileContent(
       code: JSON.stringify(currentFile.code),
       order: currentFile.order,
     };
-    let newPromise = docRef.collection("files").add(newFile);
+    let newPromise = docRef
+      .collection("files")
+      .doc(currentFile.fileId)
+      .set(newFile);
     gatherPromise.push(newPromise);
   }
   await Promise.all(gatherPromise);
