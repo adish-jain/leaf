@@ -343,14 +343,17 @@ function notNewAccount(creationTime: string) {
   return currTime.valueOf() - oldTime.valueOf() > THIRTY_SECONDS;
 }
 
-export async function getDraftTitle(uid: string, draftId: string) {
+export async function getDraftTitle(
+  uid: string,
+  draftId: string
+): Promise<string> {
   let draftData = await db
     .collection("users")
     .doc(uid)
     .collection("drafts")
     .doc(draftId)
     .get();
-  let title = draftData.data().title;
+  let title = draftData.data()?.title || "";
   return title;
 }
 
