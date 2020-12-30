@@ -48,7 +48,7 @@ export type draftFrontendRepresentation = {
   publishedAt?: timeStamp;
   postURL?: string;
   postId?: string;
-  likes: number;
+  likes?: number;
 };
 
 export type folderObject = {
