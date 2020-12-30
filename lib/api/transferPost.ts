@@ -75,6 +75,9 @@ async function transferDraftContent(
       order: i,
       type: draftContent[i].type,
       slateContent: draftContent[i].slateContent,
+      fileId: draftContent[i].fileId,
+      lines: draftContent[i].lines,
+      imageUrl: draftContent[i].imageUrl,
     });
     gatherPromise.push(newPromise);
   }
