@@ -128,6 +128,7 @@ const Post = (props: PostPageProps) => {
     <div className="container">
       <Head>
         <title>{props.title}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="icon" href="/favicon.ico" />
         {/* <script src="https://unpkg.com/intersection-observer-debugger"></script> */}
       </Head>

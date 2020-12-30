@@ -8,10 +8,25 @@ import PublishedImageView from "./PublishedImageView";
 import animateScrollTo from "animated-scroll-to";
 import { SPEED_SCROLL_LIMIT } from "../components/FinishedPost";
 import { ContentContext } from "../contexts/finishedpost/content-context";
+import { MOBILE_WIDTH } from "../pages/_app";
+import { DimensionsContext } from "../contexts/dimensions-context";
+import CSS from "csstype";
 
 export default function PublishedCodeEditor(props: { scrollSpeed: number }) {
   let prismWrapper = useRef<HTMLDivElement>(null);
   const { postContent, selectedContentIndex } = useContext(ContentContext);
+  const { width } = useContext(DimensionsContext);
+  let style: CSS.Properties =
+    width < MOBILE_WIDTH
+      ? {
+          height: "50vh",
+          width: "100%",
+          marginLeft: 0,
+          top: "48vh",
+          position: "sticky",
+          zIndex: 5,
+        }
+      : {};
 
   const { scrollSpeed } = props;
   function animateLines() {
@@ -31,7 +46,7 @@ export default function PublishedCodeEditor(props: { scrollSpeed: number }) {
   }
 
   return (
-    <div className={publishedCodeEditorStyles["editor-wrapper"]}>
+    <div style={style} className={publishedCodeEditorStyles["editor-wrapper"]}>
       <PublishedImageView
         scrollSpeed={scrollSpeed}
         animateLines={animateLines}
