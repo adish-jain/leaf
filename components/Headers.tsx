@@ -165,19 +165,20 @@ type FinishedPostHeaderProps = {
   username?: string;
 };
 
+function Links() {
+  return (
+    <div className={draftHeaderStyles["links"]}>
+      <Link href="/landing">
+        <a>Home</a>
+      </Link>
+      <Link href="/explore">
+        <a>Explore</a>
+      </Link>
+    </div>
+  );
+}
+
 export function FinishedPostHeader(props: FinishedPostHeaderProps) {
-  function Links() {
-    return (
-      <div className={draftHeaderStyles["links"]}>
-        <Link href="/landing">
-          <a>Home</a>
-        </Link>
-        <Link href="/explore">
-          <a>Explore</a>
-        </Link>
-      </div>
-    );
-  }
   return (
     <div className={draftHeaderStyles["draft-header"]}>
       <div className={draftHeaderStyles["header-wrapper"]}>
