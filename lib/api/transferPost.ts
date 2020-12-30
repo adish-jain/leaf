@@ -8,7 +8,6 @@ import {
   fileObject,
 } from "../../typescript/types/frontend/postTypes";
 import { backendFileObject } from "../../typescript/types/backend/postTypes";
-
 const admin = require("firebase-admin");
 let db: firestore.Firestore = admin.firestore();
 initFirebaseAdmin();
@@ -71,14 +70,24 @@ async function transferDraftContent(
 ) {
   const gatherPromise = [];
   for (let i = 0; i < draftContent.length; i++) {
-    let newPromise = docRef.collection("draftContent").add({
+    let newContent = {
       order: i,
       type: draftContent[i].type,
       slateContent: draftContent[i].slateContent,
       fileId: draftContent[i].fileId,
       lines: draftContent[i].lines,
       imageUrl: draftContent[i].imageUrl,
-    });
+    };
+    if (draftContent[i].fileId === undefined) {
+      delete newContent.fileId;
+    }
+    if (draftContent[i].lines === undefined) {
+      delete newContent.lines;
+    }
+    if (draftContent[i].imageUrl === undefined) {
+      delete newContent.imageUrl;
+    }
+    let newPromise = docRef.collection("draftContent").add(newContent);
     gatherPromise.push(newPromise);
   }
   await Promise.all(gatherPromise);
