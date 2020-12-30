@@ -61,7 +61,6 @@ const FinishedPost = (props: FinishedPostProps) => {
 
   const { authenticated, error, loading } = useLoggedIn();
   const { width } = useContext(DimensionsContext);
-  console.log("width is ", width);
   return (
     <PreviewContext.Provider
       value={{

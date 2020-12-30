@@ -4,6 +4,7 @@ import {
   fileObject,
   Lines,
 } from "../typescript/types/frontend/postTypes";
+import CSS from "csstype";
 import {
   Dispatch,
   SetStateAction,
@@ -33,7 +34,7 @@ export default function PublishedCodeStepSection(props: {
   const { width } = useContext(DimensionsContext);
   const isMobile = width < MOBILE_WIDTH;
 
-  let codeStepContentStyle = isMobile
+  let codeStepContentStyle: CSS.Properties = isMobile
     ? { marginLeft: 0, marginTop: 0, display: "block", position: "relative" }
     : {};
 
@@ -68,7 +69,7 @@ function CodeSteps(props: {
         width: "100%",
       }
     : {};
-  let codeStepsStyle = isMobile
+  let codeStepsStyle: CSS.Properties = isMobile
     ? {
         position: "relative",
         top: "-50vh",
