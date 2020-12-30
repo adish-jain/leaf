@@ -49,7 +49,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       tags: data.tags,
       username: newUsername,
       errored: data.errored,
-      likes: data.likes,
+      likes: data.likes || 0,
       postId: data.postId,
     });
   const draftContent = data.draftContent;
