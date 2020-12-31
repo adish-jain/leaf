@@ -24,8 +24,8 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <DimensionsContext.Provider
       value={{
-        height: windowSize.height || 0,
-        width: windowSize.width || 0,
+        height: windowSize.height || MOBILE_WIDTH,
+        width: windowSize.width || MOBILE_WIDTH,
       }}
     >
       <Component {...pageProps} />
