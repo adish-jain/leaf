@@ -105,15 +105,13 @@ function CodeSteps(props: {
 }
 
 function BufferDiv(props: {}) {
-  const [height, updateHeight] = useState(0);
+  const { height } = useContext(DimensionsContext);
 
-  useEffect(() => {
-    updateHeight(window.innerHeight);
-  }, []);
   return (
     <div
+      id="bufferdiv"
       style={{
-        height: "200px",
+        height: `${height / 2}px`,
       }}
     ></div>
   );
