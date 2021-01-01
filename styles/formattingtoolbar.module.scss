@@ -1,5 +1,22 @@
 @import "commonui.scss";
 
+.hovered-toolbar {
+  display: flex;
+  flex-direction: column;
+  background-color: $codeeditor-background;
+  padding: 4px;
+  border-radius: 4px;
+  z-index: 100;
+  color: white;
+
+  border: 1px solid #edece9;
+  box-sizing: border-box;
+  // box-shadow: 0px 4px 16px #edece9;
+}
+
+.formatting-buttons {
+}
+
 .formatting-toolbar {
   padding-left: 72px;
   position: fixed;
@@ -17,6 +34,43 @@
   }
 }
 
+.fake-selection {
+  background-color: $leaf-dark-blue;
+}
+
+.link-input {
+  position: absolute;
+  padding: 8px;
+  box-shadow: 0px 4px 16px #edece9;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #edece9;
+  border-radius: 4px;
+  z-index: 100;
+  // top: 20px;
+}
+
+.formatting-button {
+  margin-left: 4px;
+  cursor: pointer;
+}
+
+.bold-button {
+  @extend .formatting-button;
+}
+
+.italic-button {
+  @extend .formatting-button;
+}
+
+.code-button {
+  @extend .formatting-button;
+}
+
+.link-button {
+  @extend .formatting-button;
+}
+
 .mark-button {
   margin-right: 12px;
   cursor: pointer;
@@ -27,7 +81,7 @@
   justify-content: center;
   align-items: center;
   border: 1px solid $leaf-light-gray;
-border-radius: 4px;
+  border-radius: 4px;
   box-shadow: 0px 4px 12px #edece9;
 
   // margin: 8px;

@@ -60,14 +60,12 @@ const slateNode: Node[] = [
   },
 ];
 
-export default function SlatePrismEditor(props: {}) {
+export default function SlatePrismEditor(props: { inView: boolean }) {
+  const { inView } = props;
   const { selectedFile, changeCode } = useContext(FilesContext);
-  const {
-    currentlySelectedLines,
-    changeSelectedLines,
-    updateSelectionCoordinates,
-    selectionCoordinates,
-  } = useContext(LinesContext);
+  const { currentlySelectedLines, changeSelectedLines } = useContext(
+    LinesContext
+  );
   const slateRef = useRef<HTMLDivElement>(null);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, [
     selectedFile?.language,
@@ -108,12 +106,10 @@ export default function SlatePrismEditor(props: {}) {
   function handleChange(value: Node[]) {
     if (editor.selection && !Range.isCollapsed(editor.selection)) {
       const selectionLines = selectionToLines(editor.selection);
-      console.log(editor.selection);
       let sel = window.getSelection();
       if (sel) {
         let myRange = sel.getRangeAt(0);
         let newDimensions = myRange.getBoundingClientRect();
-        updateSelectionCoordinates(newDimensions);
       }
       changeSelectedLines(selectionLines);
     } else {
@@ -150,7 +146,11 @@ export default function SlatePrismEditor(props: {}) {
           />
         </Slate>
       </div>
-      <EditorCodeBlockLines numOfLines={value.length} height={slateHeight} />
+      <EditorCodeBlockLines
+        numOfLines={value.length}
+        height={slateHeight}
+        inView={inView}
+      />
     </div>
   );
 }
@@ -170,8 +170,9 @@ const Leaf = ({ attributes, children, leaf }: RenderLeafProps) => {
 export function EditorCodeBlockLines(props: {
   numOfLines: number;
   height: number;
+  inView: boolean;
 }) {
-  const { height, numOfLines } = props;
+  const { height, numOfLines, inView } = props;
   const { currentlyEditingBlock } = useContext(DraftContext);
   const { selectedFile } = useContext(FilesContext);
   const lines = currentlyEditingBlock?.lines;
@@ -189,6 +190,7 @@ export function EditorCodeBlockLines(props: {
         <AnimatePresence>
           {currentlyEditingBlock?.fileId === selectedFile?.fileId &&
             lines &&
+            inView &&
             i + 1 >= lines?.start &&
             i + 1 <= lines?.end && (
               <motion.div

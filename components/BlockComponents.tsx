@@ -142,8 +142,9 @@ const HeaderTwoElement = (props: any) => {
 const HeaderThreeElement = (props: RenderElementProps) => {
   let currentNode = props.element.children[0];
   let empty = currentNode.text === "";
-  const { publishedView } = useContext(PreviewContext);
-  let className = publishedView ? "headerThree" : "headerThree-draft";
+  const { publishedView, previewMode } = useContext(PreviewContext);
+  let className =
+    publishedView || previewMode ? "headerThree" : "headerThree-draft";
   return (
     <div className={slateEditorStyles[className]}>
       <h3 {...props.attributes}>{props.children}</h3>

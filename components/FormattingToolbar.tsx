@@ -1,52 +1,200 @@
-import { useContext } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useContext, useEffect, useState } from "react";
 import { ToolbarContext } from "../contexts/toolbar-context";
 import { toggleMark } from "../lib/useToolbar";
 import formattingToolbarStyles from "../styles/formattingtoolbar.module.scss";
 import { saveStatusEnum, slateMarkTypes } from "../typescript/enums/app_enums";
+import {
+  boldSelection,
+  italicizeSelection,
+  codeSelection,
+  linkWrapSelection,
+} from "../lib/useToolbar";
+import { ReactEditor, useEditor } from "slate-react";
+import { Range } from "slate";
+const shortId = require("shortid");
 
 export function FormattingToolbar(props: {}) {
-  const toolbarContext = useContext(ToolbarContext);
-  const { saveState, currentMarkType } = toolbarContext;
-  return (
-    <div className={formattingToolbarStyles["formatting-toolbar"]}>
-      <div className={formattingToolbarStyles["buttons"]}>
-        {/* <MarkButton name={"T"} markType={slateMarkTypes.unstyled} /> */}
-        <MarkButton name={"B"} markType={slateMarkTypes.bold} />
-        <MarkButton name={"I"} markType={slateMarkTypes.italic} />
-        <MarkButton name={"<>"} markType={slateMarkTypes.code} />
-      </div>
-      <SaveStatus saveState={saveState} />
-    </div>
-  );
-}
-
-function MarkButton(props: { name: string; markType: slateMarkTypes }) {
-  const toolbarContext = useContext(ToolbarContext);
-  const { currentMarkType } = toolbarContext;
-  const selected = currentMarkType[props.markType as string];
+  const currentEditor = useEditor();
+  const [showLink, updateShowLink] = useState(false);
+  const {
+    updateLinkSelection,
+    saveState,
+    currentMarkType,
+    selectionCoordinates,
+  } = useContext(ToolbarContext);
   let style = {};
-  if (selected) {
-    //@ts-ignore
-    style["color"] = "blue";
+
+  useEffect(() => {
+    if (selectionCoordinates === undefined) {
+      updateShowLink(false);
+    } else {
+      if (currentEditor.selection) {
+        updateLinkSelection(currentEditor.selection);
+      }
+    }
+  }, [selectionCoordinates]);
+  if (selectionCoordinates) {
+    style = {
+      position: "absolute",
+      top: window.pageYOffset + selectionCoordinates.y - 34,
+      left: selectionCoordinates.x,
+    };
   }
+
   return (
-    <div
-      onClick={(e) => {
-        e.preventDefault();
-        // toggleMark();
-      }}
-      className={formattingToolbarStyles["mark-button"]}
-      style={style}
-    >
-      {props.name}
+    <div>
+      <LinkToolbar showLink={showLink} />
+      <AnimatePresence>
+        {selectionCoordinates && (
+          <motion.div
+            style={style}
+            className={formattingToolbarStyles["hovered-toolbar"]}
+            initial={{ opacity: 0, transform: "scale(0.9)" }}
+            animate={{ opacity: 1, transform: "scale(1)" }}
+            exit={{ opacity: 0, transform: "scale(0.9)" }}
+            transition={{
+              duration: 0.15,
+            }}
+            // key={shortId.generate()}
+            id={"bar"}
+            onClick={(e) => {
+              e.preventDefault();
+            }}
+          >
+            <div className={"formatting-buttons"}>
+              <button
+                id={"bar"}
+                className={formattingToolbarStyles["bold-button"]}
+                onClick={(e) => {
+                  console.log("current editor is ");
+                  console.log(currentEditor.selection);
+                  e.preventDefault();
+                  boldSelection(currentEditor);
+                }}
+              >
+                Bold
+              </button>
+              <button
+                id={"bar"}
+                className={formattingToolbarStyles["italic-button"]}
+                onClick={(e) => {
+                  e.preventDefault();
+                  italicizeSelection(currentEditor);
+                }}
+              >
+                Italics
+              </button>
+              <button
+                id={"bar"}
+                className={formattingToolbarStyles["code-button"]}
+                onClick={(e) => {
+                  e.preventDefault();
+                  codeSelection(currentEditor);
+                }}
+              >
+                Code
+              </button>
+              <button
+                id={"bar"}
+                className={formattingToolbarStyles["link-button"]}
+                onClick={(e) => {
+                  e.preventDefault();
+                  updateShowLink(true);
+                }}
+              >
+                Link
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
 
-function SaveStatus(props: { saveState: saveStatusEnum }) {
-  const toolbarContext = useContext(ToolbarContext);
-  const { saveState } = toolbarContext;
+function FakeSelection(props: { showLink: boolean }) {
+  const { showLink } = props;
+  const { selectionCoordinates } = useContext(ToolbarContext);
   return (
-    <div className={formattingToolbarStyles["save-state"]}> {saveState}</div>
+    <AnimatePresence>
+      {selectionCoordinates && showLink && (
+        <motion.div
+          style={{
+            top: selectionCoordinates.top,
+            left: selectionCoordinates.x,
+            width: selectionCoordinates.width,
+            position: "absolute",
+            height: selectionCoordinates.height,
+          }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{
+            duration: 0,
+          }}
+          className={formattingToolbarStyles["fake-selection"]}
+        ></motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+function LinkToolbar(props: { showLink: boolean }) {
+  const {
+    saveState,
+    currentMarkType,
+    selectionCoordinates,
+    linkSelection,
+  } = useContext(ToolbarContext);
+  const [linkValue, setLinkValue] = useState("");
+  useEffect(() => {
+    if (selectionCoordinates === undefined) {
+      setLinkValue("");
+    }
+  }, [selectionCoordinates]);
+  const currentEditor = useEditor();
+  const { showLink } = props;
+  return (
+    <div>
+      {/* <FakeSelection showLink={showLink} /> */}
+      <AnimatePresence>
+        {showLink && selectionCoordinates && (
+          <motion.div
+            className={formattingToolbarStyles["link-input"]}
+            style={{
+              position: "absolute",
+              top: window.pageYOffset + selectionCoordinates!.y + 34,
+              left: selectionCoordinates!.x,
+            }}
+            initial={{ opacity: 0, transform: "scale(0.9)" }}
+            animate={{ opacity: 1, transform: "scale(1)" }}
+            exit={{ opacity: 0, transform: "scale(0.9)" }}
+            transition={{
+              duration: 0.15,
+            }}
+          >
+            <input
+              value={linkValue}
+              id={"bar"}
+              onChange={(e) => {
+                setLinkValue(e.target.value);
+              }}
+              placeholder={"Enter link here"}
+              onFocus={(e) => {}}
+            />
+            {linkSelection && (
+              <button
+                onClick={(e) => {
+                  linkWrapSelection(currentEditor, linkValue, linkSelection);
+                }}
+              >
+                Add link
+              </button>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }

@@ -157,7 +157,6 @@ const DraftComponent = (props: DraftContentProps) => {
           </div>
         </div>
       </div>
-      {/* <FormattingToolbar /> */}
     </div>
   );
 };
