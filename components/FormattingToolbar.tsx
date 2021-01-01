@@ -53,24 +53,38 @@ export function FormattingToolbar(props: { currentEditor: ReactEditor }) {
           }}
           onClick={(e) => {
             e.preventDefault();
-            console.log("wrapper fired");
           }}
         >
-          <div
+          <button
             className={formattingToolbarStyles["bold-button"]}
             onClick={(e) => {
               e.preventDefault();
-              console.log("default fired");
               boldSelection(currentEditor);
             }}
           >
             Bold
-          </div>
-          <div className={formattingToolbarStyles["italic-button"]}>
+          </button>
+          <button
+            className={formattingToolbarStyles["italic-button"]}
+            onClick={(e) => {
+              e.preventDefault();
+              italicizeSelection(currentEditor);
+            }}
+          >
             Italics
-          </div>
-          <div className={formattingToolbarStyles["code-button"]}>Code</div>
-          <div className={formattingToolbarStyles["link-button"]}>Link</div>
+          </button>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              codeSelection(currentEditor);
+            }}
+            className={formattingToolbarStyles["code-button"]}
+          >
+            Code
+          </button>
+          <button className={formattingToolbarStyles["link-button"]}>
+            Link
+          </button>
         </motion.div>
       )}
     </AnimatePresence>

@@ -21,12 +21,14 @@ import {
   boldSelection,
   italicizeSelection,
   codeSelection,
+  linkWrapSelection,
 } from "../../lib/useToolbar";
 import { FilesContextWrapper } from "../../components/FilesContextWrapper";
 import { LinesContext } from "../../contexts/lines-context";
 import { useLines } from "../../lib/useLines";
 import { TagsContext } from "../../contexts/tags-context";
 import { PreviewContext } from "../../components/preview-context";
+import { Range } from "slate";
 const initialMetaData: draftMetaData = {
   title: "",
   errored: false,
@@ -69,6 +71,8 @@ const DraftView = () => {
     updateMarkType,
     updateSelectionCoordinates,
     selectionCoordinates,
+    linkSelection,
+    updateLinkSelection,
   } = useToolbar();
   const { currentlySelectedLines, changeSelectedLines } = useLines();
   const {
@@ -156,6 +160,8 @@ const DraftView = () => {
               currentMarkType,
               selectionCoordinates,
               updateSelectionCoordinates,
+              updateLinkSelection,
+              linkSelection,
             }}
           >
             <FilesContextWrapper

@@ -441,16 +441,17 @@ const MarkdownPreviewExample = (props: {
   }, [value]);
 
   function handleChange(value: Node[]) {
-    if (editor.selection && !Range.isCollapsed(editor.selection)) {
-      let sel = window.getSelection();
-      if (sel) {
-        let myRange = sel.getRangeAt(0);
-        let newDimensions = myRange.getBoundingClientRect();
-        updateSelectionCoordinates(newDimensions);
+    if (editor.selection) {
+      if (!Range.isCollapsed(editor.selection)) {
+        let sel = window.getSelection();
+        if (sel) {
+          let myRange = sel.getRangeAt(0);
+          let newDimensions = myRange.getBoundingClientRect();
+          updateSelectionCoordinates(newDimensions);
+        }
+      } else {
+        updateSelectionCoordinates(undefined);
       }
-    } else {
-      console.log("setting to null");
-      updateSelectionCoordinates(undefined);
     }
     setCorrectSlashPosition();
     setValue(value);
@@ -510,7 +511,22 @@ const MarkdownPreviewExample = (props: {
   }
 
   function handleBlur(event: React.FocusEvent<HTMLDivElement>) {
+    // console.log("blurring");
+    // // console.log(event.relatedTarget);
+    // if (event.relatedTarget) {
+    //   console.log("preventing default");
+    //   // event.preventDefault();
+    //   let targetId = (event.relatedTarget as HTMLDivElement).id;
+    //   if (targetId !== "bar") {
+    //     updateSelectionCoordinates(undefined);
+    //   }
+    // }
     updateSlashPosition(null);
+    // let sel = window.getSelection();
+    // let myRange = sel.getRangeAt(0);
+    // let newDimensions = myRange.getBoundingClientRect();
+    // console.log(newDimensions);
+    // console.log(editor.selection);
   }
 
   return (
@@ -564,6 +580,13 @@ const Leaf = ({ attributes, children, leaf }: RenderLeafProps) => {
       <code className={slateStyles["code-leaf"]} {...attributes}>
         {children}
       </code>
+    );
+  }
+  if (leaf.link) {
+    return (
+      <a {...attributes} href={leaf.url as string}>
+        {children}
+      </a>
     );
   }
   return (
