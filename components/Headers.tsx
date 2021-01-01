@@ -6,6 +6,8 @@ import { goToIndex, goToLanding, logOut } from "../lib/UseLoggedIn";
 import { DraftContext } from "../contexts/draft-context";
 import { PreviewContext } from "./preview-context";
 import { Router, useRouter } from "next/router";
+import { ToolbarContext } from "../contexts/toolbar-context";
+import { saveStatusEnum } from "../typescript/enums/app_enums";
 
 type DraftHeaderProps = {
   updateShowTags: (value: SetStateAction<boolean>) => void;
@@ -47,20 +49,37 @@ export function LandingHeader(props: LandingHeaderProps) {
 
 function Buttons(props: { updateShowTags: (toggle: boolean) => void }) {
   const { updatePreviewMode, published } = useContext(PreviewContext);
+  const { saveState } = useContext(ToolbarContext);
   const { updateShowTags } = props;
   return (
     <div className={draftHeaderStyles["buttons"]}>
       <TagsButton updateShowTags={updateShowTags} />
-      <button
-        className={draftHeaderStyles["preview-button"]}
-        onClick={(e) => {
-          if (updatePreviewMode) {
-            updatePreviewMode(true);
-          }
-        }}
-      >
-        Preview Post
-      </button>
+      {saveState === saveStatusEnum.saved ? (
+        <button
+          className={draftHeaderStyles["preview-button"]}
+          onClick={(e) => {
+            if (updatePreviewMode) {
+              updatePreviewMode(true);
+            }
+          }}
+          disabled={saveState === saveStatusEnum.saved}
+        >
+          Preview Post
+        </button>
+      ) : (
+        <button
+          className={draftHeaderStyles["preview-button"]}
+          onClick={(e) => {
+            if (updatePreviewMode) {
+              updatePreviewMode(true);
+            }
+          }}
+          disabled={true}
+        >
+          Saving...
+        </button>
+      )}
+
       <PublishButtonChoice />
     </div>
   );
@@ -118,29 +137,30 @@ function PublishButtonChoice() {
   );
 }
 
+function DraftHeaderLinks() {
+  return (
+    <DraftContext.Consumer>
+      {({ username }) => (
+        <div className={draftHeaderStyles["links"]}>
+          <Link href="/landing">
+            <a>Home</a>
+          </Link>
+          <Link href={`/${username}`}>
+            <a>Profile</a>
+          </Link>
+        </div>
+      )}
+    </DraftContext.Consumer>
+  );
+}
+
 export function DraftHeader(props: DraftHeaderProps) {
   const { updateShowTags } = props;
-  function Links() {
-    return (
-      <DraftContext.Consumer>
-        {({ username }) => (
-          <div className={draftHeaderStyles["links"]}>
-            <Link href="/landing">
-              <a>Home</a>
-            </Link>
-            <Link href={`/${username}`}>
-              <a>Profile</a>
-            </Link>
-          </div>
-        )}
-      </DraftContext.Consumer>
-    );
-  }
 
   return (
     <div className={draftHeaderStyles["draft-header"]}>
       <div className={draftHeaderStyles["header-wrapper"]}>
-        <Links />
+        <DraftHeaderLinks />
         <Buttons updateShowTags={updateShowTags} />
       </div>
     </div>

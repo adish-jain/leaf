@@ -1,10 +1,11 @@
+import { Dimensions } from "framer-motion/types/render/dom/types";
 import { useState } from "react";
+import { Range } from "slate";
 import { Editor, Element, Text, Transforms } from "slate";
-import { HistoryEditor } from "slate-history";
 import { ReactEditor, useEditor, useSlate } from "slate-react";
 import { saveStatusEnum, slateMarkTypes } from "../typescript/enums/app_enums";
 
-export function boldSelection(editor: Editor & ReactEditor & HistoryEditor) {
+export function boldSelection(editor: ReactEditor) {
   const [match] = Editor.nodes(editor, {
     match: (n) => {
       return n.bold === true;
@@ -25,9 +26,7 @@ export function boldSelection(editor: Editor & ReactEditor & HistoryEditor) {
   );
 }
 
-export function italicizeSelection(
-  editor: Editor & ReactEditor & HistoryEditor
-) {
+export function italicizeSelection(editor: ReactEditor) {
   const [match] = Editor.nodes(editor, {
     match: (n) => {
       return n.italic === true;
@@ -48,7 +47,7 @@ export function italicizeSelection(
   );
 }
 
-export function codeSelection(editor: Editor & ReactEditor & HistoryEditor) {
+export function codeSelection(editor: ReactEditor) {
   const [match] = Editor.nodes(editor, {
     match: (n) => {
       return n.code === true;
@@ -69,8 +68,46 @@ export function codeSelection(editor: Editor & ReactEditor & HistoryEditor) {
   );
 }
 
+export function linkWrapSelection(
+  editor: ReactEditor,
+  url: string,
+  linkRange: Range
+) {
+  ReactEditor.focus(editor);
+  console.log("fired with");
+  console.log(linkRange);
+  // const [match] = Editor.nodes(editor, {
+  //   match: (n) => {
+  //     return n.link === true;
+  //   },
+  // });
+  // let shouldLink = match === undefined;
+  Transforms.setNodes(
+    editor,
+    {
+      bold: true,
+      // link: true, url: url
+    },
+    // Apply it to text nodes, and split the text node up if the
+    // selection is overlapping only part of it.
+    {
+      match: (n) => {
+        return Text.isText(n);
+      },
+      at: linkRange,
+      split: true,
+    }
+  );
+}
+
 export function useToolbar() {
   const [saveState, updateSaving] = useState(saveStatusEnum.saved);
+  const [selectionCoordinates, updateSelectionCoordinates] = useState<
+    DOMRect | undefined
+  >(undefined);
+  const [linkSelection, updateLinkSelection] = useState<Range | undefined>(
+    undefined
+  );
   const [currentMarkType, updateMarkType] = useState<MarkState>({
     italic: false,
     bold: false,
@@ -79,7 +116,16 @@ export function useToolbar() {
     default: true,
   });
 
-  return { saveState, updateSaving, currentMarkType, updateMarkType };
+  return {
+    saveState,
+    updateSaving,
+    currentMarkType,
+    updateMarkType,
+    selectionCoordinates,
+    updateSelectionCoordinates,
+    linkSelection,
+    updateLinkSelection,
+  };
 }
 
 export const toggleMark = (editor: Editor, format: slateMarkTypes) => {

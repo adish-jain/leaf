@@ -26,7 +26,7 @@ export function CodeStep(props: {
   const { codeStep, index, startIndex, selected, last, backendId } = props;
   const [hovered, updateHovered] = useState(false);
   const { changeEditingBlock } = useContext(DraftContext);
-  const { updateStepCoordinate } = useContext(LinesContext);
+  // const { updateStepCoordinate } = useContext(LinesContext);
   const { changeSelectedFileIndex, files } = useContext(FilesContext);
   const stepRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -43,7 +43,7 @@ export function CodeStep(props: {
       return;
     }
     if (selected) {
-      updateStepCoordinate(stepDim);
+      // updateStepCoordinate(stepDim);
     }
   }
 
