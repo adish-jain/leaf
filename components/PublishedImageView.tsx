@@ -4,6 +4,8 @@ import { File, Step } from "../typescript/types/app_types";
 import { motion, AnimatePresence } from "framer-motion";
 import { SPEED_SCROLL_LIMIT } from "../components/FinishedPost";
 import { ContentContext } from "../contexts/finishedpost/content-context";
+import { DimensionsContext } from "../contexts/dimensions-context";
+import { MOBILE_WIDTH } from "../pages/_app";
 
 type PublishedImageViewProps = {
   scrollSpeed: number;
@@ -15,10 +17,15 @@ export default function PublishedImageView(props: PublishedImageViewProps) {
   const { scrollSpeed } = props;
   const currentContent = postContent[selectedContentIndex];
   const speed = Math.abs(scrollSpeed);
-
+  const { width } = useContext(DimensionsContext);
+  const isMobile = width < MOBILE_WIDTH;
   function onComplete() {
     props.animateLines();
   }
+
+  const imgStyle = isMobile
+    ? { maxHeight: "100px", marginLeft: 0, marginRight: 0, marginTop: 0 }
+    : {};
 
   return (
     <div>
@@ -34,13 +41,14 @@ export default function PublishedImageView(props: PublishedImageViewProps) {
             style={{
               // height: "0px",
               overflow: "hidden",
+              backgroundColor: "white",
               // maxHeight: "600px",
             }}
             animate={{
               // opacity: 1,
               // transform: "scaleY(1)"
               // maxHeight: "600px",
-              height: "250px",
+              height: isMobile ? "100px" : "250px",
             }}
             exit={{
               // opacity: 0,
@@ -53,8 +61,8 @@ export default function PublishedImageView(props: PublishedImageViewProps) {
             }}
             onAnimationComplete={onComplete}
           >
-            <div className={imageViewStyles["published-img"]}>
-              <img src={currentContent?.imageUrl} />
+            <div style={imgStyle} className={imageViewStyles["published-img"]}>
+              <img style={imgStyle} src={currentContent?.imageUrl} />
             </div>
           </motion.div>
         )}

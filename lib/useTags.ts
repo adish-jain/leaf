@@ -46,7 +46,7 @@ export function useTags(draftId: string, authenticated: boolean) {
       let selectedTags: string[] = [tag];
 
       // optimistic mutate
-      mutate(async (mutateState: string[]) => {
+      mutate(async (mutateState) => {
         return [...selectedTags];
       }, false);
 
@@ -74,7 +74,7 @@ export function useTags(draftId: string, authenticated: boolean) {
           tags: selectedTags,
         };
 
-        mutate(async (mutateState: string[]) => {
+        mutate(async (mutateState) => {
           return [...selectedTags];
         }, false);
 

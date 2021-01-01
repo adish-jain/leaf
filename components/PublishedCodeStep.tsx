@@ -56,7 +56,7 @@ export default function PublishedCodeStep(props: {
       boxShadow: "0px 4px 16px #edece9",
       border: "1px solid #edece9",
       color: "rgba(41, 41, 41, 0.87)",
-      backgroundColor: 'white'
+      backgroundColor: "white",
     };
   }
   return (
@@ -78,5 +78,5 @@ function calculateRootMargin() {
   // if (pageYOffset < height / 2) {
   //   return "0% 0% 0% 0%";
   // }
-  return "-49% 0% -49% 0%";
+  return "-39% 0% -60% 0%";
 }

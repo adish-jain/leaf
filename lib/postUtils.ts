@@ -1,4 +1,4 @@
-import { initFirebaseAdmin } from "./initFirebase";
+import { initFirebaseAdmin, initFirebase } from "./initFirebase";
 import { getFilesForDraft } from "./fileUtils";
 import {
   contentBlock,
@@ -6,10 +6,11 @@ import {
   // publishedPostFrontendRepresentation,
 } from "../typescript/types/frontend/postTypes";
 import { draftMetaData } from "../typescript/types/frontend/postTypes";
+import { firestore } from "firebase";
 
-initFirebaseAdmin();
 const admin = require("firebase-admin");
-let db = admin.firestore();
+let db: firestore.Firestore = admin.firestore();
+initFirebaseAdmin();
 
 import {
   getUidFromUsername,
@@ -47,11 +48,15 @@ export async function getDraftMetadata(
       getUsernameFromUid(uid),
       getProfileImageFromUid(uid),
     ]);
-    let draftData: draftFrontendRepresentation = draftRef.data();
-    let title = draftData.title as string;
-    let published: boolean = draftData.published;
-    let createdAt: timeStamp = draftData.createdAt;
-    let postId: string = draftData.postId || "";
+    let draftData = draftRef.data();
+    if (!draftData) {
+      throw "undefined draft data";
+    }
+    let typedDraftData = draftData as draftFrontendRepresentation;
+    let title = typedDraftData.title as string;
+    let published: boolean = typedDraftData.published;
+    let createdAt: timeStamp = typedDraftData.createdAt;
+    let postId: string = typedDraftData.postId || "";
     result = {
       title: title,
       published: published,
@@ -89,14 +94,19 @@ export async function getAllDraftDataHandler(
       .collection("drafts")
       .doc(draftId)
       .get();
-    let draftData: draftFrontendRepresentation = draftRef.data();
-    let title = draftData.title as string;
-    let published: boolean = draftData.published;
-    let tags = draftData.tags as string[];
-    let createdAt: timeStamp = draftData.createdAt;
-    let publishedAt: timeStamp | undefined = draftData.publishedAt;
+    let draftData = draftRef.data();
+    if (!draftData) {
+      throw "undefined draftData";
+    }
+    let typeDraftData = draftData as draftFrontendRepresentation;
+    let title = typeDraftData.title as string;
+    let published: boolean = typeDraftData.published;
+    let tags = typeDraftData.tags as string[];
+    let createdAt: timeStamp = typeDraftData.createdAt;
+    let publishedAt: timeStamp | undefined = typeDraftData.publishedAt;
+    let postId: string | undefined = typeDraftData.postId;
     // let privatePost = draftData.privatePost as boolean;
-    let likes = draftData.likes;
+    let likes = typeDraftData.likes;
 
     const [files, username, draftContent, profileImage] = await Promise.all([
       getFilesForDraft(uid, draftId),
@@ -119,6 +129,7 @@ export async function getAllDraftDataHandler(
       likes: likes,
       private: false,
       publishedAt: publishedAt,
+      postId: postId,
     };
     return results;
   } catch (error) {
