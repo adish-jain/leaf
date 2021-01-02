@@ -82,9 +82,9 @@ export function FormattingToolbar(props: { currentEditor: ReactEditor }) {
           >
             Code
           </button>
-          <button className={formattingToolbarStyles["link-button"]}>
+          {/* <button className={formattingToolbarStyles["link-button"]}>
             Link
-          </button>
+          </button> */}
         </motion.div>
       )}
     </AnimatePresence>
