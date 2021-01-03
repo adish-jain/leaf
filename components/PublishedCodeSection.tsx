@@ -17,7 +17,6 @@ import { DraftContext } from "../contexts/draft-context";
 import { useInView } from "react-intersection-observer";
 import { PreviewContext } from "./preview-context";
 import PublishedCodeEditor from "./PublishedCodeEditor";
-import { ContentBlock } from "draft-js";
 import PublishedCodeStep from "./PublishedCodeStep";
 import { AnimatePresence, motion } from "framer-motion";
 import scrollingStyles from "../styles/scrolling.module.scss";
@@ -31,25 +30,18 @@ export default function PublishedCodeStepSection(props: {
 }) {
   const { codeSteps, startIndex, scrollSpeed } = props;
 
-  const { width } = useContext(DimensionsContext);
-  const isMobile = width < MOBILE_WIDTH;
-
-  let codeStepContentStyle: CSS.Properties = isMobile
-    ? { marginLeft: 0, marginTop: 0, display: "block", position: "relative" }
-    : {};
-
   return (
     <div className={codeStepSectionStyles["codestep-section"]}>
       <div
         className={codeStepSectionStyles["codestep-content"]}
-        style={codeStepContentStyle}
+        // style={codeStepContentStyle}
       >
+        <PublishedCodeEditor scrollSpeed={scrollSpeed} />
         <CodeSteps
           codeSteps={codeSteps}
           startIndex={startIndex}
           scrollSpeed={scrollSpeed}
         />
-        {!isMobile && <PublishedCodeEditor scrollSpeed={scrollSpeed} />}
       </div>
     </div>
   );
@@ -60,31 +52,13 @@ function CodeSteps(props: {
   startIndex: number;
   scrollSpeed: number;
 }) {
-  const stepWrapper = useRef<HTMLDivElement>(null);
   const { codeSteps, startIndex, scrollSpeed } = props;
-  const { width } = useContext(DimensionsContext);
-  const isMobile = width < MOBILE_WIDTH;
-  let wrapperStyle = isMobile
-    ? {
-        width: "100%",
-      }
-    : {};
-  let codeStepsStyle: CSS.Properties = isMobile
-    ? {
-        position: "relative",
-        top: "-50vh",
-      }
-    : {};
 
   return (
-    <div
-      style={wrapperStyle}
-      ref={stepWrapper}
-      className={codeStepSectionStyles["published-steps"]}
-    >
+    <div className={codeStepSectionStyles["published-steps"]}>
       <ScrollDown />
-      {isMobile && <PublishedCodeEditor scrollSpeed={scrollSpeed} />}
-      <div style={codeStepsStyle}>
+      {/* {isMobile && <PublishedCodeEditor scrollSpeed={scrollSpeed} />} */}
+      <div className={codeStepSectionStyles["codesteps-wrapper"]}>
         {codeSteps.map((codeStep, index) => {
           return (
             <PublishedCodeStep
@@ -99,7 +73,8 @@ function CodeSteps(props: {
         })}
       </div>
       {/* <ScrollDown /> */}
-      {!isMobile && <BufferDiv />}
+      {/* {!isMobile && <BufferDiv />} */}
+      <BufferDiv />
     </div>
   );
 }

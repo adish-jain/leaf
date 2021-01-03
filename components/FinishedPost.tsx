@@ -60,7 +60,6 @@ const FinishedPost = (props: FinishedPostProps) => {
   }, [handleScroll]);
 
   const { authenticated, error, loading } = useLoggedIn();
-  const { width } = useContext(DimensionsContext);
   return (
     <PreviewContext.Provider
       value={{
