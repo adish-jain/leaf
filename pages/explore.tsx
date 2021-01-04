@@ -474,7 +474,9 @@ function DisplayPosts(props: {
                               e.stopPropagation();
                             }}
                           >
-                            {tag}
+                            <div className={exploreStyles["post-tag-text"]}>
+                              {tag}
+                            </div>
                           </div>
                         );
                       })

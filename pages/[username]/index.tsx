@@ -867,11 +867,15 @@ function DisplayPosts(props: { posts: Post[]; username: string }) {
                   <div className={profileStyles["profile-post-tags-author"]}>
                     {tags !== null ? (
                       tags.map((tag: string) => {
-                        return (
-                          <div className={profileStyles["profile-post-tag"]}>
-                            {tag}
-                          </div>
-                        );
+                          return (
+                            tag !== "" ? (
+                              <div className={profileStyles["profile-post-tag"]}>
+                                <div className={profileStyles["profile-post-tag-text"]}>
+                                  {tag}
+                                </div>
+                              </div>
+                            ) : (<div></div>)
+                          )
                       })
                     ) : (
                       <div></div>
