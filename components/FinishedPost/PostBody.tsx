@@ -1,5 +1,4 @@
 import { useContext } from "react";
-import { DimensionsContext } from "../../contexts/dimensions-context";
 import { Introduction } from "./Introduction";
 import { PostContent } from "./PostContent";
 import postBodyStyles from "../../styles/postbody.module.scss";

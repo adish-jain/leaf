@@ -79,10 +79,6 @@ export default function PublishedCodeStep(props: {
 }
 
 function calculateRootMargin(isMobile: boolean) {
-  // let { pageYOffset, height } = this.props;
-  // if (pageYOffset < height / 2) {
-  //   return "0% 0% 0% 0%";
-  // }
   if (isMobile) {
     return "-39% 0% -60% 0%";
   } else {

@@ -53,7 +53,8 @@ function CodeSteps(props: {
   scrollSpeed: number;
 }) {
   const { codeSteps, startIndex, scrollSpeed } = props;
-
+  const { width } = useContext(DimensionsContext);
+  const isMobile = width < MOBILE_WIDTH;
   return (
     <div className={codeStepSectionStyles["published-steps"]}>
       <ScrollDown />
@@ -73,8 +74,7 @@ function CodeSteps(props: {
         })}
       </div>
       {/* <ScrollDown /> */}
-      {/* {!isMobile && <BufferDiv />} */}
-      <BufferDiv />
+      {!isMobile && <BufferDiv />}
     </div>
   );
 }
