@@ -2,25 +2,62 @@ import Head from "next/head";
 import Link from "next/link";
 
 import { useLoggedIn, logOut } from "../lib/UseLoggedIn";
-
+import { UserPageProps } from "../typescript/types/app_types";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { GetServerSideProps } from "next";
+import {
+  findUserByDomain,
+  // getProfileImageFromUid,
+  // getUsernameFromUid,
+} from "../lib/userUtils";
+import UserContent from "../components/UserPage";
 
 let indexStyles = require("../styles/index.module.scss");
 
-export default function Pages() {
-  const router = useRouter();
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  // console.log(context.req.headers.host);
+  let leafHost =
+    process.env.LEAF_HOST === "development" ? "localhost:3000" : "getleaf.app";
+  if (process.env.LEAF_HOST === leafHost) {
+    let host = context.req.headers.host || "";
+    if (host !== leafHost) {
+      let userPageProps = await findUserByDomain(host);
+      return {
+        props: {
+          indexPage: false,
+          profileUsername: userPageProps.profileUsername,
+          profileData: userPageProps.profileData,
+          errored: userPageProps.errored,
+          uid: userPageProps.uid,
+          posts: userPageProps.posts,
+        },
+      };
+      // let username = await getUsernameFromUid(userRecord.uid);
+    }
+  }
+  return {
+    props: {}, // will be passed to the page component as props
+  };
+};
 
+type IndexProps = {
+  indexPage: boolean;
+} & UserPageProps;
+
+export default function Pages(props: IndexProps) {
   const { authenticated, error, loading } = useLoggedIn();
-
+  const {
+    indexPage,
+    profileUsername,
+    profileData,
+    errored,
+    uid,
+    posts,
+  } = props;
   if (authenticated) {
     window.location.href = "/landing";
   }
-
-  const goToIndex = (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-    router.push("/");
-  };
 
   return (
     <div className={indexStyles["container"]}>
@@ -37,18 +74,41 @@ export default function Pages() {
           }}
         />
       </Head>
-      <main className={indexStyles["MainWrapper"]}>
-        <Header goToIndex={goToIndex} />
-        <HeaderDropDown goToIndex={goToIndex} />
-        <Stripe1 />
-        <Title />
-        <Row1 />
-        <Row2 />
-        <Row3 />
-        <Row4 />
-        <Footer goToIndex={goToIndex} />
-      </main>
+      {indexPage ? (
+        <IndexPage />
+      ) : (
+        <UserContent
+          profileData={profileData}
+          errored={errored}
+          posts={posts}
+          uid={uid}
+          profileUsername={profileUsername}
+        />
+      )}
     </div>
+  );
+}
+
+function IndexPage() {
+  const router = useRouter();
+
+  const goToIndex = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    router.push("/");
+  };
+
+  return (
+    <main className={indexStyles["MainWrapper"]}>
+      <Header goToIndex={goToIndex} />
+      <HeaderDropDown goToIndex={goToIndex} />
+      <Stripe1 />
+      <Title />
+      <Row1 />
+      <Row2 />
+      <Row3 />
+      <Row4 />
+      <Footer goToIndex={goToIndex} />
+    </main>
   );
 }
 

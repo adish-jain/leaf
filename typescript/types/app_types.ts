@@ -3,6 +3,7 @@ import { ProgrammingLanguage } from "../types/language_types";
 import { Node } from "slate";
 import { SetStateAction } from "react";
 import { contentBlock, fileObject } from "./frontend/postTypes";
+import admin from "firebase-admin";
 
 export const WAIT_INTERVAL = 5000;
 
@@ -32,6 +33,14 @@ export type Lines = {
   end: number;
 };
 
+export type UserPageProps = {
+  profileUsername: string;
+  profileData: any;
+  errored: boolean;
+  uid: string;
+  posts: Post[];
+};
+
 export type FinishedPostProps = {
   title: string;
   postContent: contentBlock[];
@@ -45,6 +54,11 @@ export type FinishedPostProps = {
   updatePreviewMode?: (previewMode: boolean) => void;
   publishedAtSeconds: number;
   publishedView: boolean;
+};
+
+export type GetUserType = {
+  uid: string;
+  userRecord: admin.auth.UserRecord | undefined;
 };
 
 export type Post = {

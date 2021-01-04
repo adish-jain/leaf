@@ -2,18 +2,14 @@ import { initFirebaseAdmin, initFirebase } from "./initFirebase";
 import fetch from "isomorphic-fetch";
 import { NextApiRequest, NextApiResponse } from "next";
 import { setTokenCookies, removeTokenCookies } from "./cookieUtils";
-import { timeStamp } from "../typescript/types/app_types";
-import { Post } from "../typescript/types/app_types";
+import { timeStamp, UserPageProps } from "../typescript/types/app_types";
+import { Post, GetUserType } from "../typescript/types/app_types";
 import { firestore } from "firebase";
-
 const admin = require("firebase-admin");
+
+const dayjs = require("dayjs");
 initFirebaseAdmin();
 let db: firestore.Firestore = admin.firestore();
-
-type GetUserType = {
-  uid: string;
-  userRecord: any;
-};
 
 // Returns the userRecord based on session cookie
 // updates the response cookies if expired token
@@ -56,6 +52,14 @@ export async function getUser(
         };
     }
   }
+}
+
+export async function getUserFromUid(uid: string): Promise<GetUserType> {
+  let userRecord = await admin.auth().getUser(uid);
+  return {
+    uid,
+    userRecord,
+  };
 }
 
 const refreshTokenURL =
@@ -216,10 +220,36 @@ export async function getUserPosts(uid: string): Promise<landingPagePosts[]> {
     });
 }
 
-export async function getProfileData(uid: string) {
+export async function getProfileData(
+  uid: string
+): Promise<{
+  about: string;
+  github: string;
+  profileImage: string;
+  twitter: string;
+  website: string;
+}> {
   let userDataReference = await db.collection("users").doc(uid).get();
   let userData = await userDataReference.data();
-  return userData;
+  if (userData) {
+    let result = {
+      about: userData.about,
+      github: userData.github,
+      profileImage: userData.profileImage,
+      twitter: userData.twitter,
+      website: userData.website,
+    };
+    return result;
+  } else {
+    let result = {
+      about: "",
+      github: "",
+      profileImage: "",
+      twitter: "",
+      website: "",
+    };
+    return result;
+  }
 }
 
 export async function getArticlesFromUid(uid: string) {
@@ -409,4 +439,52 @@ export async function isAdmin(req: NextApiRequest, res: NextApiResponse) {
     });
   });
   return isAdmin;
+}
+
+export async function findUserByDomain(host: string): Promise<UserPageProps> {
+  let userInfo: UserPageProps = await db
+    .collection("domains")
+    .where("host", "==", host)
+    .get()
+    .then(async function (snapshot) {
+      let data = snapshot.docs[0].data();
+      let uid = data.uid;
+      let username = await getUsernameFromUid(uid);
+      let profileData = await getProfileData(uid);
+      let publishedPosts: Post[] = [];
+      let posts = await getUserPosts(uid);
+      for (let i = 0; i < posts.length; i++) {
+        let currentPost = posts[i];
+        publishedPosts.push({
+          title: currentPost.title,
+          postId: currentPost.postId,
+          postURL: "/" + username + "/" + currentPost.postId,
+          publishedAt: dayjs(currentPost.publishedAt).format("MMMM D YYYY"),
+          tags:
+            currentPost.tags !== undefined ? currentPost.tags.join(",") : [],
+          likes: 0,
+          username: username,
+          profileImage: profileData.profileImage,
+        });
+      }
+      let result: UserPageProps = {
+        profileUsername: username,
+        profileData: profileData,
+        uid: uid,
+        posts: publishedPosts,
+        errored: false,
+      };
+      return result;
+    })
+    .catch((error) => {
+      // console.log(error);
+      return {
+        profileUsername: "username",
+        profileData: null,
+        uid: "uid",
+        posts: [],
+        errored: true,
+      };
+    });
+  return userInfo;
 }

@@ -7,6 +7,7 @@ import {
   getUsernameFromUid,
   getUidFromUsername,
   getProfileData,
+  findUserByDomain,
 } from "../../lib/userUtils";
 import { getDraftDataFromPostId } from "../../lib/postUtils";
 import DefaultErrorPage from "next/error";
@@ -14,6 +15,7 @@ import { useRouter } from "next/router";
 import ErroredPage from "../404";
 import { File, Step, timeStamp } from "../../typescript/types/app_types";
 import { ContentBlock } from "draft-js";
+import { GetServerSideProps } from "next";
 import {
   contentBlock,
   fileObject,
@@ -25,6 +27,45 @@ export async function getStaticPaths() {
     fallback: true, // See the "fallback" section below
   };
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  // console.log(context.req.headers.host);
+  if (process.env.NODE_ENV === "development") {
+    let host = context.req.headers.host || "";
+    if (host !== "localhost:3000") {
+      let userPageProps = await findUserByDomain(host);
+      return {
+        props: {
+          indexPage: false,
+          profileUsername: userPageProps.profileUsername,
+          profileData: userPageProps.profileData,
+          errored: userPageProps.errored,
+          uid: userPageProps.uid,
+          posts: userPageProps.posts,
+        },
+      };
+
+      return {
+        revalidate: 1,
+        props: {
+          title,
+          postContent: draftContent,
+          tags,
+          likes,
+          files,
+          errored,
+          username,
+          profileImage,
+          publishedAtSeconds: publishedAt?._seconds || 0,
+        },
+      };
+      // let username = await getUsernameFromUid(userRecord.uid);
+    }
+  }
+  return {
+    props: {}, // will be passed to the page component as props
+  };
+};
 
 export const getStaticProps: GetStaticProps = async (context) => {
   if (context === undefined || context.params === undefined) {
