@@ -78,7 +78,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       }
     }
 
-    db.collection("users").doc(signedin_user.uid).set({
+    await db.collection("users").doc(signedin_user.uid).set({
       email: signedin_user.email,
       username: username,
       method: "google",

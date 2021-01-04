@@ -22,6 +22,7 @@ export default function Login() {
   const [errorMessage, updateErrorMessage] = useState("");
   const [errored, updateErrored] = useState(false);
   const [normalLogin, changeNormalLogin] = useState(false);
+  const [googleLoading, changeGoogleLoading] = useState(false);
 
   const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateErrored(false);
@@ -183,8 +184,10 @@ export default function Login() {
                   handleChangeEmail={handleChangeEmail}
                   errored={errored}
                   loggingIn={loggingIn}
+                  googleLoading={googleLoading}
                   errorMessage={errorMessage}
                   handleLoginClick={handleLoginClick}
+                  changeGoogleLoading={changeGoogleLoading}
                   handleChangePassword={handleChangePassword}
                   handleForgotPassword={handleForgotPassword}
                   updateErrorMessage={updateErrorMessage}
@@ -246,13 +249,16 @@ function LoginScreen(props: {
   handleForgotPassword: (e: React.MouseEvent<HTMLElement>) => void;
   updateErrorMessage: React.Dispatch<React.SetStateAction<string>>;
   updateErrored: React.Dispatch<React.SetStateAction<boolean>>;
+  changeGoogleLoading: React.Dispatch<React.SetStateAction<boolean>>;
   errored: boolean;
+  googleLoading: boolean;
   loggingIn: boolean;
   normalLogin: boolean;
   errorMessage: string;
   router: any;
 }) {
   const responseGoogle = (response: any) => {
+    props.changeGoogleLoading(true);
     if (response.error) {
       if (response.error === "idpiframe_initialization_failed") {
         props.updateErrorMessage(
@@ -274,6 +280,7 @@ function LoginScreen(props: {
       body: JSON.stringify(data),
     })
       .then((res) => {
+        props.changeGoogleLoading(false);
         if (res.status === 200) {
           props.router.push("/landing");
         }
@@ -324,7 +331,7 @@ function LoginScreen(props: {
           className={loginStyles["LoginButton"]}
           onClick={props.handleLoginClick}
         >
-          {props.loggingIn ? "Logging In..." : "Login"}
+          {(props.loggingIn || props.googleLoading) ? "Logging In..." : "Login"}
         </button>
         <div
           className={loginStyles["ForgotPassword"]}

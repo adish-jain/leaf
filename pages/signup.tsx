@@ -24,6 +24,7 @@ export default function SignUp() {
   const [errored, updateErrored] = useState(false);
   const [signingUp, changeSigningUp] = useState(false);
   const [normalSignup, changeNormalSignup] = useState(false);
+  const [googleLoading, changeGoogleLoading] = useState(false);
 
   const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateErrored(false);
@@ -128,6 +129,7 @@ export default function SignUp() {
   };
 
   const responseGoogle = (response: any) => {
+    changeGoogleLoading(true);
     if (response.error) {
       if (response.error === "idpiframe_initialization_failed") {
         updateErrorMsg(
@@ -149,6 +151,7 @@ export default function SignUp() {
       body: JSON.stringify(data),
     })
       .then((res) => {
+        changeGoogleLoading(false);
         if (res.status === 200) {
           updateErrored(false);
           router.push("/landing");
@@ -247,7 +250,7 @@ export default function SignUp() {
                     className={loginStyles["LoginButton"]}
                     onClick={handleClick}
                   >
-                    {signingUp ? "Signing Up..." : "Signup"}
+                    {(signingUp || googleLoading )? "Signing Up..." : "Signup"}
                   </button>
                 </div>
               </div>
