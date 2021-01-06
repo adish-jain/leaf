@@ -7,37 +7,39 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { GetServerSideProps } from "next";
 import {
-  findUserByDomain,
+  findUserPageByDomain,
   // getProfileImageFromUid,
   // getUsernameFromUid,
 } from "../lib/userUtils";
-import UserContent from "../components/UserPage";
+import UserContent from "../components/UserPage/UserPage";
 
 let indexStyles = require("../styles/index.module.scss");
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   // console.log(context.req.headers.host);
-  let leafHost =
-    process.env.LEAF_HOST === "development" ? "localhost:3000" : "getleaf.app";
-  if (process.env.LEAF_HOST === leafHost) {
-    let host = context.req.headers.host || "";
-    if (host !== leafHost) {
-      let userPageProps = await findUserByDomain(host);
-      return {
-        props: {
-          indexPage: false,
-          profileUsername: userPageProps.profileUsername,
-          profileData: userPageProps.profileData,
-          errored: userPageProps.errored,
-          uid: userPageProps.uid,
-          posts: userPageProps.posts,
-        },
-      };
-      // let username = await getUsernameFromUid(userRecord.uid);
-    }
+  let host = context.req.headers.host || "";
+
+  if (host === "getleaf.app" || host === "localhost:3000") {
+    let propsObject: IndexProps = {
+      indexPage: true,
+      profileUsername: "",
+      profileData: null,
+      errored: false,
+      uid: "",
+      posts: [],
+      customDomain: false,
+    };
+    return {
+      props: propsObject,
+    };
   }
+  let userProps = await findUserPageByDomain(host);
+  let propsObject: IndexProps = {
+    indexPage: false,
+    ...userProps,
+  };
   return {
-    props: {}, // will be passed to the page component as props
+    props: propsObject,
   };
 };
 
@@ -58,6 +60,7 @@ export default function Pages(props: IndexProps) {
   if (authenticated) {
     window.location.href = "/landing";
   }
+
 
   return (
     <div className={indexStyles["container"]}>

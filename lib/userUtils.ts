@@ -2,9 +2,15 @@ import { initFirebaseAdmin, initFirebase } from "./initFirebase";
 import fetch from "isomorphic-fetch";
 import { NextApiRequest, NextApiResponse } from "next";
 import { setTokenCookies, removeTokenCookies } from "./cookieUtils";
-import { timeStamp, UserPageProps } from "../typescript/types/app_types";
+import { timeStamp } from "../typescript/types/app_types";
 import { Post, GetUserType } from "../typescript/types/app_types";
+import { fireBasePostType } from "../typescript/types/backend/postTypes";
+import {
+  fireBaseUserType,
+  UserPageProps,
+} from "../typescript/types/backend/userTypes";
 import { firestore } from "firebase";
+import { getPostDataFromFirestoreDoc } from "./postUtils";
 const admin = require("firebase-admin");
 
 const dayjs = require("dayjs");
@@ -165,6 +171,22 @@ export async function getUidFromUsername(username: string): Promise<string> {
   return uid;
 }
 
+export async function getUidFromDomain(host: string) {
+  let uid = await db
+    .collection("domains")
+    .where("host", "==", host)
+    .get()
+    .then(async function (snapshot) {
+      let data = snapshot.docs[0].data();
+      let uid: string = data.uid;
+      return uid;
+    })
+    .catch((error) => {
+      return "";
+    });
+  return uid;
+}
+
 export async function getUidFromEmail(email: string): Promise<string> {
   let userRef = db.collection("users").where("email", "==", email);
   let uid = await userRef.get().then(function (userSnapshot: any) {
@@ -174,61 +196,49 @@ export async function getUidFromEmail(email: string): Promise<string> {
   return uid;
 }
 
-type landingPagePosts = {
-  published: boolean;
-  created: timeStamp;
-  title: string;
-  postId: string;
-  publishedAt: timeStamp;
-  id: string;
-  tags: string[];
-};
-
-export async function getUserPosts(uid: string): Promise<landingPagePosts[]> {
+export async function getUserPosts(uid: string): Promise<Post[]> {
   let draftsRef = db
     .collection("users")
     .doc(uid)
     .collection("drafts")
     .orderBy("createdAt");
 
+  (await draftsRef.get()).forEach((child) => {});
+
   return await draftsRef
     .get()
-    .then(function (draftsCollection: any) {
-      let results: landingPagePosts[] = [];
-      draftsCollection.forEach(function (result: any) {
-        let resultsJSON = result.data();
-
-        //published posts have published set to true, so we include these
-        if (resultsJSON.published) {
-          resultsJSON.id = result.id;
-          resultsJSON.publishedAt = resultsJSON.publishedAt.toDate();
-          results.push(resultsJSON);
+    .then(async function (draftsCollection) {
+      let results: Post[] = [];
+      const gatherPromise: Promise<void>[] = [];
+      draftsCollection.forEach(async function (fireStoreDoc) {
+        async function getResult() {
+          let resultsJSON = fireStoreDoc.data() as fireBasePostType;
+          //published posts have published set to true, so we include these
+          if (resultsJSON.published) {
+            let postResult = await getPostDataFromFirestoreDoc(fireStoreDoc);
+            results.push(postResult);
+          }
         }
+        gatherPromise.push(getResult());
       });
-      results.sort(function (a: landingPagePosts, b: landingPagePosts) {
+      await Promise.all(gatherPromise);
+      results.sort(function (a, b) {
         var keyA = a.publishedAt,
           keyB = b.publishedAt;
         if (keyA > keyB) return -1;
         if (keyA < keyB) return 1;
         return 0;
       });
+
       return results;
     })
-    .catch(function (error: any) {
+    .catch(function (error) {
       console.log(error);
       return [];
     });
 }
 
-export async function getProfileData(
-  uid: string
-): Promise<{
-  about: string;
-  github: string;
-  profileImage: string;
-  twitter: string;
-  website: string;
-}> {
+export async function getProfileData(uid: string): Promise<fireBaseUserType> {
   let userDataReference = await db.collection("users").doc(uid).get();
   let userData = await userDataReference.data();
   if (userData) {
@@ -238,6 +248,7 @@ export async function getProfileData(
       profileImage: userData.profileImage,
       twitter: userData.twitter,
       website: userData.website,
+      email: userData.email,
     };
     return result;
   } else {
@@ -247,6 +258,7 @@ export async function getProfileData(
       profileImage: "",
       twitter: "",
       website: "",
+      email: "",
     };
     return result;
   }
@@ -441,7 +453,9 @@ export async function isAdmin(req: NextApiRequest, res: NextApiResponse) {
   return isAdmin;
 }
 
-export async function findUserByDomain(host: string): Promise<UserPageProps> {
+export async function findUserPageByDomain(
+  host: string
+): Promise<UserPageProps> {
   let userInfo: UserPageProps = await db
     .collection("domains")
     .where("host", "==", host)
@@ -451,28 +465,14 @@ export async function findUserByDomain(host: string): Promise<UserPageProps> {
       let uid = data.uid;
       let username = await getUsernameFromUid(uid);
       let profileData = await getProfileData(uid);
-      let publishedPosts: Post[] = [];
       let posts = await getUserPosts(uid);
-      for (let i = 0; i < posts.length; i++) {
-        let currentPost = posts[i];
-        publishedPosts.push({
-          title: currentPost.title,
-          postId: currentPost.postId,
-          postURL: "/" + username + "/" + currentPost.postId,
-          publishedAt: dayjs(currentPost.publishedAt).format("MMMM D YYYY"),
-          tags:
-            currentPost.tags !== undefined ? currentPost.tags.join(",") : [],
-          likes: 0,
-          username: username,
-          profileImage: profileData.profileImage,
-        });
-      }
       let result: UserPageProps = {
         profileUsername: username,
         profileData: profileData,
         uid: uid,
-        posts: publishedPosts,
+        posts: posts,
         errored: false,
+        customDomain: true,
       };
       return result;
     })
@@ -480,11 +480,34 @@ export async function findUserByDomain(host: string): Promise<UserPageProps> {
       // console.log(error);
       return {
         profileUsername: "username",
-        profileData: null,
+        profileData: {
+          email: "",
+        },
         uid: "uid",
         posts: [],
         errored: true,
+        customDomain: false,
       };
     });
   return userInfo;
+}
+
+export async function getUserDataFromUsername(
+  username: string
+): Promise<UserPageProps> {
+  const uid = await getUidFromUsername(username);
+  const [posts, profileData] = await Promise.all([
+    getUserPosts(uid),
+    getProfileData(uid),
+  ]);
+
+  let result: UserPageProps = {
+    profileUsername: username,
+    profileData: profileData,
+    errored: false,
+    uid: uid,
+    posts: posts,
+    customDomain: false,
+  };
+  return result;
 }

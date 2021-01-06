@@ -27,7 +27,7 @@ type DraftContentProps = {
   draftContent: contentBlock[];
   draftTitle: string;
   onTitleChange: (updatedtitle: string) => Promise<void>;
-  updateShowTags: any;
+  updateShowTags: (showTags: boolean) => void;
 };
 
 const PublishingHeader = (props: {

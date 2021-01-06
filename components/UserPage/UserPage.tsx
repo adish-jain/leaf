@@ -1,20 +1,15 @@
 import { useEffect, useState } from "react";
-import { useLoggedIn } from "../lib/UseLoggedIn";
-import { useUserInfo } from "../lib/useUserInfo";
-import { Post } from "../typescript/types/app_types";
-import profileStyles from "../styles/profile.module.scss";
+import { useLoggedIn } from "../../lib/UseLoggedIn";
+import { useUserInfo } from "../../lib/useUserInfo";
+import { UserPageProps } from "../../typescript/types/backend/userTypes";
+import profileStyles from "../../styles/profile.module.scss";
 import { AnimatePresence, motion } from "framer-motion";
-import imageStyles from "../styles/imageview.module.scss";
+import imageStyles from "../../styles/imageview.module.scss";
 import TextareaAutosize from "react-autosize-textarea/lib";
 import { useRouter } from "next/router";
-
-type UserPageProps = {
-  profileUsername: string;
-  profileData: any;
-  errored: boolean;
-  uid: string;
-  posts: Post[];
-};
+import { DisplayPosts } from "./DisplayPosts";
+import { ProfilePageContext } from "../../contexts/profilepage-context";
+import UserPage from "../../pages/[username]";
 
 export default function UserContent(props: UserPageProps) {
   const [editingBio, toggleEditingBio] = useState(false);
@@ -35,201 +30,151 @@ export default function UserContent(props: UserPageProps) {
     saveNewProfile,
   } = useUserInfo(authenticated);
 
+  const { profileUsername, customDomain, profileData, posts } = props;
   useEffect(() => {
-    toggleCanEditBio(username === props.profileUsername);
+    toggleCanEditBio(username === profileUsername);
   }, [username, props.profileUsername]);
 
   useEffect(() => {
     if (props.profileData !== undefined) {
-      props.profileData.about !== undefined
-        ? changeAbout(props.profileData.about)
-        : changeAbout(props.profileUsername + " hasn't written a bio");
-      props.profileData.twitter !== undefined
-        ? changeTwitter(props.profileData.twitter)
+      profileData.about !== undefined
+        ? changeAbout(profileData.about)
+        : changeAbout(profileUsername + " hasn't written a bio");
+      profileData.twitter !== undefined
+        ? changeTwitter(profileData.twitter)
         : null;
-      props.profileData.github !== undefined
-        ? changeGithub(props.profileData.github)
+      profileData.github !== undefined
+        ? changeGithub(profileData.github)
         : null;
-      props.profileData.website !== undefined
-        ? changeWebsite(props.profileData.website)
+      profileData.website !== undefined
+        ? changeWebsite(profileData.website)
         : null;
-      props.profileData.profileImage !== undefined
-        ? changeProfileImage(props.profileData.profileImage)
+      profileData.profileImage !== undefined
+        ? changeProfileImage(profileData.profileImage)
         : "";
     }
   }, [props.profileData]);
 
   return (
-    <div className="container">
-      <h1 className={profileStyles["profile-header"]}></h1>
-      <div className={profileStyles["profile-content"]}>
-        <div className={profileStyles["profile-left-pane"]}>
-          {canEditBio ? (
-            <AnimatePresence>
-              <motion.div
-                initial={{
-                  opacity: 0,
-                }}
-                animate={{
-                  opacity: 1,
-                }}
-                exit={{
-                  opacity: 0,
-                }}
-                transition={{
-                  duration: 0.4,
-                }}
-              >
-                <EditableProfileImage
-                  profileImage={profileImage}
-                  profileUsername={props.profileUsername}
-                  uploadFailed={uploadFailed}
-                  changeUploadFailed={changeUploadFailed}
-                  changeProfileImage={changeProfileImage}
-                />
-              </motion.div>
-            </AnimatePresence>
-          ) : (
-            <AnimatePresence>
-              <motion.div
-                initial={{
-                  opacity: 0,
-                }}
-                animate={{
-                  opacity: 1,
-                }}
-                exit={{
-                  opacity: 0,
-                }}
-                transition={{
-                  duration: 0.4,
-                }}
-              >
-                <UneditableProfileImage
-                  profileImage={profileImage}
-                  profileUsername={props.profileUsername}
-                />
-              </motion.div>
-            </AnimatePresence>
-          )}
-          <div className={profileStyles["profile-name"]}>
-            {props.profileUsername}
-          </div>
-          <AnimatePresence>
-            <motion.div
-              initial={{
-                opacity: 0,
-              }}
-              animate={{
-                opacity: 1,
-              }}
-              exit={{
-                opacity: 0,
-              }}
-              transition={{
-                duration: 0.4,
-              }}
-            >
-              <About
-                editingBio={editingBio}
-                canEditBio={canEditBio}
-                about={about}
-                twitter={twitter}
-                github={github}
-                website={website}
-                changeAbout={changeAbout}
-                changeTwitter={changeTwitter}
-                changeGithub={changeGithub}
-                changeWebsite={changeWebsite}
-                toggleEditingBio={toggleEditingBio}
-                saveNewProfile={saveNewProfile}
-              />
-            </motion.div>
-          </AnimatePresence>
-        </div>
-        <div className={profileStyles["profile-right-pane"]}>
-          {
-            <AnimatePresence>
-              <motion.div
-                initial={{
-                  opacity: 0,
-                }}
-                animate={{
-                  opacity: 1,
-                }}
-                exit={{
-                  opacity: 0,
-                }}
-                transition={{
-                  duration: 0.4,
-                }}
-              >
-                <DisplayPosts
-                  posts={props.posts}
-                  username={props.profileUsername}
-                />
-              </motion.div>
-            </AnimatePresence>
-          }
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function DisplayPosts(props: { posts: Post[]; username: string }) {
-  try {
-    const router = useRouter();
-    return (
-      <div>
-        {props.posts === undefined || props.posts.length === 0 ? (
-          <div className={profileStyles["profile-no-posts"]}>
-            {props.username} hasn't published anything yet
-          </div>
-        ) : (
-          <div>
-            {Array.from(props.posts).map((post: Post) => {
-              const tags =
-                post["tags"] === null ? null : String(post["tags"]).split(",");
-              return (
-                <div
-                  className={profileStyles["profile-post"]}
-                  onClick={() => router.push(post["postURL"])}
+    <ProfilePageContext.Provider
+      value={{
+        username: username,
+        customDomain: customDomain,
+      }}
+    >
+      <div className="container">
+        <h1 className={profileStyles["profile-header"]}></h1>
+        <div className={profileStyles["profile-content"]}>
+          <div className={profileStyles["profile-left-pane"]}>
+            {canEditBio ? (
+              <AnimatePresence>
+                <motion.div
+                  initial={{
+                    opacity: 0,
+                  }}
+                  animate={{
+                    opacity: 1,
+                  }}
+                  exit={{
+                    opacity: 0,
+                  }}
+                  transition={{
+                    duration: 0.4,
+                  }}
                 >
-                  <div className={profileStyles["profile-post-title"]}>
-                    {post["title"]}
-                  </div>
-                  <div className={profileStyles["profile-post-date"]}>
-                    {post["publishedAt"]}
-                  </div>
-                  <div className={profileStyles["profile-post-tags-author"]}>
-                    {tags !== null ? (
-                      tags.map((tag: string) => {
-                        return (
-                          <div className={profileStyles["profile-post-tag"]}>
-                            {tag}
-                          </div>
-                        );
-                      })
-                    ) : (
-                      <div></div>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
+                  <EditableProfileImage
+                    profileImage={profileImage}
+                    profileUsername={props.profileUsername}
+                    uploadFailed={uploadFailed}
+                    changeUploadFailed={changeUploadFailed}
+                    changeProfileImage={changeProfileImage}
+                  />
+                </motion.div>
+              </AnimatePresence>
+            ) : (
+              <AnimatePresence>
+                <motion.div
+                  initial={{
+                    opacity: 0,
+                  }}
+                  animate={{
+                    opacity: 1,
+                  }}
+                  exit={{
+                    opacity: 0,
+                  }}
+                  transition={{
+                    duration: 0.4,
+                  }}
+                >
+                  <UneditableProfileImage
+                    profileImage={profileImage}
+                    profileUsername={props.profileUsername}
+                  />
+                </motion.div>
+              </AnimatePresence>
+            )}
+            <div className={profileStyles["profile-name"]}>
+              {props.profileUsername}
+            </div>
+            <AnimatePresence>
+              <motion.div
+                initial={{
+                  opacity: 0,
+                }}
+                animate={{
+                  opacity: 1,
+                }}
+                exit={{
+                  opacity: 0,
+                }}
+                transition={{
+                  duration: 0.4,
+                }}
+              >
+                <About
+                  editingBio={editingBio}
+                  canEditBio={canEditBio}
+                  about={about}
+                  twitter={twitter}
+                  github={github}
+                  website={website}
+                  changeAbout={changeAbout}
+                  changeTwitter={changeTwitter}
+                  changeGithub={changeGithub}
+                  changeWebsite={changeWebsite}
+                  toggleEditingBio={toggleEditingBio}
+                  saveNewProfile={saveNewProfile}
+                />
+              </motion.div>
+            </AnimatePresence>
           </div>
-        )}
+          <div className={profileStyles["profile-right-pane"]}>
+            {
+              <AnimatePresence>
+                <motion.div
+                  initial={{
+                    opacity: 0,
+                  }}
+                  animate={{
+                    opacity: 1,
+                  }}
+                  exit={{
+                    opacity: 0,
+                  }}
+                  transition={{
+                    duration: 0.4,
+                  }}
+                >
+                  <DisplayPosts posts={props.posts} />
+                </motion.div>
+              </AnimatePresence>
+            }
+          </div>
+        </div>
       </div>
-    );
-  } catch {
-    console.log("error fetching posts");
-    return (
-      <div>
-        <h3>Error Fetching Posts</h3>
-      </div>
-    );
-  }
+    </ProfilePageContext.Provider>
+  );
 }
 
 function EditableProfileImage(props: {

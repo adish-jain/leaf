@@ -218,7 +218,7 @@ const MarkdownPreviewExample = (props: {
       }),
       body: JSON.stringify(data),
     })
-      .then(async (res: any) => {
+      .then(async (res) => {
         let resJSON = await res.json();
         let newUrl = resJSON.url;
 
@@ -235,7 +235,7 @@ const MarkdownPreviewExample = (props: {
           }
         );
       })
-      .catch((error: any) => {
+      .catch((error) => {
         console.log(error);
         console.log("upload failed.");
       });

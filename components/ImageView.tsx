@@ -101,7 +101,7 @@ export default function ImageView(props: ImageViewProps) {
         }),
         body: JSON.stringify(data),
       })
-        .then(async (res: any) => {
+        .then(async (res: Response) => {
           let resJSON = await res.json();
           let newUrl = resJSON.url;
           updateSlateSectionToBackend(
@@ -112,7 +112,7 @@ export default function ImageView(props: ImageViewProps) {
             newUrl
           );
         })
-        .catch((error: any) => {
+        .catch((error) => {
           console.log(error);
           console.log("upload failed.");
         });
@@ -188,12 +188,10 @@ export default function ImageView(props: ImageViewProps) {
               // overflow: "hidden",
               paddingBottom: "8px",
             }}
-            initial={
-              {
-                height: 0,
-                opacity: 0,
-              } as any
-            }
+            initial={{
+              height: 0,
+              opacity: 0,
+            }}
             animate={{ isOpen: show, height: "auto", opacity: 1 } as any}
             exit={{
               height: 0,

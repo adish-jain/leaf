@@ -10,7 +10,7 @@ import { ToolbarContext } from "../contexts/toolbar-context";
 import { saveStatusEnum } from "../typescript/enums/app_enums";
 
 type DraftHeaderProps = {
-  updateShowTags: (value: SetStateAction<boolean>) => void;
+  updateShowTags: (value: boolean) => void;
 };
 
 type LandingHeaderProps = {
@@ -97,7 +97,7 @@ function PublishButtonChoice() {
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify({ requestedAPI: "publishPost", draftId: draftId }),
     })
-      .then(async (res: any) => {
+      .then(async (res) => {
         let resJson = await res.json();
         let newUrl = resJson.newURL;
         if (newUrl === "unverified") {
@@ -107,7 +107,7 @@ function PublishButtonChoice() {
         }
         // Router.push(newUrl);
       })
-      .catch(function (err: any) {
+      .catch(function (err) {
         console.log(err);
       });
   }

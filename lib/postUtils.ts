@@ -5,8 +5,15 @@ import {
   draftFrontendRepresentation,
   // publishedPostFrontendRepresentation,
 } from "../typescript/types/frontend/postTypes";
-import { draftMetaData } from "../typescript/types/frontend/postTypes";
+import {
+  draftMetaData,
+  PostPageProps,
+} from "../typescript/types/frontend/postTypes";
+import { EMPTY_TIMESTAMP } from "../typescript/types/app_types";
+import { fireBasePostType } from "../typescript/types/backend/postTypes";
+import { ParsedUrlQuery } from "querystring";
 import { firestore } from "firebase";
+import { GetServerSidePropsContext } from "next";
 
 const admin = require("firebase-admin");
 let db: firestore.Firestore = admin.firestore();
@@ -16,26 +23,11 @@ import {
   getUidFromUsername,
   getUsernameFromUid,
   getProfileImageFromUid,
+  getProfileData,
+  getUidFromDomain,
 } from "./userUtils";
 import { timeStamp, Post } from "../typescript/types/app_types";
 import ErroredPage from "../pages/404";
-export async function adjustStepOrder(
-  uid: string,
-  draftId: string,
-  stepsToChange: any
-) {
-  stepsToChange.forEach((element: { id: any; lines: any; text: any }) => {
-    let stepId = element["id"];
-    db.collection("users")
-      .doc(uid)
-      .collection("drafts")
-      .doc(draftId)
-      .collection("steps")
-      .doc(stepId)
-      .update({ order: admin.firestore.FieldValue.increment(-1) });
-  });
-  return;
-}
 
 export async function getDraftMetadata(
   uid: string,
@@ -190,39 +182,6 @@ export async function getDraftContent(
     });
 }
 
-export async function getUserStepsForDraft(uid: string, draftId: string) {
-  let stepsRef = db
-    .collection("users")
-    .doc(uid)
-    .collection("drafts")
-    .doc(draftId)
-    .collection("steps")
-    .orderBy("order");
-
-  return await stepsRef
-    .get()
-    .then(function (stepsCollection: any) {
-      let results: any[] = [];
-      stepsCollection.forEach(function (result: any) {
-        let resultsJSON = result.data();
-        resultsJSON.id = result.id;
-        results.push({
-          text: resultsJSON.text,
-          lines: resultsJSON.lines,
-          fileName: resultsJSON.fileName,
-          id: resultsJSON.id,
-          fileId: resultsJSON.fileId,
-          imageURL: resultsJSON.imageURL,
-        });
-      });
-      return results;
-    })
-    .catch(function (error: any) {
-      console.log(error);
-      return [];
-    });
-}
-
 export async function getDraftDataFromPostId(username: string, postId: string) {
   let uid = await getUidFromUsername(username);
   let draftId = await db
@@ -231,7 +190,7 @@ export async function getDraftDataFromPostId(username: string, postId: string) {
     .collection("drafts")
     .where("postId", "==", postId)
     .get()
-    .then(function (postsSnapshot: any) {
+    .then(function (postsSnapshot) {
       let myPostRef = postsSnapshot.docs[0].ref;
       return myPostRef.id;
     });
@@ -240,6 +199,60 @@ export async function getDraftDataFromPostId(username: string, postId: string) {
 
   // merge steps with main draft data
   return { ...otherDraftData };
+}
+
+export async function getPostDataFromPostIdAndDomain(
+  host: string,
+  postId: string
+): Promise<PostPageProps> {
+  let getPostDocAndDraftID = db
+    .collectionGroup("drafts")
+    .where("postId", "==", postId)
+    .get()
+    .then(function (postsSnapshot) {
+      let myPostRef = postsSnapshot.docs[0];
+      let draftId = postsSnapshot.docs[0].id;
+      return {
+        postDoc: myPostRef,
+        draftId: draftId,
+      };
+    });
+
+  const [uid, { postDoc, draftId }] = await Promise.all([
+    getUidFromDomain(host),
+    getPostDocAndDraftID,
+  ]);
+
+  const [postMetaData, postData, profileImage] = await Promise.all([
+    getPostDataFromFirestoreDoc(postDoc),
+    getAllDraftDataHandler(uid, draftId),
+    getProfileImageFromUid(uid),
+  ]);
+
+  const {
+    title,
+    draftContent: postContent,
+    likes,
+    tags,
+    errored,
+    files,
+    username,
+    publishedAt,
+  } = postData;
+
+  const result: PostPageProps = {
+    postContent,
+    title,
+    tags,
+    likes: likes ? likes : 0,
+    errored,
+    files,
+    username,
+    profileImage,
+    publishedAtSeconds: publishedAt?._seconds || 0,
+  };
+
+  return result;
 }
 
 export async function getDraftImages(uid: string, draftId: string) {
@@ -278,40 +291,162 @@ export async function getAllPostsHandler() {
     .collectionGroup("drafts")
     .where("published", "==", true)
     .get();
-  const arr: any[] = [];
-  activeRef.forEach((child: any) => arr.push(child));
+  const arr: firestore.QueryDocumentSnapshot<firestore.DocumentData>[] = [];
+  activeRef.forEach((child) => arr.push(child));
   var results: Post[] = [];
-  for (const doc of arr) {
-    let username = await doc.ref.parent.parent
-      .get()
-      .then((docSnapshot: any) => {
-        return docSnapshot.data().username;
+  try {
+    for (const doc of arr) {
+      let username = await doc.ref.parent.parent!.get().then((docSnapshot) => {
+        return docSnapshot.data()!.username;
       });
-    let profileImage = await doc.ref.parent.parent
-      .get()
-      .then((docSnapshot: any) => {
-        return docSnapshot.data().profileImage;
+      let profileImage = await doc.ref.parent
+        .parent!.get()
+        .then((docSnapshot) => {
+          return docSnapshot.data()!.profileImage;
+        });
+      let resultsJSON = doc.data();
+      results.push({
+        postId: resultsJSON.postId,
+        title: resultsJSON.title,
+        publishedAt: resultsJSON.publishedAt.toDate(),
+        tags: resultsJSON.tags,
+        likes: resultsJSON.likes,
+        username: username,
+        profileImage: profileImage,
+        createdAt: resultsJSON.createdAt,
+        firebaseId: resultsJSON.id,
       });
-    let resultsJSON = doc.data();
-    let postURL = "/" + username + "/" + resultsJSON.postId;
-    results.push({
-      postId: resultsJSON.postId,
-      postURL: postURL,
-      title: resultsJSON.title,
-      publishedAt: resultsJSON.publishedAt.toDate(),
-      tags: resultsJSON.tags,
-      likes: resultsJSON.likes,
-      username: username,
-      profileImage: profileImage,
+    }
+    // sort by published date
+    results.sort(function (a: Post, b: Post) {
+      var keyA = a.publishedAt,
+        keyB = b.publishedAt;
+      if (keyA < keyB) return -1;
+      if (keyA > keyB) return 1;
+      return 0;
     });
+    return results;
+  } catch (err) {
+    console.log(err);
+    return [];
   }
-  // sort by published date
-  results.sort(function (a: Post, b: Post) {
-    var keyA = a.publishedAt,
-      keyB = b.publishedAt;
-    if (keyA < keyB) return -1;
-    if (keyA > keyB) return 1;
-    return 0;
-  });
-  return results;
+}
+
+export async function handlePostIdDevelopment(
+  host: string,
+  context: GetServerSidePropsContext<ParsedUrlQuery>
+): Promise<PostPageProps> {
+  const erroredProps = {
+    postContent: [],
+    title: "",
+    tags: [],
+    likes: 0,
+    errored: true,
+    files: [],
+    username: "",
+    profileImage: "",
+    publishedAtSeconds: 0,
+  };
+
+  if (host === "localhost:3000") {
+    // deliver post data
+    let username = (context.params?.username || "") as string;
+    let postId = (context.params?.postId || "") as string;
+
+    try {
+      let postData = await getDraftDataFromPostId(username, postId);
+      let uid = await getUidFromUsername(username);
+      let profileData = await getProfileData(uid);
+      let files = postData.files;
+      let title = postData.title;
+      let tags = postData.tags;
+      let likes = postData.likes || 0;
+      let postContent = postData.draftContent;
+      let publishedAt = postData.publishedAt;
+      let errored = postData.errored;
+      let profileImage = profileData!.profileImage;
+
+      // replace undefineds with null to prevent nextJS errors
+      for (let i = 0; i < postContent.length; i++) {
+        if (
+          postContent[i].lines === undefined ||
+          postContent[i].lines === null
+        ) {
+          //@ts-ignore
+          postContent[i].lines = null;
+          //@ts-ignore
+          postContent[i].fileId = null;
+          // to be deprecated
+        }
+        if (postContent[i].imageUrl === undefined) {
+          //@ts-ignore
+          draftContent[i].imageUrl = null;
+        }
+      }
+
+      if (likes === undefined) {
+        likes = 0;
+      }
+      if (profileImage === undefined) {
+        profileImage = "";
+      }
+      if (tags === undefined) {
+        tags = [];
+      }
+
+      return {
+        postContent: postContent,
+        title: title,
+        tags: tags,
+        likes: likes,
+        errored: errored,
+        files: files,
+        username: username,
+        profileImage: profileImage,
+        publishedAtSeconds: publishedAt?._seconds || 0,
+      };
+    } catch {
+      return erroredProps;
+    }
+  } else {
+    // return errored : true
+    return erroredProps;
+  }
+}
+
+export async function getPostDataFromFirestoreDoc(
+  fireStoreDoc: firestore.QueryDocumentSnapshot<firestore.DocumentData>
+): Promise<Post> {
+  let resultsJSON = fireStoreDoc.data() as fireBasePostType;
+
+  let profileImage = await fireStoreDoc.ref.parent
+    .parent!.get()
+    .then((docSnapshot) => {
+      return docSnapshot.data()!.profileImage;
+    });
+
+  let username = await fireStoreDoc.ref.parent
+    .parent!.get()
+    .then((docSnapshot) => {
+      return docSnapshot.data()!.username;
+    });
+  return {
+    postId: resultsJSON.postId,
+    title: resultsJSON.title,
+    publishedAt: resultsJSON.publishedAt
+      ? {
+          _seconds: resultsJSON.publishedAt._seconds,
+          _nanoseconds: resultsJSON.publishedAt._nanoseconds,
+        }
+      : EMPTY_TIMESTAMP,
+    tags: resultsJSON.tags || [],
+    likes: resultsJSON.likes || 0,
+    username: username,
+    profileImage: profileImage,
+    createdAt: {
+      _seconds: resultsJSON.createdAt._seconds,
+      _nanoseconds: resultsJSON.createdAt._nanoseconds,
+    },
+    firebaseId: fireStoreDoc.id,
+  };
 }

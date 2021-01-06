@@ -74,3 +74,15 @@ export type draftMetaData = {
   postId?: string;
   profileImage?: string;
 };
+
+export type PostPageProps = {
+  postContent: contentBlock[];
+  title: string;
+  tags: string[];
+  likes: number;
+  errored: boolean;
+  files: fileObject[];
+  username: string;
+  profileImage: string;
+  publishedAtSeconds: number;
+};

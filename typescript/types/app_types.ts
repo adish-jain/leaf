@@ -33,14 +33,6 @@ export type Lines = {
   end: number;
 };
 
-export type UserPageProps = {
-  profileUsername: string;
-  profileData: any;
-  errored: boolean;
-  uid: string;
-  posts: Post[];
-};
-
 export type FinishedPostProps = {
   title: string;
   postContent: contentBlock[];
@@ -63,18 +55,24 @@ export type GetUserType = {
 
 export type Post = {
   postId: string;
-  postURL: string;
   title: string;
   publishedAt: timeStamp;
-  tags: string[] | string;
+  tags: string[];
   likes: number;
   username: string;
   profileImage: string;
+  createdAt: timeStamp;
+  firebaseId: string;
 };
 
 export type timeStamp = {
   _nanoseconds: number;
   _seconds: number;
+};
+
+export const EMPTY_TIMESTAMP = {
+  _nanoseconds: 0,
+  _seconds: 0,
 };
 
 type CodeSection = {

@@ -182,7 +182,7 @@ function InteractiveElement(props: {
     atIndex: number
   ) => void;
   startIndex: number;
-  updateSlashPosition: any;
+  updateSlashPosition: (slashPosition: Range | null) => void;
   blockToAdd: ContentBlockType;
 }) {
   return (
