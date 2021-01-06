@@ -2,7 +2,11 @@ import { Block, formattingPaneBlockType } from "../enums/app_enums";
 import { ProgrammingLanguage } from "../types/language_types";
 import { Node } from "slate";
 import { SetStateAction } from "react";
-import { contentBlock, fileObject } from "./frontend/postTypes";
+import {
+  contentBlock,
+  fileObject,
+  serializedContentBlock,
+} from "./frontend/postTypes";
 import admin from "firebase-admin";
 
 export const WAIT_INTERVAL = 5000;
@@ -35,7 +39,7 @@ export type Lines = {
 
 export type FinishedPostProps = {
   title: string;
-  postContent: contentBlock[];
+  postContent: serializedContentBlock[];
   tags: string[];
   files: fileObject[];
   likes: number;
@@ -46,6 +50,7 @@ export type FinishedPostProps = {
   updatePreviewMode?: (previewMode: boolean) => void;
   publishedAtSeconds: number;
   publishedView: boolean;
+  customDomain: boolean;
 };
 
 export type GetUserType = {

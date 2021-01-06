@@ -3,6 +3,7 @@ import { getFilesForDraft } from "./fileUtils";
 import {
   contentBlock,
   draftFrontendRepresentation,
+  serializedContentBlock,
   // publishedPostFrontendRepresentation,
 } from "../typescript/types/frontend/postTypes";
 import {
@@ -205,26 +206,18 @@ export async function getPostDataFromPostIdAndDomain(
   host: string,
   postId: string
 ): Promise<PostPageProps> {
-  let getPostDocAndDraftID = db
-    .collectionGroup("drafts")
+  const uid = await getUidFromDomain(host);
+  let draftId = await db
+    .collection("users")
+    .doc(uid)
+    .collection("drafts")
     .where("postId", "==", postId)
     .get()
     .then(function (postsSnapshot) {
-      let myPostRef = postsSnapshot.docs[0];
-      let draftId = postsSnapshot.docs[0].id;
-      return {
-        postDoc: myPostRef,
-        draftId: draftId,
-      };
+      let myPostRef = postsSnapshot.docs[0].ref;
+      return myPostRef.id;
     });
-
-  const [uid, { postDoc, draftId }] = await Promise.all([
-    getUidFromDomain(host),
-    getPostDocAndDraftID,
-  ]);
-
-  const [postMetaData, postData, profileImage] = await Promise.all([
-    getPostDataFromFirestoreDoc(postDoc),
+  const [postData, profileImage] = await Promise.all([
     getAllDraftDataHandler(uid, draftId),
     getProfileImageFromUid(uid),
   ]);
@@ -239,9 +232,10 @@ export async function getPostDataFromPostIdAndDomain(
     username,
     publishedAt,
   } = postData;
+  let serializedPostContent = serializePostContent(postContent);
 
   const result: PostPageProps = {
-    postContent,
+    postContent: serializedPostContent,
     title,
     tags,
     likes: likes ? likes : 0,
@@ -253,6 +247,24 @@ export async function getPostDataFromPostIdAndDomain(
   };
 
   return result;
+}
+
+export function serializePostContent(
+  postContent: contentBlock[]
+): serializedContentBlock[] {
+  let serializedContentBlocks: serializedContentBlock[] = [];
+  for (let i = 0; i < postContent.length; i++) {
+    let unserializedContent = postContent[i];
+    const { fileId, lines, imageUrl } = unserializedContent;
+    let serializedContent: serializedContentBlock = {
+      ...unserializedContent,
+      fileId: fileId ? fileId : null,
+      imageUrl: imageUrl ? imageUrl : null,
+      lines: lines ? lines : null,
+    };
+    serializedContentBlocks.push(serializedContent);
+  }
+  return serializedContentBlocks;
 }
 
 export async function getDraftImages(uid: string, draftId: string) {
@@ -332,88 +344,6 @@ export async function getAllPostsHandler() {
   }
 }
 
-export async function handlePostIdDevelopment(
-  host: string,
-  context: GetServerSidePropsContext<ParsedUrlQuery>
-): Promise<PostPageProps> {
-  const erroredProps = {
-    postContent: [],
-    title: "",
-    tags: [],
-    likes: 0,
-    errored: true,
-    files: [],
-    username: "",
-    profileImage: "",
-    publishedAtSeconds: 0,
-  };
-
-  if (host === "localhost:3000") {
-    // deliver post data
-    let username = (context.params?.username || "") as string;
-    let postId = (context.params?.postId || "") as string;
-
-    try {
-      let postData = await getDraftDataFromPostId(username, postId);
-      let uid = await getUidFromUsername(username);
-      let profileData = await getProfileData(uid);
-      let files = postData.files;
-      let title = postData.title;
-      let tags = postData.tags;
-      let likes = postData.likes || 0;
-      let postContent = postData.draftContent;
-      let publishedAt = postData.publishedAt;
-      let errored = postData.errored;
-      let profileImage = profileData!.profileImage;
-
-      // replace undefineds with null to prevent nextJS errors
-      for (let i = 0; i < postContent.length; i++) {
-        if (
-          postContent[i].lines === undefined ||
-          postContent[i].lines === null
-        ) {
-          //@ts-ignore
-          postContent[i].lines = null;
-          //@ts-ignore
-          postContent[i].fileId = null;
-          // to be deprecated
-        }
-        if (postContent[i].imageUrl === undefined) {
-          //@ts-ignore
-          draftContent[i].imageUrl = null;
-        }
-      }
-
-      if (likes === undefined) {
-        likes = 0;
-      }
-      if (profileImage === undefined) {
-        profileImage = "";
-      }
-      if (tags === undefined) {
-        tags = [];
-      }
-
-      return {
-        postContent: postContent,
-        title: title,
-        tags: tags,
-        likes: likes,
-        errored: errored,
-        files: files,
-        username: username,
-        profileImage: profileImage,
-        publishedAtSeconds: publishedAt?._seconds || 0,
-      };
-    } catch {
-      return erroredProps;
-    }
-  } else {
-    // return errored : true
-    return erroredProps;
-  }
-}
-
 export async function getPostDataFromFirestoreDoc(
   fireStoreDoc: firestore.QueryDocumentSnapshot<firestore.DocumentData>
 ): Promise<Post> {
@@ -449,4 +379,50 @@ export async function getPostDataFromFirestoreDoc(
     },
     firebaseId: fireStoreDoc.id,
   };
+}
+
+export async function getPostDataFromPostIdAndUsername(
+  username: string,
+  postId: string
+): Promise<PostPageProps> {
+  const uid = await getUidFromUsername(username);
+  let draftId = await db
+    .collection("users")
+    .doc(uid)
+    .collection("drafts")
+    .where("postId", "==", postId)
+    .get()
+    .then(function (postsSnapshot) {
+      let myPostRef = postsSnapshot.docs[0].ref;
+      return myPostRef.id;
+    });
+  const [postData, profileImage] = await Promise.all([
+    getAllDraftDataHandler(uid, draftId),
+    getProfileImageFromUid(uid),
+  ]);
+
+  const {
+    title,
+    draftContent: postContent,
+    likes,
+    tags,
+    errored,
+    files,
+    publishedAt,
+  } = postData;
+  let serializedPostContent = serializePostContent(postContent);
+
+  const result: PostPageProps = {
+    postContent: serializedPostContent,
+    title,
+    tags,
+    likes: likes ? likes : 0,
+    errored,
+    files,
+    username,
+    profileImage,
+    publishedAtSeconds: publishedAt?._seconds || 0,
+  };
+
+  return result;
 }

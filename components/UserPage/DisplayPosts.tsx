@@ -3,7 +3,7 @@ import profileStyles from "../../styles/profile.module.scss";
 import { Post } from "../../typescript/types/app_types";
 import dayjs from "dayjs";
 import { useContext } from "react";
-import { ProfilePageContext } from "../../contexts/profilepage-context";
+import { DomainContext } from "../../contexts/domain-context";
 
 function createPostUrl(
   username: string,
@@ -18,7 +18,7 @@ function createPostUrl(
 }
 
 export function DisplayPosts(props: { posts: Post[] }) {
-  const { customDomain, username } = useContext(ProfilePageContext);
+  const { customDomain, username } = useContext(DomainContext);
   try {
     const router = useRouter();
     return (

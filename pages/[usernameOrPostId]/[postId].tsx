@@ -11,7 +11,7 @@ import {
 
 import {
   getDraftDataFromPostId,
-  handlePostIdDevelopment,
+  getPostDataFromPostIdAndUsername,
 } from "../../lib/postUtils";
 import DefaultErrorPage from "next/error";
 import { useRouter } from "next/router";
@@ -23,84 +23,29 @@ import {
   PostPageProps,
 } from "../../typescript/types/frontend/postTypes";
 
-// if in development,
-// if local host
-// show postId page
-// if ngrok
-// ERROR
-// if other
-// ERROR
-
-// if in production,
-// if getleaf.app
-// show postId page
-// if custom domain
-// ERROR
-// if other
-// ERROR
-
-// if in preview, check if url has vercel, redirect to errored page
-
-// if in production, default is getleaf.app with postId,
-
-// export const getServerSideProps: GetServerSideProps = async (context) => {
-//   let host = context.req.headers.host || "";
-
-//   if (host === "localhost:3000" || "getleaf.app") {
-//     return {
-
-//     }
-//   }
-//   // console.log(context.req.headers.host);
-//   if (process.env.NODE_ENV === "development") {
-//     let returnProps = await handlePostIdDevelopment(host, context);
-//     if (returnProps.errored) {
-//       return {
-//         notFound: true
-//       }
-//     }
-//   }
-//   return {
-//     props: {}, // will be passed to the page component as props
-//   };
-// };
-
-export const getStaticProps: GetStaticProps = async (context) => {
-  if (context === undefined || context.params === undefined) {
-    return {
-      revalidate: 1,
-      props: {
-        steps: [],
-      },
-    };
-  }
-
-  let username = context.params.username as string;
-  let postId = context.params.postId as string;
+export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
-    // console.log(postData);
+    let host = context.req.headers.host || "";
+    // if default return post data
+    if (host === "localhost:3000" || host === "getleaf.app") {
+      let username = (context.params?.usernameOrPostId || "") as string;
+      let postId = (context.params?.postId || "") as string;
 
-    return {
-      revalidate: 1,
-      props: {
-        title,
-        postContent: draftContent,
-        tags,
-        likes,
-        files,
-        errored,
+      let finalProps: PostPageProps = await getPostDataFromPostIdAndUsername(
         username,
-        profileImage,
-        publishedAtSeconds: publishedAt?._seconds || 0,
-      },
-    };
-  } catch (error) {
-    console.log(error);
+        postId
+      );
+      return {
+        props: finalProps,
+      };
+    } else {
+      return {
+        notFound: true,
+      };
+    }
+  } catch (err) {
     return {
-      revalidate: 1,
-      props: {
-        errored: true,
-      },
+      notFound: true,
     };
   }
 };

@@ -1,8 +1,8 @@
 import { createContext, Dispatch, SetStateAction } from "react";
 
-export const ProfilePageContext = createContext(<ProfilePageContextType>{});
+export const DomainContext = createContext(<DomainContextType>{});
 
-type ProfilePageContextType = {
+type DomainContextType = {
   username: string;
   customDomain: boolean;
 };

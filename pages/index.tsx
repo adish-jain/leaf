@@ -16,9 +16,9 @@ import UserContent from "../components/UserPage/UserPage";
 let indexStyles = require("../styles/index.module.scss");
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  // console.log(context.req.headers.host);
   let host = context.req.headers.host || "";
 
+  // serve default Leaf
   if (host === "getleaf.app" || host === "localhost:3000") {
     let propsObject: IndexProps = {
       indexPage: true,
@@ -45,6 +45,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 type IndexProps = {
   indexPage: boolean;
+  customDomain: boolean;
 } & UserPageProps;
 
 export default function Pages(props: IndexProps) {
@@ -56,11 +57,11 @@ export default function Pages(props: IndexProps) {
     errored,
     uid,
     posts,
+    customDomain,
   } = props;
   if (authenticated) {
     window.location.href = "/landing";
   }
-
 
   return (
     <div className={indexStyles["container"]}>
@@ -86,6 +87,7 @@ export default function Pages(props: IndexProps) {
           posts={posts}
           uid={uid}
           profileUsername={profileUsername}
+          customDomain={customDomain}
         />
       )}
     </div>

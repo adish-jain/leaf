@@ -8,8 +8,8 @@ import imageStyles from "../../styles/imageview.module.scss";
 import TextareaAutosize from "react-autosize-textarea/lib";
 import { useRouter } from "next/router";
 import { DisplayPosts } from "./DisplayPosts";
-import { ProfilePageContext } from "../../contexts/profilepage-context";
-import UserPage from "../../pages/[username]";
+import { DomainContext } from "../../contexts/domain-context";
+import UserPage from "../../pages/[usernameOrPostId]";
 
 export default function UserContent(props: UserPageProps) {
   const [editingBio, toggleEditingBio] = useState(false);
@@ -56,7 +56,7 @@ export default function UserContent(props: UserPageProps) {
   }, [props.profileData]);
 
   return (
-    <ProfilePageContext.Provider
+    <DomainContext.Provider
       value={{
         username: username,
         customDomain: customDomain,
@@ -173,7 +173,7 @@ export default function UserContent(props: UserPageProps) {
           </div>
         </div>
       </div>
-    </ProfilePageContext.Provider>
+    </DomainContext.Provider>
   );
 }
 
