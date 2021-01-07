@@ -6,6 +6,8 @@ import { useContext, useEffect, useRef } from "react";
 import { ContentContext } from "../contexts/finishedpost/content-context";
 import { PublishedFilesContext } from "../contexts/finishedpost/files-context";
 import PublishedMarkDownSection from "./PublishedMarkDownSection";
+import { DimensionsContext } from "../contexts/dimensions-context";
+import { MOBILE_WIDTH } from "../pages/_app";
 
 export default function PublishedCodeStep(props: {
   slateContent: string;
@@ -15,14 +17,17 @@ export default function PublishedCodeStep(props: {
   last: boolean;
 }) {
   const heightRef = useRef<HTMLDivElement>(null);
+  const { width } = useContext(DimensionsContext);
+  const isMobile = width < MOBILE_WIDTH;
   const [ref, inView, entry] = useInView({
     threshold: calculateThreshold(),
-    rootMargin: calculateRootMargin(),
+    rootMargin: calculateRootMargin(isMobile),
   });
   const { index } = props;
   const { postContent, updateContentIndex, selectedContentIndex } = useContext(
     ContentContext
   );
+
   const currentContent = postContent[selectedContentIndex];
   const { updateFileIndex, files } = useContext(PublishedFilesContext);
 
@@ -73,10 +78,10 @@ export default function PublishedCodeStep(props: {
   );
 }
 
-function calculateRootMargin() {
-  // let { pageYOffset, height } = this.props;
-  // if (pageYOffset < height / 2) {
-  //   return "0% 0% 0% 0%";
-  // }
-  return "-39% 0% -60% 0%";
+function calculateRootMargin(isMobile: boolean) {
+  if (isMobile) {
+    return "-39% 0% -60% 0%";
+  } else {
+    return "-49% 0% -49% 0%";
+  }
 }

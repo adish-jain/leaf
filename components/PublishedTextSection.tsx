@@ -18,7 +18,10 @@ export default function PublishedTextSection(props: {
 
   let style = width < MOBILE_WIDTH ? { width: "100%" } : {};
   return (
-    <div className={textSectionStyles["text-section"]} style={style}>
+    <div
+      className={textSectionStyles["text-section"]}
+      // style={style}
+    >
       <div className={textSectionStyles["markdown"]}>
         <PublishedMarkDownSection
           slateContent={slateContent}

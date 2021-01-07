@@ -3,10 +3,21 @@
 .codestep-content {
   // border: 1px solid black;
   display: flex;
+  flex-direction: row-reverse;
+
   // margin-bottom: 64px;
-  margin-left: 80px;
+  margin-right: 80px;
   // margin-right: 80px;
   margin-top: 64px;
+}
+
+@media only screen and (max-width: 600px) {
+  .codestep-content {
+    flex-direction: column !important;
+    margin-right: 0px !important;
+    margin-top: 0px !important;
+    width: 100%;
+  }
 }
 
 .codestep-section {
@@ -32,6 +43,15 @@
   position: relative;
 }
 
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+  .published-steps {
+    position: relative;
+    top: -55vh;
+    width: 100% !important;
+  }
+}
+
 .published {
   border-radius: 8px;
 
@@ -43,4 +63,7 @@
 }
 
 .selected {
+}
+
+.codesteps-wrapper {
 }
