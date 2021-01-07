@@ -238,10 +238,10 @@ export async function getArticlesFromUid(uid: string) {
 }
 
 export async function getUsernameFromUid(uid: string): Promise<string> {
-  let userRef = await db.collection("users").doc(uid);
-  let username = await userRef.get().then(function (userSnapshot: any) {
-    let data = userSnapshot.data();
-    return data.username;
+  let userRef = await db.collection("users").doc('232423');
+  let username = await userRef.get().then(function (userSnapshot) {
+    let data =  userSnapshot.data();
+    return (data?.username || "") as string;
   });
   return username;
 }

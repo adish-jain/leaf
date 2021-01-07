@@ -22,7 +22,6 @@ export default async function createDraftHandler(
 ) {
   let { uid } = await getUser(req, res);
   let username = await getUsernameFromUid(uid);
-
   let newDraft = {
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
     title: "Untitled",
@@ -47,16 +46,24 @@ export default async function createDraftHandler(
     username: username,
     errored: false,
   };
-  // await db.collection("users").doc(uid).collection("drafts").add(newDraft);
-  let docRef = await db.collection("users").doc(uid).collection("drafts").add({
+
+  let newFirebaseDraft = {
     title: newDraft.title,
     createdAt: newDraft.createdAt,
     published: newDraft.published,
     tags: newDraft.tags,
-    username: newDraft.username,
+    username: newDraft.username as string | undefined,
     errored: newDraft.errored,
     likes: 0,
-  });
+  };
+  if (username === "" || username === undefined) {
+    delete newFirebaseDraft.username;
+  }
+  let docRef = await db
+    .collection("users")
+    .doc(uid)
+    .collection("drafts")
+    .add(newFirebaseDraft);
   await Promise.all([
     docRef.collection("draftContent").add({
       order: 0,
