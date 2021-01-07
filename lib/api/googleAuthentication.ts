@@ -48,7 +48,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       username = await getUsernameFromUid(signedin_user.uid);
     } catch (e) {
       console.log("Username does not exist.");
-      return;
+      username = "";
     }
 
     if (!(await validate(username))) {
