@@ -28,7 +28,7 @@ const draftsFetcher = () =>
 export function useDrafts(authenticated: boolean) {
   const [draftsEditClicked, changeEditClicked] = useState(false);
   const initialDraftsData: DraftType[] = [];
-  let { data: drafts } = useSWR<DraftType[]>(
+  let { data } = useSWR<DraftType[]>(
     authenticated ? "getDrafts" : null,
     draftsFetcher,
     {
@@ -36,6 +36,8 @@ export function useDrafts(authenticated: boolean) {
       revalidateOnMount: true,
     }
   );
+
+  const drafts = data || [];
 
   function findDraftIndex(draftId: string) {
     let searchIndex = 0;
@@ -76,11 +78,6 @@ export function useDrafts(authenticated: boolean) {
     });
   }
 
-  // Redirects to a draft
-  function openDraft(draft_id: string) {
-    Router.push("/drafts/" + draft_id);
-  }
-
   // Creates a new draft
   async function createNewDraft() {
     await fetch("/api/endpoint", {
@@ -105,9 +102,13 @@ export function useDrafts(authenticated: boolean) {
   return {
     drafts,
     deleteDraft,
-    openDraft,
     createNewDraft,
-    draftsEditClicked,
-    toggleDraftsEdit,
+    // draftsEditClicked,
+    // toggleDraftsEdit,
   };
+}
+
+// Redirects to a draft
+export function openDraft(draft_id: string) {
+  Router.push("/drafts/" + draft_id);
 }

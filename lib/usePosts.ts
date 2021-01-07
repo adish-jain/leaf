@@ -64,10 +64,6 @@ export function usePosts(authenticated: boolean) {
     });
   }
 
-  function goToDraft(draftId: string) {
-    Router.push("/drafts/[draftId]", "/drafts/" + draftId);
-  }
-
   // Toggles the edit button for published posts
   async function togglePostsEdit() {
     changeEditClicked(!postsEditClicked);
@@ -78,11 +74,18 @@ export function usePosts(authenticated: boolean) {
     deletePost,
     postsEditClicked,
     togglePostsEdit,
-    goToDraft,
   };
 }
 
 // Redirects to a published Post
-export function goToPost(username: string, postId: string) {
+export function goToPost(
+  username: string,
+  postId: string,
+  customDomain: boolean
+) {
   Router.push("/[username]/[postId]", "/" + username + "/" + postId);
+}
+
+export function goToDraft(draftId: string, customDomain: boolean) {
+  Router.push("/drafts/[draftId]", "/drafts/" + draftId);
 }

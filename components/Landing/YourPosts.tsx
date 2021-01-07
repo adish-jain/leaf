@@ -3,25 +3,18 @@ import landingStyles from "../../styles/landing.module.scss";
 import { PublishedPost } from "./PublishedPost";
 import { NonePublished } from "./NonePublished";
 import dayjs from "dayjs";
+import { useContext } from "react";
+import { AuthContext } from "../../contexts/auth-context";
+import { goToDraft, goToPost, usePosts } from "../../lib/usePosts";
+import { DomainContext } from "../../contexts/domain-context";
 
-export function YourPosts(props: {
-  posts: Post[];
-  goToPost: (username: string, postId: string) => void;
-  deletePost: (postUid: string) => void;
-  togglePostsEdit: () => void;
-  postsEditClicked: boolean;
-  username: string;
-  goToDraft: (draftId: string) => void;
-}) {
-  let {
-    posts,
-    goToPost,
-    deletePost,
-    togglePostsEdit,
-    postsEditClicked,
-    username,
-    goToDraft,
-  } = props;
+export function YourPosts(props: {}) {
+  const { authenticated } = useContext(AuthContext);
+  const { username } = useContext(DomainContext);
+
+  let { posts, deletePost, togglePostsEdit, postsEditClicked } = usePosts(
+    authenticated
+  );
 
   const noPosts = posts.length === 0;
 
@@ -40,14 +33,11 @@ export function YourPosts(props: {
                 formattedDate={formattedDate}
                 title={post.title}
                 postId={post.postId}
-                goToDraft={goToDraft}
-                goToPost={goToPost}
                 draftId={post.firebaseId}
                 postUid={post.firebaseId}
                 deletePost={deletePost}
                 key={post.firebaseId}
                 postsEditClicked={postsEditClicked}
-                username={username}
               />
             );
           })}

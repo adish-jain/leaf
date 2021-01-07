@@ -8,6 +8,7 @@ import { PreviewContext } from "./preview-context";
 import { Router, useRouter } from "next/router";
 import { ToolbarContext } from "../contexts/toolbar-context";
 import { saveStatusEnum } from "../typescript/enums/app_enums";
+import { DomainContext } from "../contexts/domain-context";
 
 type DraftHeaderProps = {
   updateShowTags: (value: boolean) => void;
@@ -18,6 +19,7 @@ type LandingHeaderProps = {
 };
 
 export function LandingHeader(props: LandingHeaderProps) {
+  const { customDomain } = useContext(DomainContext);
   return (
     <div className={landingHeaderStyles["landing-header"]}>
       <div className={landingHeaderStyles["inner-content"]}>
@@ -26,7 +28,7 @@ export function LandingHeader(props: LandingHeaderProps) {
           src="/images/LeafLogo.svg"
         />
         <div className={landingHeaderStyles["links"]}>
-          <Link href={`/${props.username}`}>
+          <Link href={customDomain ? "/" : `/${props.username}`}>
             <a>Profile</a>
           </Link>
           <Link href={`/explore`}>

@@ -2,10 +2,10 @@ import Head from "next/head";
 import Link from "next/link";
 
 import { useLoggedIn, logOut } from "../lib/UseLoggedIn";
-import { UserPageProps } from "../typescript/types/app_types";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { GetServerSideProps } from "next";
+import { UserPageProps } from "../typescript/types/backend/userTypes";
 import {
   findUserPageByDomain,
   // getProfileImageFromUid,
@@ -23,7 +23,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     let propsObject: IndexProps = {
       indexPage: true,
       profileUsername: "",
-      profileData: null,
+      profileData: {
+        email: "",
+      },
       errored: false,
       uid: "",
       posts: [],
@@ -59,7 +61,8 @@ export default function Pages(props: IndexProps) {
     posts,
     customDomain,
   } = props;
-  if (authenticated) {
+  if (authenticated && indexPage) {
+    console.log("redirecting to landing");
     window.location.href = "/landing";
   }
 
@@ -68,15 +71,17 @@ export default function Pages(props: IndexProps) {
       <Head>
         <title>Leaf</title>
         <link rel="icon" href="/favicon.ico" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
+        {indexPage && (
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
           if (document.cookie && document.cookie.includes('authed')) {
             window.location.href = "/landing"
           }
         `,
-          }}
-        />
+            }}
+          />
+        )}
       </Head>
       {indexPage ? (
         <IndexPage />

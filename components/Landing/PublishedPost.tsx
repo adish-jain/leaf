@@ -1,3 +1,5 @@
+import { useContext } from "react";
+import { DomainContext } from "../../contexts/domain-context";
 import landingStyles from "../../styles/landing.module.scss";
 
 export function PublishedPost(props: {
@@ -13,6 +15,7 @@ export function PublishedPost(props: {
   goToDraft: (draftId: string) => void;
 }) {
   let { username, postId, deletePost, postUid, goToDraft } = props;
+  const { customDomain } = useContext(DomainContext);
 
   const Editbuttons = () => {
     return (

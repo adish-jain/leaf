@@ -97,3 +97,12 @@ export type serializedCodeStepBlock = {
   lines: Lines | null;
   imageUrl: string | null;
 };
+
+export type LandingDraftType = {
+  id: string;
+  title: string;
+  createdAt: {
+    _nanoseconds: number;
+    _seconds: number;
+  };
+};
