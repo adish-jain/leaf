@@ -37,4 +37,5 @@ export type fireBasePostType = {
   tags?: string[];
   title: string;
   username: string;
+  firebaseId?: string;
 };

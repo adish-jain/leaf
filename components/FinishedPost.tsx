@@ -16,7 +16,6 @@ import { DraftContext } from "../contexts/draft-context";
 import { ContentContext } from "../contexts/finishedpost/content-context";
 import { PublishedFilesContext } from "../contexts/finishedpost/files-context";
 import Link from "next/link";
-import dayjs from "dayjs";
 import { PreviewContext } from "./preview-context";
 import { DimensionsContext } from "../contexts/dimensions-context";
 import { PostContent } from "./FinishedPost/PostContent";

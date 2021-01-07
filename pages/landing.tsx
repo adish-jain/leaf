@@ -10,24 +10,10 @@ import { useUserInfo } from "../lib/useUserInfo";
 import { usePosts, goToPost } from "../lib/usePosts";
 const dayjs = require("dayjs");
 import { LandingHeader } from "../components/Headers";
+import { YourPosts } from "../components/Landing/YourPosts";
 type DraftType = {
   id: string;
   title: string;
-  createdAt: {
-    _nanoseconds: number;
-    _seconds: number;
-  };
-};
-
-type PostsType = {
-  // url id
-  postId: string;
-  title: string;
-  // user id
-  uid: string;
-  // unique id
-  id: string;
-  username: string;
   createdAt: {
     _nanoseconds: number;
     _seconds: number;
@@ -110,126 +96,6 @@ export default function Landing() {
           />
         </div>
       </main>
-    </div>
-  );
-}
-
-function YourPosts(props: {
-  posts: PostsType[] | undefined;
-  goToPost: (username: string, postId: string) => void;
-  deletePost: (postUid: string) => void;
-  togglePostsEdit: () => void;
-  postsEditClicked: boolean;
-  username: string;
-  goToDraft: (draftId: string) => void;
-}) {
-  let {
-    posts,
-    goToPost,
-    deletePost,
-    togglePostsEdit,
-    postsEditClicked,
-    username,
-    goToDraft,
-  } = props;
-
-  const noPosts = posts === undefined || posts.length === 0;
-
-  const Content = () => {
-    if (noPosts) {
-      return <NonePublished />;
-    } else {
-      return (
-        <div>
-          {posts!.map((post: any) => {
-            let formattedDate = dayjs(post.publishedAt).format("MMMM D YYYY");
-            return (
-              <Post
-                formattedDate={formattedDate}
-                title={post.title}
-                postId={post.postId}
-                goToDraft={goToDraft}
-                goToPost={goToPost}
-                draftId={post.id}
-                postUid={post.id}
-                deletePost={deletePost}
-                key={post.id}
-                postsEditClicked={postsEditClicked}
-                username={username}
-              />
-            );
-          })}
-        </div>
-      );
-    }
-  };
-
-  const EditButton = () => {
-    if (noPosts) {
-      return <div></div>;
-    }
-    return (
-      <div className={landingStyles["DraftButtons"]}>
-        <button onClick={togglePostsEdit}>
-          {postsEditClicked ? "Done" : "Edit"}
-        </button>
-      </div>
-    );
-  };
-
-  return (
-    <div className={`${landingStyles.right} ${landingStyles.Section}`}>
-      <h1>Your Published Posts</h1>
-      <hr />
-      <EditButton />
-      <Content />
-    </div>
-  );
-}
-
-function Post(props: {
-  title: string;
-  postId: string;
-  postUid: string;
-  deletePost: (postUid: string) => void;
-  goToPost: (username: string, postId: string) => void;
-  postsEditClicked: boolean;
-  username: string;
-  formattedDate: string;
-  draftId: string;
-  goToDraft: (draftId: string) => void;
-}) {
-  let { username, postId, deletePost, postUid, goToDraft } = props;
-
-  const Editbuttons = () => {
-    return (
-      <div className={landingStyles["EditButtons"]}>
-        <button
-          onClick={(e) => props.deletePost(postUid)}
-          className={landingStyles["Edit"]}
-        >
-          X
-        </button>
-        <button
-          className={landingStyles["edit-post-button"]}
-          onClick={(e) => goToDraft(props.draftId)}
-        >
-          Edit Post
-        </button>
-      </div>
-    );
-  };
-
-  return (
-    <div className={landingStyles["DraftWrapper"]}>
-      {props.postsEditClicked ? <Editbuttons /> : <div></div>}
-      <div
-        onClick={(e) => props.goToPost(username, postId)}
-        className={landingStyles["draft"]}
-      >
-        <p className={landingStyles["Draft-Title"]}>{props.title}</p>
-        <p>Published on {props.formattedDate}</p>
-      </div>
     </div>
   );
 }
@@ -348,14 +214,6 @@ function Draft(props: DraftProps) {
       >
         <p className={landingStyles["Draft-Title"]}>{props.title}</p>
       </div>
-    </div>
-  );
-}
-
-function NonePublished() {
-  return (
-    <div>
-      <p>You have no published posts. Create a draft to get started.</p>
     </div>
   );
 }

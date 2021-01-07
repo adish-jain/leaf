@@ -348,7 +348,7 @@ export async function getPostDataFromFirestoreDoc(
   fireStoreDoc: firestore.QueryDocumentSnapshot<firestore.DocumentData>
 ): Promise<Post> {
   let resultsJSON = fireStoreDoc.data() as fireBasePostType;
-
+  let firebaseId = resultsJSON.firebaseId;
   let profileImage = await fireStoreDoc.ref.parent
     .parent!.get()
     .then((docSnapshot) => {
@@ -377,7 +377,7 @@ export async function getPostDataFromFirestoreDoc(
       _seconds: resultsJSON.createdAt._seconds,
       _nanoseconds: resultsJSON.createdAt._nanoseconds,
     },
-    firebaseId: fireStoreDoc.id,
+    firebaseId: firebaseId ? firebaseId : fireStoreDoc.id,
   };
 }
 

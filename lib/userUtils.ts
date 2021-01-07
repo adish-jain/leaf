@@ -203,9 +203,7 @@ export async function getUserPosts(uid: string): Promise<Post[]> {
     .collection("drafts")
     .orderBy("createdAt");
 
-  (await draftsRef.get()).forEach((child) => {});
-
-  return await draftsRef
+  let posts = await draftsRef
     .get()
     .then(async function (draftsCollection) {
       let results: Post[] = [];
@@ -223,8 +221,8 @@ export async function getUserPosts(uid: string): Promise<Post[]> {
       });
       await Promise.all(gatherPromise);
       results.sort(function (a, b) {
-        var keyA = a.publishedAt,
-          keyB = b.publishedAt;
+        let keyA = a.publishedAt._seconds,
+          keyB = b.publishedAt._seconds;
         if (keyA > keyB) return -1;
         if (keyA < keyB) return 1;
         return 0;
@@ -234,8 +232,10 @@ export async function getUserPosts(uid: string): Promise<Post[]> {
     })
     .catch(function (error) {
       console.log(error);
-      return [];
+      let result: Post[] = [];
+      return result;
     });
+  return posts;
 }
 
 export async function getProfileData(uid: string): Promise<fireBaseUserType> {

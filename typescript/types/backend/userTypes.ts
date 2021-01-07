@@ -1,3 +1,4 @@
+import { SignUpMethods } from "../../enums/backend/userEnums";
 import { Post } from "../app_types";
 
 export type fireBaseUserType = {
@@ -9,6 +10,8 @@ export type fireBaseUserType = {
   twitter?: string;
   username?: string;
   website?: string;
+  firebaseId?: string;
+  method?: SignUpMethods;
 };
 
 export type UserPageProps = {

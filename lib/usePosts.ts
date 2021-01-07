@@ -1,21 +1,7 @@
 import { useState } from "react";
 import useSWR, { SWRConfig, mutate } from "swr";
 import Router from "next/router";
-
-type PostsType = {
-  // url id
-  postId: string;
-  title: string;
-  // user id
-  uid: string;
-  // unique id, used for editing the post
-  id: string;
-  username: string;
-  createdAt: {
-    _nanoseconds: number;
-    _seconds: number;
-  };
-};
+import { Post } from "../typescript/types/app_types";
 
 const myRequest = (requestedAPI: string) => {
   return {
@@ -28,13 +14,13 @@ const myRequest = (requestedAPI: string) => {
 };
 
 const postsFetcher = () =>
-  fetch("api/endpoint", myRequest("getPosts")).then((res: any) => res.json());
+  fetch("api/endpoint", myRequest("getPosts")).then((res) => res.json());
 
 export function usePosts(authenticated: boolean) {
   const [postsEditClicked, changeEditClicked] = useState(false);
-  const initialPostsData: PostsType[] = [];
-  let { data: posts } = useSWR<PostsType[]>(
-    authenticated ? "getPosts" : null,
+  const initialPostsData: Post[] = [];
+  let { data } = useSWR<Post[]>(
+    authenticated ? "getPosts" : [null],
     postsFetcher,
     {
       initialData: initialPostsData,
@@ -42,12 +28,14 @@ export function usePosts(authenticated: boolean) {
     }
   );
 
+  const posts = data || [];
+
   // Deletes a published post.
   function deletePost(postUid: string) {
     function removeSpecificPost() {
       let searchIndex = 0;
       for (let i = 0; i < posts!.length; i++) {
-        if (posts![i].uid === postUid) {
+        if (posts![i].postId === postUid) {
           searchIndex = i;
           break;
         }
