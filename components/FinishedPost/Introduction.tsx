@@ -10,9 +10,8 @@ export function Introduction(props: { title: string }) {
   const { title } = props;
   const { width } = useContext(DimensionsContext);
 
-  let style = width < MOBILE_WIDTH ? { width: "100%" } : {};
   return (
-    <div className={finishedPostStyles["introduction"]} style={style}>
+    <div className={finishedPostStyles["introduction"]}>
       <PostTitle title={title} />
       <PostIntro />
       <PostTags />

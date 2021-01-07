@@ -1,0 +1,9 @@
+.postbody-wrapper {
+}
+
+@media only screen and (max-width: 600px) {
+  .postbody-wrapper {
+    width: 100%;
+    // margin: auto;
+  }
+}

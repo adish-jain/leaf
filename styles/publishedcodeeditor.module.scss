@@ -2,6 +2,13 @@
 
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
+  .editor-wrapper {
+    height: 50vh !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+    top: 50vh !important;
+    z-index: 5;
+  }
 }
 
 /* Small devices (portrait tablets and large phones, 600px and up) */

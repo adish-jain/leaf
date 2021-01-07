@@ -36,6 +36,13 @@
   }
 }
 
+@media only screen and (max-width: 600px) {
+  .scroll-down {
+    margin-top: 0px !important;
+    margin-bottom: 24px !important;
+  }
+}
+
 @keyframes up-down {
   0% {
     transform: translateY(0px);
