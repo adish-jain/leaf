@@ -62,7 +62,6 @@ function Buttons(props: { updateShowTags: (toggle: boolean) => void }) {
               updatePreviewMode(true);
             }
           }}
-          disabled={saveState === saveStatusEnum.saved}
         >
           Preview Post
         </button>

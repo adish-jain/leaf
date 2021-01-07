@@ -304,7 +304,7 @@ export async function checkUsernameDNE(username: string): Promise<boolean> {
   let size;
   await db
     .collection("users")
-    .where("username", "==", username)
+    .where("username", "==", username.toLowerCase())
     .get()
     .then(function (snapshot: any) {
       size = snapshot.size;

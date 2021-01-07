@@ -48,7 +48,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       username = await getUsernameFromUid(signedin_user.uid);
     } catch (e) {
       console.log("Username does not exist.");
-      return;
+      username = "";
     }
 
     if (!(await validate(username))) {
@@ -78,7 +78,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       }
     }
 
-    db.collection("users").doc(signedin_user.uid).set({
+    await db.collection("users").doc(signedin_user.uid).set({
       email: signedin_user.email,
       username: username,
       method: "google",
