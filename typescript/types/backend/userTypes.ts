@@ -2,15 +2,15 @@ import { SignUpMethods } from "../../enums/backend/userEnums";
 import { Post } from "../app_types";
 
 export type fireBaseUserType = {
-  about?: string;
+  about?: string | null;
   admin?: boolean;
   email: string;
-  github?: string;
-  profileImage?: string;
-  twitter?: string;
+  github?: string | null;
+  profileImage?: string | null;
+  twitter?: string | null;
   username?: string;
-  website?: string;
-  firebaseId?: string;
+  website?: string | null;
+  uid?: string;
   method?: SignUpMethods;
 };
 

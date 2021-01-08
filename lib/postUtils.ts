@@ -26,9 +26,11 @@ import {
   getProfileImageFromUid,
   getProfileData,
   getUidFromDomain,
+  getCustomDomainByUsername,
 } from "./userUtils";
 import { timeStamp, Post } from "../typescript/types/app_types";
 import ErroredPage from "../pages/404";
+import { fireBaseUserType } from "../typescript/types/backend/userTypes";
 
 export async function getDraftMetadata(
   uid: string,
@@ -305,17 +307,24 @@ export async function getAllPostsHandler() {
     .get();
   const arr: firestore.QueryDocumentSnapshot<firestore.DocumentData>[] = [];
   activeRef.forEach((child) => arr.push(child));
-  var results: Post[] = [];
+  let results: Post[] = [];
   try {
     for (const doc of arr) {
       let username = await doc.ref.parent.parent!.get().then((docSnapshot) => {
-        return docSnapshot.data()!.username;
+        let postData = docSnapshot.data() as fireBasePostType;
+        return postData.username;
       });
-      let profileImage = await doc.ref.parent
-        .parent!.get()
-        .then((docSnapshot) => {
-          return docSnapshot.data()!.profileImage;
-        });
+
+      let getProfileImage = doc.ref.parent.parent!.get().then((docSnapshot) => {
+        let postData = docSnapshot.data() as fireBaseUserType;
+        return postData.profileImage;
+      });
+
+      const [profileImage, customDomain] = await Promise.all([
+        getProfileImage,
+        getCustomDomainByUsername(username),
+      ]);
+
       let resultsJSON = doc.data();
       results.push({
         postId: resultsJSON.postId,
@@ -324,9 +333,10 @@ export async function getAllPostsHandler() {
         tags: resultsJSON.tags,
         likes: resultsJSON.likes,
         username: username,
-        profileImage: profileImage,
+        profileImage: profileImage || "",
         createdAt: resultsJSON.createdAt,
         firebaseId: resultsJSON.id,
+        customDomain: customDomain,
       });
     }
     // sort by published date
@@ -349,17 +359,28 @@ export async function getPostDataFromFirestoreDoc(
 ): Promise<Post> {
   let resultsJSON = fireStoreDoc.data() as fireBasePostType;
   let firebaseId = resultsJSON.firebaseId;
-  let profileImage = await fireStoreDoc.ref.parent
-    .parent!.get()
+
+  let getProfileImage = fireStoreDoc.ref.parent.parent
+    ?.get()
     .then((docSnapshot) => {
-      return docSnapshot.data()!.profileImage;
+      let userData = docSnapshot.data() as fireBaseUserType;
+      return userData.profileImage;
     });
 
-  let username = await fireStoreDoc.ref.parent
+  let getUsername = fireStoreDoc.ref.parent
     .parent!.get()
     .then((docSnapshot) => {
-      return docSnapshot.data()!.username;
+      let userData = docSnapshot.data() as fireBaseUserType;
+      return userData.username;
     });
+
+  const [profileImage, username] = await Promise.all([
+    getProfileImage,
+    getUsername,
+  ]);
+
+  let customDomain = await getCustomDomainByUsername(username || "");
+
   return {
     postId: resultsJSON.postId,
     title: resultsJSON.title,
@@ -371,13 +392,14 @@ export async function getPostDataFromFirestoreDoc(
       : EMPTY_TIMESTAMP,
     tags: resultsJSON.tags || [],
     likes: resultsJSON.likes || 0,
-    username: username,
-    profileImage: profileImage,
+    username: username || "",
+    profileImage: profileImage || "",
     createdAt: {
       _seconds: resultsJSON.createdAt._seconds,
       _nanoseconds: resultsJSON.createdAt._nanoseconds,
     },
     firebaseId: firebaseId ? firebaseId : fireStoreDoc.id,
+    customDomain,
   };
 }
 

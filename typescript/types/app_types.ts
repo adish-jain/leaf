@@ -68,6 +68,7 @@ export type Post = {
   profileImage: string;
   createdAt: timeStamp;
   firebaseId: string;
+  customDomain: string;
 };
 
 export type timeStamp = {
@@ -100,3 +101,8 @@ export const newFileNode: Node[] = [
     ],
   },
 ];
+
+export type firebaseDomainType = {
+  host: string;
+  uid: string;
+};

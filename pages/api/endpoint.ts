@@ -74,6 +74,7 @@ import handleUpdateDraftText from "../../lib/api/updateDraftText";
 // admin page
 import handleTransferPost from "../../lib/api/transferPost";
 import handleAuthenticateAdmin from "../../lib/api/authenticateAdmin";
+import handleBackFillUid from "../../lib/api/backFillUid";
 
 import sentryHandler from "../../lib/sentryHandler";
 
@@ -290,6 +291,10 @@ export default sentryHandler(
 
       case "transferPost": {
         return handleTransferPost(req, res);
+      }
+
+      case "backFillUid": {
+        return handleBackFillUid(req, res);
       }
 
       default:

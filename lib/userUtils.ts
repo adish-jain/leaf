@@ -3,7 +3,11 @@ import fetch from "isomorphic-fetch";
 import { NextApiRequest, NextApiResponse } from "next";
 import { setTokenCookies, removeTokenCookies } from "./cookieUtils";
 import { timeStamp } from "../typescript/types/app_types";
-import { Post, GetUserType } from "../typescript/types/app_types";
+import {
+  Post,
+  GetUserType,
+  firebaseDomainType,
+} from "../typescript/types/app_types";
 import { fireBasePostType } from "../typescript/types/backend/postTypes";
 import {
   fireBaseUserType,
@@ -240,15 +244,16 @@ export async function getUserPosts(uid: string): Promise<Post[]> {
 
 export async function getProfileData(uid: string): Promise<fireBaseUserType> {
   let userDataReference = await db.collection("users").doc(uid).get();
-  let userData = await userDataReference.data();
+  let userData = (await userDataReference.data()) as fireBaseUserType;
   if (userData) {
     let result = {
-      about: userData.about,
-      github: userData.github,
-      profileImage: userData.profileImage,
-      twitter: userData.twitter,
-      website: userData.website,
+      about: userData.about || "",
+      github: userData.github || "",
+      profileImage: userData.profileImage || "",
+      twitter: userData.twitter || "",
+      website: userData.website || "",
       email: userData.email,
+      uid: userData.uid,
     };
     return result;
   } else {
@@ -453,6 +458,41 @@ export async function isAdmin(req: NextApiRequest, res: NextApiResponse) {
   return isAdmin;
 }
 
+export async function getCustomDomainByUsername(username: string) {
+  let uid = await db
+    .collection("users")
+    .where("username", "==", username)
+    .get()
+    .then(function (snapshot) {
+      let data = snapshot.docs[0].data() as fireBaseUserType;
+      let uid = data.uid;
+      if (!uid) {
+        let directUid = snapshot.docs[0].id;
+        return directUid;
+      } else {
+        return uid;
+      }
+    })
+    .catch(function (err) {
+      return "";
+    });
+  if (!uid) {
+    return "";
+  }
+  let customDomain = await db
+    .collection("domains")
+    .where("uid", "==", uid)
+    .get()
+    .then(function (snapshot) {
+      let domainData = snapshot.docs[0].data() as firebaseDomainType;
+      return domainData.host;
+    })
+    .catch(function (err) {
+      return "";
+    });
+  return customDomain;
+}
+
 export async function findUserPageByDomain(
   host: string
 ): Promise<UserPageProps> {
@@ -486,6 +526,7 @@ export async function findUserPageByDomain(
         uid: "uid",
         posts: [],
         errored: true,
+        //hello rhamghul, plz dont eat my rice
         customDomain: false,
       };
     });

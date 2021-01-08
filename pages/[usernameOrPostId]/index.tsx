@@ -7,6 +7,7 @@ import {
   getUidFromUsername,
   getProfileData,
   getUserDataFromUsername,
+  getCustomDomainByUsername,
 } from "../../lib/userUtils";
 import { useLoggedIn } from "../../lib/UseLoggedIn";
 import appStyles from "../../styles/app.module.scss";
@@ -34,7 +35,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   let usernameOrPostId = context.params.usernameOrPostId as string;
   // if default return profile page page
   if (host === "getleaf.app" || host === "localhost:3000") {
+    let hasCustomDomain = await getCustomDomainByUsername(usernameOrPostId);
+    if (hasCustomDomain !== "") {
+      return {
+        notFound: true,
+      };
+    }
+
     let userPageProps = await getUserDataFromUsername(usernameOrPostId);
+    console.log(userPageProps);
     let finalProps: PostOrUserPageProps = { userPage: true, ...userPageProps };
     return {
       props: finalProps,

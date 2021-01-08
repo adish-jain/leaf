@@ -1,27 +1,28 @@
 import { useContext } from "react";
+import { AuthContext } from "../../contexts/auth-context";
 import { DomainContext } from "../../contexts/domain-context";
+import { goToPost } from "../../lib/usePosts";
 import landingStyles from "../../styles/landing.module.scss";
 
 export function PublishedPost(props: {
   title: string;
   postId: string;
   postUid: string;
-  deletePost: (postUid: string) => void;
-  goToPost: (username: string, postId: string) => void;
   postsEditClicked: boolean;
   username: string;
   formattedDate: string;
   draftId: string;
   goToDraft: (draftId: string) => void;
 }) {
-  let { username, postId, deletePost, postUid, goToDraft } = props;
+  let { username, postId, postUid, goToDraft } = props;
   const { customDomain } = useContext(DomainContext);
+  const { authenticated } = useContext(AuthContext);
 
   const Editbuttons = () => {
     return (
       <div className={landingStyles["EditButtons"]}>
         <button
-          onClick={(e) => props.deletePost(postUid)}
+          onClick={(e) => deletePost(postUid)}
           className={landingStyles["Edit"]}
         >
           X
