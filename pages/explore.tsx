@@ -44,6 +44,7 @@ export default function Pages() {
     revalidateOnMount: true,
   });
 
+
   const [filteredPosts, filterPosts] = useState(postsData);
   const [searchFilter, updateSearchFilter] = useState("");
   const [tagFilter, updateTagFilter] = useState("All");
@@ -68,6 +69,8 @@ export default function Pages() {
   useEffect(() => {
     filterPosts(postsData);
   }, [postsData]);
+
+  console.log(filteredPosts);
 
   return (
     <div className={exploreStyles["container"]}>
@@ -445,10 +448,14 @@ function DisplayPosts(props: {
 }) {
   try {
     const router = useRouter();
+    console.log(props.posts.length);
     return (
       <div>
-        {props.posts.length === 0 ? (
-          <h3>No posts found</h3>
+        {(props.posts.length === 0 || props.posts.length === undefined) ? (
+          (props.posts.length === 0 ? 
+            <h3>No posts found</h3> :
+            <div className={exploreStyles["post-loading"]}></div>
+          )
         ) : (
           <div>
             {Array.from(props.posts).map((post: Post) => {
