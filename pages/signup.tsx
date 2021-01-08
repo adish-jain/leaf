@@ -169,6 +169,10 @@ export default function SignUp() {
       });
   };
 
+  const responseFail = (response: any) => {
+    console.log("failed");
+  }
+
   return (
     <div className="container">
       <Head>
@@ -219,7 +223,7 @@ export default function SignUp() {
                   clientId={NEXT_PUBLIC_OAUTH_CLIENT_ID}
                   buttonText="Continue with Google"
                   onSuccess={responseGoogle}
-                  onFailure={responseGoogle}
+                  onFailure={responseFail}
                   cookiePolicy={"single_host_origin"}
                   theme="light"
                 />

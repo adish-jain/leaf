@@ -292,6 +292,11 @@ function LoginScreen(props: {
         console.log(error);
       });
   };
+
+  const responseFail = (response: any) => {
+    console.log("failed");
+  }
+  
   return (
     <div className={loginStyles["LoginBox"]}>
       <h1>Login</h1>
@@ -300,7 +305,7 @@ function LoginScreen(props: {
         clientId={NEXT_PUBLIC_OAUTH_CLIENT_ID}
         buttonText="Continue with Google"
         onSuccess={responseGoogle}
-        onFailure={responseGoogle}
+        onFailure={responseFail}
         cookiePolicy={"single_host_origin"}
         theme="light"
       />

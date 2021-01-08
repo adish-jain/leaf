@@ -20,13 +20,16 @@
 
 .title {
   box-sizing: border-box;
-  padding-left: 16px;
-  padding-right: 16px;
+}
+
+@media only screen and (max-width: 800px) {
+  .title {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
 }
 
 .published-by {
-  padding-left: 16px;
-  padding-right: 16px;
   box-sizing: border-box;
   margin-top: 4px;
   //   padding: 4px;
@@ -38,6 +41,13 @@
   color: #757575;
   font-weight: 200;
   @include link-item;
+}
+
+@media only screen and (max-width: 800px) {
+  .published-by {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
 }
 
 @media only screen and (max-width: 600px) {
