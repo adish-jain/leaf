@@ -23,7 +23,7 @@ export default function CodeStepSection(props: {
   return (
     <div ref={ref} className={codeStepSectionStyles["codestep-section"]}>
       <CodeStepHeader />
-      <div className={codeStepSectionStyles["codestep-content"]}>
+      <div className={codeStepSectionStyles["draft-codestep-content"]}>
         <Publishing startIndex={startIndex} codeSteps={codeSteps} />
         <CodeEditor inView={inView} />
       </div>
