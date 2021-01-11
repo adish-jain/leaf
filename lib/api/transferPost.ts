@@ -27,37 +27,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  const currentOwner = req.body.currentOwner;
-  const postId = req.body.postId;
-  const newUsername = req.body.newUsername;
-
-  const [originalUid, newUid] = await Promise.all([
-    getUidFromUsername(currentOwner),
-    getUidFromUsername(newUsername),
-  ]);
-
-  const data = await getDraftDataFromPostId(currentOwner, postId);
-  let docRef = await db
-    .collection("users")
-    .doc(newUid)
-    .collection("drafts")
-    .add({
-      title: data.title,
-      createdAt: data.createdAt,
-      published: data.published,
-      publishedAt: data.publishedAt,
-      tags: data.tags,
-      username: newUsername,
-      errored: data.errored,
-      likes: data.likes || 0,
-      postId: data.postId,
-    });
-  const draftContent = data.draftContent;
-  const files = data.files;
-  await Promise.all([
-    transferDraftContent(docRef, draftContent),
-    transferFileContent(docRef, files),
-  ]);
+ 
 
   res.statusCode = 200;
   res.end();
