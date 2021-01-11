@@ -12,9 +12,13 @@ let indexStyles = require("../styles/index.module.scss");
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   let host = context.req.headers.host || "";
-
+  console.log(process.env.VERCEL_URL);
   // serve default Leaf
-  if (host === "getleaf.app" || host === "localhost:3000") {
+  if (
+    host === "getleaf.app" ||
+    host === "localhost:3000" ||
+    host === process.env.VERCEL_URL
+  ) {
     let propsObject: IndexProps = {
       indexPage: true,
       profileUsername: "",
