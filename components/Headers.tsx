@@ -32,7 +32,7 @@ export function LandingHeader(props: LandingHeaderProps) {
           <Link href={customDomain ? "/" : `/${props.username}`}>
             <a>Profile</a>
           </Link>
-          <Link href={`/explore`}>
+          <Link href={customDomain ? `${getHomeDomain()}/explore` : "/explore"}>
             <a>Explore</a>
           </Link>
           <Link href={`/settings`}>

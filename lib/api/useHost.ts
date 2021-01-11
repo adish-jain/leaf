@@ -9,7 +9,10 @@ export function useHost() {
     updateHost(window.location.hostname);
   }, [process.browser]);
 
-  const customDomain = host !== "getleaf.app" && host !== "localhost";
+  const customDomain =
+    host !== "getleaf.app" &&
+    host !== "localhost" &&
+    host !== process.env.NEXT_PUBLIC_VERCEL_URL;
 
   return {
     host,

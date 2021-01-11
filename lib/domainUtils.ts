@@ -10,7 +10,10 @@ export function getHomeDomain() {
     return `https://${previewUrl}`;
   }
 
-  if (process.env.VERCEL_ENV === "production") {
+  if (
+    process.env.VERCEL_ENV === "production" ||
+    process.env.NODE_ENV === "production"
+  ) {
     return "https://getleaf.app";
   }
   return "https://getleaf.app";
