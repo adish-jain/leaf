@@ -3,7 +3,6 @@ import { ContentContext } from "../../contexts/finishedpost/content-context";
 import {
   contentBlock,
   contentSection,
-  serializedContentBlock,
 } from "../../typescript/types/frontend/postTypes";
 import { FrontendSectionType } from "../../typescript/enums/frontend/postEnums";
 import {
@@ -60,17 +59,15 @@ export function PostContent(props: { scrollSpeed: number }) {
   );
 }
 
-function arrangeContentList(
-  draftContent: serializedContentBlock[]
-): contentSection[] {
+function arrangeContentList(draftContent: contentBlock[]): contentSection[] {
   // iterate through array
 
   // if code step type
   // add to sub array
 
   // if not code step type, break sub array
-  let finalArray: serializedContentBlock[] = [];
-  let subArray: serializedContentBlock[] = [];
+  let finalArray: contentSection[] = [];
+  let subArray: contentBlock[] = [];
   let runningSum = 0;
   for (let i = 0; i < draftContent.length; i++) {
     if (draftContent[i].type === "codestep") {

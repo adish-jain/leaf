@@ -1,36 +1,33 @@
-import { initFirebaseAdmin, initFirebase } from "./initFirebase";
+import { initFirebaseAdmin } from "./initFirebase";
 import { getFilesForDraft } from "./fileUtils";
 import {
   contentBlock,
   draftFrontendRepresentation,
   serializedContentBlock,
-  // publishedPostFrontendRepresentation,
 } from "../typescript/types/frontend/postTypes";
 import {
   draftMetaData,
   PostPageProps,
 } from "../typescript/types/frontend/postTypes";
 import { EMPTY_TIMESTAMP } from "../typescript/types/app_types";
-import { fireBasePostType } from "../typescript/types/backend/postTypes";
-import { ParsedUrlQuery } from "querystring";
-import { firestore } from "firebase";
-import { GetServerSidePropsContext } from "next";
-
-const admin = require("firebase-admin");
-let db: firestore.Firestore = admin.firestore();
+import {
+  fireBasePostType,
+  fireBaseContentBlock,
+} from "../typescript/types/backend/postTypes";
+import typedAdmin from "firebase-admin";
+let db = typedAdmin.firestore();
 initFirebaseAdmin();
 
 import {
   getUidFromUsername,
   getUsernameFromUid,
   getProfileImageFromUid,
-  getProfileData,
   getUidFromDomain,
   getCustomDomainByUsername,
 } from "./userUtils";
 import { timeStamp, Post } from "../typescript/types/app_types";
-import ErroredPage from "../pages/404";
 import { fireBaseUserType } from "../typescript/types/backend/userTypes";
+import { serializePostContent } from "./useBackend";
 
 export async function getDraftMetadata(
   uid: string,
@@ -166,14 +163,14 @@ export async function getDraftContent(
     .orderBy("order");
   return await draftContentRef
     .get()
-    .then(function (draftContentCollection: firebase.firestore.QuerySnapshot) {
+    .then(function (draftContentCollection) {
       let results: contentBlock[] = [];
       draftContentCollection.forEach(function (result) {
-        let resultsJSON = result.data();
+        let resultsJSON = result.data() as fireBaseContentBlock;
         results.push({
           type: resultsJSON.type,
           slateContent: resultsJSON.slateContent,
-          fileId: resultsJSON.fileId as string,
+          fileId: resultsJSON.fileId,
           lines: resultsJSON.lines,
           backendId: result.id,
           imageUrl: resultsJSON.imageUrl,
@@ -248,27 +245,11 @@ export async function getPostDataFromPostIdAndDomain(
     username,
     profileImage,
     publishedAtSeconds: publishedAt?._seconds || 0,
+    customDomain:
+      host === "getleaf.app" || host === "localhost:3000" ? false : true,
   };
 
   return result;
-}
-
-export function serializePostContent(
-  postContent: contentBlock[]
-): serializedContentBlock[] {
-  let serializedContentBlocks: serializedContentBlock[] = [];
-  for (let i = 0; i < postContent.length; i++) {
-    let unserializedContent = postContent[i];
-    const { fileId, lines, imageUrl } = unserializedContent;
-    let serializedContent: serializedContentBlock = {
-      ...unserializedContent,
-      fileId: fileId ? fileId : null,
-      imageUrl: imageUrl ? imageUrl : null,
-      lines: lines ? lines : null,
-    };
-    serializedContentBlocks.push(serializedContent);
-  }
-  return serializedContentBlocks;
 }
 
 export async function getDraftImages(uid: string, draftId: string) {
@@ -307,7 +288,8 @@ export async function getAllPostsHandler() {
     .collectionGroup("drafts")
     .where("published", "==", true)
     .get();
-  const arr: firestore.QueryDocumentSnapshot<firestore.DocumentData>[] = [];
+  const arr: FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData>[] = [];
+
   activeRef.forEach((child) => arr.push(child));
   let results: Post[] = [];
   try {
@@ -367,7 +349,7 @@ export async function getAllPostsHandler() {
 }
 
 export async function getPostDataFromFirestoreDoc(
-  fireStoreDoc: firestore.QueryDocumentSnapshot<firestore.DocumentData>
+  fireStoreDoc: FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData>
 ): Promise<Post> {
   let resultsJSON = fireStoreDoc.data() as fireBasePostType;
   let firebaseId = resultsJSON.firebaseId;
@@ -456,6 +438,7 @@ export async function getPostDataFromPostIdAndUsername(
     username,
     profileImage,
     publishedAtSeconds: publishedAt?._seconds || 0,
+    customDomain: false,
   };
 
   return result;

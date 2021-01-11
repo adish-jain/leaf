@@ -37,19 +37,20 @@ export default function UserContent(props: UserPageProps) {
 
   useEffect(() => {
     if (props.profileData !== undefined) {
-      profileData.about !== undefined
+      profileData.about !== undefined && profileData.about !== null
         ? changeAbout(profileData.about)
         : changeAbout(profileUsername + " hasn't written a bio");
-      profileData.twitter !== undefined
+      profileData.twitter !== undefined && profileData.twitter !== null
         ? changeTwitter(profileData.twitter)
         : null;
-      profileData.github !== undefined
+      profileData.github !== undefined && profileData.github !== null
         ? changeGithub(profileData.github)
         : null;
-      profileData.website !== undefined
+      profileData.website !== undefined && profileData.website !== null
         ? changeWebsite(profileData.website)
         : null;
-      profileData.profileImage !== undefined
+      profileData.profileImage !== undefined &&
+      profileData.profileImage !== null
         ? changeProfileImage(profileData.profileImage)
         : "";
     }

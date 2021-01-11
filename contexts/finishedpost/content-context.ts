@@ -8,7 +8,7 @@ import {
 export const ContentContext = createContext(<ContentContextType>{});
 
 type ContentContextType = {
-  postContent: serializedContentBlock[];
+  postContent: contentBlock[];
   selectedContentIndex: number;
   updateContentIndex: (newIndex: number) => void;
   username: string;

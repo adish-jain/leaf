@@ -39,3 +39,13 @@ export type fireBasePostType = {
   username: string;
   firebaseId?: string;
 };
+
+export type fireBaseContentBlock = {
+  draftId: string;
+  order: number;
+  slateContent: string;
+  type: ContentBlockType;
+  lines?: Lines;
+  fileId?: string;
+  imageUrl?: string;
+};

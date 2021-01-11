@@ -1,24 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { useRouter } from "next/router";
+import React from "react";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 import {
-  getUserPosts,
-  getUidFromUsername,
-  getProfileData,
   getUserDataFromUsername,
   getCustomDomainByUsername,
 } from "../../lib/userUtils";
-import { useLoggedIn } from "../../lib/UseLoggedIn";
-import appStyles from "../../styles/app.module.scss";
-import profileStyles from "../../styles/profile.module.scss";
-import Header, { HeaderUnAuthenticated } from "../../components/Header";
-import ErroredPage from "../404";
-import { Post } from "../../typescript/types/app_types";
-import { useUserInfo } from "../../lib/useUserInfo";
-import { motion, AnimatePresence } from "framer-motion";
-const dayjs = require("dayjs");
-import TextareaAutosize from "react-autosize-textarea";
 import UserContent from "../../components/UserPage/UserPage";
 import { UserPageProps } from "../../typescript/types/backend/userTypes";
 import { PostPageProps } from "../../typescript/types/frontend/postTypes";
@@ -55,7 +41,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       );
       let finalProps: PostOrUserPageProps = {
         userPage: false,
-        customDomain: true,
         ...postPageProps,
       };
       return {

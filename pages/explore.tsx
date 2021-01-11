@@ -5,7 +5,6 @@ import { HeaderUnAuthenticated } from "../components/Header";
 import Header from "../components/Header";
 import { useRouter } from "next/router";
 import exploreStyles from "../styles/explore.module.scss";
-import useSWR from "swr";
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useUserInfo } from "../lib/useUserInfo";

@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { AuthContext } from "../../contexts/auth-context";
 import { DomainContext } from "../../contexts/domain-context";
-import { goToPost, usePosts } from "../../lib/usePosts";
+import { goToDraft, goToPost, usePosts } from "../../lib/usePosts";
 import landingStyles from "../../styles/landing.module.scss";
 
 export function PublishedPost(props: {
@@ -9,13 +9,11 @@ export function PublishedPost(props: {
   postId: string;
   postUid: string;
   postsEditClicked: boolean;
-  username: string;
   formattedDate: string;
   draftId: string;
-  goToDraft: (draftId: string) => void;
 }) {
-  let { username, postId, postUid, goToDraft } = props;
-  const { customDomain } = useContext(DomainContext);
+  let { postId, postUid } = props;
+  const { customDomain, username } = useContext(DomainContext);
   const { authenticated } = useContext(AuthContext);
   const { deletePost } = usePosts(authenticated);
   const Editbuttons = () => {

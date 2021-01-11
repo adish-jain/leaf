@@ -1,27 +1,11 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 import FinishedPost from "../../components/FinishedPost";
-import { getAllPosts } from "../../lib/api/publishPost";
-import {
-  getUsernameFromUid,
-  getUidFromUsername,
-  getProfileData,
-} from "../../lib/userUtils";
-
-import {
-  getDraftDataFromPostId,
-  getPostDataFromPostIdAndUsername,
-} from "../../lib/postUtils";
+import { getPostDataFromPostIdAndUsername } from "../../lib/postUtils";
 import DefaultErrorPage from "next/error";
 import { useRouter } from "next/router";
-import ErroredPage from "../404";
-import { File, Step, timeStamp } from "../../typescript/types/app_types";
-import {
-  contentBlock,
-  fileObject,
-  PostPageProps,
-} from "../../typescript/types/frontend/postTypes";
+import { PostPageProps } from "../../typescript/types/frontend/postTypes";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
@@ -52,7 +36,17 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const Post = (props: PostPageProps) => {
   const router = useRouter();
-
+  const {
+    title,
+    postContent,
+    files,
+    username,
+    profileImage,
+    tags,
+    likes,
+    publishedAtSeconds,
+    customDomain,
+  } = props;
   if (router.isFallback) {
     return <div>Loading...</div>;
   }
@@ -70,17 +64,18 @@ const Post = (props: PostPageProps) => {
       </Head>
       <main>
         <FinishedPost
-          title={props.title}
-          postContent={props.postContent}
-          files={props.files}
-          username={props.username}
-          profileImage={props.profileImage}
-          tags={props.tags}
-          likes={props.likes}
+          title={title}
+          postContent={postContent}
+          files={files}
+          username={username}
+          profileImage={profileImage}
+          tags={tags}
+          likes={likes}
           previewMode={false}
-          publishedAtSeconds={props.publishedAtSeconds}
+          publishedAtSeconds={publishedAtSeconds}
           published={true}
           publishedView={true}
+          customDomain={customDomain}
         />
       </main>
     </div>

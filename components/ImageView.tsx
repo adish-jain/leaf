@@ -112,7 +112,7 @@ export default function ImageView(props: ImageViewProps) {
             newUrl
           );
         })
-        .catch((error) => {
+        .catch((error: any) => {
           console.log(error);
           console.log("upload failed.");
         });

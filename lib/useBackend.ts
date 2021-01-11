@@ -1,7 +1,9 @@
 import { Lines } from "../typescript/types/app_types";
 import { ContentBlockType } from "../typescript/enums/backend/postEnums";
-import { contentBlock } from "../typescript/types/frontend/postTypes";
-
+import {
+  contentBlock,
+  serializedContentBlock,
+} from "../typescript/types/frontend/postTypes";
 import {
   Node,
   Text,
@@ -37,6 +39,7 @@ function prepareFetching(draftId: string) {
     );
   return contentFetcher;
 }
+
 export function useBackend(authenticated: boolean, draftId: string) {
   const initialDraftContent: contentBlock[] = [];
   let timer: NodeJS.Timeout;
@@ -280,3 +283,39 @@ const toBase64 = (file: any) =>
     reader.onload = () => resolve(reader.result);
     reader.onerror = (error) => reject(error);
   });
+
+export function serializePostContent(
+  postContent: contentBlock[]
+): serializedContentBlock[] {
+  let serializedContentBlocks: serializedContentBlock[] = [];
+  for (let i = 0; i < postContent.length; i++) {
+    let unserializedContent = postContent[i];
+    const { fileId, lines, imageUrl } = unserializedContent;
+    let serializedContent: serializedContentBlock = {
+      ...unserializedContent,
+      fileId: fileId ? fileId : null,
+      imageUrl: imageUrl ? imageUrl : null,
+      lines: lines ? lines : null,
+    };
+    serializedContentBlocks.push(serializedContent);
+  }
+  return serializedContentBlocks;
+}
+
+export function deSerializePostContent(
+  postContent: serializedContentBlock[]
+): contentBlock[] {
+  let deSerializedContentBlocks: contentBlock[] = [];
+  for (let i = 0; i < postContent.length; i++) {
+    let serializedContent = postContent[i];
+    const { fileId, lines, imageUrl } = serializedContent;
+    let deSerializedContent: contentBlock = {
+      ...serializedContent,
+      fileId: fileId ? fileId : undefined,
+      imageUrl: imageUrl ? imageUrl : undefined,
+      lines: lines ? lines : undefined,
+    };
+    deSerializedContentBlocks.push(deSerializedContent);
+  }
+  return deSerializedContentBlocks;
+}

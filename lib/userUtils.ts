@@ -1,4 +1,4 @@
-import { initFirebaseAdmin, initFirebase } from "./initFirebase";
+import { initFirebaseAdmin } from "./initFirebase";
 import fetch from "isomorphic-fetch";
 import { NextApiRequest, NextApiResponse } from "next";
 import { setTokenCookies, removeTokenCookies } from "./cookieUtils";
@@ -13,13 +13,11 @@ import {
   fireBaseUserType,
   UserPageProps,
 } from "../typescript/types/backend/userTypes";
-import { firestore } from "firebase";
 import { getPostDataFromFirestoreDoc } from "./postUtils";
+import typedAdmin from "firebase-admin";
 const admin = require("firebase-admin");
-
-const dayjs = require("dayjs");
 initFirebaseAdmin();
-let db: firestore.Firestore = admin.firestore();
+let db = typedAdmin.firestore();
 
 // Returns the userRecord based on session cookie
 // updates the response cookies if expired token
@@ -31,9 +29,9 @@ export async function getUser(
   let userToken = cookies.userToken;
   let refreshToken = cookies.refreshToken;
   try {
-    let decodedToken = await admin.auth().verifyIdToken(userToken);
+    let decodedToken = await typedAdmin.auth().verifyIdToken(userToken);
     let uid = decodedToken.uid;
-    let userRecord = await admin.auth().getUser(uid);
+    let userRecord = await typedAdmin.auth().getUser(uid);
     handleLoginCookies(res, userToken, refreshToken);
     return {
       uid,
@@ -65,7 +63,7 @@ export async function getUser(
 }
 
 export async function getUserFromUid(uid: string): Promise<GetUserType> {
-  let userRecord = await admin.auth().getUser(uid);
+  let userRecord = await typedAdmin.auth().getUser(uid);
   return {
     uid,
     userRecord,
@@ -351,7 +349,7 @@ once used for authentication and are still linked
 to accounts (i.e. Google emails). 
 */
 export async function checkEmailAuthDNE(email: string) {
-  let emailDNE = await admin
+  let emailDNE = await typedAdmin
     .auth()
     .listUsers(1000)
     .then(function (userRecords: any) {

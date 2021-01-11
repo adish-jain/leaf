@@ -12,9 +12,7 @@ export function YourPosts(props: {}) {
   const { authenticated } = useContext(AuthContext);
   const { username } = useContext(DomainContext);
 
-  let { posts, deletePost, togglePostsEdit, postsEditClicked } = usePosts(
-    authenticated
-  );
+  let { posts, togglePostsEdit, postsEditClicked } = usePosts(authenticated);
 
   const noPosts = posts.length === 0;
 
@@ -35,7 +33,6 @@ export function YourPosts(props: {}) {
                 postId={post.postId}
                 draftId={post.firebaseId}
                 postUid={post.firebaseId}
-                deletePost={deletePost}
                 key={post.firebaseId}
                 postsEditClicked={postsEditClicked}
               />

@@ -22,6 +22,7 @@ import { PostContent } from "./FinishedPost/PostContent";
 import { Introduction } from "./FinishedPost/Introduction";
 import { PostBody } from "./FinishedPost/PostBody";
 import { DomainContext } from "../contexts/domain-context";
+import { deSerializePostContent } from "../lib/useBackend";
 
 const FinishedPost = (props: FinishedPostProps) => {
   const {
@@ -30,7 +31,7 @@ const FinishedPost = (props: FinishedPostProps) => {
     username,
     title,
     files,
-    postContent,
+    postContent: serializedPostContent,
     profileImage,
     publishedAtSeconds,
     tags,
@@ -41,6 +42,8 @@ const FinishedPost = (props: FinishedPostProps) => {
   // scrollspeed is used to determine whether we should animate transitions
   // or scrolling to highlighted lines. If a fast scroll speed, we skip
   // animations.
+
+  const deSerializedPostContent = deSerializePostContent(serializedPostContent);
 
   const [selectedFileIndex, updateFileIndex] = useState(0);
   const [selectedContentIndex, updateContentIndex] = useState(0);
@@ -81,7 +84,7 @@ const FinishedPost = (props: FinishedPostProps) => {
             value={{
               selectedContentIndex,
               updateContentIndex,
-              postContent,
+              postContent: deSerializedPostContent,
               username,
               profileImage,
               publishedAtSeconds,

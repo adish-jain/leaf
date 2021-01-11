@@ -1,16 +1,11 @@
 import Head from "next/head";
 import Link from "next/link";
-
-import { useLoggedIn, logOut } from "../lib/UseLoggedIn";
+import { useLoggedIn } from "../lib/UseLoggedIn";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { GetServerSideProps } from "next";
 import { UserPageProps } from "../typescript/types/backend/userTypes";
-import {
-  findUserPageByDomain,
-  // getProfileImageFromUid,
-  // getUsernameFromUid,
-} from "../lib/userUtils";
+import { findUserPageByDomain } from "../lib/userUtils";
 import UserContent from "../components/UserPage/UserPage";
 
 let indexStyles = require("../styles/index.module.scss");
