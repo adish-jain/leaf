@@ -32,7 +32,6 @@ export function PostIntro() {
 }
 
 function profileLink(customDomain: boolean, username: string) {
-  console.log(customDomain, username);
   if (customDomain) {
     return "/";
   } else {

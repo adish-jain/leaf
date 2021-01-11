@@ -1,4 +1,5 @@
 import Head from "next/head";
+import { GetStaticProps } from "next";
 import { useLoggedIn } from "../lib/UseLoggedIn";
 import { HeaderUnAuthenticated } from "../components/Header";
 import Header from "../components/Header";
@@ -9,41 +10,34 @@ import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useUserInfo } from "../lib/useUserInfo";
 import { Post } from "../typescript/types/app_types";
+import { getAllPostsHandler } from "../lib/postUtils";
+import { goToPostFromExplore } from "../lib/usePosts";
+import { useHost } from "../lib/api/useHost";
+import ErroredPage from "./404";
 const dayjs = require("dayjs");
 
-export default function Pages() {
-  const rawData = {
-    requestedAPI: "getAllPostsData",
+export const getStaticProps: GetStaticProps = async (context) => {
+  // ...
+  const posts = await getAllPostsHandler();
+
+  return {
+    props: {
+      posts: posts,
+    },
   };
+};
 
-  const myRequest = {
-    method: "POST",
-    headers: new Headers({ "Content-Type": "application/json" }),
-    body: JSON.stringify(rawData),
-  };
+type ExplorPageProps = {
+  posts: Post[];
+};
 
-  const fetcher = (url: string) =>
-    fetch("/api/endpoint", myRequest).then((res: any) => res.json());
+export default function Pages(props: ExplorPageProps) {
+  const postsData = props.posts;
 
-  const initialData = {
-    posts: [
-      {
-        postId: "",
-        postURL: "",
-        title: "",
-        publishedAt: "",
-        tags: [],
-        username: "",
-        profileImage: "",
-      },
-    ],
-  };
-
-  let { data: postsData, mutate } = useSWR("getAllPostsData", fetcher, {
-    initialData,
-    revalidateOnMount: true,
-  });
-
+  // let { data: postsData, mutate } = useSWR("getAllPostsData", fetcher, {
+  //   initialData,
+  //   revalidateOnMount: true,
+  // });
 
   const [filteredPosts, filterPosts] = useState(postsData);
   const [searchFilter, updateSearchFilter] = useState("");
@@ -70,7 +64,11 @@ export default function Pages() {
     filterPosts(postsData);
   }, [postsData]);
 
-  console.log(filteredPosts);
+  const { customDomain } = useHost();
+
+  if (customDomain) {
+    return <ErroredPage></ErroredPage>;
+  }
 
   return (
     <div className={exploreStyles["container"]}>
@@ -448,12 +446,12 @@ function DisplayPosts(props: {
 }) {
   try {
     const router = useRouter();
-    console.log(props.posts.length);
     return (
       <div>
-        {(props.posts.length === 0 || props.posts.length === undefined) ? (
-          (props.posts.length === 0 ? 
-            <h3>No posts found</h3> :
+        {props.posts.length === 0 || props.posts.length === undefined ? (
+          props.posts.length === 0 ? (
+            <h3>No posts found</h3>
+          ) : (
             <div className={exploreStyles["post-loading"]}></div>
           )
         ) : (
@@ -462,13 +460,15 @@ function DisplayPosts(props: {
               return (
                 <div
                   className={exploreStyles["post-explore"]}
-                  onClick={() => router.push(post["postURL"])}
+                  onClick={() => goToPostFromExplore(post)}
                 >
                   <div className={exploreStyles["post-title-explore"]}>
                     {post["title"]}
                   </div>
                   <div className={exploreStyles["post-date"]}>
-                    {dayjs(post["publishedAt"]).format("MMMM D YYYY")}
+                    {dayjs(post["publishedAt"]._seconds * 1000).format(
+                      "MMMM D YYYY"
+                    )}
                   </div>
                   <div className={exploreStyles["post-tags-author"]}>
                     {post["tags"] !== undefined ? (
@@ -501,7 +501,9 @@ function DisplayPosts(props: {
                         <div
                           className={exploreStyles["published-post-author-img"]}
                         >
-                          <img src={post["profileImage"]} />
+                          {post["profileImage"] !== "" && (
+                            <img src={post["profileImage"]} />
+                          )}
                         </div>
                       )}
                       <div>{post["username"]}</div>

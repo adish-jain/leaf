@@ -89,17 +89,20 @@ export async function getAllDraftDataHandler(
       .collection("drafts")
       .doc(draftId)
       .get();
-    let draftData = draftRef.data();
+    let draftData = draftRef.data() as fireBasePostType;
     if (!draftData) {
       throw "undefined draftData";
     }
+    const {
+      title,
+      published,
+      tags,
+      createdAt,
+      publishedAt,
+      postId,
+    } = draftData;
     let typeDraftData = draftData as draftFrontendRepresentation;
-    let title = typeDraftData.title as string;
-    let published: boolean = typeDraftData.published;
-    let tags = typeDraftData.tags as string[];
-    let createdAt: timeStamp = typeDraftData.createdAt;
-    let publishedAt: timeStamp | undefined = typeDraftData.publishedAt;
-    let postId: string | undefined = typeDraftData.postId;
+
     // let privatePost = draftData.privatePost as boolean;
     let likes = typeDraftData.likes;
 
@@ -116,8 +119,8 @@ export async function getAllDraftDataHandler(
       folders: [],
       files: files,
       createdAt: createdAt,
-      published: published,
-      tags: tags,
+      published: published || false,
+      tags: tags || [],
       username: username,
       errored: false,
       profileImage: profileImage,
@@ -128,7 +131,6 @@ export async function getAllDraftDataHandler(
     };
     return results;
   } catch (error) {
-    console.log(error);
     let result = {
       title: "",
       draftContent: [],
@@ -310,38 +312,48 @@ export async function getAllPostsHandler() {
   let results: Post[] = [];
   try {
     for (const doc of arr) {
-      let username = await doc.ref.parent.parent!.get().then((docSnapshot) => {
+      const fireBaseId = doc.id;
+      let username = await doc.ref.parent.parent?.get().then((docSnapshot) => {
         let postData = docSnapshot.data() as fireBasePostType;
         return postData.username;
       });
 
-      let getProfileImage = doc.ref.parent.parent!.get().then((docSnapshot) => {
-        let postData = docSnapshot.data() as fireBaseUserType;
-        return postData.profileImage;
+      let getProfileImage = doc.ref.parent.parent?.get().then((docSnapshot) => {
+        let postData = docSnapshot.data() as fireBaseUserType | undefined;
+        return postData?.profileImage || "";
       });
-
       const [profileImage, customDomain] = await Promise.all([
         getProfileImage,
-        getCustomDomainByUsername(username),
+        getCustomDomainByUsername(username || ""),
       ]);
 
-      let resultsJSON = doc.data();
-      results.push({
-        postId: resultsJSON.postId,
-        title: resultsJSON.title,
-        publishedAt: resultsJSON.publishedAt.toDate(),
-        tags: resultsJSON.tags,
-        likes: resultsJSON.likes,
-        username: username,
-        profileImage: profileImage || "",
-        createdAt: resultsJSON.createdAt,
-        firebaseId: resultsJSON.id,
-        customDomain: customDomain,
-      });
+      let resultsJSON = doc.data() as fireBasePostType;
+      if (username) {
+        results.push({
+          postId: resultsJSON.postId,
+          title: resultsJSON.title,
+          publishedAt: resultsJSON.publishedAt
+            ? {
+                _seconds: resultsJSON.publishedAt._seconds,
+                _nanoseconds: resultsJSON.publishedAt._nanoseconds,
+              }
+            : EMPTY_TIMESTAMP,
+          tags: resultsJSON.tags || [],
+          likes: resultsJSON.likes || 0,
+          username: username,
+          profileImage: profileImage || "",
+          createdAt: {
+            _seconds: resultsJSON.createdAt._seconds,
+            _nanoseconds: resultsJSON.createdAt._nanoseconds,
+          },
+          firebaseId: resultsJSON.firebaseId || fireBaseId,
+          customDomain: customDomain,
+        });
+      }
     }
     // sort by published date
     results.sort(function (a: Post, b: Post) {
-      var keyA = a.publishedAt,
+      let keyA = a.publishedAt,
         keyB = b.publishedAt;
       if (keyA < keyB) return -1;
       if (keyA > keyB) return 1;

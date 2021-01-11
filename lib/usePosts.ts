@@ -83,9 +83,22 @@ export function goToPost(
   postId: string,
   customDomain: boolean
 ) {
-  Router.push("/[username]/[postId]", "/" + username + "/" + postId);
+  if (customDomain) {
+    Router.push("/" + postId);
+  } else {
+    Router.push("/[username]/[postId]", "/" + username + "/" + postId);
+  }
 }
 
-export function goToDraft(draftId: string, customDomain: boolean) {
+export function goToDraft(draftId: string) {
   Router.push("/drafts/[draftId]", "/drafts/" + draftId);
+}
+
+export function goToPostFromExplore(post: Post) {
+  const { customDomain, postId, username } = post;
+  if (post.customDomain) {
+    window.location.href = `https://${customDomain}/${postId}`;
+  } else {
+    Router.push("/[username]/[postId]", "/" + username + "/" + postId);
+  }
 }

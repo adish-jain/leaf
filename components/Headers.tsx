@@ -9,6 +9,7 @@ import { Router, useRouter } from "next/router";
 import { ToolbarContext } from "../contexts/toolbar-context";
 import { saveStatusEnum } from "../typescript/enums/app_enums";
 import { DomainContext } from "../contexts/domain-context";
+import { getHomeDomain } from "../lib/domainUtils";
 
 type DraftHeaderProps = {
   updateShowTags: (value: boolean) => void;
@@ -186,24 +187,31 @@ type FinishedPostHeaderProps = {
   username?: string;
 };
 
-function Links() {
+function FinishedPostLinks() {
+  const { customDomain } = useContext(DomainContext);
   return (
     <div className={draftHeaderStyles["links"]}>
       <Link href="/landing">
         <a>Home</a>
       </Link>
-      <Link href="/explore">
+      <Link href={customDomain ? `${getHomeDomain()}/explore` : "/explore"}>
         <a>Explore</a>
       </Link>
     </div>
   );
 }
 
+function FinishedPostExplore(customDomain: string) {
+  let homeDomain = getHomeDomain();
+  const router = useRouter();
+  router.replace(homeDomain + "/explore");
+}
+
 export function FinishedPostHeader(props: FinishedPostHeaderProps) {
   return (
     <div className={draftHeaderStyles["draft-header"]}>
       <div className={draftHeaderStyles["header-wrapper"]}>
-        <Links />
+        <FinishedPostLinks />
         <div className={draftHeaderStyles["buttons"]}>
           {props.previewMode ? (
             <ExitPreview updatePreviewMode={props.updatePreviewMode!} />

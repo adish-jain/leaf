@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { GetStaticProps, GetServerSideProps } from "next";
 import { useRouter } from "next/router";
+import { GetServerSideProps } from "next";
 import Head from "next/head";
 import {
   getUserPosts,
@@ -43,7 +43,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
 
     let userPageProps = await getUserDataFromUsername(usernameOrPostId);
-    console.log(userPageProps);
     let finalProps: PostOrUserPageProps = { userPage: true, ...userPageProps };
     return {
       props: finalProps,

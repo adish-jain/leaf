@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { GetStaticProps, GetServerSideProps } from "next";
+import { GetServerSideProps } from "next";
 import Head from "next/head";
 import FinishedPost from "../../components/FinishedPost";
 import { getAllPosts } from "../../lib/api/publishPost";

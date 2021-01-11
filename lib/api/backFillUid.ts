@@ -30,15 +30,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  db.collection("users")
+  await db
+    .collection("users")
     .get()
     .then(function (userCollection) {
       userCollection.forEach(async function (userDoc) {
         let uid = userDoc.ref.id;
-        // userDoc.ref.set({
-        //   uid: uid,
-        // });
-
         const user = await typedAdmin
           .auth()
           .getUser(uid)
@@ -49,38 +46,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         if (!user) {
           return;
         }
-        // console.log(user.providerData);
-        const providerData = user.providerData;
-        if (providerData) {
-          let userInfo = providerData[0];
-          let method = userInfo.providerId;
-
-          if (method === "password") {
-            userDoc.ref.update({
-              method: "leaf",
-            });
-          }
-          if (method === "google.com") {
-            userDoc.ref.update({
-              method: "google",
-            });
-          }
-        }
-        let email = user.email;
-        if (email) {
-          let re = new RegExp("(.+)@");
-          let match = re.exec(email);
-          if (match) {
-            let username = match[1];
-            let correctUsername = username + Math.floor(Math.random() * 100);
-            userDoc.ref.update({
-              username: correctUsername,
-            });
-          }
-          userDoc.ref.update({
-            email: email,
-          });
-        }
+        userDoc.ref.update({
+          uid: uid,
+        });
       });
     });
 

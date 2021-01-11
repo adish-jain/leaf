@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { AuthContext } from "../../contexts/auth-context";
 import { DomainContext } from "../../contexts/domain-context";
-import { goToPost } from "../../lib/usePosts";
+import { goToPost, usePosts } from "../../lib/usePosts";
 import landingStyles from "../../styles/landing.module.scss";
 
 export function PublishedPost(props: {
@@ -17,7 +17,7 @@ export function PublishedPost(props: {
   let { username, postId, postUid, goToDraft } = props;
   const { customDomain } = useContext(DomainContext);
   const { authenticated } = useContext(AuthContext);
-
+  const { deletePost } = usePosts(authenticated);
   const Editbuttons = () => {
     return (
       <div className={landingStyles["EditButtons"]}>
@@ -41,7 +41,7 @@ export function PublishedPost(props: {
     <div className={landingStyles["DraftWrapper"]}>
       {props.postsEditClicked ? <Editbuttons /> : <div></div>}
       <div
-        onClick={(e) => props.goToPost(username, postId)}
+        onClick={(e) => goToPost(username, postId, customDomain)}
         className={landingStyles["draft"]}
       >
         <p className={landingStyles["Draft-Title"]}>{props.title}</p>
