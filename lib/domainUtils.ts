@@ -6,7 +6,7 @@ export function getHomeDomain() {
     return "http://localhost:3000";
   }
   if (process.env.VERCEL_ENV === "preview") {
-    const previewUrl = process.env.VERCEL_URL;
+    const previewUrl = process.env.NEXT_PUBLIC_VERCEL_URL;
     return `https://${previewUrl}`;
   }
 
