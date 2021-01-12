@@ -9,7 +9,6 @@ import TextareaAutosize from "react-autosize-textarea/lib";
 import { useRouter } from "next/router";
 import { DisplayPosts } from "./DisplayPosts";
 import { DomainContext } from "../../contexts/domain-context";
-import UserPage from "../../pages/[usernameOrPostId]";
 
 export default function UserContent(props: UserPageProps) {
   const [editingBio, toggleEditingBio] = useState(false);
@@ -29,8 +28,7 @@ export default function UserContent(props: UserPageProps) {
     changeWebsite,
     saveNewProfile,
   } = useUserInfo(authenticated);
-
-  const { profileUsername, customDomain, profileData, posts } = props;
+  const { profileUsername, userHost, profileData, onCustomDomain } = props;
   useEffect(() => {
     toggleCanEditBio(username === profileUsername);
   }, [username, props.profileUsername]);
@@ -59,8 +57,9 @@ export default function UserContent(props: UserPageProps) {
   return (
     <DomainContext.Provider
       value={{
-        username: username,
-        customDomain: customDomain,
+        username: profileUsername,
+        userHost: userHost,
+        onCustomDomain,
       }}
     >
       <div className="container">

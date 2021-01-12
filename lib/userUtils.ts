@@ -477,6 +477,11 @@ export async function getCustomDomainByUsername(username: string) {
   if (!uid) {
     return "";
   }
+
+  return await getCustomDomainByUid(uid);
+}
+
+export async function getCustomDomainByUid(uid: string) {
   let customDomain = await db
     .collection("domains")
     .where("uid", "==", uid)
@@ -501,16 +506,22 @@ export async function findUserPageByDomain(
     .then(async function (snapshot) {
       let data = snapshot.docs[0].data();
       let uid = data.uid;
-      let username = await getUsernameFromUid(uid);
-      let profileData = await getProfileData(uid);
-      let posts = await getUserPosts(uid);
+
+      const [username, profileData, posts, userHost] = await Promise.all([
+        getUsernameFromUid(uid),
+        getProfileData(uid),
+        getUserPosts(uid),
+        getCustomDomainByUid(uid),
+      ]);
+
       let result: UserPageProps = {
         profileUsername: username,
         profileData: profileData,
         uid: uid,
         posts: posts,
         errored: false,
-        customDomain: true,
+        onCustomDomain: true,
+        userHost,
       };
       return result;
     })
@@ -524,20 +535,35 @@ export async function findUserPageByDomain(
         uid: "uid",
         posts: [],
         errored: true,
-        //hello rhamghul, plz dont eat my rice
-        customDomain: false,
+        onCustomDomain: false,
+        userHost: "",
       };
     });
   return userInfo;
 }
 
 export async function getUserDataFromUsername(
-  username: string
+  username: string,
+  onCustomDomain: boolean
 ): Promise<UserPageProps> {
   const uid = await getUidFromUsername(username);
-  const [posts, profileData] = await Promise.all([
+  if (uid === "") {
+    return {
+      profileUsername: username,
+      profileData: {
+        email: "",
+      },
+      errored: true,
+      uid: uid,
+      posts: [],
+      onCustomDomain: onCustomDomain,
+      userHost: "",
+    };
+  }
+  const [posts, profileData, userHost] = await Promise.all([
     getUserPosts(uid),
     getProfileData(uid),
+    getCustomDomainByUid(uid),
   ]);
 
   let result: UserPageProps = {
@@ -546,7 +572,8 @@ export async function getUserDataFromUsername(
     errored: false,
     uid: uid,
     posts: posts,
-    customDomain: false,
+    onCustomDomain: onCustomDomain,
+    userHost: userHost,
   };
   return result;
 }

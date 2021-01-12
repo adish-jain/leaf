@@ -20,10 +20,10 @@ export default function Landing() {
   // authenticate
   const { authenticated, error, loading } = useLoggedIn();
 
-  const { customDomain } = useHost();
+  const { onCustomDomain } = useHost();
 
   // Fetch user ifno
-  const { username } = useUserInfo(authenticated);
+  const { username, userHost } = useUserInfo(authenticated);
   // Fetch data for posts
   const { posts, deletePost, postsEditClicked, togglePostsEdit } = usePosts(
     authenticated
@@ -52,17 +52,16 @@ export default function Landing() {
         </Head>
         <DomainContext.Provider
           value={{
-            customDomain: customDomain,
+            onCustomDomain: onCustomDomain,
             username,
+            userHost,
           }}
         >
           <main>
             <LandingHeader username={username} />
             <div className={landingStyles["landing"]}>
-              <YourDrafts
-              />
-              <YourPosts
-              />
+              <YourDrafts />
+              <YourPosts />
             </div>
           </main>
         </DomainContext.Provider>

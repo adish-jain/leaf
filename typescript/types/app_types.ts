@@ -50,7 +50,8 @@ export type FinishedPostProps = {
   updatePreviewMode?: (previewMode: boolean) => void;
   publishedAtSeconds: number;
   publishedView: boolean;
-  customDomain: boolean;
+  onCustomDomain: boolean;
+  userHost: string;
 };
 
 export type GetUserType = {

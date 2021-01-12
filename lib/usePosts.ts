@@ -81,12 +81,17 @@ export function usePosts(authenticated: boolean) {
 export function goToPost(
   username: string,
   postId: string,
-  customDomain: boolean
+  onCustomDomain: boolean,
+  userHost: string
 ) {
-  if (customDomain) {
+  if (onCustomDomain) {
     Router.push("/" + postId);
   } else {
-    Router.push("/[username]/[postId]", "/" + username + "/" + postId);
+    if (userHost !== "") {
+      Router.replace(`https://${userHost}/${postId}`);
+    } else {
+      Router.push("/[username]/[postId]", "/" + username + "/" + postId);
+    }
   }
 }
 

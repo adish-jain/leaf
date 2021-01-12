@@ -7,6 +7,7 @@ import { GetServerSideProps } from "next";
 import { UserPageProps } from "../typescript/types/backend/userTypes";
 import { findUserPageByDomain } from "../lib/userUtils";
 import UserContent from "../components/UserPage/UserPage";
+import { isHostCustomDomain } from "../lib/api/useHost";
 
 let indexStyles = require("../styles/index.module.scss");
 
@@ -17,11 +18,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   console.log("vercel url is ", process.env.NEXT_PUBLIC_VERCEL_URL);
   console.log("host is ", host);
   // serve default Leaf
-  if (
-    host === "getleaf.app" ||
-    host === "localhost:3000" ||
-    host === process.env.NEXT_PUBLIC_VERCEL_URL
-  ) {
+  if (!isHostCustomDomain(host)) {
     let propsObject: IndexProps = {
       indexPage: true,
       profileUsername: "",
@@ -31,7 +28,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       errored: false,
       uid: "",
       posts: [],
-      customDomain: false,
+      onCustomDomain: false,
+      userHost: "",
     };
     return {
       props: propsObject,
@@ -49,7 +47,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 type IndexProps = {
   indexPage: boolean;
-  customDomain: boolean;
+  onCustomDomain: boolean;
 } & UserPageProps;
 
 export default function Pages(props: IndexProps) {
@@ -61,7 +59,8 @@ export default function Pages(props: IndexProps) {
     errored,
     uid,
     posts,
-    customDomain,
+    onCustomDomain,
+    userHost,
   } = props;
   if (authenticated && indexPage) {
     console.log("redirecting to landing");
@@ -94,7 +93,8 @@ export default function Pages(props: IndexProps) {
           posts={posts}
           uid={uid}
           profileUsername={profileUsername}
-          customDomain={customDomain}
+          onCustomDomain={onCustomDomain}
+          userHost={userHost}
         />
       )}
     </div>

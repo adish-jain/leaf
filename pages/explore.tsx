@@ -13,6 +13,7 @@ import { getAllPostsHandler } from "../lib/postUtils";
 import { goToPostFromExplore } from "../lib/usePosts";
 import { useHost } from "../lib/api/useHost";
 import ErroredPage from "./404";
+import { DomainContext } from "../contexts/domain-context";
 const dayjs = require("dayjs");
 
 export const getStaticProps: GetStaticProps = async (context) => {
@@ -23,6 +24,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     props: {
       posts: posts,
     },
+    revalidate: 1,
   };
 };
 
@@ -46,7 +48,7 @@ export default function Pages(props: ExplorPageProps) {
   const [sortSelectOpened, toggleSortSelectOpened] = useState(false);
 
   const { authenticated, error, loading } = useLoggedIn();
-  const { username } = useUserInfo(authenticated);
+  const { username, userHost } = useUserInfo(authenticated);
 
   useEffect(() => {
     searchAndFilterPosts(
@@ -63,9 +65,9 @@ export default function Pages(props: ExplorPageProps) {
     filterPosts(postsData);
   }, [postsData]);
 
-  const { customDomain } = useHost();
+  const { onCustomDomain } = useHost();
 
-  if (customDomain) {
+  if (onCustomDomain) {
     return <ErroredPage></ErroredPage>;
   }
 
@@ -77,12 +79,20 @@ export default function Pages(props: ExplorPageProps) {
       </Head>
       <main className={exploreStyles["explore-main-wrapper"]}>
         {authenticated ? (
-          <Header
-            username={username}
-            profile={true}
-            settings={true}
-            logout={true}
-          />
+          <DomainContext.Provider
+            value={{
+              onCustomDomain,
+              userHost,
+              username,
+            }}
+          >
+            <Header
+              username={username}
+              profile={true}
+              settings={true}
+              logout={true}
+            />
+          </DomainContext.Provider>
         ) : (
           <HeaderUnAuthenticated login={true} signup={true} about={true} />
         )}

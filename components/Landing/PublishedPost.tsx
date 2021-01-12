@@ -13,7 +13,7 @@ export function PublishedPost(props: {
   draftId: string;
 }) {
   let { postId, postUid } = props;
-  const { customDomain, username } = useContext(DomainContext);
+  const { onCustomDomain, username, userHost } = useContext(DomainContext);
   const { authenticated } = useContext(AuthContext);
   const { deletePost } = usePosts(authenticated);
   const Editbuttons = () => {
@@ -39,7 +39,7 @@ export function PublishedPost(props: {
     <div className={landingStyles["DraftWrapper"]}>
       {props.postsEditClicked ? <Editbuttons /> : <div></div>}
       <div
-        onClick={(e) => goToPost(username, postId, customDomain)}
+        onClick={(e) => goToPost(username, postId, onCustomDomain, userHost)}
         className={landingStyles["draft"]}
       >
         <p className={landingStyles["Draft-Title"]}>{props.title}</p>

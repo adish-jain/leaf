@@ -10,6 +10,7 @@ import { ToolbarContext } from "../contexts/toolbar-context";
 import { saveStatusEnum } from "../typescript/enums/app_enums";
 import { DomainContext } from "../contexts/domain-context";
 import { getHomeDomain } from "../lib/domainUtils";
+import { goToProfileFromLanding } from "../lib/api/useHost";
 
 type DraftHeaderProps = {
   updateShowTags: (value: boolean) => void;
@@ -20,7 +21,7 @@ type LandingHeaderProps = {
 };
 
 export function LandingHeader(props: LandingHeaderProps) {
-  const { customDomain } = useContext(DomainContext);
+  const { onCustomDomain, userHost, username } = useContext(DomainContext);
   return (
     <div className={landingHeaderStyles["landing-header"]}>
       <div className={landingHeaderStyles["inner-content"]}>
@@ -29,10 +30,12 @@ export function LandingHeader(props: LandingHeaderProps) {
           src="/images/LeafLogo.svg"
         />
         <div className={landingHeaderStyles["links"]}>
-          <Link href={customDomain ? "/" : `/${props.username}`}>
-            <a>Profile</a>
-          </Link>
-          <Link href={customDomain ? `${getHomeDomain()}/explore` : "/explore"}>
+          <a href={goToProfileFromLanding(onCustomDomain, userHost, username)}>
+            Profile
+          </a>
+          <Link
+            href={onCustomDomain ? `${getHomeDomain()}/explore` : "/explore"}
+          >
             <a>Explore</a>
           </Link>
           <Link href={`/settings`}>
@@ -188,13 +191,13 @@ type FinishedPostHeaderProps = {
 };
 
 function FinishedPostLinks() {
-  const { customDomain } = useContext(DomainContext);
+  const { onCustomDomain } = useContext(DomainContext);
   return (
     <div className={draftHeaderStyles["links"]}>
       <Link href="/landing">
         <a>Home</a>
       </Link>
-      <Link href={customDomain ? `${getHomeDomain()}/explore` : "/explore"}>
+      <Link href={onCustomDomain ? `${getHomeDomain()}/explore` : "/explore"}>
         <a>Explore</a>
       </Link>
     </div>

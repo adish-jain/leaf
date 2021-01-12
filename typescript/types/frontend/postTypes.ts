@@ -84,7 +84,8 @@ export type PostPageProps = {
   username: string;
   profileImage: string;
   publishedAtSeconds: number;
-  customDomain: boolean;
+  userHost: string;
+  onCustomDomain: boolean;
 };
 
 export type serializedContentBlock = {

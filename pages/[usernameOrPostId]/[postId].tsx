@@ -11,13 +11,18 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     let host = context.req.headers.host || "";
     // if default return post data
-    if (host === "localhost:3000" || host === "getleaf.app") {
+    if (
+      host === "localhost:3000" ||
+      host === "getleaf.app" ||
+      host === process.env.NEXT_PUBLIC_VERCEL_URL
+    ) {
       let username = (context.params?.usernameOrPostId || "") as string;
       let postId = (context.params?.postId || "") as string;
 
       let finalProps: PostPageProps = await getPostDataFromPostIdAndUsername(
         username,
-        postId
+        postId,
+        false
       );
       return {
         props: finalProps,
@@ -45,7 +50,8 @@ const Post = (props: PostPageProps) => {
     tags,
     likes,
     publishedAtSeconds,
-    customDomain,
+    onCustomDomain,
+    userHost,
   } = props;
   if (router.isFallback) {
     return <div>Loading...</div>;
@@ -75,7 +81,8 @@ const Post = (props: PostPageProps) => {
           publishedAtSeconds={publishedAtSeconds}
           published={true}
           publishedView={true}
-          customDomain={customDomain}
+          onCustomDomain={onCustomDomain}
+          userHost={userHost}
         />
       </main>
     </div>

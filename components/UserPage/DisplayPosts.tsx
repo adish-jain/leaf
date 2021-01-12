@@ -8,9 +8,9 @@ import { DomainContext } from "../../contexts/domain-context";
 function createPostUrl(
   username: string,
   postId: string,
-  customDomain: boolean
+  onCustomDomain: boolean
 ) {
-  if (customDomain) {
+  if (onCustomDomain) {
     return postId + "/";
   } else {
     return username + "/" + postId;
@@ -18,7 +18,7 @@ function createPostUrl(
 }
 
 export function DisplayPosts(props: { posts: Post[] }) {
-  const { customDomain, username } = useContext(DomainContext);
+  const { onCustomDomain, username } = useContext(DomainContext);
   try {
     const router = useRouter();
     return (
@@ -37,7 +37,7 @@ export function DisplayPosts(props: { posts: Post[] }) {
               const postUrl = createPostUrl(
                 username,
                 post.postId,
-                customDomain
+                onCustomDomain
               );
               return (
                 <div

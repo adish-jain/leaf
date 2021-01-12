@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebaseAdmin, initFirebase } from "../initFirebase";
-import { getUser } from "../userUtils";
+import { getCustomDomainByUsername, getUser } from "../userUtils";
 const admin = require("firebase-admin");
 import { firestore } from "firebase";
 import { fireBaseUserType } from "../../typescript/types/backend/userTypes";
@@ -16,6 +16,8 @@ export default async function getUserInfoHandler(
   let { uid, userRecord } = await getUser(req, res);
   let userDataReference = await db.collection("users").doc(uid).get();
   let userData = (await userDataReference.data()) as fireBaseUserType;
+  const username = userData.username;
+  const userHost = await getCustomDomainByUsername(username || "");
   if (userRecord === undefined) {
     res.end();
     return;
@@ -24,6 +26,7 @@ export default async function getUserInfoHandler(
     ...userData,
     email: userRecord.email,
     emailVerified: userRecord.emailVerified,
+    userHost,
   });
   return;
 }

@@ -20,5 +20,6 @@ export type UserPageProps = {
   errored: boolean;
   uid: string;
   posts: Post[];
-  customDomain: boolean;
+  userHost: string;
+  onCustomDomain: boolean;
 };

@@ -28,6 +28,7 @@ import {
 import { timeStamp, Post } from "../typescript/types/app_types";
 import { fireBaseUserType } from "../typescript/types/backend/userTypes";
 import { serializePostContent } from "./useBackend";
+import { isHostCustomDomain } from "./api/useHost";
 
 export async function getDraftMetadata(
   uid: string,
@@ -205,7 +206,8 @@ export async function getDraftDataFromPostId(username: string, postId: string) {
 
 export async function getPostDataFromPostIdAndDomain(
   host: string,
-  postId: string
+  postId: string,
+  onCustomDomain: boolean
 ): Promise<PostPageProps> {
   const uid = await getUidFromDomain(host);
   let draftId = await db
@@ -245,8 +247,8 @@ export async function getPostDataFromPostIdAndDomain(
     username,
     profileImage,
     publishedAtSeconds: publishedAt?._seconds || 0,
-    customDomain:
-      host === "getleaf.app" || host === "localhost:3000" ? false : true,
+    userHost: host,
+    onCustomDomain,
   };
 
   return result;
@@ -399,7 +401,8 @@ export async function getPostDataFromFirestoreDoc(
 
 export async function getPostDataFromPostIdAndUsername(
   username: string,
-  postId: string
+  postId: string,
+  onCustomDomain: boolean
 ): Promise<PostPageProps> {
   const uid = await getUidFromUsername(username);
   let draftId = await db
@@ -412,9 +415,10 @@ export async function getPostDataFromPostIdAndUsername(
       let myPostRef = postsSnapshot.docs[0].ref;
       return myPostRef.id;
     });
-  const [postData, profileImage] = await Promise.all([
+  const [postData, profileImage, userHost] = await Promise.all([
     getAllDraftDataHandler(uid, draftId),
     getProfileImageFromUid(uid),
+    getCustomDomainByUsername(username),
   ]);
 
   const {
@@ -438,7 +442,8 @@ export async function getPostDataFromPostIdAndUsername(
     username,
     profileImage,
     publishedAtSeconds: publishedAt?._seconds || 0,
-    customDomain: false,
+    userHost,
+    onCustomDomain,
   };
 
   return result;

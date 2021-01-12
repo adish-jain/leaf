@@ -18,3 +18,7 @@ export function getHomeDomain() {
   }
   return "https://getleaf.app";
 }
+
+export function getProfilePageLink(customDomain: boolean) {
+
+}

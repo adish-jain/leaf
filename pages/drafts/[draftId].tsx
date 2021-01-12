@@ -116,7 +116,7 @@ const DraftView = () => {
   if (errored) {
     return <DefaultErrorPage statusCode={404} />;
   }
-  const { customDomain } = useHost();
+  const { onCustomDomain } = useHost();
 
   return (
     <div className={appStyles["container"]}>
@@ -138,7 +138,9 @@ const DraftView = () => {
           }}
         />
       </Head>
-      <DomainContext.Provider value={{ customDomain, username }}>
+      <DomainContext.Provider
+        value={{ onCustomDomain, username, userHost: "" }}
+      >
         <PreviewContext.Provider
           value={{
             previewMode: showPreview,

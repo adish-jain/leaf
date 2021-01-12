@@ -10,25 +10,43 @@ import { UserPageProps } from "../../typescript/types/backend/userTypes";
 import { PostPageProps } from "../../typescript/types/frontend/postTypes";
 import { getPostDataFromPostIdAndDomain } from "../../lib/postUtils";
 import FinishedPost from "../../components/FinishedPost";
+import { isHostCustomDomain } from "../../lib/api/useHost";
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  let host = context.req.headers.host || "";
-  if (!context.params) {
+export const getServerSideProps: GetServerSideProps = async ({
+  res,
+  req,
+  params,
+}) => {
+  let host = req.headers.host || "";
+  if (!params) {
     return {
       notFound: true,
     };
   }
-  let usernameOrPostId = context.params.usernameOrPostId as string;
-  // if default return profile page page
-  if (host === "getleaf.app" || host === "localhost:3000") {
-    let hasCustomDomain = await getCustomDomainByUsername(usernameOrPostId);
-    if (hasCustomDomain !== "") {
+  let usernameOrPostId = params.usernameOrPostId as string;
+  // if request is not from custom domain
+  if (!isHostCustomDomain(host)) {
+    let userHost = await getCustomDomainByUsername(usernameOrPostId);
+    if (userHost !== "") {
+      res.statusCode = 302;
+      let userPageProps = await getUserDataFromUsername(
+        usernameOrPostId,
+        false
+      );
+      let finalProps: PostOrUserPageProps = {
+        userPage: true,
+        ...userPageProps,
+      };
+      res.setHeader("Location", `https://${userHost}`); // Replace <link> with your url link
+      return { props: finalProps };
+    }
+
+    let userPageProps = await getUserDataFromUsername(usernameOrPostId, false);
+    if (userPageProps.errored) {
       return {
         notFound: true,
       };
     }
-
-    let userPageProps = await getUserDataFromUsername(usernameOrPostId);
     let finalProps: PostOrUserPageProps = { userPage: true, ...userPageProps };
     return {
       props: finalProps,
@@ -37,7 +55,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     try {
       let postPageProps = await getPostDataFromPostIdAndDomain(
         host,
-        usernameOrPostId
+        usernameOrPostId,
+        true
       );
       let finalProps: PostOrUserPageProps = {
         userPage: false,
@@ -52,14 +71,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 };
 
-type PostOrUserPageProps = { userPage: boolean; customDomain: boolean } & (
-  | UserPageProps
-  | PostPageProps
-);
+type PostOrUserPageProps = {
+  userPage: boolean;
+  userHost: string;
+} & (UserPageProps | PostPageProps);
 
 export default function PostOrUserPage(props: PostOrUserPageProps) {
-  const { userPage } = props;
-
+  const { userPage, userHost } = props;
+  const onCustomDomain = isHostCustomDomain(userHost);
   let correctTitle: string;
   let correctProps;
   if (userPage) {
@@ -87,7 +106,6 @@ export default function PostOrUserPage(props: PostOrUserPageProps) {
     errored,
     uid,
     posts,
-    customDomain,
   } = props as UserPageProps;
 
   return (
@@ -104,7 +122,8 @@ export default function PostOrUserPage(props: PostOrUserPageProps) {
             errored={errored}
             uid={uid}
             posts={posts}
-            customDomain={customDomain}
+            userHost={userHost}
+            onCustomDomain={onCustomDomain}
           />
         ) : (
           <FinishedPost
@@ -119,7 +138,8 @@ export default function PostOrUserPage(props: PostOrUserPageProps) {
             published={true}
             publishedAtSeconds={publishedAtSeconds}
             publishedView={true}
-            customDomain={customDomain}
+            userHost={userHost}
+            onCustomDomain={onCustomDomain}
           />
         )}
       </main>
