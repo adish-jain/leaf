@@ -13,9 +13,9 @@ import ErroredPage from "./404";
 export default function About() {
   const router = useRouter();
 
-  const { customDomain } = useHost();
+  const { onCustomDomain } = useHost();
 
-  if (customDomain) {
+  if (onCustomDomain) {
     return <ErroredPage></ErroredPage>;
   }
 

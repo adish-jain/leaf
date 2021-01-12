@@ -4,5 +4,6 @@ export const DomainContext = createContext(<DomainContextType>{});
 
 type DomainContextType = {
   username: string;
-  customDomain: boolean;
+  onCustomDomain: boolean;
+  userHost: string;
 };

@@ -58,7 +58,7 @@ const PublishingHeader = (props: {
 export function DraftContent(props: DraftContentProps) {
   const { files } = useContext(FilesContext);
   const { username, profileImage, createdAt } = useContext(DraftContext);
-  const { customDomain } = useContext(DomainContext);
+  const { onCustomDomain, userHost } = useContext(DomainContext);
   const { previewMode, updatePreviewMode, published } = useContext(
     PreviewContext
   );
@@ -97,7 +97,8 @@ export function DraftContent(props: DraftContentProps) {
             publishedAtSeconds={createdAt._seconds}
             publishedView={false}
             published={published}
-            customDomain={customDomain}
+            onCustomDomain={onCustomDomain}
+            userHost={userHost}
           />
         </motion.div>
       )}

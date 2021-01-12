@@ -37,7 +37,8 @@ const FinishedPost = (props: FinishedPostProps) => {
     tags,
     published,
     publishedView,
-    customDomain,
+    userHost,
+    onCustomDomain,
   } = props;
   // scrollspeed is used to determine whether we should animate transitions
   // or scrolling to highlighted lines. If a fast scroll speed, we skip
@@ -68,7 +69,8 @@ const FinishedPost = (props: FinishedPostProps) => {
     <DomainContext.Provider
       value={{
         username: username,
-        customDomain: customDomain,
+        userHost,
+        onCustomDomain,
       }}
     >
       <PreviewContext.Provider
