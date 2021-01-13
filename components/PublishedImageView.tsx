@@ -48,7 +48,7 @@ export default function PublishedImageView(props: PublishedImageViewProps) {
               // opacity: 1,
               // transform: "scaleY(1)"
               // maxHeight: "600px",
-              height: isMobile ? "100px" : "250px",
+              height: isMobile ? "100px" : "200px",
             }}
             exit={{
               // opacity: 0,
