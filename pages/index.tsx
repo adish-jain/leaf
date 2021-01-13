@@ -13,10 +13,6 @@ let indexStyles = require("../styles/index.module.scss");
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   let host = context.req.headers.host || "";
-  console.log("node env is ", process.env.NODE_ENV);
-  console.log("vercel env is ", process.env.VERCEL_ENV);
-  console.log("vercel url is ", process.env.NEXT_PUBLIC_VERCEL_URL);
-  console.log("host is ", host);
   // serve default Leaf
   if (!isHostCustomDomain(host)) {
     let propsObject: IndexProps = {
