@@ -26,7 +26,7 @@ export function HeaderUnAuthenticated(props: HeaderProps) {
         <Logo goTo={goToIndex} />
         <div className={headerStyles["menu-items"]}>
           {signup ? (
-            <Link href="/signup">
+            <Link href={`${getHomeDomain()}/signup`}>
               <a>Signup</a>
             </Link>
           ) : (
@@ -41,16 +41,14 @@ export function HeaderUnAuthenticated(props: HeaderProps) {
             <div></div>
           )}
           {about ? (
-            <Link href="/about">
+            <Link href={`${getHomeDomain()}/about`}>
               <a>About</a>
             </Link>
           ) : (
             <div></div>
           )}
           {explore ? (
-            <Link
-              href={onCustomDomain ? `${getHomeDomain()}/explore` : "/explore"}
-            >
+            <Link href={`${getHomeDomain()}/explore`}>
               <a>Explore</a>
             </Link>
           ) : (

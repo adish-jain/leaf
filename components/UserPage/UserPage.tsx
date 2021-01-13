@@ -9,6 +9,7 @@ import TextareaAutosize from "react-autosize-textarea/lib";
 import { useRouter } from "next/router";
 import { DisplayPosts } from "./DisplayPosts";
 import { DomainContext } from "../../contexts/domain-context";
+import Header, { HeaderUnAuthenticated } from "../Header";
 
 export default function UserContent(props: UserPageProps) {
   const [editingBio, toggleEditingBio] = useState(false);
@@ -62,6 +63,21 @@ export default function UserContent(props: UserPageProps) {
         onCustomDomain,
       }}
     >
+      {authenticated ? (
+        <Header
+          username={username}
+          settings={true}
+          logout={true}
+          explore={true}
+        />
+      ) : (
+        <HeaderUnAuthenticated
+          login={true}
+          signup={true}
+          about={true}
+          explore={true}
+        />
+      )}
       <div className="container">
         <h1 className={profileStyles["profile-header"]}></h1>
         <div className={profileStyles["profile-content"]}>
