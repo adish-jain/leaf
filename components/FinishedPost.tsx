@@ -16,12 +16,13 @@ import { DraftContext } from "../contexts/draft-context";
 import { ContentContext } from "../contexts/finishedpost/content-context";
 import { PublishedFilesContext } from "../contexts/finishedpost/files-context";
 import Link from "next/link";
-import dayjs from "dayjs";
 import { PreviewContext } from "./preview-context";
 import { DimensionsContext } from "../contexts/dimensions-context";
 import { PostContent } from "./FinishedPost/PostContent";
 import { Introduction } from "./FinishedPost/Introduction";
 import { PostBody } from "./FinishedPost/PostBody";
+import { DomainContext } from "../contexts/domain-context";
+import { deSerializePostContent } from "../lib/useBackend";
 
 const FinishedPost = (props: FinishedPostProps) => {
   const {
@@ -30,16 +31,20 @@ const FinishedPost = (props: FinishedPostProps) => {
     username,
     title,
     files,
-    postContent,
+    postContent: serializedPostContent,
     profileImage,
     publishedAtSeconds,
     tags,
     published,
     publishedView,
+    userHost,
+    onCustomDomain,
   } = props;
   // scrollspeed is used to determine whether we should animate transitions
   // or scrolling to highlighted lines. If a fast scroll speed, we skip
   // animations.
+
+  const deSerializedPostContent = deSerializePostContent(serializedPostContent);
 
   const [selectedFileIndex, updateFileIndex] = useState(0);
   const [selectedContentIndex, updateContentIndex] = useState(0);
@@ -61,44 +66,52 @@ const FinishedPost = (props: FinishedPostProps) => {
 
   const { authenticated, error, loading } = useLoggedIn();
   return (
-    <PreviewContext.Provider
+    <DomainContext.Provider
       value={{
-        previewMode,
-        updatePreviewMode: updatePreviewMode,
-        published,
-        publishedView,
+        username: username,
+        userHost,
+        onCustomDomain,
       }}
     >
-      <div className={appStyles["finishedpost-wrapper"]}>
-        <ContentContext.Provider
-          value={{
-            selectedContentIndex,
-            updateContentIndex,
-            postContent,
-            username,
-            profileImage,
-            publishedAtSeconds,
-            tags,
-          }}
-        >
-          <PublishedFilesContext.Provider
+      <PreviewContext.Provider
+        value={{
+          previewMode,
+          updatePreviewMode: updatePreviewMode,
+          published,
+          publishedView,
+        }}
+      >
+        <div className={appStyles["finishedpost-wrapper"]}>
+          <ContentContext.Provider
             value={{
-              updateFileIndex,
-              files,
-              selectedFileIndex,
+              selectedContentIndex,
+              updateContentIndex,
+              postContent: deSerializedPostContent,
+              username,
+              profileImage,
+              publishedAtSeconds,
+              tags,
             }}
           >
-            <FinishedPostHeader
-              updatePreviewMode={updatePreviewMode}
-              previewMode={previewMode}
-              authenticated={authenticated}
-              username={username}
-            />
-            <PostBody scrollSpeed={scrollSpeed} title={title} />
-          </PublishedFilesContext.Provider>
-        </ContentContext.Provider>
-      </div>
-    </PreviewContext.Provider>
+            <PublishedFilesContext.Provider
+              value={{
+                updateFileIndex,
+                files,
+                selectedFileIndex,
+              }}
+            >
+              <FinishedPostHeader
+                updatePreviewMode={updatePreviewMode}
+                previewMode={previewMode}
+                authenticated={authenticated}
+                username={username}
+              />
+              <PostBody scrollSpeed={scrollSpeed} title={title} />
+            </PublishedFilesContext.Provider>
+          </ContentContext.Provider>
+        </div>
+      </PreviewContext.Provider>
+    </DomainContext.Provider>
   );
 };
 

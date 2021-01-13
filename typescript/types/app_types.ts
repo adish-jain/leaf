@@ -2,7 +2,12 @@ import { Block, formattingPaneBlockType } from "../enums/app_enums";
 import { ProgrammingLanguage } from "../types/language_types";
 import { Node } from "slate";
 import { SetStateAction } from "react";
-import { contentBlock, fileObject } from "./frontend/postTypes";
+import {
+  contentBlock,
+  fileObject,
+  serializedContentBlock,
+} from "./frontend/postTypes";
+import admin from "firebase-admin";
 
 export const WAIT_INTERVAL = 5000;
 
@@ -34,7 +39,7 @@ export type Lines = {
 
 export type FinishedPostProps = {
   title: string;
-  postContent: contentBlock[];
+  postContent: serializedContentBlock[];
   tags: string[];
   files: fileObject[];
   likes: number;
@@ -45,22 +50,36 @@ export type FinishedPostProps = {
   updatePreviewMode?: (previewMode: boolean) => void;
   publishedAtSeconds: number;
   publishedView: boolean;
+  onCustomDomain: boolean;
+  userHost: string;
+};
+
+export type GetUserType = {
+  uid: string;
+  userRecord: admin.auth.UserRecord | undefined;
 };
 
 export type Post = {
   postId: string;
-  postURL: string;
   title: string;
   publishedAt: timeStamp;
-  tags: string[] | string;
+  tags: string[];
   likes: number;
   username: string;
   profileImage: string;
+  createdAt: timeStamp;
+  firebaseId: string;
+  customDomain: string;
 };
 
 export type timeStamp = {
   _nanoseconds: number;
   _seconds: number;
+};
+
+export const EMPTY_TIMESTAMP = {
+  _nanoseconds: 0,
+  _seconds: 0,
 };
 
 type CodeSection = {
@@ -83,3 +102,8 @@ export const newFileNode: Node[] = [
     ],
   },
 ];
+
+export type firebaseDomainType = {
+  host: string;
+  uid: string;
+};

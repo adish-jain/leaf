@@ -3,14 +3,11 @@ import {
   CodeSection,
   contentBlock,
   contentSection,
-  fileObject,
-  Lines,
   TextSection as TextSectionType,
 } from "../typescript/types/frontend/postTypes";
-import { Dispatch, SetStateAction, useContext } from "react";
+import { useContext } from "react";
 import TextareaAutosize from "react-autosize-textarea";
 import { DraftHeader } from "./Headers";
-import MarkdownSection from "./MarkdownSection";
 import CodeStepSection from "./CodeStepSection";
 import { opacityFade } from "../styles/framer_animations/opacityFade";
 import { motion, AnimatePresence } from "framer-motion";
@@ -18,16 +15,17 @@ import { DraftContext } from "../contexts/draft-context";
 import TextSection from "./TextSection";
 import publishingStyles from "../styles/publishing.module.scss";
 import appStyles from "../styles/app.module.scss";
-import { FormattingToolbar } from "./FormattingToolbar";
 import FinishedPost from "./FinishedPost";
 import { FilesContext } from "../contexts/files-context";
 import { TagsContext } from "../contexts/tags-context";
 import { PreviewContext } from "./preview-context";
+import { DomainContext } from "../contexts/domain-context";
+import { serializePostContent } from "../lib/useBackend";
 type DraftContentProps = {
   draftContent: contentBlock[];
   draftTitle: string;
   onTitleChange: (updatedtitle: string) => Promise<void>;
-  updateShowTags: any;
+  updateShowTags: (showTags: boolean) => void;
 };
 
 const PublishingHeader = (props: {
@@ -60,12 +58,13 @@ const PublishingHeader = (props: {
 export function DraftContent(props: DraftContentProps) {
   const { files } = useContext(FilesContext);
   const { username, profileImage, createdAt } = useContext(DraftContext);
-
+  const { onCustomDomain, userHost } = useContext(DomainContext);
   const { previewMode, updatePreviewMode, published } = useContext(
     PreviewContext
   );
   const { updateShowTags, selectedTags } = useContext(TagsContext);
   const { draftContent, draftTitle, onTitleChange } = props;
+  const serializedDraftContent = serializePostContent(draftContent);
   return (
     <AnimatePresence>
       {!previewMode && (
@@ -86,7 +85,7 @@ export function DraftContent(props: DraftContentProps) {
       {previewMode && (
         <motion.div>
           <FinishedPost
-            postContent={draftContent}
+            postContent={serializedDraftContent}
             files={files}
             previewMode={previewMode}
             username={username}
@@ -98,6 +97,8 @@ export function DraftContent(props: DraftContentProps) {
             publishedAtSeconds={createdAt._seconds}
             publishedView={false}
             published={published}
+            onCustomDomain={onCustomDomain}
+            userHost={userHost}
           />
         </motion.div>
       )}

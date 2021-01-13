@@ -13,7 +13,7 @@ export default async function publishPost(
 ) {
   let draftId = req.body.draftId;
   let { uid, userRecord } = await getUser(req, res);
-  if (uid === "") {
+  if (uid === "" || userRecord === undefined) {
     res.statusCode = 403;
     res.end();
     return;
@@ -54,9 +54,9 @@ export default async function publishPost(
   db.collection("users").doc(uid).collection("drafts").doc(draftId).update({
     published: true,
     publishedAt: admin.firestore.FieldValue.serverTimestamp(),
-    postId: postId
+    postId: postId,
   });
-  
+
   res.send({
     newURL: newURL,
   });

@@ -1,7 +1,10 @@
-import React, { Component } from "react";
+import React, { Component, useContext } from "react";
 import Link from "next/link";
 import headerStyles from "../styles/header.module.scss";
 import { goToIndex, goToLanding, logOut } from "../lib/UseLoggedIn";
+import { goToProfileFromLanding, useHost } from "../lib/api/useHost";
+import { DomainContext } from "../contexts/domain-context";
+import { getHomeDomain } from "../lib/domainUtils";
 
 type HeaderProps = {
   username?: string;
@@ -14,93 +17,88 @@ type HeaderProps = {
   explore?: boolean;
 };
 
-export class HeaderUnAuthenticated extends Component<HeaderProps> {
-  constructor(props: HeaderProps) {
-    super(props);
-  }
+export function HeaderUnAuthenticated(props: HeaderProps) {
+  const { signup, login, about, explore } = props;
+  const { onCustomDomain } = useHost();
+  return (
+    <div className={headerStyles["header"]}>
+      <div className={headerStyles["navbar"]}>
+        <Logo goTo={goToIndex} />
+        <div className={headerStyles["menu-items"]}>
+          {signup ? (
+            <Link href="/signup">
+              <a>Signup</a>
+            </Link>
+          ) : (
+            <div></div>
+          )}
 
-  render() {
-    const { signup, login, about, explore } = this.props;
-    return (
-      <div className={headerStyles["header"]}>
-        <div className={headerStyles["navbar"]}>
-          <Logo goTo={goToIndex} />
-          <div className={headerStyles["menu-items"]}>
-            {signup ? (
-              <Link href="/signup">
-                <a>Signup</a>
-              </Link>
-            ) : (
-              <div></div>
-            )}
-
-            {login ? (
-              <Link href="/login">
-                <a>Login</a>
-              </Link>
-            ) : (
-              <div></div>
-            )}
-            {about ? (
-              <Link href="/about">
-                <a>About</a>
-              </Link>
-            ) : (
-              <div></div>
-            )}
-            {explore ? (
-              <Link href="/explore">
-                <a>Explore</a>
-              </Link>
-            ) : (
-              <div></div>
-            )}
-          </div>
+          {login ? (
+            <Link href="/login">
+              <a>Login</a>
+            </Link>
+          ) : (
+            <div></div>
+          )}
+          {about ? (
+            <Link href="/about">
+              <a>About</a>
+            </Link>
+          ) : (
+            <div></div>
+          )}
+          {explore ? (
+            <Link
+              href={onCustomDomain ? `${getHomeDomain()}/explore` : "/explore"}
+            >
+              <a>Explore</a>
+            </Link>
+          ) : (
+            <div></div>
+          )}
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
-export default class Header extends Component<HeaderProps> {
-  constructor(props: HeaderProps) {
-    super(props);
-  }
+export default function Header(props: HeaderProps) {
+  const { username, onCustomDomain, userHost } = useContext(DomainContext);
+  let { profile, settings, explore, logout } = props;
 
-  render() {
-    let { username, profile, settings, explore, logout } = this.props;
-    return (
-      <div className={headerStyles["header"]}>
-        <div className={headerStyles["navbar"]}>
-          <Logo goTo={goToLanding} />
-          <div className={headerStyles["menu-items"]}>
-            {profile ? (
-              <Link href={`/${username}`}>
-                <a>Profile</a>
-              </Link>
-            ) : (
-              <div></div>
-            )}
-            {settings ? (
-              <Link href="/settings">
-                <a>Settings</a>
-              </Link>
-            ) : (
-              <div></div>
-            )}
-            {explore ? (
-              <Link href="/explore">
-                <a>Explore</a>
-              </Link>
-            ) : (
-              <div></div>
-            )}
-            {logout ? <Logout /> : <div></div>}
-          </div>
+  return (
+    <div className={headerStyles["header"]}>
+      <div className={headerStyles["navbar"]}>
+        <Logo goTo={goToLanding} />
+        <div className={headerStyles["menu-items"]}>
+          {profile ? (
+            <a
+              href={goToProfileFromLanding(onCustomDomain, userHost, username)}
+            >
+              Profile
+            </a>
+          ) : (
+            <div></div>
+          )}
+          {settings ? (
+            <Link href="/settings">
+              <a>Settings</a>
+            </Link>
+          ) : (
+            <div></div>
+          )}
+          {explore ? (
+            <Link href="/explore">
+              <a>Explore</a>
+            </Link>
+          ) : (
+            <div></div>
+          )}
+          {logout ? <Logout /> : <div></div>}
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 function Logo(props: { goTo: () => void }) {

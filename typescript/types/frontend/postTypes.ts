@@ -46,7 +46,6 @@ export type draftFrontendRepresentation = {
   errored: boolean;
   private: boolean;
   publishedAt?: timeStamp;
-  postURL?: string;
   postId?: string;
   likes?: number;
 };
@@ -73,4 +72,39 @@ export type draftMetaData = {
   published: boolean;
   postId?: string;
   profileImage?: string;
+};
+
+export type PostPageProps = {
+  postContent: serializedContentBlock[];
+  title: string;
+  tags: string[];
+  likes: number;
+  errored: boolean;
+  files: fileObject[];
+  username: string;
+  profileImage: string;
+  publishedAtSeconds: number;
+  userHost: string;
+  onCustomDomain: boolean;
+};
+
+export type serializedContentBlock = {
+  type: ContentBlockType;
+  slateContent: string;
+  backendId: string;
+} & serializedCodeStepBlock;
+
+export type serializedCodeStepBlock = {
+  fileId: string | null;
+  lines: Lines | null;
+  imageUrl: string | null;
+};
+
+export type LandingDraftType = {
+  id: string;
+  title: string;
+  createdAt: {
+    _nanoseconds: number;
+    _seconds: number;
+  };
 };

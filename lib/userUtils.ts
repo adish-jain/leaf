@@ -1,19 +1,23 @@
-import { initFirebaseAdmin, initFirebase } from "./initFirebase";
+import { initFirebaseAdmin } from "./initFirebase";
 import fetch from "isomorphic-fetch";
 import { NextApiRequest, NextApiResponse } from "next";
 import { setTokenCookies, removeTokenCookies } from "./cookieUtils";
 import { timeStamp } from "../typescript/types/app_types";
-import { Post } from "../typescript/types/app_types";
-import { firestore } from "firebase";
-
+import {
+  Post,
+  GetUserType,
+  firebaseDomainType,
+} from "../typescript/types/app_types";
+import { fireBasePostType } from "../typescript/types/backend/postTypes";
+import {
+  fireBaseUserType,
+  UserPageProps,
+} from "../typescript/types/backend/userTypes";
+import { getPostDataFromFirestoreDoc } from "./postUtils";
+import typedAdmin from "firebase-admin";
 const admin = require("firebase-admin");
 initFirebaseAdmin();
-let db: firestore.Firestore = admin.firestore();
-
-type GetUserType = {
-  uid: string;
-  userRecord: any;
-};
+let db = typedAdmin.firestore();
 
 // Returns the userRecord based on session cookie
 // updates the response cookies if expired token
@@ -25,9 +29,9 @@ export async function getUser(
   let userToken = cookies.userToken;
   let refreshToken = cookies.refreshToken;
   try {
-    let decodedToken = await admin.auth().verifyIdToken(userToken);
+    let decodedToken = await typedAdmin.auth().verifyIdToken(userToken);
     let uid = decodedToken.uid;
-    let userRecord = await admin.auth().getUser(uid);
+    let userRecord = await typedAdmin.auth().getUser(uid);
     handleLoginCookies(res, userToken, refreshToken);
     return {
       uid,
@@ -56,6 +60,14 @@ export async function getUser(
         };
     }
   }
+}
+
+export async function getUserFromUid(uid: string): Promise<GetUserType> {
+  let userRecord = await typedAdmin.auth().getUser(uid);
+  return {
+    uid,
+    userRecord,
+  };
 }
 
 const refreshTokenURL =
@@ -161,6 +173,22 @@ export async function getUidFromUsername(username: string): Promise<string> {
   return uid;
 }
 
+export async function getUidFromDomain(host: string) {
+  let uid = await db
+    .collection("domains")
+    .where("host", "==", host)
+    .get()
+    .then(async function (snapshot) {
+      let data = snapshot.docs[0].data();
+      let uid: string = data.uid;
+      return uid;
+    })
+    .catch((error) => {
+      return "";
+    });
+  return uid;
+}
+
 export async function getUidFromEmail(email: string): Promise<string> {
   let userRef = db.collection("users").where("email", "==", email);
   let uid = await userRef.get().then(function (userSnapshot: any) {
@@ -170,56 +198,73 @@ export async function getUidFromEmail(email: string): Promise<string> {
   return uid;
 }
 
-type landingPagePosts = {
-  published: boolean;
-  created: timeStamp;
-  title: string;
-  postId: string;
-  publishedAt: timeStamp;
-  id: string;
-  tags: string[];
-};
-
-export async function getUserPosts(uid: string): Promise<landingPagePosts[]> {
+export async function getUserPosts(uid: string): Promise<Post[]> {
   let draftsRef = db
     .collection("users")
     .doc(uid)
     .collection("drafts")
     .orderBy("createdAt");
 
-  return await draftsRef
+  let posts = await draftsRef
     .get()
-    .then(function (draftsCollection: any) {
-      let results: landingPagePosts[] = [];
-      draftsCollection.forEach(function (result: any) {
-        let resultsJSON = result.data();
-
-        //published posts have published set to true, so we include these
-        if (resultsJSON.published) {
-          resultsJSON.id = result.id;
-          resultsJSON.publishedAt = resultsJSON.publishedAt.toDate();
-          results.push(resultsJSON);
+    .then(async function (draftsCollection) {
+      let results: Post[] = [];
+      const gatherPromise: Promise<void>[] = [];
+      draftsCollection.forEach(async function (fireStoreDoc) {
+        async function getResult() {
+          let resultsJSON = fireStoreDoc.data() as fireBasePostType;
+          //published posts have published set to true, so we include these
+          if (resultsJSON.published) {
+            let postResult = await getPostDataFromFirestoreDoc(fireStoreDoc);
+            results.push(postResult);
+          }
         }
+        gatherPromise.push(getResult());
       });
-      results.sort(function (a: landingPagePosts, b: landingPagePosts) {
-        var keyA = a.publishedAt,
-          keyB = b.publishedAt;
+      await Promise.all(gatherPromise);
+      results.sort(function (a, b) {
+        let keyA = a.publishedAt._seconds,
+          keyB = b.publishedAt._seconds;
         if (keyA > keyB) return -1;
         if (keyA < keyB) return 1;
         return 0;
       });
+
       return results;
     })
-    .catch(function (error: any) {
+    .catch(function (error) {
       console.log(error);
-      return [];
+      let result: Post[] = [];
+      return result;
     });
+  return posts;
 }
 
-export async function getProfileData(uid: string) {
+export async function getProfileData(uid: string): Promise<fireBaseUserType> {
   let userDataReference = await db.collection("users").doc(uid).get();
-  let userData = await userDataReference.data();
-  return userData;
+  let userData = (await userDataReference.data()) as fireBaseUserType;
+  if (userData) {
+    let result = {
+      about: userData.about || "",
+      github: userData.github || "",
+      profileImage: userData.profileImage || "",
+      twitter: userData.twitter || "",
+      website: userData.website || "",
+      email: userData.email,
+      uid: userData.uid,
+    };
+    return result;
+  } else {
+    let result = {
+      about: "",
+      github: "",
+      profileImage: "",
+      twitter: "",
+      website: "",
+      email: "",
+    };
+    return result;
+  }
 }
 
 export async function getArticlesFromUid(uid: string) {
@@ -304,7 +349,7 @@ once used for authentication and are still linked
 to accounts (i.e. Google emails). 
 */
 export async function checkEmailAuthDNE(email: string) {
-  let emailDNE = await admin
+  let emailDNE = await typedAdmin
     .auth()
     .listUsers(1000)
     .then(function (userRecords: any) {
@@ -409,4 +454,126 @@ export async function isAdmin(req: NextApiRequest, res: NextApiResponse) {
     });
   });
   return isAdmin;
+}
+
+export async function getCustomDomainByUsername(username: string) {
+  let uid = await db
+    .collection("users")
+    .where("username", "==", username)
+    .get()
+    .then(function (snapshot) {
+      let data = snapshot.docs[0].data() as fireBaseUserType;
+      let uid = data.uid;
+      if (!uid) {
+        let directUid = snapshot.docs[0].id;
+        return directUid;
+      } else {
+        return uid;
+      }
+    })
+    .catch(function (err) {
+      return "";
+    });
+  if (!uid) {
+    return "";
+  }
+
+  return await getCustomDomainByUid(uid);
+}
+
+export async function getCustomDomainByUid(uid: string) {
+  let customDomain = await db
+    .collection("domains")
+    .where("uid", "==", uid)
+    .get()
+    .then(function (snapshot) {
+      let domainData = snapshot.docs[0].data() as firebaseDomainType;
+      return domainData.host;
+    })
+    .catch(function (err) {
+      return "";
+    });
+  return customDomain;
+}
+
+export async function findUserPageByDomain(
+  host: string
+): Promise<UserPageProps> {
+  let userInfo: UserPageProps = await db
+    .collection("domains")
+    .where("host", "==", host)
+    .get()
+    .then(async function (snapshot) {
+      let data = snapshot.docs[0].data();
+      let uid = data.uid;
+
+      const [username, profileData, posts, userHost] = await Promise.all([
+        getUsernameFromUid(uid),
+        getProfileData(uid),
+        getUserPosts(uid),
+        getCustomDomainByUid(uid),
+      ]);
+
+      let result: UserPageProps = {
+        profileUsername: username,
+        profileData: profileData,
+        uid: uid,
+        posts: posts,
+        errored: false,
+        onCustomDomain: true,
+        userHost,
+      };
+      return result;
+    })
+    .catch((error) => {
+      // console.log(error);
+      return {
+        profileUsername: "username",
+        profileData: {
+          email: "",
+        },
+        uid: "uid",
+        posts: [],
+        errored: true,
+        onCustomDomain: false,
+        userHost: "",
+      };
+    });
+  return userInfo;
+}
+
+export async function getUserDataFromUsername(
+  username: string,
+  onCustomDomain: boolean
+): Promise<UserPageProps> {
+  const uid = await getUidFromUsername(username);
+  if (uid === "") {
+    return {
+      profileUsername: username,
+      profileData: {
+        email: "",
+      },
+      errored: true,
+      uid: uid,
+      posts: [],
+      onCustomDomain: onCustomDomain,
+      userHost: "",
+    };
+  }
+  const [posts, profileData, userHost] = await Promise.all([
+    getUserPosts(uid),
+    getProfileData(uid),
+    getCustomDomainByUid(uid),
+  ]);
+
+  let result: UserPageProps = {
+    profileUsername: username,
+    profileData: profileData,
+    errored: false,
+    uid: uid,
+    posts: posts,
+    onCustomDomain: onCustomDomain,
+    userHost: userHost,
+  };
+  return result;
 }

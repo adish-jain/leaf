@@ -7,9 +7,17 @@ import { usePosts } from "../lib/usePosts";
 import { HeaderUnAuthenticated } from "../components/Header";
 
 import aboutStyles from "../styles/about.module.scss";
+import { useHost } from "../lib/api/useHost";
+import ErroredPage from "./404";
 
 export default function About() {
   const router = useRouter();
+
+  const { onCustomDomain } = useHost();
+
+  if (onCustomDomain) {
+    return <ErroredPage></ErroredPage>;
+  }
 
   const goToIndex = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();

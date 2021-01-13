@@ -1,6 +1,10 @@
 .admin {
   display: flex;
   justify-content: center;
+  flex-direction: column;
+  // align-items: center;
+  max-width: 600px;
+  margin: auto;
 }
 
 .transfer {

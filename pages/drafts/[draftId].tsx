@@ -29,6 +29,8 @@ import { useLines } from "../../lib/useLines";
 import { TagsContext } from "../../contexts/tags-context";
 import { PreviewContext } from "../../components/preview-context";
 import { Range } from "slate";
+import { useHost } from "../../lib/api/useHost";
+import { DomainContext } from "../../contexts/domain-context";
 const initialMetaData: draftMetaData = {
   title: "",
   errored: false,
@@ -114,6 +116,7 @@ const DraftView = () => {
   if (errored) {
     return <DefaultErrorPage statusCode={404} />;
   }
+  const { onCustomDomain } = useHost();
 
   return (
     <div className={appStyles["container"]}>
@@ -135,81 +138,85 @@ const DraftView = () => {
           }}
         />
       </Head>
-      <PreviewContext.Provider
-        value={{
-          previewMode: showPreview,
-          updatePreviewMode: updateShowPreview,
-          published: published,
-          publishedView: false,
-        }}
+      <DomainContext.Provider
+        value={{ onCustomDomain, username, userHost: "" }}
       >
-        <LinesContext.Provider
+        <PreviewContext.Provider
           value={{
-            currentlySelectedLines,
-            changeSelectedLines,
+            previewMode: showPreview,
+            updatePreviewMode: updateShowPreview,
+            published: published,
+            publishedView: false,
           }}
         >
-          <ToolbarContext.Provider
+          <LinesContext.Provider
             value={{
-              setBold: boldSelection,
-              setItalic: italicizeSelection,
-              saveState: saveState,
-              updateSaving: updateSaving,
-              setCode: codeSelection,
-              updateMarkType,
-              currentMarkType,
-              selectionCoordinates,
-              updateSelectionCoordinates,
-              updateLinkSelection,
-              linkSelection,
+              currentlySelectedLines,
+              changeSelectedLines,
             }}
           >
-            <FilesContextWrapper
-              authenticated={authenticated}
-              draftId={draftId as string}
+            <ToolbarContext.Provider
+              value={{
+                setBold: boldSelection,
+                setItalic: italicizeSelection,
+                saveState: saveState,
+                updateSaving: updateSaving,
+                setCode: codeSelection,
+                updateMarkType,
+                currentMarkType,
+                selectionCoordinates,
+                updateSelectionCoordinates,
+                updateLinkSelection,
+                linkSelection,
+              }}
             >
-              <TagsContext.Provider
-                value={{
-                  showTags,
-                  updateShowTags,
-                  selectedTags: tags,
-                  toggleTag,
-                }}
+              <FilesContextWrapper
+                authenticated={authenticated}
+                draftId={draftId as string}
               >
-                <main className={appStyles["AppWrapper"]}>
-                  {showTags ? (
-                    <Tags title={draftTitle} />
-                  ) : (
-                    <DraftContext.Provider
-                      value={{
-                        addBackendBlock: addBackendBlock,
-                        updateSlateSectionToBackend: updateSlateSectionToBackend,
-                        username: username,
-                        postId: postId,
-                        draftId: draftId as string,
-                        currentlyEditingBlock: currentlyEditingBlock,
-                        changeEditingBlock: changeEditingBlock,
-                        deleteBlock,
-                        nextBlockType,
-                        removeFileFromCodeSteps,
-                        profileImage,
-                        createdAt,
-                      }}
-                    >
-                      <DraftContent
-                        onTitleChange={onTitleChange}
-                        draftTitle={draftTitle}
-                        updateShowTags={updateShowTags}
-                        draftContent={draftContent}
-                      />
-                    </DraftContext.Provider>
-                  )}
-                </main>
-              </TagsContext.Provider>
-            </FilesContextWrapper>
-          </ToolbarContext.Provider>
-        </LinesContext.Provider>
-      </PreviewContext.Provider>
+                <TagsContext.Provider
+                  value={{
+                    showTags,
+                    updateShowTags,
+                    selectedTags: tags,
+                    toggleTag,
+                  }}
+                >
+                  <main className={appStyles["AppWrapper"]}>
+                    {showTags ? (
+                      <Tags title={draftTitle} />
+                    ) : (
+                      <DraftContext.Provider
+                        value={{
+                          addBackendBlock: addBackendBlock,
+                          updateSlateSectionToBackend: updateSlateSectionToBackend,
+                          username: username,
+                          postId: postId,
+                          draftId: draftId as string,
+                          currentlyEditingBlock: currentlyEditingBlock,
+                          changeEditingBlock: changeEditingBlock,
+                          deleteBlock,
+                          nextBlockType,
+                          removeFileFromCodeSteps,
+                          profileImage,
+                          createdAt,
+                        }}
+                      >
+                        <DraftContent
+                          onTitleChange={onTitleChange}
+                          draftTitle={draftTitle}
+                          updateShowTags={updateShowTags}
+                          draftContent={draftContent}
+                        />
+                      </DraftContext.Provider>
+                    )}
+                  </main>
+                </TagsContext.Provider>
+              </FilesContextWrapper>
+            </ToolbarContext.Provider>
+          </LinesContext.Provider>
+        </PreviewContext.Provider>
+      </DomainContext.Provider>
     </div>
   );
 };

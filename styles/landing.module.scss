@@ -92,7 +92,7 @@
 
 .header {
   position: fixed;
-  
+
   top: 0;
   width: 100%;
   background-color: white;
@@ -175,15 +175,15 @@
   }
 
   .create-button {
-    padding: 20px;
-    font-size: 36px;
-    line-height: auto;
+    padding: 8px;
+    font-size: 16px;
+    line-height: 19px;
     color: #ffffff;
 
     background: #349ae9;
-    border: 1px solid #349ae9;
     box-shadow: 0px 4px 16px #edece9;
-    border-radius: 8px;
+    border-radius: 4px;
+    border: 1px solid #edece9;
     cursor: pointer;
   }
 

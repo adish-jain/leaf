@@ -1,7 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebaseAdmin, initFirebase } from "../../lib/initFirebase";
-const admin = require("firebase-admin");
-const firebase = require("firebase/app");
 import fetch from "isomorphic-fetch";
 import { getUser, handleLogoutCookies } from "../../lib/userUtils";
 import sentryHandler from "../../lib/sentryHandler";

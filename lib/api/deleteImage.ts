@@ -2,7 +2,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebaseAdmin, initFirebase } from "../initFirebase";
 const admin = require("firebase-admin");
 import { getUser } from "../userUtils";
-import { getUserStepsForDraft } from "../postUtils";
 let db = admin.firestore();
 initFirebaseAdmin();
 initFirebase();
@@ -41,7 +40,6 @@ async function deleteImageHandler(req: NextApiRequest, res: NextApiResponse) {
     });
 
   res.statusCode = 200;
-  let results = await getUserStepsForDraft(uid, draftId);
-  res.send(results);
+  res.end();
   return;
 }

@@ -1,21 +1,108 @@
 import Head from "next/head";
 import Link from "next/link";
-
-import { useLoggedIn, logOut } from "../lib/UseLoggedIn";
-
+import { useLoggedIn } from "../lib/UseLoggedIn";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { GetServerSideProps } from "next";
+import { UserPageProps } from "../typescript/types/backend/userTypes";
+import { findUserPageByDomain } from "../lib/userUtils";
+import UserContent from "../components/UserPage/UserPage";
+import { isHostCustomDomain } from "../lib/api/useHost";
 
 let indexStyles = require("../styles/index.module.scss");
 
-export default function Pages() {
-  const router = useRouter();
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  let host = context.req.headers.host || "";
+  console.log("node env is ", process.env.NODE_ENV);
+  console.log("vercel env is ", process.env.VERCEL_ENV);
+  console.log("vercel url is ", process.env.NEXT_PUBLIC_VERCEL_URL);
+  console.log("host is ", host);
+  // serve default Leaf
+  if (!isHostCustomDomain(host)) {
+    let propsObject: IndexProps = {
+      indexPage: true,
+      profileUsername: "",
+      profileData: {
+        email: "",
+      },
+      errored: false,
+      uid: "",
+      posts: [],
+      onCustomDomain: false,
+      userHost: "",
+    };
+    return {
+      props: propsObject,
+    };
+  }
+  let userProps = await findUserPageByDomain(host);
+  let propsObject: IndexProps = {
+    indexPage: false,
+    ...userProps,
+  };
+  return {
+    props: propsObject,
+  };
+};
 
+type IndexProps = {
+  indexPage: boolean;
+  onCustomDomain: boolean;
+} & UserPageProps;
+
+export default function Pages(props: IndexProps) {
   const { authenticated, error, loading } = useLoggedIn();
-
-  if (authenticated) {
+  const {
+    indexPage,
+    profileUsername,
+    profileData,
+    errored,
+    uid,
+    posts,
+    onCustomDomain,
+    userHost,
+  } = props;
+  if (authenticated && indexPage) {
+    console.log("redirecting to landing");
     window.location.href = "/landing";
   }
+
+  return (
+    <div className={indexStyles["container"]}>
+      <Head>
+        <title>Leaf</title>
+        <link rel="icon" href="/favicon.ico" />
+        {indexPage && (
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+          if (document.cookie && document.cookie.includes('authed')) {
+            window.location.href = "/landing"
+          }
+        `,
+            }}
+          />
+        )}
+      </Head>
+      {indexPage ? (
+        <IndexPage />
+      ) : (
+        <UserContent
+          profileData={profileData}
+          errored={errored}
+          posts={posts}
+          uid={uid}
+          profileUsername={profileUsername}
+          onCustomDomain={onCustomDomain}
+          userHost={userHost}
+        />
+      )}
+    </div>
+  );
+}
+
+function IndexPage() {
+  const router = useRouter();
 
   const goToIndex = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
@@ -23,32 +110,17 @@ export default function Pages() {
   };
 
   return (
-    <div className={indexStyles["container"]}>
-      <Head>
-        <title>Leaf</title>
-        <link rel="icon" href="/favicon.ico" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-          if (document.cookie && document.cookie.includes('authed')) {
-            window.location.href = "/landing"
-          }
-        `,
-          }}
-        />
-      </Head>
-      <main className={indexStyles["MainWrapper"]}>
-        <Header goToIndex={goToIndex} />
-        <HeaderDropDown goToIndex={goToIndex} />
-        <Stripe1 />
-        <Title />
-        <Row1 />
-        <Row2 />
-        <Row3 />
-        <Row4 />
-        <Footer goToIndex={goToIndex} />
-      </main>
-    </div>
+    <main className={indexStyles["MainWrapper"]}>
+      <Header goToIndex={goToIndex} />
+      <HeaderDropDown goToIndex={goToIndex} />
+      <Stripe1 />
+      <Title />
+      <Row1 />
+      <Row2 />
+      <Row3 />
+      <Row4 />
+      <Footer goToIndex={goToIndex} />
+    </main>
   );
 }
 

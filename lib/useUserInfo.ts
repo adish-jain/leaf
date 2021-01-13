@@ -1,6 +1,18 @@
 import { useState } from "react";
 import useSWR, { SWRConfig } from "swr";
-
+import { SignUpMethods } from "../typescript/enums/backend/userEnums";
+type userInfoType = {
+  about: string;
+  email: string;
+  emailVerified: boolean;
+  github: string;
+  method: SignUpMethods;
+  twitter: string;
+  uid: string;
+  userHost: string;
+  username: string;
+  website: string;
+};
 const myRequest = (requestedAPI: string) => {
   return {
     method: "POST",
@@ -17,7 +29,18 @@ const userInfoFetcher = () =>
   );
 
 export function useUserInfo(authenticated: boolean) {
-  const initialUserInfo: any = { username: "" };
+  const initialUserInfo: userInfoType = {
+    about: "",
+    email: "",
+    emailVerified: false,
+    github: "",
+    method: SignUpMethods.Leaf,
+    twitter: "",
+    uid: "",
+    userHost: "",
+    username: "",
+    website: "",
+  };
 
   /* Settings-Related State */
   const [newUsername, changeNewUsername] = useState("");
@@ -40,7 +63,7 @@ export function useUserInfo(authenticated: boolean) {
   const [github, changeGithub] = useState("");
   const [website, changeWebsite] = useState("");
 
-  let { data: userInfo, mutate } = useSWR(
+  let { data, mutate } = useSWR<userInfoType>(
     authenticated ? "getUserInfo" : null,
     userInfoFetcher,
     {
@@ -49,11 +72,9 @@ export function useUserInfo(authenticated: boolean) {
     }
   );
 
-  const username = userInfo.username;
-  const email = userInfo.email;
-  const signInMethod = userInfo.method;
-  const emailVerified = userInfo.emailVerified;
+  const userInfo = data || initialUserInfo;
 
+  const { emailVerified, method, email, username, userHost } = userInfo;
   async function saveNewProfile() {
     const changeProfileRequest = {
       method: "POST",
@@ -66,14 +87,11 @@ export function useUserInfo(authenticated: boolean) {
         website: website,
       }),
     };
-    await fetch(
-      "api/endpoint",
-      changeProfileRequest
-    ).then((res) => {
-    })
-    .catch(function (error: any) {
-      console.log(error);
-    });
+    await fetch("api/endpoint", changeProfileRequest)
+      .then((res) => {})
+      .catch(function (error: any) {
+        console.log(error);
+      });
   }
 
   async function saveNewUsername() {
@@ -92,7 +110,7 @@ export function useUserInfo(authenticated: boolean) {
     ).then((res: any) => res.json());
     if (!updateUsernameResponse.error) {
       updateUserNameError("");
-      mutate({ username: newUsername }, true);
+      mutate({ ...userInfo, username: newUsername }, true);
     } else {
       updateUserNameError(updateUsernameResponse.error);
     }
@@ -111,7 +129,7 @@ export function useUserInfo(authenticated: boolean) {
     await fetch("/api/endpoint", changeEmailRequest)
       .then((res) => {
         if (res.status === 200) {
-          mutate({ email: newEmail }, true);
+          mutate({ ...userInfo, email: newEmail }, true);
           updateEmailError("");
           sendEmailVerification();
         }
@@ -164,21 +182,23 @@ export function useUserInfo(authenticated: boolean) {
       }),
     };
     await fetch("/api/endpoint", saveEmailAndPasswordRequest)
-    .then((res) => {
-      if (res.status === 200) {
-        mutate({ signInMethod: "leaf" }, true);
-        updateEmailAndPasswordStatus("Email & password were successfully reset");
-        sendEmailVerification();
-      }
-      if (res.status === 403) {
-        res.json().then((resJson) => {
-          updateEmailAndPasswordStatus(resJson.error);
-        });
-      }
-    })
-    .catch(function (error: any) {
-      console.log(error);
-    });
+      .then((res) => {
+        if (res.status === 200) {
+          mutate({ ...userInfo, method: SignUpMethods.Leaf }, true);
+          updateEmailAndPasswordStatus(
+            "Email & password were successfully reset"
+          );
+          sendEmailVerification();
+        }
+        if (res.status === 403) {
+          res.json().then((resJson) => {
+            updateEmailAndPasswordStatus(resJson.error);
+          });
+        }
+      })
+      .catch(function (error: any) {
+        console.log(error);
+      });
   }
 
   async function sendEmailVerification() {
@@ -229,7 +249,7 @@ export function useUserInfo(authenticated: boolean) {
     emailVerified,
     sendEmailVerification,
     sendEmailVerificationStatus,
-    signInMethod,
+    signInMethod: method,
     about,
     twitter,
     github,
@@ -239,5 +259,6 @@ export function useUserInfo(authenticated: boolean) {
     changeGithub,
     changeWebsite,
     saveNewProfile,
+    userHost,
   };
 }

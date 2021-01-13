@@ -13,7 +13,10 @@ const fetcher = (url: string) =>
   }).then((res) => res.json());
 
 export function useLoggedIn() {
-  const { data, error } = useSWR("/api/auth", fetcher);
+  const { data, error } = useSWR<{ authenticated: boolean }>(
+    "/api/auth",
+    fetcher
+  );
   let loading: boolean;
   useEffect(() => {
     if (data === undefined) {
@@ -24,7 +27,7 @@ export function useLoggedIn() {
 
   if (data === undefined) {
     loading = true;
-    return { false: Boolean, error, loading };
+    return { authenticated: false, error, loading };
   }
   let authenticated = data.authenticated;
   loading = false;

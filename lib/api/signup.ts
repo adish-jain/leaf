@@ -1,13 +1,19 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebase, initFirebaseAdmin } from "../../lib/initFirebase";
-import { userNameErrorMessage, checkEmailAuthDNE, handleLoginCookies } from "../userUtils";
+import { fireBaseUserType } from "../../typescript/types/backend/userTypes";
+import {
+  userNameErrorMessage,
+  checkEmailAuthDNE,
+  handleLoginCookies,
+} from "../userUtils";
 
 const admin = require("firebase-admin");
 const firebase = require("firebase/app");
+import { firestore } from "firebase";
+import { SignUpMethods } from "../../typescript/enums/backend/userEnums";
 initFirebase();
 initFirebaseAdmin();
-let db = admin.firestore();
-
+let db: firestore.Firestore = admin.firestore();
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   let requestBody = req.body;
@@ -67,12 +73,14 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   let signedin_user = userCredential.user;
   let currentUser = await firebase.auth().currentUser;
   await currentUser.sendEmailVerification();
-
-  db.collection("users").doc(signedin_user.uid).set({
+  const newUser: fireBaseUserType = {
     email: signedin_user.email,
     username: username,
-    method: "leaf"
-  });
+    method: SignUpMethods.Leaf,
+    uid: signedin_user.uid,
+  };
+
+  db.collection("users").doc(signedin_user.uid).set(newUser);
 
   let userToken = await signedin_user.getIdToken();
   let refreshToken = signedin_user.refreshToken;

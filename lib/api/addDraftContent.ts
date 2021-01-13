@@ -1,16 +1,14 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import "firebase";
 import { initFirebaseAdmin } from "../initFirebase";
-import { getDraftContent } from "../postUtils";
 
 import { Node } from "slate";
 import { ContentBlockType } from "../../typescript/enums/backend/postEnums";
 
 const admin = require("firebase-admin");
-import { getUser, getUsernameFromUid } from "../userUtils";
+import { getUser } from "../userUtils";
 import { firestore } from "firebase";
 initFirebaseAdmin();
-const shortId = require("shortid");
 let db: firestore.Firestore = admin.firestore();
 
 const slateNode: Node[] = [

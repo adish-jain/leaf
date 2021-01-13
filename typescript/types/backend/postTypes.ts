@@ -26,3 +26,26 @@ export type backendFileObject = {
   parentFolderId?: string;
   order?: number;
 };
+
+export type fireBasePostType = {
+  createdAt: timeStamp;
+  errored: boolean;
+  likes?: number;
+  postId: string;
+  published?: boolean;
+  publishedAt?: timeStamp;
+  tags?: string[];
+  title: string;
+  username: string;
+  firebaseId?: string;
+};
+
+export type fireBaseContentBlock = {
+  draftId: string;
+  order: number;
+  slateContent: string;
+  type: ContentBlockType;
+  lines?: Lines;
+  fileId?: string;
+  imageUrl?: string;
+};

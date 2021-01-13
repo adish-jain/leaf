@@ -10,7 +10,12 @@ import {
 } from "slate-react";
 import { getPrismLanguageFromBackend } from "../lib/utils/languageUtils";
 import { motion, AnimatePresence } from "framer-motion";
-import React, { useState, ChangeEvent, useContext } from "react";
+import React, {
+  useState,
+  ChangeEvent,
+  useContext,
+  FunctionComponent,
+} from "react";
 import Image from "next/image";
 import slateEditorStyles from "../styles/slate-editor.module.scss";
 import { PreviewContext } from "./preview-context";
@@ -115,17 +120,15 @@ const HeaderOneElement = (props: RenderElementProps) => {
   );
 };
 
-function HeadingPlaceHolder(props: any) {
-  return (
-    <>
-      {true && (
-        <label contentEditable={false} onClick={(e) => e.preventDefault()}>
-          {props.children}
-        </label>
-      )}
-    </>
-  );
-}
+const HeadingPlaceHolder: FunctionComponent<{}> = ({ children }) => (
+  <>
+    {true && (
+      <label contentEditable={false} onClick={(e) => e.preventDefault()}>
+        {children}
+      </label>
+    )}
+  </>
+);
 
 // Define a React component renderer for h2 blocks.
 const HeaderTwoElement = (props: RenderElementProps) => {

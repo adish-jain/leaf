@@ -8,9 +8,12 @@ import { PreviewContext } from "./preview-context";
 import { Router, useRouter } from "next/router";
 import { ToolbarContext } from "../contexts/toolbar-context";
 import { saveStatusEnum } from "../typescript/enums/app_enums";
+import { DomainContext } from "../contexts/domain-context";
+import { getHomeDomain } from "../lib/domainUtils";
+import { goToProfileFromLanding } from "../lib/api/useHost";
 
 type DraftHeaderProps = {
-  updateShowTags: (value: SetStateAction<boolean>) => void;
+  updateShowTags: (value: boolean) => void;
 };
 
 type LandingHeaderProps = {
@@ -18,6 +21,7 @@ type LandingHeaderProps = {
 };
 
 export function LandingHeader(props: LandingHeaderProps) {
+  const { onCustomDomain, userHost, username } = useContext(DomainContext);
   return (
     <div className={landingHeaderStyles["landing-header"]}>
       <div className={landingHeaderStyles["inner-content"]}>
@@ -26,10 +30,12 @@ export function LandingHeader(props: LandingHeaderProps) {
           src="/images/LeafLogo.svg"
         />
         <div className={landingHeaderStyles["links"]}>
-          <Link href={`/${props.username}`}>
-            <a>Profile</a>
-          </Link>
-          <Link href={`/explore`}>
+          <a href={goToProfileFromLanding(onCustomDomain, userHost, username)}>
+            Profile
+          </a>
+          <Link
+            href={onCustomDomain ? `${getHomeDomain()}/explore` : "/explore"}
+          >
             <a>Explore</a>
           </Link>
           <Link href={`/settings`}>
@@ -96,7 +102,7 @@ function PublishButtonChoice() {
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify({ requestedAPI: "publishPost", draftId: draftId }),
     })
-      .then(async (res: any) => {
+      .then(async (res) => {
         let resJson = await res.json();
         let newUrl = resJson.newURL;
         if (newUrl === "unverified") {
@@ -106,7 +112,7 @@ function PublishButtonChoice() {
         }
         // Router.push(newUrl);
       })
-      .catch(function (err: any) {
+      .catch(function (err) {
         console.log(err);
       });
   }
@@ -184,24 +190,31 @@ type FinishedPostHeaderProps = {
   username?: string;
 };
 
-function Links() {
+function FinishedPostLinks() {
+  const { onCustomDomain } = useContext(DomainContext);
   return (
     <div className={draftHeaderStyles["links"]}>
       <Link href="/landing">
         <a>Home</a>
       </Link>
-      <Link href="/explore">
+      <Link href={onCustomDomain ? `${getHomeDomain()}/explore` : "/explore"}>
         <a>Explore</a>
       </Link>
     </div>
   );
 }
 
+function FinishedPostExplore(customDomain: string) {
+  let homeDomain = getHomeDomain();
+  const router = useRouter();
+  router.replace(homeDomain + "/explore");
+}
+
 export function FinishedPostHeader(props: FinishedPostHeaderProps) {
   return (
     <div className={draftHeaderStyles["draft-header"]}>
       <div className={draftHeaderStyles["header-wrapper"]}>
-        <Links />
+        <FinishedPostLinks />
         <div className={draftHeaderStyles["buttons"]}>
           {props.previewMode ? (
             <ExitPreview updatePreviewMode={props.updatePreviewMode!} />
