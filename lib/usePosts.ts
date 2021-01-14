@@ -19,7 +19,7 @@ const postsFetcher = () =>
 export function usePosts(authenticated: boolean) {
   const [postsEditClicked, changeEditClicked] = useState(false);
   const initialPostsData: Post[] = [];
-  let { data } = useSWR<Post[]>(
+  let { data: posts, error } = useSWR<Post[]>(
     authenticated ? "getPosts" : [null],
     postsFetcher,
     {
@@ -27,8 +27,8 @@ export function usePosts(authenticated: boolean) {
       revalidateOnMount: true,
     }
   );
-
-  const posts = data || [];
+  const loading = !posts;
+  // const posts = data || [;
 
   // Deletes a published post.
   function deletePost(postUid: string) {
@@ -74,6 +74,7 @@ export function usePosts(authenticated: boolean) {
     deletePost,
     postsEditClicked,
     togglePostsEdit,
+    loading,
   };
 }
 
