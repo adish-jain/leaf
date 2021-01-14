@@ -1,19 +1,4 @@
 @import "commonui.scss";
-
-.codestep-content {
-  // border: 1px solid black;
-  display: flex;
-  flex-direction: row-reverse;
-  padding-bottom: 40px;
-
-  // margin-bottom: 64px;
-  margin-right: 80px;
-  // margin-right: 80px;
-  border-bottom: 1px solid $leaf-light-gray;
-  background-color: $leaf-background;
-  margin-top: 64px;
-}
-
 .draft-codestep-content {
   display: flex;
   margin-top: 64px;
@@ -21,7 +6,22 @@
 
   margin-right: 64px;
   // margin-left: 40px;
+}
 
+.codestep-content {
+  // border: 1px solid black;
+  display: flex;
+  // flex-direction: row-reverse;
+  flex-direction: column !important;
+  // padding-bottom: 40px;
+  max-width: 800px;
+  margin: auto;
+  // margin-bottom: 64px;
+  // margin-right: 80px;
+  // margin-right: 80px;
+  border-bottom: 1px solid $leaf-light-gray;
+  background-color: $leaf-background;
+  // margin-top: 64px;
 }
 
 @media only screen and (max-width: 600px) {
@@ -45,8 +45,12 @@
 }
 
 .published-steps {
-  width: 36%;
+  width: 100%;
   position: relative;
+
+  position: relative;
+  top: -55vh;
+  // width: 100% !important;
 }
 
 /* Extra small devices (phones, 600px and down) */

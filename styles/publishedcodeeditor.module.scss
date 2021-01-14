@@ -41,12 +41,18 @@
   // width: 100%;
   // width: 51vw;
   // margin-right: 3vw;
-  margin-left: 40px;
+  // margin-left: 40px;
   height: 92vh;
   position: sticky;
   top: 4vh;
   display: flex;
-  width: 52%;
+  width: 100%;
   flex-direction: column;
   border: 1px solid $leaf-light-gray;
+
+  height: 50vh;
+  width: 100%;
+  margin-left: 0;
+  top: 50vh;
+  z-index: 5;
 }
