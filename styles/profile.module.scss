@@ -47,7 +47,17 @@
   flex-direction: row;
 }
 
-.profile-left-pane {
+.profile-left-pane-unfixed {
+  // position: fixed;
+  // display: flex;
+  flex-direction: column;
+  margin-left: 20px;
+  justify-content: center;
+  align-items: center;
+  width: 200px;
+}
+
+.profile-left-pane-fixed {
   position: fixed;
   display: flex;
   flex-direction: column;
@@ -226,7 +236,8 @@
 
 .profile-right-pane {
   display: flex;
-  margin-left: 370px;
+  margin-left: 166px;
+  // margin-left: 370px;
 }
 
 /* Posts */

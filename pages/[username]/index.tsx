@@ -222,7 +222,7 @@ export default function UserPage(props: UserPageProps) {
         )}
         <h1 className={profileStyles["profile-header"]}></h1>
         <div className={profileStyles["profile-content"]}>
-          <div className={profileStyles["profile-left-pane"]}>
+          <div className={profileStyles["profile-left-pane-unfixed"]}>
             {canEditBio ? (
               <AnimatePresence>
                 <motion.div
