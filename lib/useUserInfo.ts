@@ -1,5 +1,6 @@
 import { useState } from "react";
 import useSWR, { SWRConfig } from "swr";
+import { getFollowingFromUsername } from "./userUtils";
 import { SignUpMethods } from "../typescript/enums/backend/userEnums";
 type userInfoType = {
   about: string;
@@ -73,8 +74,38 @@ export function useUserInfo(authenticated: boolean) {
   );
 
   const userInfo = data || initialUserInfo;
-
   const { emailVerified, method, email, username, userHost } = userInfo;
+  
+  const [following, updateFollowing] = useState([]);
+
+  console.log("CALLING GETFOLLOWING");
+  getFollowing();
+
+  async function getFollowing() {
+    const getFollowingRequest = {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify({
+        requestedAPI: "getFollowing",
+        username: username,
+      }),
+    };
+    let followingRes = await fetch("api/endpoint", getFollowingRequest)
+      .then((res) => {
+        return res.json();
+        // res.json().then((resJson) => {
+        //   console.log(resJson);
+        //   // updateFollowing(resJson.error);
+        // });
+      })
+      .catch(function (error: any) {
+        // console.log(error);
+      });
+    // console.log("FINAL RETURN");
+    // updateFollowing(followingRes);
+    // console.log(following);
+  }
+
   async function saveNewProfile() {
     const changeProfileRequest = {
       method: "POST",

@@ -577,3 +577,37 @@ export async function getUserDataFromUsername(
   };
   return result;
 }
+
+/* For a given user, return all users they are following */
+export async function getFollowingFromUsername(username: string) {
+  let uid = await getUidFromUsername(username);
+  let followingRef = db
+    .collection("users")
+    .doc(uid)
+    .collection("following");
+
+  let following = await followingRef
+    .get()
+    .then(async function (followingCollection) {
+      let results: any[] = [];
+      const gatherPromise: Promise<void>[] = [];
+      followingCollection.forEach(async function (fireStoreDoc) {
+        async function getResult() {
+          let resultsJSON = fireStoreDoc.data();
+          // console.log(resultsJSON);
+          //published posts have published set to true, so we include these
+          results.push(resultsJSON);
+        }
+        gatherPromise.push(getResult());
+      });
+      await Promise.all(gatherPromise);
+      return results;
+    })
+    .catch(function (error) {
+      console.log(error);
+      let result: Post[] = [];
+      return result;
+    });
+  console.log("RETURNING FOLLOWING");
+  return following;
+}

@@ -23,7 +23,10 @@ import handleSetEmailAndPassword from "../../lib/api/setEmailAndPassword";
 import handleSetProfile from "../../lib/api/setProfile";
 import handleSaveProfileImage from "../../lib/api/saveProfileImage";
 import handleDeleteProfileImage from "../../lib/api/deleteProfileImage";
+
+// handle following
 import handleFollowUser from "../../lib/api/followUser";
+import handleGetFollowing from "../../lib/api/getFollowing";
 
 // user info
 import handleGetUserInfo from "../../lib/api/getUserInfo";
@@ -160,8 +163,14 @@ export default sentryHandler(
         return handleDeleteProfileImage(req, res);
       }
 
+      /* FOLLOW */
+
       case "followUser": {
         return handleFollowUser(req, res);
+      }
+
+      case "getFollowing": {
+        return handleGetFollowing(req, res);
       }
 
       /* 
