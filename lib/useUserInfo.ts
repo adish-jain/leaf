@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useSWR, { SWRConfig } from "swr";
 import { getFollowingFromUsername } from "./userUtils";
 import { SignUpMethods } from "../typescript/enums/backend/userEnums";
@@ -13,6 +13,7 @@ type userInfoType = {
   userHost: string;
   username: string;
   website: string;
+  following: Array<string>;
 };
 const myRequest = (requestedAPI: string) => {
   return {
@@ -41,6 +42,7 @@ export function useUserInfo(authenticated: boolean) {
     userHost: "",
     username: "",
     website: "",
+    following: [],
   };
 
   /* Settings-Related State */
@@ -74,37 +76,44 @@ export function useUserInfo(authenticated: boolean) {
   );
 
   const userInfo = data || initialUserInfo;
-  const { emailVerified, method, email, username, userHost } = userInfo;
+  const { emailVerified, method, email, username, userHost, following } = userInfo;
+  // console.log("the username is" + username);
   
-  const [following, updateFollowing] = useState([]);
+  // const [following, updateFollowing] = useState([]);
 
-  console.log("CALLING GETFOLLOWING");
-  getFollowing();
-
-  async function getFollowing() {
-    const getFollowingRequest = {
-      method: "POST",
-      headers: new Headers({ "Content-Type": "application/json" }),
-      body: JSON.stringify({
-        requestedAPI: "getFollowing",
-        username: username,
-      }),
-    };
-    let followingRes = await fetch("api/endpoint", getFollowingRequest)
-      .then((res) => {
-        return res.json();
-        // res.json().then((resJson) => {
-        //   console.log(resJson);
-        //   // updateFollowing(resJson.error);
-        // });
-      })
-      .catch(function (error: any) {
-        // console.log(error);
-      });
-    // console.log("FINAL RETURN");
-    // updateFollowing(followingRes);
-    // console.log(following);
-  }
+  // useEffect(() => {
+  //   console.log("username is " + username);
+  //   console.log("CALLING GETFOLLOWING");
+  //   getFollowing();
+  // }, [username]);
+  // console.log("username is " + username);
+  // console.log("following is" + following);
+  // async function getFollowing() {
+  //   const getFollowingRequest = {
+  //     method: "POST",
+  //     headers: new Headers({ "Content-Type": "application/json" }),
+  //     body: JSON.stringify({
+  //       requestedAPI: "getFollowing",
+  //       username: username,
+  //     }),
+  //   };
+  //   await fetch("api/endpoint", getFollowingRequest)
+  //     .then((res) => {
+  //       console.log("IN THEN");
+  //       // return res.json();
+  //       // res.json().then((resJson) => {
+  //       //   console.log(resJson);
+  //       //   // updateFollowing(resJson.error);
+  //       // });
+  //     })
+  //     .catch(function (error: any) {
+  //       console.log("IN ERROR");
+  //       // console.log(error);
+  //     });
+  //   // console.log("FINAL RETURN");
+  //   // updateFollowing(followingRes);
+  //   // console.log(following);
+  // }
 
   async function saveNewProfile() {
     const changeProfileRequest = {
@@ -291,5 +300,6 @@ export function useUserInfo(authenticated: boolean) {
     changeWebsite,
     saveNewProfile,
     userHost,
+    following,
   };
 }

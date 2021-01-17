@@ -8,7 +8,7 @@ initFirebaseAdmin();
 initFirebase();
 let db = admin.firestore();
 
-export default async function followUserHandler(
+export default async function unfollowUserHandler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -26,29 +26,21 @@ export default async function followUserHandler(
 
   await db.collection("users").doc(uid).set(
     {
-        numFollowing: admin.firestore.FieldValue.increment(1),
+        numFollowing: admin.firestore.FieldValue.increment(-1),
     },
     { merge: true }
   );
 
   await db.collection("users").doc(profileUid).set(
     {
-        numFollowers: admin.firestore.FieldValue.increment(1),
+        numFollowers: admin.firestore.FieldValue.increment(-1),
     },
-    { merge: true }
+    { merge: true } 
   );
   
-  await db.collection("users").doc(uid).collection("following").doc(profileUid).set(
-    {
-        username: profileUsername,
-    },
-  );
+  await db.collection("users").doc(uid).collection("following").doc(profileUid).delete();
 
-  await db.collection("users").doc(profileUid).collection("followers").doc(uid).set(
-    {
-        username: username,
-    },
-  );
+  await db.collection("users").doc(profileUid).collection("followers").doc(uid).delete();
 
   res.status(200).end();  
   return;

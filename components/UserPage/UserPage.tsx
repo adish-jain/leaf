@@ -16,6 +16,7 @@ export default function UserContent(props: UserPageProps) {
   const [canEditBio, toggleCanEditBio] = useState(false);
   const [profileImage, changeProfileImage] = useState("");
   const [uploadFailed, changeUploadFailed] = useState(false);
+  const [followed, changeFollowed] = useState(false);
   const { authenticated, error, loading } = useLoggedIn();
   const {
     username,
@@ -28,7 +29,9 @@ export default function UserContent(props: UserPageProps) {
     changeGithub,
     changeWebsite,
     saveNewProfile,
+    following,
   } = useUserInfo(authenticated);
+  console.log(following);
   const { profileUsername, userHost, profileData, onCustomDomain } = props;
   useEffect(() => {
     toggleCanEditBio(username === profileUsername);
@@ -54,6 +57,12 @@ export default function UserContent(props: UserPageProps) {
         : "";
     }
   }, [props.profileData]);
+
+  useEffect(() => {
+    if (following.includes(profileUsername)) {
+      changeFollowed(true);
+    }
+  }, [following]);
 
   return (
     <DomainContext.Provider
@@ -163,6 +172,8 @@ export default function UserContent(props: UserPageProps) {
                   saveNewProfile={saveNewProfile}
                   username={username}
                   profileUsername={profileUsername}
+                  followed={followed}
+                  changeFollowed={changeFollowed}
                 />
               </motion.div>
             </AnimatePresence>
@@ -331,13 +342,13 @@ async function handleProfileImageDelete(
   }).then(async (res: any) => {});
 }
 
-async function followUser(username: string, profileUsername: string) {
+async function followUser(username: string, profileUsername: string, changeFollowed: React.Dispatch<React.SetStateAction<boolean>>) {
   let data = {
     requestedAPI: "followUser",
     username: username,
     profileUsername: profileUsername
   }
-
+  changeFollowed(true);
   await fetch("/api/endpoint", {
     method: "POST",
     headers: new Headers({
@@ -351,6 +362,29 @@ async function followUser(username: string, profileUsername: string) {
   .catch((error: any) => {
     console.log(error);
     console.log("follow failed.");
+  });
+}
+
+async function unfollowUser(username: string, profileUsername: string, changeFollowed: React.Dispatch<React.SetStateAction<boolean>>) {
+  let data = {
+    requestedAPI: "unfollowUser",
+    username: username,
+    profileUsername: profileUsername
+  }
+  changeFollowed(false);
+  await fetch("/api/endpoint", {
+    method: "POST",
+    headers: new Headers({
+      "Content-Type": "application/json",
+    }),
+    body: JSON.stringify(data),
+  })
+  .then(async (res: any) => {
+    let resJSON = await res.json();
+  })
+  .catch((error: any) => {
+    console.log(error);
+    console.log("unfollow failed.");
   });
 }
 
@@ -369,6 +403,8 @@ function About(props: {
   saveNewProfile: () => Promise<void>;
   username: string;
   profileUsername: string;
+  followed: boolean;
+  changeFollowed: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   return (
     <div>
@@ -471,6 +507,8 @@ function About(props: {
             saveNewProfile={props.saveNewProfile}
             username={props.username}
             profileUsername={props.profileUsername}
+            followed={props.followed}
+            changeFollowed={props.changeFollowed}
           />
         </motion.div>
       </AnimatePresence>
@@ -485,6 +523,8 @@ function EditProfileButton(props: {
   saveNewProfile: () => Promise<void>;
   username: string;
   profileUsername: string;
+  followed: boolean;
+  changeFollowed: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   return props.canEditBio ? (
     props.editingBio ? (
@@ -522,14 +562,23 @@ function EditProfileButton(props: {
         Edit Profile
       </div>
     )
-  ) : (
-    <div
-      className={profileStyles["profile-edit-button"]}
-      onClick={(e) => followUser(props.username, props.profileUsername)}
-    >
-      Follow
-    </div>
-  );
+  ) : (props.followed ? (
+        <div
+          className={profileStyles["profile-edit-button"]}
+          onClick={(e) => unfollowUser(props.username, props.profileUsername, props.changeFollowed)}
+        >
+          Unfollow
+        </div>
+      ) 
+      : (
+        <div
+          className={profileStyles["profile-edit-button"]}
+          onClick={(e) => followUser(props.username, props.profileUsername, props.changeFollowed)}
+        >
+          Follow
+        </div>
+      )
+    );
 }
 
 function TwitterSection(props: {

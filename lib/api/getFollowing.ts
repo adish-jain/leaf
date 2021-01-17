@@ -44,5 +44,6 @@ async function getFollowingHandler(req: NextApiRequest, res: NextApiResponse) {
   console.log(results);
   res.statusCode = 200;
   res.send(results);
+  console.log("SENT RESULTS");
   return;
 }

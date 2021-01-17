@@ -14,7 +14,7 @@ import {
   UserPageProps,
 } from "../typescript/types/backend/userTypes";
 import { getPostDataFromFirestoreDoc } from "./postUtils";
-import typedAdmin from "firebase-admin";
+import typedAdmin, { firestore } from "firebase-admin";
 const admin = require("firebase-admin");
 initFirebaseAdmin();
 let db = typedAdmin.firestore();
@@ -580,6 +580,7 @@ export async function getUserDataFromUsername(
 
 /* For a given user, return all users they are following */
 export async function getFollowingFromUsername(username: string) {
+  console.log(username);
   let uid = await getUidFromUsername(username);
   let followingRef = db
     .collection("users")
@@ -593,10 +594,10 @@ export async function getFollowingFromUsername(username: string) {
       const gatherPromise: Promise<void>[] = [];
       followingCollection.forEach(async function (fireStoreDoc) {
         async function getResult() {
-          let resultsJSON = fireStoreDoc.data();
+          let resultUsername = fireStoreDoc.data().username;
           // console.log(resultsJSON);
           //published posts have published set to true, so we include these
-          results.push(resultsJSON);
+          results.push(resultUsername);
         }
         gatherPromise.push(getResult());
       });
@@ -605,7 +606,7 @@ export async function getFollowingFromUsername(username: string) {
     })
     .catch(function (error) {
       console.log(error);
-      let result: Post[] = [];
+      let result: any[] = [];
       return result;
     });
   console.log("RETURNING FOLLOWING");
