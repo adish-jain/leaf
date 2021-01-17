@@ -251,6 +251,8 @@ export async function getProfileData(uid: string): Promise<fireBaseUserType> {
       twitter: userData.twitter || "",
       website: userData.website || "",
       email: userData.email,
+      numFollowers: userData.numFollowers || 0,
+      numFollowing: userData.numFollowing || 0,
       uid: userData.uid,
     };
     return result;
@@ -262,6 +264,8 @@ export async function getProfileData(uid: string): Promise<fireBaseUserType> {
       twitter: "",
       website: "",
       email: "",
+      numFollowers: 0,
+      numFollowing: 0,
     };
     return result;
   }

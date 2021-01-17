@@ -16,7 +16,9 @@ export default function UserContent(props: UserPageProps) {
   const [canEditBio, toggleCanEditBio] = useState(false);
   const [profileImage, changeProfileImage] = useState("");
   const [uploadFailed, changeUploadFailed] = useState(false);
-  const [followed, changeFollowed] = useState(false);
+  const [followed, changeFollowed] = useState(false); // for user that is viewing
+  const [numFollowers, changeNumFollowers] = useState(0); // for user whose profile is being viewed
+  const [numFollowing, changeNumFollowing] = useState(0);
   const { authenticated, error, loading } = useLoggedIn();
   const {
     username,
@@ -31,7 +33,7 @@ export default function UserContent(props: UserPageProps) {
     saveNewProfile,
     following,
   } = useUserInfo(authenticated);
-  console.log(following);
+
   const { profileUsername, userHost, profileData, onCustomDomain } = props;
   useEffect(() => {
     toggleCanEditBio(username === profileUsername);
@@ -55,6 +57,14 @@ export default function UserContent(props: UserPageProps) {
       profileData.profileImage !== null
         ? changeProfileImage(profileData.profileImage)
         : "";
+      profileData.numFollowers !== undefined &&
+      profileData.numFollowers !== null
+        ? changeNumFollowers(profileData.numFollowers)
+        : 0;
+      profileData.numFollowing !== undefined &&
+      profileData.numFollowing !== null
+        ? changeNumFollowing(profileData.numFollowing)
+        : 0;
     }
   }, [props.profileData]);
 
@@ -174,6 +184,10 @@ export default function UserContent(props: UserPageProps) {
                   profileUsername={profileUsername}
                   followed={followed}
                   changeFollowed={changeFollowed}
+                  numFollowing={numFollowing}
+                  numFollowers={numFollowers}
+                  changeNumFollowing={changeNumFollowing}
+                  changeNumFollowers={changeNumFollowers}
                 />
               </motion.div>
             </AnimatePresence>
@@ -342,13 +356,19 @@ async function handleProfileImageDelete(
   }).then(async (res: any) => {});
 }
 
-async function followUser(username: string, profileUsername: string, changeFollowed: React.Dispatch<React.SetStateAction<boolean>>) {
+async function followUser(
+  username: string, 
+  profileUsername: string, 
+  changeFollowed: React.Dispatch<React.SetStateAction<boolean>>,
+  numFollowers: number,
+  changeNumFollowers: React.Dispatch<React.SetStateAction<number>>) {
   let data = {
     requestedAPI: "followUser",
     username: username,
     profileUsername: profileUsername
   }
   changeFollowed(true);
+  changeNumFollowers(numFollowers + 1);
   await fetch("/api/endpoint", {
     method: "POST",
     headers: new Headers({
@@ -365,13 +385,19 @@ async function followUser(username: string, profileUsername: string, changeFollo
   });
 }
 
-async function unfollowUser(username: string, profileUsername: string, changeFollowed: React.Dispatch<React.SetStateAction<boolean>>) {
+async function unfollowUser(
+  username: string, 
+  profileUsername: string, 
+  changeFollowed: React.Dispatch<React.SetStateAction<boolean>>,
+  numFollowers: number,
+  changeNumFollowers: React.Dispatch<React.SetStateAction<number>>) {
   let data = {
     requestedAPI: "unfollowUser",
     username: username,
     profileUsername: profileUsername
   }
   changeFollowed(false);
+  changeNumFollowers(numFollowers - 1);
   await fetch("/api/endpoint", {
     method: "POST",
     headers: new Headers({
@@ -405,6 +431,10 @@ function About(props: {
   profileUsername: string;
   followed: boolean;
   changeFollowed: React.Dispatch<React.SetStateAction<boolean>>;
+  numFollowing: number;
+  numFollowers: number;
+  changeNumFollowing: React.Dispatch<React.SetStateAction<number>>;
+  changeNumFollowers: React.Dispatch<React.SetStateAction<number>>;
 }) {
   return (
     <div>
@@ -484,6 +514,8 @@ function About(props: {
           </motion.div>
         </AnimatePresence>
       </div>
+      <div>Num Following: {props.numFollowing}</div>
+      <div>Num Followers: {props.numFollowers}</div>
 
       <AnimatePresence>
         <motion.div
@@ -509,6 +541,8 @@ function About(props: {
             profileUsername={props.profileUsername}
             followed={props.followed}
             changeFollowed={props.changeFollowed}
+            numFollowers={props.numFollowers}
+            changeNumFollowers={props.changeNumFollowers}
           />
         </motion.div>
       </AnimatePresence>
@@ -525,6 +559,8 @@ function EditProfileButton(props: {
   profileUsername: string;
   followed: boolean;
   changeFollowed: React.Dispatch<React.SetStateAction<boolean>>;
+  numFollowers: number;
+  changeNumFollowers: React.Dispatch<React.SetStateAction<number>>;
 }) {
   return props.canEditBio ? (
     props.editingBio ? (
@@ -565,7 +601,12 @@ function EditProfileButton(props: {
   ) : (props.followed ? (
         <div
           className={profileStyles["profile-edit-button"]}
-          onClick={(e) => unfollowUser(props.username, props.profileUsername, props.changeFollowed)}
+          onClick={(e) => unfollowUser(
+            props.username, 
+            props.profileUsername, 
+            props.changeFollowed, 
+            props.numFollowers, 
+            props.changeNumFollowers)}
         >
           Unfollow
         </div>
@@ -573,7 +614,12 @@ function EditProfileButton(props: {
       : (
         <div
           className={profileStyles["profile-edit-button"]}
-          onClick={(e) => followUser(props.username, props.profileUsername, props.changeFollowed)}
+          onClick={(e) => followUser(
+            props.username, 
+            props.profileUsername, 
+            props.changeFollowed,
+            props.numFollowers, 
+            props.changeNumFollowers)}
         >
           Follow
         </div>
