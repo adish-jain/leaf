@@ -161,6 +161,8 @@ export default function UserContent(props: UserPageProps) {
                   changeWebsite={changeWebsite}
                   toggleEditingBio={toggleEditingBio}
                   saveNewProfile={saveNewProfile}
+                  username={username}
+                  profileUsername={profileUsername}
                 />
               </motion.div>
             </AnimatePresence>
@@ -329,6 +331,29 @@ async function handleProfileImageDelete(
   }).then(async (res: any) => {});
 }
 
+async function followUser(username: string, profileUsername: string) {
+  let data = {
+    requestedAPI: "followUser",
+    username: username,
+    profileUsername: profileUsername
+  }
+
+  await fetch("/api/endpoint", {
+    method: "POST",
+    headers: new Headers({
+      "Content-Type": "application/json",
+    }),
+    body: JSON.stringify(data),
+  })
+  .then(async (res: any) => {
+    let resJSON = await res.json();
+  })
+  .catch((error: any) => {
+    console.log(error);
+    console.log("follow failed.");
+  });
+}
+
 function About(props: {
   editingBio: boolean;
   canEditBio: boolean;
@@ -342,6 +367,8 @@ function About(props: {
   changeWebsite: React.Dispatch<React.SetStateAction<string>>;
   toggleEditingBio: React.Dispatch<React.SetStateAction<boolean>>;
   saveNewProfile: () => Promise<void>;
+  username: string;
+  profileUsername: string;
 }) {
   return (
     <div>
@@ -442,6 +469,8 @@ function About(props: {
             canEditBio={props.canEditBio}
             toggleEditingBio={props.toggleEditingBio}
             saveNewProfile={props.saveNewProfile}
+            username={props.username}
+            profileUsername={props.profileUsername}
           />
         </motion.div>
       </AnimatePresence>
@@ -454,6 +483,8 @@ function EditProfileButton(props: {
   canEditBio: boolean;
   toggleEditingBio: React.Dispatch<React.SetStateAction<boolean>>;
   saveNewProfile: () => Promise<void>;
+  username: string;
+  profileUsername: string;
 }) {
   return props.canEditBio ? (
     props.editingBio ? (
@@ -492,7 +523,12 @@ function EditProfileButton(props: {
       </div>
     )
   ) : (
-    <div></div>
+    <div
+      className={profileStyles["profile-edit-button"]}
+      onClick={(e) => followUser(props.username, props.profileUsername)}
+    >
+      Follow
+    </div>
   );
 }
 

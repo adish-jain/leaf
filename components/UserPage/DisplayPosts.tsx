@@ -58,7 +58,9 @@ export function DisplayPosts(props: { posts: Post[] }) {
                           className={profileStyles["profile-post-tag"]}
                           key={tag}
                         >
-                          {tag}
+                          <div className={profileStyles["profile-post-tag-text"]}>
+                              {tag}
+                          </div>
                         </div>
                       );
                     })}
