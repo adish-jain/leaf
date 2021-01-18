@@ -5,7 +5,7 @@ import {
   getUser,
   getUserDataFromUsername,
   getCustomDomainByUsername,
-  getFollowingFromUsername,
+  getFollowingFromUid,
 } from "../../lib/userUtils";
 import UserContent from "../../components/UserPage/UserPage";
 import { UserPageProps } from "../../typescript/types/backend/userTypes";

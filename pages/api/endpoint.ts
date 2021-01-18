@@ -28,6 +28,7 @@ import handleDeleteProfileImage from "../../lib/api/deleteProfileImage";
 import handleFollowUser from "../../lib/api/followUser";
 import handleUnfollowUser from "../../lib/api/unfollowUser";
 import handleGetFollowing from "../../lib/api/getFollowing";
+import handleGetFeed from "../../lib/api/getFeed";
 
 // user info
 import handleGetUserInfo from "../../lib/api/getUserInfo";
@@ -176,6 +177,10 @@ export default sentryHandler(
 
       case "getFollowing": {
         return handleGetFollowing(req, res);
+      }
+
+      case "getFeed": {
+        return handleGetFeed(req, res);
       }
 
       /* 

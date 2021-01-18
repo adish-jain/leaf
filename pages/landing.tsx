@@ -11,6 +11,7 @@ import { usePosts, goToPost } from "../lib/usePosts";
 const dayjs = require("dayjs");
 import { LandingHeader } from "../components/Headers";
 import { YourPosts } from "../components/Landing/YourPosts";
+import { YourFeed } from "../components/Landing/YourFeed";
 import { YourDrafts } from "../components/Landing/YourDrafts";
 import { DomainContext } from "../contexts/domain-context";
 import { useHost } from "../lib/api/useHost";
@@ -23,7 +24,7 @@ export default function Landing() {
   const { onCustomDomain } = useHost();
 
   // Fetch user ifno
-  const { username, userHost } = useUserInfo(authenticated);
+  const { username, userHost, uid } = useUserInfo(authenticated);
   // Fetch data for posts
   const { posts, deletePost, postsEditClicked, togglePostsEdit } = usePosts(
     authenticated
@@ -61,7 +62,7 @@ export default function Landing() {
             <LandingHeader username={username} />
             <div className={landingStyles["landing"]}>
               <YourDrafts />
-              <YourPosts />
+              <YourFeed />
             </div>
           </main>
         </DomainContext.Provider>

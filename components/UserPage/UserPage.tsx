@@ -34,7 +34,7 @@ export default function UserContent(props: UserPageProps) {
     following,
   } = useUserInfo(authenticated);
 
-  const { profileUsername, userHost, profileData, onCustomDomain } = props;
+  const { profileUsername, userHost, profileData, onCustomDomain, uid } = props;
   useEffect(() => {
     toggleCanEditBio(username === profileUsername);
   }, [username, props.profileUsername]);
@@ -69,7 +69,7 @@ export default function UserContent(props: UserPageProps) {
   }, [props.profileData]);
 
   useEffect(() => {
-    if (following.includes(profileUsername)) {
+    if (following.includes(uid)) {
       changeFollowed(true);
     }
   }, [following]);
@@ -151,6 +151,10 @@ export default function UserContent(props: UserPageProps) {
             )}
             <div className={profileStyles["profile-name"]}>
               {props.profileUsername}
+            </div>
+            <div className={profileStyles["profile-follows"]}>
+              {numFollowers} followers &nbsp;·&nbsp;&nbsp;
+              {numFollowing} following 
             </div>
             <AnimatePresence>
               <motion.div
@@ -514,8 +518,8 @@ function About(props: {
           </motion.div>
         </AnimatePresence>
       </div>
-      <div>Num Following: {props.numFollowing}</div>
-      <div>Num Followers: {props.numFollowers}</div>
+      {/* <div>Num Following: {props.numFollowing}</div>
+      <div>Num Followers: {props.numFollowers}</div> */}
 
       <AnimatePresence>
         <motion.div

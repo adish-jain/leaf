@@ -4,7 +4,7 @@ import { initFirebaseAdmin, initFirebase } from "../initFirebase";
 const admin = require("firebase-admin");
 const firebase = require("firebase/app");
 import fetch from "isomorphic-fetch";
-import { getFollowingFromUsername, getUser } from "../userUtils";
+import { getFollowingFromUid, getUser } from "../userUtils";
 
 let db = admin.firestore();
 
@@ -38,7 +38,7 @@ async function getFollowingHandler(req: NextApiRequest, res: NextApiResponse) {
     return;
   }
 
-  let results = await getFollowingFromUsername(username);
+  let results = await getFollowingFromUid(uid);
 
   console.log("RETURNING RESULTS");
   console.log(results);

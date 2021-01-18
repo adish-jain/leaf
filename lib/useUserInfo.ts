@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import useSWR, { SWRConfig } from "swr";
-import { getFollowingFromUsername } from "./userUtils";
+import { getFollowingFromUid } from "./userUtils";
 import { SignUpMethods } from "../typescript/enums/backend/userEnums";
 type userInfoType = {
   about: string;
@@ -76,7 +76,7 @@ export function useUserInfo(authenticated: boolean) {
   );
 
   const userInfo = data || initialUserInfo;
-  const { emailVerified, method, email, username, userHost, following } = userInfo;
+  const { emailVerified, method, email, username, userHost, following, uid } = userInfo;
   // console.log("the username is" + username);
   
   // const [following, updateFollowing] = useState([]);
@@ -301,5 +301,6 @@ export function useUserInfo(authenticated: boolean) {
     saveNewProfile,
     userHost,
     following,
+    uid
   };
 }

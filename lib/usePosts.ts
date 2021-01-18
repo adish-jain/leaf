@@ -16,6 +16,24 @@ const myRequest = (requestedAPI: string) => {
 const postsFetcher = () =>
   fetch("api/endpoint", myRequest("getPosts")).then((res) => res.json());
 
+const feedFetcher = () =>
+fetch("api/endpoint", myRequest("getFeed")).then((res) => res.json());
+
+export function useFeed(authenticated: boolean) {
+  const initialFeedData: Post[] = [];
+  let { data } = useSWR<Post[]>(
+    authenticated ? "getFeed" : [null],
+    feedFetcher,
+    {
+      initialData: initialFeedData,
+      revalidateOnMount: true,
+    }
+  );
+
+  const feed = data || [];
+  return { feed };
+}
+
 export function usePosts(authenticated: boolean) {
   const [postsEditClicked, changeEditClicked] = useState(false);
   const initialPostsData: Post[] = [];

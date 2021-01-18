@@ -28,11 +28,11 @@ export const getStaticProps: GetStaticProps = async (context) => {
   };
 };
 
-type ExplorPageProps = {
+type ExplorePageProps = {
   posts: Post[];
 };
 
-export default function Pages(props: ExplorPageProps) {
+export default function Pages(props: ExplorePageProps) {
   const postsData = props.posts;
 
   // let { data: postsData, mutate } = useSWR("getAllPostsData", fetcher, {
