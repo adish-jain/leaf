@@ -336,12 +336,12 @@ export async function getAllPostsHandler() {
         });
       }
     }
-    // sort by published date
+    // sort by recent date
     results.sort(function (a: Post, b: Post) {
-      let keyA = a.publishedAt,
-        keyB = b.publishedAt;
-      if (keyA < keyB) return -1;
-      if (keyA > keyB) return 1;
+      let keyA = a.publishedAt._seconds,
+        keyB = b.publishedAt._seconds;
+      if (keyA > keyB) return -1;
+      if (keyA < keyB) return 1;
       return 0;
     });
     return results;
@@ -407,12 +407,12 @@ export async function getFeedPostsHandler(following: string[]) {
         }
       }
     }
-    // sort by published date
+    // sort by recent date
     results.sort(function (a: Post, b: Post) {
-      let keyA = a.publishedAt,
-        keyB = b.publishedAt;
-      if (keyA < keyB) return -1;
-      if (keyA > keyB) return 1;
+      let keyA = a.publishedAt._seconds,
+        keyB = b.publishedAt._seconds;
+      if (keyA > keyB) return -1;
+      if (keyA < keyB) return 1;
       return 0;
     });
     return results;

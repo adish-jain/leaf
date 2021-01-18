@@ -43,7 +43,7 @@ export default function Pages(props: ExplorePageProps) {
   const [filteredPosts, filterPosts] = useState(postsData);
   const [searchFilter, updateSearchFilter] = useState("");
   const [tagFilter, updateTagFilter] = useState("All");
-  const [sortFilter, updateSortFilter] = useState("Date");
+  const [sortFilter, updateSortFilter] = useState("Recent");
   const [tagSelectOpened, toggleTagSelectOpened] = useState(false);
   const [sortSelectOpened, toggleSortSelectOpened] = useState(false);
 
@@ -206,8 +206,8 @@ function searchAndFilterPosts(
   switch (sortFilter) {
     case "Date": {
       newPosts.sort(function (a: Post, b: Post) {
-        var keyA = a.publishedAt,
-          keyB = b.publishedAt;
+        let keyA = a.publishedAt._seconds,
+        keyB = b.publishedAt._seconds;
         if (keyA < keyB) return -1;
         if (keyA > keyB) return 1;
         return 0;
@@ -216,8 +216,8 @@ function searchAndFilterPosts(
     }
     case "Recent": {
       newPosts.sort(function (a: Post, b: Post) {
-        var keyA = a.publishedAt,
-          keyB = b.publishedAt;
+        let keyA = a.publishedAt._seconds,
+        keyB = b.publishedAt._seconds;
         if (keyA > keyB) return -1;
         if (keyA < keyB) return 1;
         return 0;
@@ -378,7 +378,7 @@ function SortSelect(props: {
   toggleSortSelectOpen: Dispatch<SetStateAction<boolean>>;
   toggleTagSelectOpen: Dispatch<SetStateAction<boolean>>;
 }) {
-  const sortOptions = ["Date", "Recent", "Title", "Author"];
+  const sortOptions = ["Recent", "Date", "Title", "Author"];
   return (
     <div>
       <div className={exploreStyles["sort-dropdown"]}>
