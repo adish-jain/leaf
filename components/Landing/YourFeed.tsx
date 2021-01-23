@@ -9,12 +9,54 @@ import { goToDraft, goToPost, usePosts, useFeed, goToPostFromExplore } from "../
 import { DomainContext } from "../../contexts/domain-context";
 import exploreStyles from "../../styles/explore.module.scss";
 import { GetStaticProps } from "next";
-import { getFeedPostsHandler } from "../../lib/postUtils";
+import { getFeedPostsHandler, getFeedForUser, getAllPostsHandler } from "../../lib/postUtils";
 import { useRouter } from "next/router";
+import { getUidFromUsername } from "../../lib/userUtils";
+
+// export async function getStaticPaths() {
+//     return {
+//       paths: [],
+//       fallback: true, // See the "fallback" section below
+//     };
+//   }
 
 // export const getStaticProps: GetStaticProps = async (context) => {
 //     // ...
-//     const posts = await getFeedForUser();
+//     let params = context.params;
+//     if (params === undefined || params.username === undefined) {
+//         return {
+//             revalidate: 1,
+//             props: {
+//                 posts: [],
+//                 errored: true,
+//             },
+//         };
+//     }
+//     let username = params.username as string;
+//     let uid: string;
+//     try {
+//         uid = await getUidFromUsername(username);
+//         // const posts = await getFeedForUser(username);
+//         return {
+//             props: {
+//                 // posts: posts,
+//                 errored: false,
+//             },
+//             revalidate: 1,
+//         };
+//     } catch {
+//         return {
+//           props: {
+//             errored: true,
+//           },
+//           revalidate: 1,
+//         };
+//       }
+// };
+
+// export const getStaticProps: GetStaticProps = async (context) => {
+//     // ...
+//     const posts = await getAllPostsHandler();
   
 //     return {
 //       props: {
@@ -23,14 +65,22 @@ import { useRouter } from "next/router";
 //       revalidate: 1,
 //     };
 //   };
-  
-export function YourFeed(props: {}) {
+
+// type FeedProps = {
+//     posts: Post[];
+// }
+
+export function YourFeed(props: {
+    feed: Post[];
+}) {
   const { authenticated } = useContext(AuthContext);
   const { username } = useContext(DomainContext);
+//   const { feed } = props;
   const router = useRouter();
-  let { feed } = useFeed(authenticated);
+//   let { feed } = useFeed(authenticated);
+//   const feed = props.posts;
 
-  const noPosts = feed.length === 0;
+  const noPosts = props.feed.length === 0;
 
   const Content = () => {
     if (noPosts) {
@@ -38,7 +88,7 @@ export function YourFeed(props: {}) {
     } else {
       return (
         <div>
-          {Array.from(feed).map((post: Post) => {
+          {Array.from(props.feed).map((post: Post) => {
               return (
                 <div
                   className={landingStyles["post-landing"]}

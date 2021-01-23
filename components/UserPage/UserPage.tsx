@@ -84,16 +84,19 @@ export default function UserContent(props: UserPageProps) {
 
   // Deletes a published post.
   async function deletePost(postUid: string) {
+
     function removeSpecificPost() {
       let searchIndex = 0;
-      for (let i = 0; i < posts!.length; i++) {
-        if (posts![i].postId === postUid) {
+      for (let i = 0; i < clonePosts!.length; i++) {
+        if (clonePosts![i].firebaseId === postUid) {
           searchIndex = i;
+          console.log(searchIndex);
           break;
         }
       }
-      let newPosts = posts?.slice();
+      let newPosts = clonePosts?.slice();
       newPosts!.splice(searchIndex, 1);
+      console.log(newPosts);
       changeClonePosts(newPosts);
       // mutate("getPosts", clonePosts, false);
     }
