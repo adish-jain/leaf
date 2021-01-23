@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLoggedIn } from "../../lib/UseLoggedIn";
 import { useUserInfo } from "../../lib/useUserInfo";
 import { UserPageProps } from "../../typescript/types/backend/userTypes";
+import { Post } from "../../typescript/types/app_types";
 import profileStyles from "../../styles/profile.module.scss";
 import { AnimatePresence, motion } from "framer-motion";
 import imageStyles from "../../styles/imageview.module.scss";
@@ -10,6 +11,8 @@ import { useRouter } from "next/router";
 import { DisplayPosts } from "./DisplayPosts";
 import { DomainContext } from "../../contexts/domain-context";
 import Header, { HeaderUnAuthenticated } from "../Header";
+import { PublishedPost } from "../Landing/PublishedPost";
+import dayjs from "dayjs";
 
 export default function UserContent(props: UserPageProps) {
   const [editingBio, toggleEditingBio] = useState(false);
@@ -19,6 +22,7 @@ export default function UserContent(props: UserPageProps) {
   const [followed, changeFollowed] = useState(false); // for user that is viewing
   const [numFollowers, changeNumFollowers] = useState(0); // for user whose profile is being viewed
   const [numFollowing, changeNumFollowing] = useState(0);
+  const [clonePosts, changeClonePosts] = useState(Array<Post>());
   const { authenticated, error, loading } = useLoggedIn();
   const {
     username,
@@ -34,10 +38,14 @@ export default function UserContent(props: UserPageProps) {
     following,
   } = useUserInfo(authenticated);
 
-  const { profileUsername, userHost, profileData, onCustomDomain, uid } = props;
+  const { profileUsername, userHost, posts, profileData, onCustomDomain, uid } = props;
   useEffect(() => {
     toggleCanEditBio(username === profileUsername);
   }, [username, props.profileUsername]);
+
+  useEffect(() => {
+    changeClonePosts(posts);
+  }, [posts]);
 
   useEffect(() => {
     if (props.profileData !== undefined) {
@@ -73,6 +81,41 @@ export default function UserContent(props: UserPageProps) {
       changeFollowed(true);
     }
   }, [following]);
+
+  // Deletes a published post.
+  async function deletePost(postUid: string) {
+    function removeSpecificPost() {
+      let searchIndex = 0;
+      for (let i = 0; i < posts!.length; i++) {
+        if (posts![i].postId === postUid) {
+          searchIndex = i;
+          break;
+        }
+      }
+      let newPosts = posts?.slice();
+      newPosts!.splice(searchIndex, 1);
+      changeClonePosts(newPosts);
+      // mutate("getPosts", clonePosts, false);
+    }
+
+    const requestBody = {
+      requestedAPI: "deletePost",
+      postUid: postUid,
+    };
+
+    const myRequest = {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify(requestBody),
+    };
+
+    removeSpecificPost();
+
+    fetch("/api/endpoint", myRequest).then(async (res: any) => {
+      let updatedPosts = await res.json();
+      // mutate("getPosts", updatedPosts);
+    });
+  }
 
   return (
     <DomainContext.Provider
@@ -196,28 +239,61 @@ export default function UserContent(props: UserPageProps) {
               </motion.div>
             </AnimatePresence>
           </div>
-          <div className={profileStyles["profile-right-pane"]}>
-            {
-              <AnimatePresence>
-                <motion.div
-                  initial={{
-                    opacity: 0,
-                  }}
-                  animate={{
-                    opacity: 1,
-                  }}
-                  exit={{
-                    opacity: 0,
-                  }}
-                  transition={{
-                    duration: 0.4,
-                  }}
-                >
-                  <DisplayPosts posts={props.posts} />
-                </motion.div>
-              </AnimatePresence>
-            }
-          </div>
+          {editingBio ? (
+            <div className={profileStyles["profile-right-pane-editing"]}>
+              {
+                <AnimatePresence>
+                  <motion.div
+                    initial={{
+                      opacity: 0,
+                    }}
+                    animate={{
+                      opacity: 1,
+                    }}
+                    exit={{
+                      opacity: 0,
+                    }}
+                    transition={{
+                      duration: 0.4,
+                    }}
+                  >
+                    <DisplayPosts 
+                      posts={clonePosts} 
+                      postsEditClicked={editingBio}
+                      deletePost={deletePost}
+                    />
+                  </motion.div>
+                </AnimatePresence>
+              }
+            </div>
+          ) : (
+            <div className={profileStyles["profile-right-pane"]}>
+              {
+                <AnimatePresence>
+                  <motion.div
+                    initial={{
+                      opacity: 0,
+                    }}
+                    animate={{
+                      opacity: 1,
+                    }}
+                    exit={{
+                      opacity: 0,
+                    }}
+                    transition={{
+                      duration: 0.4,
+                    }}
+                  >
+                    <DisplayPosts 
+                      posts={clonePosts} 
+                      postsEditClicked={editingBio}
+                      deletePost={deletePost}
+                    />
+                  </motion.div>
+                </AnimatePresence>
+              }
+            </div>
+          )}
         </div>
       </div>
     </DomainContext.Provider>

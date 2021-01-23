@@ -600,7 +600,8 @@ export async function getFollowingFromUid(uid: string) {
         console.log(fireStoreDoc.id);
         async function getResult() {
           // let resultUsername = fireStoreDoc.data().username;
-          let resultUid = fireStoreDoc.id;
+          // let resultUid = fireStoreDoc.id;
+          let resultUid = fireStoreDoc.data().uid;
           // console.log(resultUsername);
           // console.log(resultsJSON);
           //published posts have published set to true, so we include these

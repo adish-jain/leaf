@@ -41,12 +41,14 @@ export default async function followUserHandler(
   await db.collection("users").doc(uid).collection("following").doc(profileUid).set(
     {
         username: profileUsername,
+        uid: profileUid,
     },
   );
 
   await db.collection("users").doc(profileUid).collection("followers").doc(uid).set(
     {
         username: username,
+        uid: uid,
     },
   );
 
