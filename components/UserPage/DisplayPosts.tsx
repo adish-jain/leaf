@@ -5,7 +5,7 @@ import { Post } from "../../typescript/types/app_types";
 import dayjs from "dayjs";
 import { useContext } from "react";
 import { DomainContext } from "../../contexts/domain-context";
-import { goToDraft, goToPost, usePosts } from "../../lib/usePosts";
+import { goToDraft } from "../../lib/usePosts";
 
 
 function createPostUrl(
@@ -23,10 +23,9 @@ function createPostUrl(
 export function DisplayPosts(props: { 
   posts: Post[]; 
   postsEditClicked: boolean 
-  deletePost: any;
+  deletePost: (postUid: string) => Promise<void>;
 }) {
   const { onCustomDomain, username } = useContext(DomainContext);
-  // const { deletePost } = usePosts(true);
   try {
     const router = useRouter();
     return (

@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebaseAdmin, initFirebase } from "../initFirebase";
-import { getUser, checkEmailAuthDNE, getUidFromUsername } from "../userUtils";
-import { profile } from "console";
+import { getUser, getUidFromUsername } from "../userUtils";
 const admin = require("firebase-admin");
 const firebase = require("firebase/app");
 initFirebaseAdmin();
@@ -16,7 +15,6 @@ export default async function followUserHandler(
   let profileUsername = req.body.profileUsername;
   let { uid, userRecord } = await getUser(req, res);
   let profileUid = await getUidFromUsername(profileUsername);
-  let errored = false;
 
   if (uid === "") {
     res.statusCode = 403;

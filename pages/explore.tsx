@@ -18,6 +18,7 @@ const dayjs = require("dayjs");
 
 export const getStaticProps: GetStaticProps = async (context) => {
   // ...
+  console.log(context);
   const posts = await getAllPostsHandler();
 
   return {

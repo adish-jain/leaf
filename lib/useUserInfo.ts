@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import useSWR, { SWRConfig } from "swr";
-import { getFollowingFromUid } from "./userUtils";
 import { SignUpMethods } from "../typescript/enums/backend/userEnums";
 type userInfoType = {
   about: string;
@@ -26,7 +25,7 @@ const myRequest = (requestedAPI: string) => {
 };
 
 const userInfoFetcher = () =>
-  fetch("api/endpoint", myRequest("get_userInfo")).then((res: any) =>
+  fetch("api/endpoint", myRequest("get_userInfo")).then((res: Response) =>
     res.json()
   );
 
@@ -77,43 +76,6 @@ export function useUserInfo(authenticated: boolean) {
 
   const userInfo = data || initialUserInfo;
   const { emailVerified, method, email, username, userHost, following, uid } = userInfo;
-  // console.log("the username is" + username);
-  
-  // const [following, updateFollowing] = useState([]);
-
-  // useEffect(() => {
-  //   console.log("username is " + username);
-  //   console.log("CALLING GETFOLLOWING");
-  //   getFollowing();
-  // }, [username]);
-  // console.log("username is " + username);
-  // console.log("following is" + following);
-  // async function getFollowing() {
-  //   const getFollowingRequest = {
-  //     method: "POST",
-  //     headers: new Headers({ "Content-Type": "application/json" }),
-  //     body: JSON.stringify({
-  //       requestedAPI: "getFollowing",
-  //       username: username,
-  //     }),
-  //   };
-  //   await fetch("api/endpoint", getFollowingRequest)
-  //     .then((res) => {
-  //       console.log("IN THEN");
-  //       // return res.json();
-  //       // res.json().then((resJson) => {
-  //       //   console.log(resJson);
-  //       //   // updateFollowing(resJson.error);
-  //       // });
-  //     })
-  //     .catch(function (error: any) {
-  //       console.log("IN ERROR");
-  //       // console.log(error);
-  //     });
-  //   // console.log("FINAL RETURN");
-  //   // updateFollowing(followingRes);
-  //   // console.log(following);
-  // }
 
   async function saveNewProfile() {
     const changeProfileRequest = {
@@ -129,7 +91,7 @@ export function useUserInfo(authenticated: boolean) {
     };
     await fetch("api/endpoint", changeProfileRequest)
       .then((res) => {})
-      .catch(function (error: any) {
+      .catch(function (error: Error) {
         console.log(error);
       });
   }
@@ -147,7 +109,7 @@ export function useUserInfo(authenticated: boolean) {
     let updateUsernameResponse = await fetch(
       "api/endpoint",
       changeUsernameRequest
-    ).then((res: any) => res.json());
+    ).then((res: Response) => res.json());
     if (!updateUsernameResponse.error) {
       updateUserNameError("");
       mutate({ ...userInfo, username: newUsername }, true);
@@ -179,7 +141,7 @@ export function useUserInfo(authenticated: boolean) {
           });
         }
       })
-      .catch(function (error: any) {
+      .catch(function (error: Error) {
         console.log(error);
       });
   }
@@ -206,7 +168,7 @@ export function useUserInfo(authenticated: boolean) {
           });
         }
       })
-      .catch(function (error: any) {
+      .catch(function (error: Error) {
         console.log(error);
       });
   }
@@ -236,7 +198,7 @@ export function useUserInfo(authenticated: boolean) {
           });
         }
       })
-      .catch(function (error: any) {
+      .catch(function (error: Error) {
         console.log(error);
       });
   }
@@ -261,7 +223,7 @@ export function useUserInfo(authenticated: boolean) {
           });
         }
       })
-      .catch(function (error: any) {
+      .catch(function (error: Error) {
         console.log(error);
       });
   }

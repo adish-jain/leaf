@@ -2,10 +2,8 @@ import React from "react";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 import {
-  getUser,
   getUserDataFromUsername,
   getCustomDomainByUsername,
-  getFollowingFromUid,
 } from "../../lib/userUtils";
 import UserContent from "../../components/UserPage/UserPage";
 import { UserPageProps } from "../../typescript/types/backend/userTypes";

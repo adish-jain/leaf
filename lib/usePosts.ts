@@ -48,7 +48,7 @@ export function usePosts(authenticated: boolean) {
 
   const posts = data || [];
 
-  // Deletes a published post.
+  // Deprecated
   function deletePost(postUid: string) {
     function removeSpecificPost() {
       let searchIndex = 0;
@@ -82,7 +82,7 @@ export function usePosts(authenticated: boolean) {
     });
   }
 
-  // Toggles the edit button for published posts
+  // Deprecated
   async function togglePostsEdit() {
     changeEditClicked(!postsEditClicked);
   }

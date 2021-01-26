@@ -19,7 +19,7 @@ export default async function getUserInfoHandler(
   const username = userData.username;
   const userHost = await getCustomDomainByUsername(username || "");
   let following = await getFollowingFromUid(uid);
-  console.log("following is " + following);
+
   if (userRecord === undefined) {
     res.end();
     return;

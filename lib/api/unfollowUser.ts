@@ -16,7 +16,6 @@ export default async function unfollowUserHandler(
   let profileUsername = req.body.profileUsername;
   let { uid, userRecord } = await getUser(req, res);
   let profileUid = await getUidFromUsername(profileUsername);
-  let errored = false;
 
   if (uid === "") {
     res.statusCode = 403;

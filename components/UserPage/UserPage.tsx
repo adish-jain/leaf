@@ -7,12 +7,9 @@ import profileStyles from "../../styles/profile.module.scss";
 import { AnimatePresence, motion } from "framer-motion";
 import imageStyles from "../../styles/imageview.module.scss";
 import TextareaAutosize from "react-autosize-textarea/lib";
-import { useRouter } from "next/router";
 import { DisplayPosts } from "./DisplayPosts";
 import { DomainContext } from "../../contexts/domain-context";
 import Header, { HeaderUnAuthenticated } from "../Header";
-import { PublishedPost } from "../Landing/PublishedPost";
-import dayjs from "dayjs";
 
 export default function UserContent(props: UserPageProps) {
   const [editingBio, toggleEditingBio] = useState(false);
@@ -98,7 +95,6 @@ export default function UserContent(props: UserPageProps) {
       newPosts!.splice(searchIndex, 1);
       console.log(newPosts);
       changeClonePosts(newPosts);
-      // mutate("getPosts", clonePosts, false);
     }
 
     const requestBody = {
@@ -114,7 +110,7 @@ export default function UserContent(props: UserPageProps) {
 
     removeSpecificPost();
 
-    fetch("/api/endpoint", myRequest).then(async (res: any) => {
+    fetch("/api/endpoint", myRequest).then(async (res: Response) => {
       let updatedPosts = await res.json();
       // mutate("getPosts", updatedPosts);
     });
@@ -378,12 +374,12 @@ async function saveProfileImage(
     }),
     body: JSON.stringify(data),
   })
-    .then(async (res: any) => {
+    .then(async (res: Response) => {
       let resJSON = await res.json();
       let url = resJSON.url;
       changeProfileImage(url);
     })
-    .catch((error: any) => {
+    .catch((error: Response) => {
       console.log(error);
       console.log("upload failed.");
     });
@@ -436,7 +432,7 @@ async function handleProfileImageDelete(
     method: "POST",
     headers: new Headers({ "Content-Type": "application/json" }),
     body: JSON.stringify(data),
-  }).then(async (res: any) => {});
+  }).then(async (res: Response) => {});
 }
 
 async function followUser(
@@ -459,10 +455,10 @@ async function followUser(
     }),
     body: JSON.stringify(data),
   })
-  .then(async (res: any) => {
+  .then(async (res: Response) => {
     let resJSON = await res.json();
   })
-  .catch((error: any) => {
+  .catch((error: Error) => {
     console.log(error);
     console.log("follow failed.");
   });
@@ -488,10 +484,10 @@ async function unfollowUser(
     }),
     body: JSON.stringify(data),
   })
-  .then(async (res: any) => {
+  .then(async (res: Response) => {
     let resJSON = await res.json();
   })
-  .catch((error: any) => {
+  .catch((error: Error) => {
     console.log(error);
     console.log("unfollow failed.");
   });

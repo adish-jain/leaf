@@ -16,6 +16,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       host === "getleaf.app" ||
       host === process.env.NEXT_PUBLIC_VERCEL_URL
     ) {
+      console.log("context is ");
+      console.log(context);
       let username = (context.params?.usernameOrPostId || "") as string;
       let postId = (context.params?.postId || "") as string;
 
