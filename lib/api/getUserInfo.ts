@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { initFirebaseAdmin, initFirebase } from "../initFirebase";
-import { getCustomDomainByUsername, getUser } from "../userUtils";
+import { getCustomDomainByUsername, getUser, getFollowingFromUid } from "../userUtils";
 const admin = require("firebase-admin");
 import { firestore } from "firebase";
 import { fireBaseUserType } from "../../typescript/types/backend/userTypes";
@@ -18,6 +18,8 @@ export default async function getUserInfoHandler(
   let userData = (await userDataReference.data()) as fireBaseUserType;
   const username = userData.username;
   const userHost = await getCustomDomainByUsername(username || "");
+  let following = await getFollowingFromUid(uid);
+
   if (userRecord === undefined) {
     res.end();
     return;
@@ -27,6 +29,8 @@ export default async function getUserInfoHandler(
     email: userRecord.email,
     emailVerified: userRecord.emailVerified,
     userHost,
+    following: following,
+    uid,
   });
   return;
 }

@@ -12,6 +12,8 @@ export type fireBaseUserType = {
   website?: string | null;
   uid?: string;
   method?: SignUpMethods;
+  numFollowers?: number | null;
+  numFollowing?: number | null;
 };
 
 export type UserPageProps = {

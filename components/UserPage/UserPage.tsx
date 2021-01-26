@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { useLoggedIn } from "../../lib/UseLoggedIn";
 import { useUserInfo } from "../../lib/useUserInfo";
 import { UserPageProps } from "../../typescript/types/backend/userTypes";
+import { Post } from "../../typescript/types/app_types";
 import profileStyles from "../../styles/profile.module.scss";
 import { AnimatePresence, motion } from "framer-motion";
 import imageStyles from "../../styles/imageview.module.scss";
 import TextareaAutosize from "react-autosize-textarea/lib";
-import { useRouter } from "next/router";
 import { DisplayPosts } from "./DisplayPosts";
 import { DomainContext } from "../../contexts/domain-context";
 import Header, { HeaderUnAuthenticated } from "../Header";
@@ -16,6 +16,10 @@ export default function UserContent(props: UserPageProps) {
   const [canEditBio, toggleCanEditBio] = useState(false);
   const [profileImage, changeProfileImage] = useState("");
   const [uploadFailed, changeUploadFailed] = useState(false);
+  const [followed, changeFollowed] = useState(false); // for user that is viewing
+  const [numFollowers, changeNumFollowers] = useState(0); // for user whose profile is being viewed
+  const [numFollowing, changeNumFollowing] = useState(0);
+  const [clonePosts, changeClonePosts] = useState(Array<Post>());
   const { authenticated, error, loading } = useLoggedIn();
   const {
     username,
@@ -28,11 +32,17 @@ export default function UserContent(props: UserPageProps) {
     changeGithub,
     changeWebsite,
     saveNewProfile,
+    following,
   } = useUserInfo(authenticated);
-  const { profileUsername, userHost, profileData, onCustomDomain } = props;
+
+  const { profileUsername, userHost, posts, profileData, onCustomDomain, uid } = props;
   useEffect(() => {
     toggleCanEditBio(username === profileUsername);
   }, [username, props.profileUsername]);
+
+  useEffect(() => {
+    changeClonePosts(posts);
+  }, [posts]);
 
   useEffect(() => {
     if (props.profileData !== undefined) {
@@ -52,8 +62,59 @@ export default function UserContent(props: UserPageProps) {
       profileData.profileImage !== null
         ? changeProfileImage(profileData.profileImage)
         : "";
+      profileData.numFollowers !== undefined &&
+      profileData.numFollowers !== null
+        ? changeNumFollowers(profileData.numFollowers)
+        : 0;
+      profileData.numFollowing !== undefined &&
+      profileData.numFollowing !== null
+        ? changeNumFollowing(profileData.numFollowing)
+        : 0;
     }
   }, [props.profileData]);
+
+  useEffect(() => {
+    if (following.includes(uid)) {
+      changeFollowed(true);
+    }
+  }, [following]);
+
+  // Deletes a published post.
+  async function deletePost(postUid: string) {
+
+    function removeSpecificPost() {
+      let searchIndex = 0;
+      for (let i = 0; i < clonePosts!.length; i++) {
+        if (clonePosts![i].firebaseId === postUid) {
+          searchIndex = i;
+          console.log(searchIndex);
+          break;
+        }
+      }
+      let newPosts = clonePosts?.slice();
+      newPosts!.splice(searchIndex, 1);
+      console.log(newPosts);
+      changeClonePosts(newPosts);
+    }
+
+    const requestBody = {
+      requestedAPI: "deletePost",
+      postUid: postUid,
+    };
+
+    const myRequest = {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify(requestBody),
+    };
+
+    removeSpecificPost();
+
+    fetch("/api/endpoint", myRequest).then(async (res: Response) => {
+      let updatedPosts = await res.json();
+      // mutate("getPosts", updatedPosts);
+    });
+  }
 
   return (
     <DomainContext.Provider
@@ -81,7 +142,7 @@ export default function UserContent(props: UserPageProps) {
       <div className="container">
         <h1 className={profileStyles["profile-header"]}></h1>
         <div className={profileStyles["profile-content"]}>
-          <div className={profileStyles["profile-left-pane"]}>
+          <div className={profileStyles["profile-left-pane-unfixed"]}>
             {canEditBio ? (
               <AnimatePresence>
                 <motion.div
@@ -133,6 +194,10 @@ export default function UserContent(props: UserPageProps) {
             <div className={profileStyles["profile-name"]}>
               {props.profileUsername}
             </div>
+            <div className={profileStyles["profile-follows"]}>
+              {numFollowers} followers &nbsp;·&nbsp;&nbsp;
+              {numFollowing} following 
+            </div>
             <AnimatePresence>
               <motion.div
                 initial={{
@@ -161,32 +226,73 @@ export default function UserContent(props: UserPageProps) {
                   changeWebsite={changeWebsite}
                   toggleEditingBio={toggleEditingBio}
                   saveNewProfile={saveNewProfile}
+                  username={username}
+                  profileUsername={profileUsername}
+                  followed={followed}
+                  changeFollowed={changeFollowed}
+                  numFollowing={numFollowing}
+                  numFollowers={numFollowers}
+                  changeNumFollowing={changeNumFollowing}
+                  changeNumFollowers={changeNumFollowers}
                 />
               </motion.div>
             </AnimatePresence>
           </div>
-          <div className={profileStyles["profile-right-pane"]}>
-            {
-              <AnimatePresence>
-                <motion.div
-                  initial={{
-                    opacity: 0,
-                  }}
-                  animate={{
-                    opacity: 1,
-                  }}
-                  exit={{
-                    opacity: 0,
-                  }}
-                  transition={{
-                    duration: 0.4,
-                  }}
-                >
-                  <DisplayPosts posts={props.posts} />
-                </motion.div>
-              </AnimatePresence>
-            }
-          </div>
+          {editingBio ? (
+            <div className={profileStyles["profile-right-pane-editing"]}>
+              {
+                <AnimatePresence>
+                  <motion.div
+                    initial={{
+                      opacity: 0,
+                    }}
+                    animate={{
+                      opacity: 1,
+                    }}
+                    exit={{
+                      opacity: 0,
+                    }}
+                    transition={{
+                      duration: 0.4,
+                    }}
+                  >
+                    <DisplayPosts 
+                      posts={clonePosts} 
+                      postsEditClicked={editingBio}
+                      deletePost={deletePost}
+                    />
+                  </motion.div>
+                </AnimatePresence>
+              }
+            </div>
+          ) : (
+            <div className={profileStyles["profile-right-pane"]}>
+              {
+                <AnimatePresence>
+                  <motion.div
+                    initial={{
+                      opacity: 0,
+                    }}
+                    animate={{
+                      opacity: 1,
+                    }}
+                    exit={{
+                      opacity: 0,
+                    }}
+                    transition={{
+                      duration: 0.4,
+                    }}
+                  >
+                    <DisplayPosts 
+                      posts={clonePosts} 
+                      postsEditClicked={editingBio}
+                      deletePost={deletePost}
+                    />
+                  </motion.div>
+                </AnimatePresence>
+              }
+            </div>
+          )}
         </div>
       </div>
     </DomainContext.Provider>
@@ -268,12 +374,12 @@ async function saveProfileImage(
     }),
     body: JSON.stringify(data),
   })
-    .then(async (res: any) => {
+    .then(async (res: Response) => {
       let resJSON = await res.json();
       let url = resJSON.url;
       changeProfileImage(url);
     })
-    .catch((error: any) => {
+    .catch((error: Response) => {
       console.log(error);
       console.log("upload failed.");
     });
@@ -326,7 +432,65 @@ async function handleProfileImageDelete(
     method: "POST",
     headers: new Headers({ "Content-Type": "application/json" }),
     body: JSON.stringify(data),
-  }).then(async (res: any) => {});
+  }).then(async (res: Response) => {});
+}
+
+async function followUser(
+  username: string, 
+  profileUsername: string, 
+  changeFollowed: React.Dispatch<React.SetStateAction<boolean>>,
+  numFollowers: number,
+  changeNumFollowers: React.Dispatch<React.SetStateAction<number>>) {
+  let data = {
+    requestedAPI: "followUser",
+    username: username,
+    profileUsername: profileUsername
+  }
+  changeFollowed(true);
+  changeNumFollowers(numFollowers + 1);
+  await fetch("/api/endpoint", {
+    method: "POST",
+    headers: new Headers({
+      "Content-Type": "application/json",
+    }),
+    body: JSON.stringify(data),
+  })
+  .then(async (res: Response) => {
+    let resJSON = await res.json();
+  })
+  .catch((error: Error) => {
+    console.log(error);
+    console.log("follow failed.");
+  });
+}
+
+async function unfollowUser(
+  username: string, 
+  profileUsername: string, 
+  changeFollowed: React.Dispatch<React.SetStateAction<boolean>>,
+  numFollowers: number,
+  changeNumFollowers: React.Dispatch<React.SetStateAction<number>>) {
+  let data = {
+    requestedAPI: "unfollowUser",
+    username: username,
+    profileUsername: profileUsername
+  }
+  changeFollowed(false);
+  changeNumFollowers(numFollowers - 1);
+  await fetch("/api/endpoint", {
+    method: "POST",
+    headers: new Headers({
+      "Content-Type": "application/json",
+    }),
+    body: JSON.stringify(data),
+  })
+  .then(async (res: Response) => {
+    let resJSON = await res.json();
+  })
+  .catch((error: Error) => {
+    console.log(error);
+    console.log("unfollow failed.");
+  });
 }
 
 function About(props: {
@@ -342,6 +506,14 @@ function About(props: {
   changeWebsite: React.Dispatch<React.SetStateAction<string>>;
   toggleEditingBio: React.Dispatch<React.SetStateAction<boolean>>;
   saveNewProfile: () => Promise<void>;
+  username: string;
+  profileUsername: string;
+  followed: boolean;
+  changeFollowed: React.Dispatch<React.SetStateAction<boolean>>;
+  numFollowing: number;
+  numFollowers: number;
+  changeNumFollowing: React.Dispatch<React.SetStateAction<number>>;
+  changeNumFollowers: React.Dispatch<React.SetStateAction<number>>;
 }) {
   return (
     <div>
@@ -421,6 +593,8 @@ function About(props: {
           </motion.div>
         </AnimatePresence>
       </div>
+      {/* <div>Num Following: {props.numFollowing}</div>
+      <div>Num Followers: {props.numFollowers}</div> */}
 
       <AnimatePresence>
         <motion.div
@@ -442,6 +616,12 @@ function About(props: {
             canEditBio={props.canEditBio}
             toggleEditingBio={props.toggleEditingBio}
             saveNewProfile={props.saveNewProfile}
+            username={props.username}
+            profileUsername={props.profileUsername}
+            followed={props.followed}
+            changeFollowed={props.changeFollowed}
+            numFollowers={props.numFollowers}
+            changeNumFollowers={props.changeNumFollowers}
           />
         </motion.div>
       </AnimatePresence>
@@ -454,6 +634,12 @@ function EditProfileButton(props: {
   canEditBio: boolean;
   toggleEditingBio: React.Dispatch<React.SetStateAction<boolean>>;
   saveNewProfile: () => Promise<void>;
+  username: string;
+  profileUsername: string;
+  followed: boolean;
+  changeFollowed: React.Dispatch<React.SetStateAction<boolean>>;
+  numFollowers: number;
+  changeNumFollowers: React.Dispatch<React.SetStateAction<number>>;
 }) {
   return props.canEditBio ? (
     props.editingBio ? (
@@ -491,9 +677,33 @@ function EditProfileButton(props: {
         Edit Profile
       </div>
     )
-  ) : (
-    <div></div>
-  );
+  ) : (props.followed ? (
+        <div
+          className={profileStyles["profile-edit-button"]}
+          onClick={(e) => unfollowUser(
+            props.username, 
+            props.profileUsername, 
+            props.changeFollowed, 
+            props.numFollowers, 
+            props.changeNumFollowers)}
+        >
+          Unfollow
+        </div>
+      ) 
+      : (
+        <div
+          className={profileStyles["profile-edit-button"]}
+          onClick={(e) => followUser(
+            props.username, 
+            props.profileUsername, 
+            props.changeFollowed,
+            props.numFollowers, 
+            props.changeNumFollowers)}
+        >
+          Follow
+        </div>
+      )
+    );
 }
 
 function TwitterSection(props: {

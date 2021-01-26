@@ -14,7 +14,7 @@ import {
   UserPageProps,
 } from "../typescript/types/backend/userTypes";
 import { getPostDataFromFirestoreDoc } from "./postUtils";
-import typedAdmin from "firebase-admin";
+import typedAdmin, { firestore } from "firebase-admin";
 const admin = require("firebase-admin");
 initFirebaseAdmin();
 let db = typedAdmin.firestore();
@@ -251,6 +251,8 @@ export async function getProfileData(uid: string): Promise<fireBaseUserType> {
       twitter: userData.twitter || "",
       website: userData.website || "",
       email: userData.email,
+      numFollowers: userData.numFollowers || 0,
+      numFollowing: userData.numFollowing || 0,
       uid: userData.uid,
     };
     return result;
@@ -262,6 +264,8 @@ export async function getProfileData(uid: string): Promise<fireBaseUserType> {
       twitter: "",
       website: "",
       email: "",
+      numFollowers: 0,
+      numFollowing: 0,
     };
     return result;
   }
@@ -576,4 +580,34 @@ export async function getUserDataFromUsername(
     userHost: userHost,
   };
   return result;
+}
+
+/* For a given user uid, return all users they are following */
+export async function getFollowingFromUid(uid: string) {
+  let followingRef = db
+    .collection("users")
+    .doc(uid)
+    .collection("following");
+
+  let following = await followingRef
+    .get()
+    .then(async function (followingCollection) {
+      let results: string[] = [];
+      const gatherPromise: Promise<void>[] = [];
+      followingCollection.forEach(async function (fireStoreDoc) {
+        async function getResult() {
+          let resultUid = fireStoreDoc.data().uid;
+          results.push(resultUid);
+        }
+        gatherPromise.push(getResult());
+      });
+      await Promise.all(gatherPromise);
+      return results;
+    })
+    .catch(function (error) {
+      console.log(error);
+      let result: string[] = [];
+      return result;
+    });
+  return following;
 }

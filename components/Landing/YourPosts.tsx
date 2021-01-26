@@ -8,6 +8,7 @@ import { AuthContext } from "../../contexts/auth-context";
 import { goToDraft, goToPost, usePosts } from "../../lib/usePosts";
 import { DomainContext } from "../../contexts/domain-context";
 
+// Deprecated
 export function YourPosts(props: {}) {
   const { authenticated } = useContext(AuthContext);
   const { username } = useContext(DomainContext);

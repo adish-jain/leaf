@@ -1,3 +1,5 @@
+@import "commonui.scss";
+
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
   .Section {
@@ -68,9 +70,20 @@
 }
 
 .Draft-Title {
+  width: 98%;
+  height: auto;
+  margin-left: 10px;
+  padding: 5px;
+  word-wrap: normal;
+
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-style: normal;
   font-weight: bold;
-  margin-bottom: 0px;
-  margin-top: 0px;
+  font-size: 25px;
+  align-items: center;
+
+  color: #000000;
 }
 
 .draft {
@@ -79,7 +92,7 @@
   border: 1px solid #edece9;
   border-radius: 8px;
   color: black;
-  padding: 16px;
+  // padding: 16px;
   margin-bottom: 12px;
   background: white;
   box-shadow: 0px 4px 16px #edece9;
@@ -267,6 +280,7 @@
   margin-right: 16px;
   line-height: 20px;
   font-weight: bold;
+  cursor: pointer;
 }
 
 .DraftButtons {
@@ -307,4 +321,128 @@
   position: relative;
   top: -8px;
   cursor: pointer;
+}
+
+/* Posts */
+.post-landing {
+  width: 600px;
+  height: auto;
+  left: 315px;
+  top: 306px;
+  margin: 10px;
+  background: #ffffff;
+  box-shadow: 0px 4px 16px #edece9;
+  border-radius: 8px;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.post-title-landing {
+  width: 98%;
+  height: auto;
+  margin-left: 10px;
+  padding: 5px;
+  word-wrap: normal;
+
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 25px;
+  align-items: center;
+
+  color: #000000;
+}
+
+.post-date {
+  width: 150px;
+  height: 17px;
+  left: 331px;
+  top: 400px;
+  margin-left: 10px;
+  padding: 5px;
+
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-style: italic;
+  font-weight: normal;
+  font-size: 15px;
+  line-height: 17px;
+  display: flex;
+  align-items: center;
+
+  color: #c4c4c4;
+}
+
+.post-tags-author {
+  display: flex;
+  flex-direction: row;
+  margin-left: 10px;
+  margin-top: 6px;
+
+  padding: 5px;
+
+  .post-tag {
+    background: #f5f5f5;
+    height: 28.12371063232422px;
+    width: auto;
+    min-width: 70px;
+    left: 331px;
+    top: 408px;
+    border-radius: 3.195876121520996px;
+    margin-right: 10px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    color: #000000;
+  }
+
+  .post-tag:hover {
+    background-color: #349ae9;
+    color: white;
+    transition: all ease-in-out 0.2s;
+  }
+
+  .post-tag-text {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 11px;
+
+    margin-right: 7px;
+    margin-left: 7px;
+
+  }
+
+  .post-author-name-and-img {
+    color: black;
+    text-align: right;
+    margin-left: auto;
+    margin-right: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .post-author-name-and-img:hover {
+    color: $leaf-dark-blue;
+  }
+}
+
+.published-post-author-img {
+  img {
+    width: 28px;
+    height: 28px;
+    border-radius: 50px;
+    margin-right: 8px;
+  }
+
+  img:hover {
+    cursor: pointer;
+  }
 }

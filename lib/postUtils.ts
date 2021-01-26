@@ -24,6 +24,7 @@ import {
   getProfileImageFromUid,
   getUidFromDomain,
   getCustomDomainByUsername,
+  getFollowingFromUid,
 } from "./userUtils";
 import { timeStamp, Post } from "../typescript/types/app_types";
 import { fireBaseUserType } from "../typescript/types/backend/userTypes";
@@ -335,12 +336,83 @@ export async function getAllPostsHandler() {
         });
       }
     }
-    // sort by published date
+    // sort by recent date
     results.sort(function (a: Post, b: Post) {
-      let keyA = a.publishedAt,
-        keyB = b.publishedAt;
-      if (keyA < keyB) return -1;
-      if (keyA > keyB) return 1;
+      let keyA = a.publishedAt._seconds,
+        keyB = b.publishedAt._seconds;
+      if (keyA > keyB) return -1;
+      if (keyA < keyB) return 1;
+      return 0;
+    });
+    return results;
+  } catch (err) {
+    console.log(err);
+    return [];
+  }
+}
+
+export async function getFeedPostsHandler(following: string[]) {
+  let activeRef = await db
+    .collectionGroup("drafts")
+    .where("published", "==", true)
+    .get();
+  const arr: FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData>[] = [];
+
+  activeRef.forEach((child) => arr.push(child));
+  let results: Post[] = [];
+  try {
+    for (const doc of arr) {
+      const fireBaseId = doc.id;
+      let uid = await doc.ref.parent.parent?.get().then((docSnapshot) => {
+        let postData = docSnapshot.id;
+        return postData;
+      });
+      if (following.includes(uid!)) {
+        let username = await doc.ref.parent.parent?.get().then((docSnapshot) => {
+          let postData = docSnapshot.data() as fireBasePostType;
+          return postData.username;
+        });
+  
+        let getProfileImage = doc.ref.parent.parent?.get().then((docSnapshot) => {
+          let postData = docSnapshot.data() as fireBaseUserType | undefined;
+          return postData?.profileImage || "";
+        });
+        const [profileImage, customDomain] = await Promise.all([
+          getProfileImage,
+          getCustomDomainByUsername(username || ""),
+        ]);
+  
+        let resultsJSON = doc.data() as fireBasePostType;
+        if (username) {
+          results.push({
+            postId: resultsJSON.postId,
+            title: resultsJSON.title,
+            publishedAt: resultsJSON.publishedAt
+              ? {
+                  _seconds: resultsJSON.publishedAt._seconds,
+                  _nanoseconds: resultsJSON.publishedAt._nanoseconds,
+                }
+              : EMPTY_TIMESTAMP,
+            tags: resultsJSON.tags || [],
+            likes: resultsJSON.likes || 0,
+            username: username,
+            profileImage: profileImage || "",
+            createdAt: {
+              _seconds: resultsJSON.createdAt._seconds,
+              _nanoseconds: resultsJSON.createdAt._nanoseconds,
+            },
+            firebaseId: resultsJSON.firebaseId || fireBaseId,
+            customDomain: customDomain,
+          });
+        }
+      }
+    }
+    // sort by recent date
+    results.sort(function (a: Post, b: Post) {
+      let keyA = a.publishedAt._seconds,
+        keyB = b.publishedAt._seconds;
+      if (keyA > keyB) return -1;
+      if (keyA < keyB) return 1;
       return 0;
     });
     return results;
@@ -447,4 +519,9 @@ export async function getPostDataFromPostIdAndUsername(
   };
 
   return result;
+}
+
+export async function getFeedForUser(uid: string) {
+  let followingUids = await getFollowingFromUid(uid);
+  return getFeedPostsHandler(followingUids);
 }

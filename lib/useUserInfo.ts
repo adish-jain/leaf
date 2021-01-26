@@ -12,6 +12,7 @@ type userInfoType = {
   userHost: string;
   username: string;
   website: string;
+  following: Array<string>;
 };
 const myRequest = (requestedAPI: string) => {
   return {
@@ -24,7 +25,7 @@ const myRequest = (requestedAPI: string) => {
 };
 
 const userInfoFetcher = () =>
-  fetch("api/endpoint", myRequest("get_userInfo")).then((res: any) =>
+  fetch("api/endpoint", myRequest("get_userInfo")).then((res: Response) =>
     res.json()
   );
 
@@ -40,6 +41,7 @@ export function useUserInfo(authenticated: boolean) {
     userHost: "",
     username: "",
     website: "",
+    following: [],
   };
 
   /* Settings-Related State */
@@ -73,8 +75,8 @@ export function useUserInfo(authenticated: boolean) {
   );
 
   const userInfo = data || initialUserInfo;
+  const { emailVerified, method, email, username, userHost, following, uid } = userInfo;
 
-  const { emailVerified, method, email, username, userHost } = userInfo;
   async function saveNewProfile() {
     const changeProfileRequest = {
       method: "POST",
@@ -89,7 +91,7 @@ export function useUserInfo(authenticated: boolean) {
     };
     await fetch("api/endpoint", changeProfileRequest)
       .then((res) => {})
-      .catch(function (error: any) {
+      .catch(function (error: Error) {
         console.log(error);
       });
   }
@@ -107,7 +109,7 @@ export function useUserInfo(authenticated: boolean) {
     let updateUsernameResponse = await fetch(
       "api/endpoint",
       changeUsernameRequest
-    ).then((res: any) => res.json());
+    ).then((res: Response) => res.json());
     if (!updateUsernameResponse.error) {
       updateUserNameError("");
       mutate({ ...userInfo, username: newUsername }, true);
@@ -139,7 +141,7 @@ export function useUserInfo(authenticated: boolean) {
           });
         }
       })
-      .catch(function (error: any) {
+      .catch(function (error: Error) {
         console.log(error);
       });
   }
@@ -166,7 +168,7 @@ export function useUserInfo(authenticated: boolean) {
           });
         }
       })
-      .catch(function (error: any) {
+      .catch(function (error: Error) {
         console.log(error);
       });
   }
@@ -196,7 +198,7 @@ export function useUserInfo(authenticated: boolean) {
           });
         }
       })
-      .catch(function (error: any) {
+      .catch(function (error: Error) {
         console.log(error);
       });
   }
@@ -221,7 +223,7 @@ export function useUserInfo(authenticated: boolean) {
           });
         }
       })
-      .catch(function (error: any) {
+      .catch(function (error: Error) {
         console.log(error);
       });
   }
@@ -260,5 +262,7 @@ export function useUserInfo(authenticated: boolean) {
     changeWebsite,
     saveNewProfile,
     userHost,
+    following,
+    uid
   };
 }

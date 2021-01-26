@@ -2,32 +2,30 @@ import Head from "next/head";
 const fetch = require("node-fetch");
 global.Headers = fetch.Headers;
 import landingStyles from "../styles/landing.module.scss";
-import headerStyles from "../styles/header.module.scss";
-import appStyles from "../styles/app.module.scss";
 import { useLoggedIn, logOut, goToIndex } from "../lib/UseLoggedIn";
-import { useDrafts } from "../lib/useDrafts";
 import { useUserInfo } from "../lib/useUserInfo";
-import { usePosts, goToPost } from "../lib/usePosts";
+import { usePosts } from "../lib/usePosts";
 const dayjs = require("dayjs");
 import { LandingHeader } from "../components/Headers";
-import { YourPosts } from "../components/Landing/YourPosts";
+import { YourFeed } from "../components/Landing/YourFeed";
 import { YourDrafts } from "../components/Landing/YourDrafts";
 import { DomainContext } from "../contexts/domain-context";
 import { useHost } from "../lib/api/useHost";
 import { AuthContext } from "../contexts/auth-context";
 
-export default function Landing() {
+
+const Landing = () => {
   // authenticate
   const { authenticated, error, loading } = useLoggedIn();
-
   const { onCustomDomain } = useHost();
 
   // Fetch user ifno
-  const { username, userHost } = useUserInfo(authenticated);
+  const { username, userHost, uid } = useUserInfo(authenticated);
+  
   // Fetch data for posts
-  const { posts, deletePost, postsEditClicked, togglePostsEdit } = usePosts(
-    authenticated
-  );
+  // const { posts, deletePost, postsEditClicked, togglePostsEdit } = usePosts(
+  //   authenticated
+  // );
 
   return (
     <AuthContext.Provider value={{ authenticated }}>
@@ -61,7 +59,7 @@ export default function Landing() {
             <LandingHeader username={username} />
             <div className={landingStyles["landing"]}>
               <YourDrafts />
-              <YourPosts />
+              <YourFeed />
             </div>
           </main>
         </DomainContext.Provider>
@@ -69,3 +67,5 @@ export default function Landing() {
     </AuthContext.Provider>
   );
 }
+
+export default Landing;
