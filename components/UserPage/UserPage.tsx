@@ -214,6 +214,7 @@ export default function UserContent(props: UserPageProps) {
                 }}
               >
                 <About
+                  authenticated={authenticated}
                   editingBio={editingBio}
                   canEditBio={canEditBio}
                   about={about}
@@ -494,6 +495,7 @@ async function unfollowUser(
 }
 
 function About(props: {
+  authenticated: boolean;
   editingBio: boolean;
   canEditBio: boolean;
   about: string;
@@ -595,36 +597,38 @@ function About(props: {
       </div>
       {/* <div>Num Following: {props.numFollowing}</div>
       <div>Num Followers: {props.numFollowers}</div> */}
-
-      <AnimatePresence>
-        <motion.div
-          initial={{
-            opacity: 0,
-          }}
-          animate={{
-            opacity: 1,
-          }}
-          exit={{
-            opacity: 0,
-          }}
-          transition={{
-            duration: 0.4,
-          }}
-        >
-          <EditProfileButton
-            editingBio={props.editingBio}
-            canEditBio={props.canEditBio}
-            toggleEditingBio={props.toggleEditingBio}
-            saveNewProfile={props.saveNewProfile}
-            username={props.username}
-            profileUsername={props.profileUsername}
-            followed={props.followed}
-            changeFollowed={props.changeFollowed}
-            numFollowers={props.numFollowers}
-            changeNumFollowers={props.changeNumFollowers}
-          />
-        </motion.div>
-      </AnimatePresence>
+      {props.authenticated ? 
+        <AnimatePresence>
+          <motion.div
+            initial={{
+              opacity: 0,
+            }}
+            animate={{
+              opacity: 1,
+            }}
+            exit={{
+              opacity: 0,
+            }}
+            transition={{
+              duration: 0.4,
+            }}
+          >
+            <EditProfileButton
+              editingBio={props.editingBio}
+              canEditBio={props.canEditBio}
+              toggleEditingBio={props.toggleEditingBio}
+              saveNewProfile={props.saveNewProfile}
+              username={props.username}
+              profileUsername={props.profileUsername}
+              followed={props.followed}
+              changeFollowed={props.changeFollowed}
+              numFollowers={props.numFollowers}
+              changeNumFollowers={props.changeNumFollowers}
+            />
+          </motion.div>
+        </AnimatePresence> 
+        : <div></div>
+      }
     </div>
   );
 }
