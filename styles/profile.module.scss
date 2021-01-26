@@ -47,8 +47,19 @@
   flex-direction: row;
 }
 
-.profile-left-pane {
+.profile-left-pane-fixed {
   position: fixed;
+  display: flex;
+  flex-direction: column;
+  margin-left: 20px;
+  justify-content: center;
+  align-items: center;
+  width: 200px;
+}
+
+.profile-left-pane-unfixed {
+  // position: fixed;
+  align-self: flex-start;
   display: flex;
   flex-direction: column;
   margin-left: 20px;
@@ -234,12 +245,14 @@
 
 .profile-right-pane {
   display: flex;
-  margin-left: 370px;
+  margin-left: 166px;
+  // margin-left: 370px;
 }
 
 .profile-right-pane-editing {
   display: flex;
-  margin-left: 300px;
+  margin-left: 100px;
+  // margin-left: 300px;
 }
 
 /* Posts */
