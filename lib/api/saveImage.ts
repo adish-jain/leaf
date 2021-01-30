@@ -38,22 +38,6 @@ const generateImageURL = async (imageName: string) => {
   return imageURL;
 };
 
-const saveImageToStep = async (
-  uid: string,
-  draftId: string,
-  stepId: string,
-  imageURL: string
-) => {
-  await db
-    .collection("users")
-    .doc(uid)
-    .collection("drafts")
-    .doc(draftId)
-    .collection("steps")
-    .doc(stepId)
-    .update({ imageURL: imageURL });
-};
-
 export default async function handleSaveImage(
   req: NextApiRequest,
   res: NextApiResponse
@@ -64,10 +48,6 @@ export default async function handleSaveImage(
     res.end();
     return;
   }
-
-  // get draft and step data
-  let draftId = req.body.draftId;
-  let stepId = req.body.stepId;
 
   // get img data
   let image = req.body.imageFile;
@@ -97,11 +77,6 @@ export default async function handleSaveImage(
   // generate public URL for img file to save to firestore
   let imageURL = await generateImageURL(imageName);
   // console.log(fileURL);
-
-  // save img URL to firestore under relevant step
-  if (stepId && draftId) {
-    await saveImageToStep(uid, draftId, stepId, imageURL);
-  }
 
   // delete local img
   fs.unlinkSync("/tmp/" + imageName);

@@ -8,7 +8,6 @@ import { MOBILE_WIDTH } from "../../pages/_app";
 
 export function Introduction(props: { title: string }) {
   const { title } = props;
-  const { width } = useContext(DimensionsContext);
 
   return (
     <div className={finishedPostStyles["introduction"]}>

@@ -2,6 +2,7 @@
 
 .text-section {
   width: 800px;
+  // width: 100%;
   margin: auto;
   color: $standard-text;
   box-sizing: border-box;
@@ -16,7 +17,7 @@
 }
 
 .markdown {
-  margin-bottom: 60px;
+  margin-bottom: 0.4em;
 }
 
 .addcode {

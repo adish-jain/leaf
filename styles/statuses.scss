@@ -1,0 +1,10 @@
+@mixin draft-button {
+    background: #ffffff;
+    border: 1px solid $leaf-light-gray;
+    box-sizing: border-box;
+    border-radius: 4px;
+    padding: 4px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  

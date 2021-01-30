@@ -15,40 +15,27 @@ import { AnimatePresence, motion } from "framer-motion";
 import { opacityFade } from "../styles/framer_animations/opacityFade";
 import { LineStatus } from "./LineStatus";
 import { FilesContext } from "../contexts/files-context";
-export function CodeStep(props: {
-  codeStep: contentBlock;
+import { SectionContext } from "../contexts/section-context";
+import { ImageStatus } from "./ImageStatus";
+
+export function ContentStep(props: {
+  currentContentBlock: contentBlock;
   index: number;
   startIndex: number;
   selected: boolean;
   last: boolean;
-  backendId: string;
 }) {
-  const { codeStep, index, startIndex, selected, last, backendId } = props;
+  const { currentContentBlock, index, startIndex, selected, last } = props;
   const [hovered, updateHovered] = useState(false);
   const { changeEditingBlock } = useContext(DraftContext);
-  // const { updateStepCoordinate } = useContext(LinesContext);
+  const { sectionType } = useContext(SectionContext);
   const { changeSelectedFileIndex, files } = useContext(FilesContext);
   const stepRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    // window.addEventListener("scroll", handleScroll);
-    return () => {
-      // window.removeEventListener("scroll", handleScroll);
-    };
-  });
+
   let style = {};
 
-  function handleScroll() {
-    const stepDim = stepRef.current?.getBoundingClientRect();
-    if (!stepDim) {
-      return;
-    }
-    if (selected) {
-      // updateStepCoordinate(stepDim);
-    }
-  }
-
   function changeFile() {
-    const fileId = codeStep.fileId;
+    const fileId = currentContentBlock.fileId;
     if (!fileId) {
       return;
     }
@@ -61,13 +48,9 @@ export function CodeStep(props: {
   }
 
   const selectedClass = selected ? stepStyles.selected : "";
-  // if (last) {
-  //   style["marginBottom"] = "50%";
-  // }
+  const { slateContent, backendId, lines, fileId } = currentContentBlock;
   return (
-    <div
-    // style={{ position: "relative" }}
-    >
+    <div>
       <SideButtons
         firstStep={index === 0}
         hovered={hovered}
@@ -75,11 +58,10 @@ export function CodeStep(props: {
         updateHovered={updateHovered}
       />
       <motion.div
-        // layout
         className={`${stepStyles["codestep"]} ${selectedClass}`}
         style={style}
         onClick={(e) => {
-          changeEditingBlock(codeStep.backendId);
+          changeEditingBlock(currentContentBlock.backendId);
           changeFile();
         }}
         onMouseEnter={(e) => {
@@ -90,24 +72,24 @@ export function CodeStep(props: {
         }}
         ref={stepRef}
       >
-        <motion.div
-          className={stepStyles["codestep-content"]}
-          // layout
-        >
+        <motion.div className={stepStyles["codestep-content"]}>
           <MarkdownSection
-            slateContent={codeStep.slateContent}
-            backendId={codeStep.backendId}
+            slateContent={slateContent}
+            backendId={backendId}
             startIndex={index + startIndex}
             contentType={ContentBlockType.CodeSteps}
-            key={codeStep.backendId}
+            key={backendId}
           />
         </motion.div>
-        <LineStatus
-          selected={selected}
-          backendId={backendId}
-          lines={codeStep.lines}
-          fileId={codeStep.fileId}
-        />
+        {sectionType === ContentBlockType.CodeSteps && (
+          <LineStatus
+            selected={selected}
+            backendId={backendId}
+            lines={lines}
+            fileId={fileId}
+          />
+        )}
+        {sectionType === ContentBlockType.Image && <ImageStatus />}
       </motion.div>
     </div>
   );

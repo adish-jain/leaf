@@ -1,0 +1,31 @@
+.divider {
+  @include line;
+  width: 100%;
+}
+
+.header {
+  // width: 800px;
+  // display: flex;
+  justify-content: center;
+}
+
+.published {
+  border-radius: 8px;
+
+  padding: 16px;
+  margin-bottom: 16px;
+  color: $gray-text;
+  // border: 1px solid $leaf-light-gray;
+  transition: box-shadow 0.2s ease-in-out;
+  // transition: all 0.2s ease-in-out;
+}
+
+.published[data-isOn="true"] {
+  box-shadow: 0px 4px 16px #edece9;
+  border: 1px solid #edece9;
+  color: rgba(41, 41, 41, 0.87);
+  background-color: white;
+}
+
+.selected {
+}

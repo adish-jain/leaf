@@ -7,10 +7,14 @@ import { Node } from "slate";
 export type contentSection = {
   type: FrontendSectionType;
   startIndex: number;
-} & (CodeSection | TextSection);
+} & (CodeSection | TextSection | ImageSection);
 
 export type CodeSection = {
-  codeSteps: contentBlock[];
+  contentBlocks: contentBlock[];
+};
+
+export type ImageSection = {
+  contentBlocks: contentBlock[];
 };
 
 export type TextSection = {
@@ -26,12 +30,12 @@ export type contentBlock = {
   type: ContentBlockType;
   slateContent: string;
   backendId: string;
+  imageUrl?: string;
 } & codeStepBlock;
 
-type codeStepBlock = {
+export type codeStepBlock = {
   fileId?: string;
   lines?: Lines;
-  imageUrl?: string;
 };
 
 export type draftFrontendRepresentation = {

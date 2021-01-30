@@ -1,0 +1,35 @@
+@import "commonui.scss";
+
+.codestep-content {
+  // border: 1px solid black;
+  display: flex;
+  flex-direction: row-reverse;
+  padding-bottom: 40px;
+
+  // margin-bottom: 64px;
+  margin-right: 80px;
+  // margin-right: 80px;
+  border-bottom: 1px solid $leaf-light-gray;
+  background-color: $leaf-background;
+  margin-top: 64px;
+}
+
+@media only screen and (max-width: 600px) {
+    .codestep-content {
+      flex-direction: column !important;
+      margin-right: 0px !important;
+      margin-top: 0px !important;
+      width: 100%;
+    }
+  }
+  
+
+.draft-codestep-content {
+  display: flex;
+  margin-top: 64px;
+  padding-bottom: 80px;
+
+  margin-right: 64px;
+  // margin-left: 40px;
+
+}

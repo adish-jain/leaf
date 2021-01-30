@@ -49,12 +49,11 @@ const FinishedPost = (props: FinishedPostProps) => {
   const [selectedFileIndex, updateFileIndex] = useState(0);
   const [selectedContentIndex, updateContentIndex] = useState(0);
   const [scrollSpeed, updateScrollSpeed] = useState(0);
-  const scrollingRef = React.useRef<HTMLDivElement>(null);
 
   const handleScroll = useCallback((event) => {
     // update scroll speed
     let scrollSpeed = checkScrollSpeed();
-    updateScrollSpeed(scrollSpeed);
+    // updateScrollSpeed(scrollSpeed);
   }, []);
 
   useEffect(() => {
@@ -100,12 +99,12 @@ const FinishedPost = (props: FinishedPostProps) => {
                 selectedFileIndex,
               }}
             >
-              <FinishedPostHeader
+              {/* <FinishedPostHeader
                 updatePreviewMode={updatePreviewMode}
                 previewMode={previewMode}
                 authenticated={authenticated}
-                username={username}
-              />
+              username={username}
+              /> */}
               <PostBody scrollSpeed={scrollSpeed} title={title} />
             </PublishedFilesContext.Provider>
           </ContentContext.Provider>

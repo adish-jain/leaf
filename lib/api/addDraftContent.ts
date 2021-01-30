@@ -47,6 +47,12 @@ export default async function addDraftContentHandler(
         fileId: null,
         lines: null,
       };
+    case ContentBlockType.Image:
+      newContent = {
+        order: atIndex + 1,
+        type: backendDraftBlockEnum,
+        slateContent: JSON.stringify(slateNode),
+      };
     default:
       newContent = {
         order: atIndex + 1,

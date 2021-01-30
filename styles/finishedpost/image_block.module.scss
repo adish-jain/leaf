@@ -1,0 +1,22 @@
+@import '../commonui.scss';
+
+.imageblock {
+    // border: 1px solid $leaf-light-gray;
+    position: sticky;
+    top: 4vh;
+    height: 92vh;
+    display: flex;
+    justify-content: center;
+    // align-items: center;
+}
+
+.image-content {
+    // margin: auto;
+    // max-height: 50%;
+    // margin-top: 50%;
+    max-width: 100%;
+    position: absolute;
+}
+
+
+

@@ -9,7 +9,7 @@ import { DraftContext } from "../../contexts/draft-context";
 import Tags from "../../components/Tags";
 import DefaultErrorPage from "next/error";
 import Head from "next/head";
-import { DraftContent } from "../../components/DraftContent";
+import { DraftContent } from "../../components/Drafting/DraftContent";
 const fetch = require("node-fetch");
 import { draftMetaData } from "../../typescript/types/frontend/postTypes";
 global.Headers = fetch.Headers;
@@ -86,9 +86,11 @@ const DraftView = () => {
     deleteBlock,
     nextBlockType,
     removeFileFromCodeSteps,
+    mutate: useBackendMutate,
+    currentlyEditingBlockIndex,
   } = useBackend(authenticated, draftId as string);
   const fetcher = prepareFetcher(draftId as string);
-  let { data: draftData, mutate } = useSWR<draftMetaData>(
+  let { data: draftData } = useSWR<draftMetaData>(
     authenticated ? "getDraftMetadata" : null,
     fetcher,
     {
@@ -137,6 +139,7 @@ const DraftView = () => {
         `,
           }}
         />
+        <meta name="viewport" content="width=device-width, user-scalable=no" />
       </Head>
       <DomainContext.Provider
         value={{ onCustomDomain, username, userHost: "" }}
@@ -200,6 +203,8 @@ const DraftView = () => {
                           removeFileFromCodeSteps,
                           profileImage,
                           createdAt,
+                          useBackendMutate,
+                          currentlyEditingBlockIndex,
                         }}
                       >
                         <DraftContent

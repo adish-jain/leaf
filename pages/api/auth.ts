@@ -18,7 +18,7 @@ export default sentryHandler(
       return;
     }
 
-    let { uid, userRecord } = await getUser(req, res);
+    let { userRecord } = await getUser(req, res);
 
     if (userRecord === undefined) {
       handleLogoutCookies(res);

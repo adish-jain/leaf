@@ -3,6 +3,7 @@ import { ContentBlockType } from "../typescript/enums/backend/postEnums";
 import {
   contentBlock,
   serializedContentBlock,
+  codeStepBlock,
 } from "../typescript/types/frontend/postTypes";
 import {
   Node,
@@ -92,8 +93,8 @@ export function useBackend(authenticated: boolean, draftId: string) {
       backendId: backendId,
       slateContent: value ? JSON.stringify(value) : currentBlock.slateContent,
       type: draftContent[atIndex].type,
-      fileId: fileId ? fileId : currentBlock.fileId,
-      lines: lines ? lines : currentBlock.lines,
+      fileId: fileId ? fileId : (currentBlock as codeStepBlock).fileId,
+      lines: lines ? lines : (currentBlock as codeStepBlock).lines,
       imageUrl: imageUrl ? imageUrl : currentBlock.imageUrl,
     };
     if (lines === null) {
@@ -235,7 +236,7 @@ export function useBackend(authenticated: boolean, draftId: string) {
    */
   function removeFileFromCodeSteps(fileId: string) {
     for (let i = 0; i < draftContent.length; i++) {
-      if (draftContent[i].fileId === fileId) {
+      if ((draftContent[i] as codeStepBlock).fileId === fileId) {
         updateSlateSectionToBackend(
           draftContent[i].backendId,
           undefined,
@@ -257,6 +258,8 @@ export function useBackend(authenticated: boolean, draftId: string) {
     deleteBlock,
     nextBlockType,
     removeFileFromCodeSteps,
+    mutate,
+    currentlyEditingBlockIndex,
   };
 }
 
@@ -272,7 +275,6 @@ const slateNode: Node[] = [
 ];
 
 function insertItem(array: any[], newItem: any, insertIndex: number) {
-  console.log("inserting at a ", insertIndex);
   return [...array.slice(0, insertIndex), newItem, ...array.slice(insertIndex)];
 }
 

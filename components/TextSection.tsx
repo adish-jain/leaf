@@ -30,8 +30,9 @@ export default function TextSection(props: {
         />
       </div>
       {showAddCodeStep && !previewMode && (
-        <AddCodeStep startIndex={startIndex} backendId={backendId} />
+        <AddCodeStep startIndex={startIndex} />
       )}
+      <AddImageStep startIndex={startIndex} />
     </div>
   );
 }
@@ -61,7 +62,7 @@ function TextSectionDescription(props: {
   );
 }
 
-function AddCodeStep(props: { backendId: string; startIndex: number }) {
+function AddCodeStep(props: { startIndex: number }) {
   const { startIndex } = props;
   const { addBackendBlock } = useContext(DraftContext);
 
@@ -71,6 +72,20 @@ function AddCodeStep(props: { backendId: string; startIndex: number }) {
       className={textSectionStyles["addcode"]}
     >
       + Add Code Section
+    </button>
+  );
+}
+
+function AddImageStep(props: { startIndex: number }) {
+  const { startIndex } = props;
+  const { addBackendBlock } = useContext(DraftContext);
+
+  return (
+    <button
+      onClick={(e) => addBackendBlock(ContentBlockType.Image, startIndex)}
+      className={textSectionStyles["addcode"]}
+    >
+      + Add Image Step
     </button>
   );
 }

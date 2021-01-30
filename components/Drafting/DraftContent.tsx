@@ -1,26 +1,30 @@
-import { FrontendSectionType } from "../typescript/enums/frontend/postEnums";
+import { FrontendSectionType } from "../../typescript/enums/frontend/postEnums";
 import {
   CodeSection,
   contentBlock,
   contentSection,
+  ImageSection,
   TextSection as TextSectionType,
-} from "../typescript/types/frontend/postTypes";
+} from "../../typescript/types/frontend/postTypes";
+
 import { useContext } from "react";
 import TextareaAutosize from "react-autosize-textarea";
-import { DraftHeader } from "./Headers";
-import CodeStepSection from "./CodeStepSection";
-import { opacityFade } from "../styles/framer_animations/opacityFade";
+import { DraftHeader } from "../Headers";
+import CodeStepSection from "../CodeStepSection";
+import ImageStepSection from "../Drafting/ImageSection";
+import { opacityFade } from "../../styles/framer_animations/opacityFade";
 import { motion, AnimatePresence } from "framer-motion";
-import { DraftContext } from "../contexts/draft-context";
-import TextSection from "./TextSection";
-import publishingStyles from "../styles/publishing.module.scss";
-import appStyles from "../styles/app.module.scss";
-import FinishedPost from "./FinishedPost";
-import { FilesContext } from "../contexts/files-context";
-import { TagsContext } from "../contexts/tags-context";
-import { PreviewContext } from "./preview-context";
-import { DomainContext } from "../contexts/domain-context";
-import { serializePostContent } from "../lib/useBackend";
+import { DraftContext } from "../../contexts/draft-context";
+import TextSection from "../TextSection";
+import publishingStyles from "../../styles/publishing.module.scss";
+import appStyles from "../../styles/app.module.scss";
+import FinishedPost from "../FinishedPost";
+import { FilesContext } from "../../contexts/files-context";
+import { TagsContext } from "../../contexts/tags-context";
+import { PreviewContext } from "../preview-context";
+import { DomainContext } from "../../contexts/domain-context";
+import { serializePostContent } from "../../lib/useBackend";
+import { arrangeContentList } from "../../lib/usePosts";
 type DraftContentProps = {
   draftContent: contentBlock[];
   draftTitle: string;
@@ -59,9 +63,10 @@ export function DraftContent(props: DraftContentProps) {
   const { files } = useContext(FilesContext);
   const { username, profileImage, createdAt } = useContext(DraftContext);
   const { onCustomDomain, userHost } = useContext(DomainContext);
-  const { previewMode, updatePreviewMode, published } = useContext(
+  let { previewMode, updatePreviewMode, published } = useContext(
     PreviewContext
   );
+  previewMode = true;
   const { updateShowTags, selectedTags } = useContext(TagsContext);
   const { draftContent, draftTitle, onTitleChange } = props;
   const serializedDraftContent = serializePostContent(draftContent);
@@ -110,6 +115,7 @@ const DraftComponent = (props: DraftContentProps) => {
   let { updateShowTags, draftContent, onTitleChange, draftTitle } = props;
 
   const arrangedContent = arrangeContentList(draftContent);
+  console.log(arrangedContent);
 
   return (
     <div>
@@ -139,13 +145,25 @@ const DraftComponent = (props: DraftContentProps) => {
                     />
                   );
                 }
+                case FrontendSectionType.ImageSection: {
+                  const imageSteps = (contentElement as contentSection &
+                    ImageSection).contentBlocks;
+                  const startIndex = contentElement.startIndex;
+                  return (
+                    <ImageStepSection
+                      contentBlocks={imageSteps}
+                      key={imageSteps[0].backendId}
+                      startIndex={startIndex}
+                    />
+                  );
+                }
                 case FrontendSectionType.CodeSection: {
                   const codeSteps = (contentElement as contentSection &
-                    CodeSection).codeSteps;
+                    CodeSection).contentBlocks;
                   const startIndex = contentElement.startIndex;
                   return (
                     <CodeStepSection
-                      codeSteps={codeSteps}
+                      contentBlocks={codeSteps}
                       key={codeSteps[0].backendId}
                       startIndex={startIndex}
                     />
@@ -161,49 +179,6 @@ const DraftComponent = (props: DraftContentProps) => {
     </div>
   );
 };
-
-function arrangeContentList(draftContent: contentBlock[]): contentSection[] {
-  // iterate through array
-
-  // if code step type
-  // add to sub array
-
-  // if not code step type, break sub array
-  let finalArray: contentSection[] = [];
-  let subArray: contentBlock[] = [];
-  let runningSum = 0;
-  for (let i = 0; i < draftContent.length; i++) {
-    if (draftContent[i].type === "codestep") {
-      // aggregate codesteps into subArray
-      subArray.push(draftContent[i]);
-      // runningSum += 1;
-    } else {
-      if (subArray.length > 0) {
-        finalArray.push({
-          type: FrontendSectionType.CodeSection,
-          codeSteps: subArray,
-          startIndex: runningSum,
-        });
-        runningSum += subArray.length;
-      }
-      subArray = [];
-      finalArray.push({
-        type: FrontendSectionType.TextSection,
-        slateSection: draftContent[i],
-        startIndex: runningSum,
-      });
-      runningSum += 1;
-    }
-  }
-  if (subArray.length > 0) {
-    finalArray.push({
-      type: FrontendSectionType.CodeSection,
-      codeSteps: subArray,
-      startIndex: runningSum,
-    });
-  }
-  return finalArray;
-}
 
 const TitleLabel = () => {
   return <label className={publishingStyles["title-label"]}>Title</label>;

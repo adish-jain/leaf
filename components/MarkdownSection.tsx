@@ -328,28 +328,28 @@ const MarkdownPreviewExample = (props: {
         );
         break;
       }
-      case "c": {
-        event.preventDefault();
-        const [match] = Editor.nodes(editor, {
-          match: (n) => {
-            return n.code === true;
-          },
-        });
-        let shouldCode = match === undefined;
-        Transforms.setNodes(
-          editor,
-          { code: shouldCode },
-          // Apply it to text nodes, and split the text node up if the
-          // selection is overlapping only part of it.
-          {
-            match: (n) => {
-              return Text.isText(n);
-            },
-            split: true,
-          }
-        );
-        break;
-      }
+      // case "c": {
+      //   event.preventDefault();
+      //   const [match] = Editor.nodes(editor, {
+      //     match: (n) => {
+      //       return n.code === true;
+      //     },
+      //   });
+      //   let shouldCode = match === undefined;
+      //   Transforms.setNodes(
+      //     editor,
+      //     { code: shouldCode },
+      //     // Apply it to text nodes, and split the text node up if the
+      //     // selection is overlapping only part of it.
+      //     {
+      //       match: (n) => {
+      //         return Text.isText(n);
+      //       },
+      //       split: true,
+      //     }
+      //   );
+      //   break;
+      // }
     }
   }
 

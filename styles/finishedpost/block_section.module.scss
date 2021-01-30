@@ -1,0 +1,43 @@
+// @type
+@import '../commonui.scss';
+
+.published-steps {
+  width: 50%;
+  position: relative;
+}
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+  .published-steps {
+    position: relative;
+    top: -55vh;
+    width: 100% !important;
+  }
+}
+
+.block-section {
+  // border: 1px solid black;
+  display: flex;
+  flex-direction: row-reverse;
+  padding-bottom: 40px;
+
+  // margin-bottom: 64px;
+  // margin-right: 80px;
+  // margin-right: 80px;
+  border-bottom: 1px solid $leaf-light-gray;
+  background-color: $leaf-background;
+  width: 1000px;
+  margin: auto;
+  position: relative;
+  left: 100px;
+  // margin-top: 64px;
+}
+
+@media only screen and (max-width: 600px) {
+  .block-section {
+    flex-direction: column !important;
+    margin-right: 0px !important;
+    margin-top: 0px !important;
+    width: 100%;
+  }
+}

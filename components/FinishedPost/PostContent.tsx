@@ -3,6 +3,7 @@ import { ContentContext } from "../../contexts/finishedpost/content-context";
 import {
   contentBlock,
   contentSection,
+  ImageSection,
 } from "../../typescript/types/frontend/postTypes";
 import { FrontendSectionType } from "../../typescript/enums/frontend/postEnums";
 import {
@@ -10,7 +11,8 @@ import {
   TextSection as TextSectionType,
 } from "../../typescript/types/frontend/postTypes";
 import PublishedTextSection from "./../PublishedTextSection";
-import PublishedCodeStepSection from "../PublishedCodeSection";
+import { arrangeContentList } from "../../lib/usePosts";
+import BlockSection from "./BlockSection";
 
 export function PostContent(props: { scrollSpeed: number }) {
   const { scrollSpeed } = props;
@@ -18,7 +20,11 @@ export function PostContent(props: { scrollSpeed: number }) {
   const arrangedPostContent = arrangeContentList(postContent);
 
   return (
-    <div>
+    <div
+    // style={{ width: "800px", margin: "auto"
+    // }
+    // }
+    >
       {arrangedPostContent.map((contentElement, index: number) => {
         switch (contentElement.type) {
           case FrontendSectionType.TextSection: {
@@ -38,14 +44,27 @@ export function PostContent(props: { scrollSpeed: number }) {
             );
           }
           case FrontendSectionType.CodeSection: {
-            const codeSteps = (contentElement as contentSection & CodeSection)
-              .codeSteps;
+            const contentBlocks = (contentElement as contentSection &
+              CodeSection).contentBlocks;
             const startIndex = contentElement.startIndex;
             return (
-              <PublishedCodeStepSection
+              <BlockSection
                 scrollSpeed={scrollSpeed}
-                codeSteps={codeSteps}
-                key={codeSteps[0].backendId}
+                contentBlocks={contentBlocks}
+                key={contentBlocks[0].backendId}
+                startIndex={startIndex}
+              />
+            );
+          }
+          case FrontendSectionType.ImageSection: {
+            const contentBlocks = (contentElement as contentSection &
+              ImageSection).contentBlocks;
+            const startIndex = contentElement.startIndex;
+            return (
+              <BlockSection
+                scrollSpeed={scrollSpeed}
+                contentBlocks={contentBlocks}
+                key={contentBlocks[0].backendId}
                 startIndex={startIndex}
               />
             );
@@ -57,47 +76,4 @@ export function PostContent(props: { scrollSpeed: number }) {
       })}
     </div>
   );
-}
-
-function arrangeContentList(draftContent: contentBlock[]): contentSection[] {
-  // iterate through array
-
-  // if code step type
-  // add to sub array
-
-  // if not code step type, break sub array
-  let finalArray: contentSection[] = [];
-  let subArray: contentBlock[] = [];
-  let runningSum = 0;
-  for (let i = 0; i < draftContent.length; i++) {
-    if (draftContent[i].type === "codestep") {
-      // aggregate codesteps into subArray
-      subArray.push(draftContent[i]);
-      // runningSum += 1;
-    } else {
-      if (subArray.length > 0) {
-        finalArray.push({
-          type: FrontendSectionType.CodeSection,
-          codeSteps: subArray,
-          startIndex: runningSum,
-        });
-        runningSum += subArray.length;
-      }
-      subArray = [];
-      finalArray.push({
-        type: FrontendSectionType.TextSection,
-        slateSection: draftContent[i],
-        startIndex: runningSum,
-      });
-      runningSum += 1;
-    }
-  }
-  if (subArray.length > 0) {
-    finalArray.push({
-      type: FrontendSectionType.CodeSection,
-      codeSteps: subArray,
-      startIndex: runningSum,
-    });
-  }
-  return finalArray;
 }

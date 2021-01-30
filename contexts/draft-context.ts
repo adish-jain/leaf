@@ -30,4 +30,13 @@ type DraftContextType = {
   nextBlockType: (backendId: string) => ContentBlockType | undefined;
   profileImage: string;
   createdAt: timeStamp;
+  currentlyEditingBlockIndex: number;
+  useBackendMutate: (
+    data?:
+      | contentBlock[]
+      | Promise<contentBlock[]>
+      | mutateCallback<contentBlock[]>
+      | undefined,
+    shouldRevalidate?: boolean | undefined
+  ) => Promise<any>;
 };

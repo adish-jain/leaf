@@ -2,7 +2,14 @@ import { useState } from "react";
 import useSWR, { SWRConfig, mutate } from "swr";
 import Router from "next/router";
 import { Post } from "../typescript/types/app_types";
-
+import {
+  CodeSection,
+  contentBlock,
+  contentSection,
+  ImageSection,
+  TextSection as TextSectionType,
+} from "../typescript/types/frontend/postTypes";
+import { FrontendSectionType } from "../typescript/enums/frontend/postEnums";
 const myRequest = (requestedAPI: string) => {
   return {
     method: "POST",
@@ -106,4 +113,68 @@ export function goToPostFromExplore(post: Post) {
   } else {
     Router.push("/[username]/[postId]", "/" + username + "/" + postId);
   }
+}
+
+export function arrangeContentList(
+  draftContent: contentBlock[]
+): contentSection[] {
+  // iterate through array
+
+  // if code step type
+  // add to sub array
+
+  // if not code step type, break sub array
+  let finalArray: contentSection[] = [];
+  let subArray: contentBlock[] = [];
+  let runningSum = 0;
+  for (let i = 0; i < draftContent.length; i++) {
+    if (
+      draftContent[i].type === "codestep" ||
+      draftContent[i].type === "image"
+    ) {
+      // aggregate codesteps into subArray
+      subArray.push(draftContent[i]);
+      // runningSum += 1;
+    } else {
+      if (subArray.length > 0) {
+        let subArrayType = subArray[0].type;
+        let finalArrayType = FrontendSectionType.CodeSection;
+        if (subArrayType === "codestep") {
+          finalArrayType = FrontendSectionType.CodeSection;
+        }
+        if (subArrayType === "image") {
+          finalArrayType = FrontendSectionType.ImageSection;
+        }
+        finalArray.push({
+          type: finalArrayType,
+          contentBlocks: subArray,
+          startIndex: runningSum,
+        });
+        runningSum += subArray.length;
+      }
+      subArray = [];
+      finalArray.push({
+        type: FrontendSectionType.TextSection,
+        slateSection: draftContent[i],
+        startIndex: runningSum,
+      });
+      runningSum += 1;
+    }
+  }
+  if (subArray.length > 0) {
+    let subArrayType = subArray[0].type;
+    let finalArrayType = FrontendSectionType.CodeSection;
+    if (subArrayType === "codestep") {
+      finalArrayType = FrontendSectionType.CodeSection;
+    }
+    if (subArrayType === "image") {
+      finalArrayType = FrontendSectionType.ImageSection;
+    }
+    finalArray.push({
+      type: finalArrayType,
+      contentBlocks: subArray,
+      startIndex: runningSum,
+    });
+  }
+  return finalArray;
 }

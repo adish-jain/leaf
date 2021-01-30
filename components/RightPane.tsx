@@ -2,20 +2,39 @@ import React, { Component, createRef, useContext, useRef } from "react";
 import PublishedLanguageBar from "./PublishedLanguageBar";
 import PublishedFileBar from "./PublishedFileBar";
 import publishedCodeEditorStyles from "../styles/publishedcodeeditor.module.scss";
+import rightPaneStyles from "../styles/rightpane.module.scss";
 import { File, Step } from "../typescript/types/app_types";
 import PrismEditor from "./PrismEditor";
 import PublishedImageView from "./PublishedImageView";
 import animateScrollTo from "animated-scroll-to";
-import { SPEED_SCROLL_LIMIT } from "../components/FinishedPost";
+import { SPEED_SCROLL_LIMIT } from "./FinishedPost";
 import { ContentContext } from "../contexts/finishedpost/content-context";
 import { MOBILE_WIDTH } from "../pages/_app";
-import CSS from "csstype";
+import { ContentBlockType } from "../typescript/enums/backend/postEnums";
+import { SectionContext } from "../contexts/section-context";
+import { ImageBlockPublished } from "./FinishedPost/ImageBlock";
+ImageBlockPublished;
+export default function RightPane(props: {
+  scrollSpeed: number;
+  contentBlockType: ContentBlockType;
+}) {
+  const { scrollSpeed, contentBlockType } = props;
+  const { sectionType } = useContext(SectionContext);
+  return (
+    <div className={rightPaneStyles["rightpane"]}>
+      {sectionType === ContentBlockType.CodeSteps && (
+        <PublishedCodeEditor scrollSpeed={scrollSpeed} />
+      )}
+      {sectionType === ContentBlockType.Image && <ImageBlockPublished />}
+    </div>
+  );
+}
 
-export default function PublishedCodeEditor(props: { scrollSpeed: number }) {
-  let prismWrapper = useRef<HTMLDivElement>(null);
-  const { postContent, selectedContentIndex } = useContext(ContentContext);
-
+function PublishedCodeEditor(props: { scrollSpeed: number }) {
   const { scrollSpeed } = props;
+  const { postContent, selectedContentIndex } = useContext(ContentContext);
+  let prismWrapper = useRef<HTMLDivElement>(null);
+
   function animateLines() {
     let currentContent = postContent[selectedContentIndex];
     let animationOptions = {
@@ -31,7 +50,6 @@ export default function PublishedCodeEditor(props: { scrollSpeed: number }) {
       animateScrollTo(lineCalc, animationOptions);
     }
   }
-
   return (
     <div className={publishedCodeEditorStyles["editor-wrapper"]}>
       <PublishedImageView

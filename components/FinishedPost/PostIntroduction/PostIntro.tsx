@@ -11,7 +11,6 @@ export function PostIntro() {
   );
 
   const { onCustomDomain } = useContext(DomainContext);
-  console.log("oncustom domain is ", onCustomDomain);
   let date = new Date(publishedAtSeconds * 1000);
   let formattedDate = dayjs(date).format("MMMM D YYYY");
   return (
