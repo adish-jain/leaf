@@ -199,6 +199,11 @@ function Team() {
             to talk? Shoot me a message.
           </p>
         </PersonCard>
+        <PersonCard img={"rah"} name={"Ruchika Gupta"} username={"rgupta"}>
+          <p className={aboutStyles["img__description"]}>
+            Growing up in South Africa, I did this and that.
+          </p>
+        </PersonCard>
       </div>
     </div>
   );
