@@ -199,9 +199,16 @@ function Team() {
             to talk? Shoot me a message.
           </p>
         </PersonCard>
-        <PersonCard img={"rah"} name={"Ruchika Gupta"} username={"rgupta"}>
+        <PersonCard img={"ria"} name={"Ruchika Gupta"} username={"Ruchika00291026"}>
           <p className={aboutStyles["img__description"]}>
-            Growing up in South Africa, I did this and that.
+            I grew up in Africa and am a left my home and family behind to
+            pursue a computer science education in the United States. After
+            graduating, I did joined a start-up in the data science and web3
+            space, where I focused on full-stack engineering with a focus on
+            responsive and accesible design. Education has been key to opening
+            so many doors in my life, both professionally and culturally, and
+            therefore am so excited to build a tool which can help educate
+            others.
           </p>
         </PersonCard>
       </div>
