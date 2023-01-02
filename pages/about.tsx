@@ -203,11 +203,11 @@ function Team() {
           <p className={aboutStyles["img__description"]}>
             I grew up in Africa and am a left my home and family behind to
             pursue a computer science education in the United States. After
-            graduating, I did joined a start-up in the data science and web3
-            space, where I focused on full-stack engineering with a focus on
+            graduating, I joined a start-up in the data science and web3
+            space, where I was a full-stack engineer focused on
             responsive and accesible design. Education has been key to opening
-            so many doors in my life, both professionally and culturally, and
-            therefore am so excited to build a tool which can help educate
+            so many doors in my life, both professionally and culturally.
+            Therefore, I am so excited to be building a tool which can help educate
             others.
           </p>
         </PersonCard>
